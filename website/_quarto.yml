@@ -1,0 +1,58 @@
+project:
+  type: website
+  output-dir: ../docs
+  render:
+   - "index.qmd"
+   - "syllabus.qmd"
+   #- "project1.qmd"
+   #- "project2.qmd"
+   #- "project3.qmd"
+   - "lectures/*.qmd"
+   #- "slides/*.qmd"
+   #- "slides/raw_slides/*.qmd"
+
+website:
+  title: "STAT479"
+  navbar:
+    background: "#C5050C"
+    foreground: "#FFFFFF"
+    left:
+      - text: "Home"
+        href: index.qmd
+      - text: "Syllabus"
+        href: syllabus.qmd        
+      - sidebar:lectures
+      #- sidebar:slides
+      #- text: "Project 1 Information"
+      #  href: project1.qmd
+      #- text: "Project 2 Information"
+      #  href: project2.qmd
+      #- text: "Project 3 Information"
+      #  href: project3.qmd
+      
+  sidebar:
+    - id: lectures
+      title: "Lecture Notes"
+      style: "docked"
+      background: light
+      collapse-level: 2
+      contents: "lectures/*.qmd"
+   # - id: slides
+   #   title: "Lecture Slides"
+   #   style: "docked"
+   #   background: light
+   #   collapse-level: 2
+   #   contents: "slides/*.qmd"
+    
+format:
+  html:
+    theme: [cosmo, styles.scss]
+    css: styles.css
+    toc: true
+
+execute:
+  cache: true
+code-annotations: hover 
+code-overflow: wrap
+bibliography: lectures/stat441_refs.bib
+lightbox: true
