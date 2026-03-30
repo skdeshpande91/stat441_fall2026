@@ -12,6 +12,8 @@ website/syllabus/*.synctex.tez
 *.rdb
 *.rdx
 
+website/index_cache/
+website/projects/project*_cache/
 website/lectures/lecture*_cache/
 website/lectures/lecture*_files/
 website/slides/raw_slides/slides*cache/

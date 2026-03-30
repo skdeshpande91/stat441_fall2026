@@ -8,6 +8,7 @@ project:
    #- "project2.qmd"
    #- "project3.qmd"
    - "lectures/*.qmd"
+   - "projects/*.qmd"
    #- "slides/*.qmd"
    #- "slides/raw_slides/*.qmd"
 
@@ -23,6 +24,7 @@ website:
         href: syllabus.qmd        
       - sidebar:lectures
       #- sidebar:slides
+      - sidebar:Projects
       #- text: "Project 1 Information"
       #  href: project1.qmd
       #- text: "Project 2 Information"
@@ -37,6 +39,13 @@ website:
       background: light
       collapse-level: 2
       contents: "lectures/*.qmd"
+      
+    - id: projects
+      title: "Projects"
+      style: "docked"
+      background: light
+      collapse-level: 2
+      contents: "projects/*.qmd"
    # - id: slides
    #   title: "Lecture Slides"
    #   style: "docked"
