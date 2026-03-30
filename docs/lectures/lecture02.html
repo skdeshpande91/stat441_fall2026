@@ -197,13 +197,27 @@ window.Quarto = {
     <a class="dropdown-item" href="../lectures/lecture02.html">
  <span class="dropdown-text">Lecture 2: Expected Goals</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture03.html">
+ <span class="dropdown-text">Lecture 3: Estimating XG</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture05.html">
+ <span class="dropdown-text">Lecture 5: Regularized Adjusted Plus/Minus</span></a>
+  </li>  
     </ul>
   </li>
-  <li class="nav-item">
-    <span class="nav-link">
-<span class="menu-text">sidebar:Projects</span>
-    </span>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-projects" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Projects</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-projects">    
+        <li>
+    <a class="dropdown-item" href="../projects/project1.html">
+ <span class="dropdown-text">Project 1 Information</span></a>
   </li>  
+    </ul>
+  </li>
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -237,6 +251,18 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../lectures/lecture02.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Lecture 2: Expected Goals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 3: Estimating XG</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 5: Regularized Adjusted Plus/Minus</span></a>
   </div>
 </li>
     </ul>
@@ -582,7 +608,7 @@ Overhead Kick        Volley
 </div>
 <p>Because none of the 3 left-footed lobs in our dataset led to goals, our model estimates <span class="math inline">\(\textrm{XG}(\text{left-footed lob})\)</span> as 0. Similarly, the rather large <span class="math inline">\(\textrm{XG}(\text{right-footed lob})\)</span> of 33% is based on only 12 shots. Attempting to condition on even more variables would result in estimates based on even smaller sample sizes<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</p>
 <p>So, it would appear that we’re stuck between a rock and a hard place. On the one hand, our XG model with two features is still too coarse to quantify important differences between the motivating shots. But, on the other hand, binning and averaging with even more features carries the risk of producing highly erratic, extreme, and somewhat nonsensical estimates<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>.</p>
-<p><em>Statistical models</em> offer a principled approach to overcome these issues. We will explore several such models in <a href="lecture03.qmd">Lecture 3</a>. But for now, we will rely on a model developed by StatsBomb that accounts for a large number of features based on player locations (in two dimensions), the ball location (in three dimension), and other factors like the body part, shot technique, and the actions leading up to the shot (e.g., whether shot was taken off dribble or first touch). You can read more about their model <a href="https://www.hudl.com/blog/upgrading-expected-goals">here</a>. Luckily for us, they include XG estimates for each shot in the public data, under the column <code>shot.statsbomb_xg</code>.</p>
+<p><em>Statistical models</em> offer a principled approach to overcome these issues. We will explore several such models in <a href="../lectures/lecture03.html">Lecture 3</a>. But for now, we will rely on a model developed by StatsBomb that accounts for a large number of features based on player locations (in two dimensions), the ball location (in three dimension), and other factors like the body part, shot technique, and the actions leading up to the shot (e.g., whether shot was taken off dribble or first touch). You can read more about their model <a href="https://www.hudl.com/blog/upgrading-expected-goals">here</a>. Luckily for us, they include XG estimates for each shot in the public data, under the column <code>shot.statsbomb_xg</code>.</p>
 <p>For instance, here are the XG estimates from StatsBomb’s model for all of Beth Mead’s goals</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>mead_shots <span class="sc">|&gt;</span></span>
