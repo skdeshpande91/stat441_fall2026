@@ -64,7 +64,7 @@ Luckily, these numbers match up!
 
 It turns out that `raw_box` contains much more data than we need.
 Specifically, it includes statistics from play-in and play-off games as well as data from some (but not all) All-Star games.
-Since we're ultimately interested in identifying the best player-seasons in terms of shooting performance, we need to remove all play-off, play-in, and All-Star games from the dataset.
+Since we're ultimately interested in identifying the best player-seasons in terms of shooting performance, we need to remove all play-off, play-in, and All-Star games from the data.
 Additionally, the column `did_not_play` contains a Boolean (i.e., logical) variable that is `TRUE` is the player did not play in the game and is `FALSE` if the player did not play in the game
 
 ```{r}
@@ -77,7 +77,8 @@ allstar_dates <-
     "2014-02-16", "2015-02-15", "2016-02-14",
     "2017-02-19", "2018-02-18", "2019-02-17",
     "2020-02-16", "2021-03-07", "2022-02-20",
-    "2023-02-19", "2024-02-18", "2025-02-16"))
+    "2023-02-19", "2024-02-18", "2025-02-16", 
+    "2026-02-15"))
 reg_box <-
   raw_box |>
   dplyr::filter(
@@ -157,12 +158,13 @@ We can identify this player-season by sorting the data in `season_box` by `FGM` 
 ```{r}
 #| label: arrange-fgm
 season_box |>
-  dplyr::arrange(dplyr::desc(FGM))
+  dplyr::arrange(dplyr::desc(FGM)) |>
+  dplyr::slice_head(n = 10)
 ```
 When we look at the ten "best" shooting seasons, we immediately recognize a lot of superstar players!
-On this basis, we might be satisfied evaluating shooting performances based only on the *total* number of shots.
-But taking a closer look, should we really consider Kobe Bryant's 2002-03 and Shai Gilgeous-Alexander's 2024-25 seasons to be equally impressive when Kobe took attempted *242* more shots than Shai in order to make 868 shots? 
-Arguably, Shai's 2024-25 season should rank higher than Kobe's 2002-03 season because Shai was more *efficient*.
+On the basis of made shots alone, it is tempting to conclude that James Harden's 2018-19 season is more impressive than Giannis Antetokounmpo's 2023-24 season; after all, Harden made 6 more shots than Giannis.
+But taking a closer look, we see that Harden took 540 more to make 6 more baskets than Giannis.
+Arguably, Gianni's 2023-24 season is more impressive because he was more *efficient*. 
 
 This motivates us to refine our definition of "best" by focusing on the *percentage* of field goals made rather than total number of field goals made.
 ```{r}
@@ -172,7 +174,8 @@ season_box <-
   dplyr::mutate(FGP = ifelse(FGA > 0, FGM/FGA, NA_real_)) # <1>
 season_box |> 
   dplyr::arrange(dplyr::desc(FGP)) |>
-  dplyr::select(Player, season, FGP)
+  dplyr::select(Player, season, FGP) |>
+  dplyr::slice_head(n = 10)
 ```
 1. For players who attempted no field goals (i.e., `FGA = 0`), their field goal percentage is undefined.
 
@@ -184,7 +187,8 @@ To understand what's going on, let's take a look at the number of attempts.
 #| label: arrange-fgp-games
 season_box |> 
   dplyr::arrange(dplyr::desc(FGP)) |>
-  dplyr::select(Player, season, FGP, FGA)
+  dplyr::select(Player, season, FGP, FGA) |>
+  dplyr::slice_head(n = 10)
 ```
 
 Given the very low number of shots attempted in any of these player-season, claiming that any of these player-seasons are among the best ever would strain credulity!
@@ -197,7 +201,8 @@ For simplicity, let's focus our attention on those players who attempted at leas
 season_box |>
   dplyr::filter(FGA >= 400) |>
   dplyr::arrange(dplyr::desc(FGP)) |>
-  dplyr::select(Player, season, FGP,FGA)
+  dplyr::select(Player, season, FGP,FGA) |>
+  dplyr::slice_head(n = 10)
 ```
 Do we really believe that these performances, all of which were made centers who mostly shoot at or near the rim, represent some of the best shooting performances of all time? 
 
@@ -221,7 +226,8 @@ season_box <-
 season_box |>
   dplyr::filter(FGA >= 400) |>
   dplyr::arrange(dplyr::desc(eFGP), dplyr::desc(FGP)) |>
-  dplyr::select(Player, season, eFGP, FGP, TPP, TPA, n_games)
+  dplyr::select(Player, season, eFGP, FGP, TPP, TPA, n_games) |>
+  dplyr::slice_head(n = 10)
 ```
 We see again that some of the best seasons, according to eFGP, were from centers, many of whom attempt few few three point shots.
 When filter out players who took at least 100 three point shots, we start to see other positions in the top-10.
@@ -230,7 +236,8 @@ When filter out players who took at least 100 three point shots, we start to see
 season_box |>
   dplyr::filter(FGA >= 400 & TPA >= 100) |>
   dplyr::arrange(dplyr::desc(eFGP), dplyr::desc(FGP)) |>
-  dplyr::select(Player, season, eFGP, FGP, TPP, TPA, n_games)
+  dplyr::select(Player, season, eFGP, FGP, TPP, TPA, n_games) |>
+  dplyr::slice_head(n = 10)
 ```
 
 ### True Shooting Percentage #{sec-tsp}
@@ -254,6 +261,7 @@ season_box <-
 season_box |>
   dplyr::filter(FGA >= 400 & TPA >= 100) |>
   dplyr::arrange(dplyr::desc(TSP), dplyr::desc(eFGP), dplyr::desc(FGP)) |>
-  dplyr::select(Player, season, TSP, eFGP, FGP, TPP, n_games)
+  dplyr::select(Player, season, TSP, eFGP, FGP, TPP, n_games) |>
+  dplyr::slice_head(n = 10)
 ```
 

@@ -13,7 +13,7 @@ project:
    #- "slides/raw_slides/*.qmd"
 
 website:
-  title: "STAT479"
+  title: "STAT441"
   navbar:
     background: "#C5050C"
     foreground: "#FFFFFF"
@@ -58,6 +58,9 @@ format:
     theme: [cosmo, styles.scss]
     css: styles.css
     toc: true
+    axe: 
+      output: document
+    html-math-method: webtex
 
 execute:
   cache: true

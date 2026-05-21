@@ -27,7 +27,7 @@ The rest of written report should
 
 The technical section of the report should contain enough detail and code that another data scientist could replicate your analysis verify its soundness.
 Code listings and output (e.g., figures, tables, charts, and numerical summaries) should be tightly integrated with the written exposition.
-A good example of such integration is [here](https://github.com/danmorse314/hockeyR-models).
+Here is a [good example of such integration](https://github.com/danmorse314/hockeyR-models).
 Pay particular attention to the way the author complements the numerical results with detailed examples of individual performances. 
 
 ### Presentation
@@ -67,7 +67,7 @@ Note: simply creating a new measure and ranking players according is **not** suf
 
 ### A More Refined XG Model for Soccer
 
-In [Lecture 3](lectures/lecture03.qmd), we built a random forests model to estimate the probability of a shot resulting in a goal using many features created by StatsBomb.
+In [Lecture 3](../lectures/lecture03.qmd), we built a random forests model to estimate the probability of a shot resulting in a goal using many features created by StatsBomb.
 While this model seemed much more accurate than simpler, parametric models, there is still much room for improvement.
 For your project, you can continue to develop more complex XG model. Here are some potential directions
 
@@ -92,7 +92,9 @@ You can also compare your model predictions to those provided by the package its
 
 ### NBA Heatmaps & Expected Points
 
-In Lectures [4](lectures/lecture04.qmd) and [5](lectures/lecture05.qmd), we used the [**hoopR**](https://hoopr.sportsdataverse.org) package to scrape NBA play-by-play data, which we then used to estimate adjusted plus/minus.
+<!--
+In [Lecture 4[(../lectures/lecture04.qmd) and [Lecture 5](../lectures/lecture05.qmd), we used the [**hoopR**](https://hoopr.sportsdataverse.org) package to scrape NBA play-by-play data, which we then used to estimate adjusted plus/minus.
+-->
 This package also includes shot location data.
 Using these data (and possibly other contextual information about the game state and player), build a model to predict the probability that a player makes a shot.
 Once built, use the model to compare player performance.
