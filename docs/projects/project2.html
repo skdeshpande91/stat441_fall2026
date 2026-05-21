@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Project 1 Information – STAT441</title>
+<title>Project 2 Information – STAT441</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -163,7 +163,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../projects/project1.html">Project 1 Information</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../projects/project2.html">Project 2 Information</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -177,13 +177,13 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../projects/project1.html" class="sidebar-item-text sidebar-link active">
+  <a href="../projects/project1.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Project 1 Information</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../projects/project2.html" class="sidebar-item-text sidebar-link">
+  <a href="../projects/project2.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Project 2 Information</span></a>
   </div>
 </li>
@@ -204,20 +204,20 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#overivew" id="toc-overivew" class="nav-link active" data-scroll-target="#overivew">Overivew</a></li>
+  <li><a href="#simulation-requirements" id="toc-simulation-requirements" class="nav-link" data-scroll-target="#simulation-requirements">Simulation Requirements</a></li>
+  <li><a href="#sec-models" id="toc-sec-models" class="nav-link" data-scroll-target="#sec-models">Model Choice</a>
+  <ul class="collapse">
+  <li><a href="#bradley-terry-models" id="toc-bradley-terry-models" class="nav-link" data-scroll-target="#bradley-terry-models">Bradley-Terry Models</a></li>
+  <li><a href="#extending-bradley-terry-models" id="toc-extending-bradley-terry-models" class="nav-link" data-scroll-target="#extending-bradley-terry-models">Extending Bradley-Terry Models</a></li>
+  </ul></li>
+  <li><a href="#markov-chain-models" id="toc-markov-chain-models" class="nav-link" data-scroll-target="#markov-chain-models">Markov chain Models</a>
+  <ul class="collapse">
+  <li><a href="#plackett-luce-models" id="toc-plackett-luce-models" class="nav-link" data-scroll-target="#plackett-luce-models">Plackett-Luce Models</a></li>
+  </ul></li>
   <li><a href="#deliverables" id="toc-deliverables" class="nav-link" data-scroll-target="#deliverables">Deliverables</a>
   <ul class="collapse">
   <li><a href="#written-report" id="toc-written-report" class="nav-link" data-scroll-target="#written-report">Written Report</a></li>
   <li><a href="#presentation" id="toc-presentation" class="nav-link" data-scroll-target="#presentation">Presentation</a></li>
-  </ul></li>
-  <li><a href="#potential-topics" id="toc-potential-topics" class="nav-link" data-scroll-target="#potential-topics">Potential Topics</a>
-  <ul class="collapse">
-  <li><a href="#develop-a-new-metric" id="toc-develop-a-new-metric" class="nav-link" data-scroll-target="#develop-a-new-metric">Develop a New Metric</a></li>
-  <li><a href="#a-more-refined-xg-model-for-soccer" id="toc-a-more-refined-xg-model-for-soccer" class="nav-link" data-scroll-target="#a-more-refined-xg-model-for-soccer">A More Refined XG Model for Soccer</a></li>
-  <li><a href="#expected-goals-in-hockey" id="toc-expected-goals-in-hockey" class="nav-link" data-scroll-target="#expected-goals-in-hockey">Expected Goals in Hockey</a></li>
-  <li><a href="#nba-heatmaps-expected-points" id="toc-nba-heatmaps-expected-points" class="nav-link" data-scroll-target="#nba-heatmaps-expected-points">NBA Heatmaps &amp; Expected Points</a></li>
-  <li><a href="#war-for-college-football-and-volleyball" id="toc-war-for-college-football-and-volleyball" class="nav-link" data-scroll-target="#war-for-college-football-and-volleyball">WAR For College Football and Volleyball</a></li>
-  <li><a href="#adjusted-plusminus-for-college-basketball" id="toc-adjusted-plusminus-for-college-basketball" class="nav-link" data-scroll-target="#adjusted-plusminus-for-college-basketball">Adjusted Plus/Minus for College Basketball</a></li>
-  <li><a href="#extending-ideas-from-baseball-to-cricket" id="toc-extending-ideas-from-baseball-to-cricket" class="nav-link" data-scroll-target="#extending-ideas-from-baseball-to-cricket">Extending Ideas from Baseball to Cricket</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -227,7 +227,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Project 1 Information</h1>
+<h1 class="title">Project 2 Information</h1>
 </div>
 
 
@@ -246,10 +246,41 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="overivew" class="level2">
 <h2 class="anchored" data-anchor-id="overivew">Overivew</h2>
-<p>For your first project, I would like you to use publicly available play-by-play, event-level, or tracking data to assess player or team performance or decision-making. That is, your analysis should be based on data that is more granular than match- or game-level (e.g., box score, tables of seasonal totals, etc.) The project report and recorded presentation are due on <strong>Friday October 9 at 12:00pm (noon)</strong>.</p>
+<p>For your second project, I would like you to use simulation to estimate probabilities of game-, season-, tournament-, or draft-level outcomes. Ideally, you will go beyond computing probabilities of events like “Team A beats team B” and will focus on more complex events like “Team A makes it to the third-round of March Madness tournament” or “Team A and Team B make it to the finals and Team wins”. Obviously, the types of events of interest will depend on the specific sport you choose and the level of outcome you are modeling. Whatever your choice, the simulation must be based on a probabilistic model fitted using publicly available box-score, play-by-play, or event-level data. See <a href="#sec-models" class="quarto-xref">Section&nbsp;3</a> for an overview of the types of models that may be useful for this project.</p>
+<p>The project report and recorded presentation are due on <strong>Friday November 6 at 12:00pm (noon)</strong>.</p>
+</section>
+<section id="simulation-requirements" class="level2">
+<h2 class="anchored" data-anchor-id="simulation-requirements">Simulation Requirements</h2>
+<p>Regardless of the sport you choose and the underlying probabilistic model, you need to run enough simulations to ensure that the estimates of the probabilities of interest are reliable. I recommend at least 10,000 simulation replications. But if you are simulating fairly complex events (e.g., the entire March Madness Tournament or every point in the entire NCAA Women’s Volleyball season), you may only have time to run fewer simulation replications. In those cases, I would request that you run at least 500 simulation replications. One way to mitigate the computational burden is to divide simulation replications across different team members’ computers (making sure to set different random seeds for each replication).</p>
+</section>
+<section id="sec-models" class="level2">
+<h2 class="anchored" data-anchor-id="sec-models">Model Choice</h2>
+<p>Depending on the sport and type of event you choose, you may find it useful to fit a Bradley-Terry model, Markov chain model, or a Plackett-Luce model.</p>
+<section id="bradley-terry-models" class="level3">
+<h3 class="anchored" data-anchor-id="bradley-terry-models">Bradley-Terry Models</h3>
+<p>Bradley-Terry models are a very natural model for paired competitions. A perfectly acceptable project would involve identifying a particular sport, fitting a Bradley-Terry model to a season’s worth of match-level outcomes, and then simulating the entire season or a season-ending tournament using the fitted model probabilities.</p>
+<p>Bradley-Terry models can also be used to model more granular in-game events. For instance, in racket sports (e.g., tennis, badminton, table tennis, squash, and racquetball) and volleyball, in which one competitor serves the ball to another and competitors exchange a series of shots until a point is scored, one could use a Bradley-Terry model to estimate the probability that the serving team wins a point. Using such a model, one can simulate events at the individual game-level (e.g., whether the match lasts 3 or 4 sets, overall winner, whether team wins a set by more than 5 points), and season-level outcomes (e.g., whether a team wins at least 5 games or wins a championship) by simulating each point of each game.</p>
+<p>One could even build a Bradley-Terry model to model matchups between individual players in team sports. For instance, one could fit a Bradley-Terry model to estimate the probability that any given batter “wins” a matchup (i.e., gets a hit) against any given pitcher or that a particular wide receiver wins a matchup against a particular defensive back<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+</section>
+<section id="extending-bradley-terry-models" class="level3">
+<h3 class="anchored" data-anchor-id="extending-bradley-terry-models">Extending Bradley-Terry Models</h3>
+<p>In <a href="lectures/lecture12.qmd">Lecture 12</a> and <a href="lectures/lecture13.qmd">Lecture 13</a>, we fit Bradley-Terry models in which every team was assigned a latent strength parameter <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Clambda." alt="\lambda." title="\lambda." class="math inline"> In principle, these strengths could depend on certain covariates. For instance, in basketball, one might obtain more accurate predictions by allowing each team’s <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Clambda" alt="\lambda" title="\lambda" class="math inline"> to vary with their offensive and defensive rating. Or, in tennis, the latent strength of each player might vary systematically with player characteristics like height.</p>
+<p>The <strong>BradelyTerry2</strong> package allows one to fit such models in which the the latent strength for team <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20j" alt="j" title="j" class="math inline"> can be decomposed as <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Cdisplaystyle%20%5Clambda_%7Bj%7D%20%3D%20u_%7Bj%7D%20%2B%20%5Cboldsymbol%7B%5Cmathbf%7Bx%7D%7D_%7Bj%7D%5E%7B%5Ctop%7D%5Cbeta%2C" alt="\lambda_{j} = u_{j} + \boldsymbol{\mathbf{x}}_{j}^{\top}\beta," title="\lambda_{j} = u_{j} + \boldsymbol{\mathbf{x}}_{j}^{\top}\beta," class="math display"> where <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Cboldsymbol%7B%5Cmathbf%7Bx%7D%7D_%7Bj%7D" alt="\boldsymbol{\mathbf{x}}_{j}" title="\boldsymbol{\mathbf{x}}_{j}" class="math inline"> is a vector of team-level covariates and <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20u_%7Bj%7D" alt="u_{j}" title="u_{j}" class="math inline"> is a team-specific intercept, capturing all parts of team strength not already explained by the covariates.</p>
+<p>If you do a project that uses a Bradley-Terry model, I encourage you to investigate the possibility that the latent strengths might vary with respect to covariates.</p>
+</section>
+</section>
+<section id="markov-chain-models" class="level2">
+<h2 class="anchored" data-anchor-id="markov-chain-models">Markov chain Models</h2>
+<p>If you choose to analyze a sport in which games (or discrete components of a game) invovles a series of state transitions, a Markov chain model can be used to an simulate entire game (or portions of a game). As we saw in <a href="lectures/lecture14.qmd">Lecture 14</a>, Markov chains can be used to simulate the progression of at-bats within a half-inning. One could take this a step further and model the transition of game-states at a pitch-by-pitch level. Beyond baseball and softball, one can also study American football with a Markov chain in which the states are indexed by factors including, but certainly not limited to, down, distance, and field position. One could also build Markov chains for volleyball and other racquet sports to simulate the trajectories of individual scores (e.g., 0-0, 15-0, 15-15, 30-15, 40-15, game). It may even be possible to use a Markov chain model to simulate a cricket innings at the ball-by-ball or over-by-over level.</p>
+<p>If you choose to base your simulation around a Markov chain model, you need to carefully define your state-space, identify any potential absorbing states, and estimate the transition probabilities. Depending on the amount of available data, these probabilities may be estimated with a simple binning-or-averaging procedure. But if there is not much data, you may need to fit a multinomial logistic regression model or use an multilevel model to estimate these probabilities.</p>
+<section id="plackett-luce-models" class="level3">
+<h3 class="anchored" data-anchor-id="plackett-luce-models">Plackett-Luce Models</h3>
+<p>Plackett-Luce models derive a consensus ranking of several items based on several partial rankings of those same items. This makes them a natural way to aggregate multiple mock drafts. But they can also be used to derive power rankings in situations where games are not head-to-head. For instance, one could derive a power ranking of F1 drivers or teams, runners, cyclists, or swimmers by aggregating finishing time results across multiple races with a Plackett-Luce model. One could also derive a power ranking of golfers based on their finishing positions in multiple tour events.</p>
+</section>
 </section>
 <section id="deliverables" class="level2">
 <h2 class="anchored" data-anchor-id="deliverables">Deliverables</h2>
+<p>The deliverables for Project 2 are the same as for Project 1 and carry similar requirements. The main difference is that you must clearly state and motivate the events of interest (i.e., those whose probabilities you are estimating via simulation) in both your written report and presentation.</p>
 <section id="written-report" class="level3">
 <h3 class="anchored" data-anchor-id="written-report">Written Report</h3>
 <p>The written report consists of a non-technical executive summary and a technical report. The executive summary, which should not exceed 500 words, should describe the overall goals, analytic approach, and main conclusions in non-technical language. The executive summary should be free from jargon, code listings, figures, tables, and charts. It should be written to be read and understood by a front office executive, coach, player, or fan with little data science experience. The rest of written report should</p>
@@ -259,7 +290,7 @@ ul.task-list li input[type="checkbox"] {
 <li>Presents the main results within the context of the relevant sport(s) and supports the results with figures, tables, charts, and other statistical software output as appropriate.</li>
 <li>Discusses the limitations of the analysis and outlines concrete steps for further development.</li>
 </ul>
-<p>The technical section of the report should contain enough detail and code that another data scientist could replicate your analysis verify its soundness. Code listings and output (e.g., figures, tables, charts, and numerical summaries) should be tightly integrated with the written exposition. Here is a <a href="https://github.com/danmorse314/hockeyR-models">good example of such integration</a>. Pay particular attention to the way the author complements the numerical results with detailed examples of individual performances.</p>
+<p>The technical section of the report should contain enough detail and code that another data scientist could replicate your analysis verify its soundness. Code listings and output (e.g., figures, tables, charts, and numerical summaries) should be tightly integrated with the written exposition. A good example of such integration is <a href="https://github.com/danmorse314/hockeyR-models">here</a>. Pay particular attention to the way the author complements the numerical results with detailed examples of individual performances.</p>
 </section>
 <section id="presentation" class="level3">
 <h3 class="anchored" data-anchor-id="presentation">Presentation</h3>
@@ -270,49 +301,6 @@ ul.task-list li input[type="checkbox"] {
 <li>Main results (2–3 slides): distill your results into a few key points. Use figures, tables, charts, and other statistical software output to support your findings.</li>
 <li>Conclusion (1 slide): briefly summarize your analysis and findings and outline between 1 and 3 specific directions for future development, improvement or refinement.</li>
 </ul>
-<p><strong>Every group member must speak during the presentation</strong>. I encourage you practice a few times to ensure smooth transitions between speakers.</p>
-</section>
-</section>
-<section id="potential-topics" class="level2">
-<h2 class="anchored" data-anchor-id="potential-topics">Potential Topics</h2>
-<p>For your first project, you could extend or modify an analysis presented in class or one of the Exercises listed in the lecture notes. Here are some other potential project ideas. Note, these are merely suggestions and you are free to develop projects outside this list. If you would like additional inspiration, check out the papers from the Reproducible Research Competition from last year’s <a href="https://www.stat.cmu.edu/cmsac/conference/2024/">CMU Sports Analytics Conference</a>. The only requirement is that you (i) carefully assess player or team performance and (ii) utilize data at the play- or event-level (or finer).</p>
-<section id="develop-a-new-metric" class="level3">
-<h3 class="anchored" data-anchor-id="develop-a-new-metric">Develop a New Metric</h3>
-<p>Using play-by-play or event-level data, construct a new measure of player or team skill. If you pursue this option, please take care to motivate the development of your new metric and to state, precisely, what the metric aims to quantify. You should explore its operating characteristics including (but certainly not limited to) its stability across games or seasons; its ability to predict season-level outcomes; the extent to which you are measuring a latent skill or ability; and its relationship to existing metrics. You should also explain how your new metric overcomes any limitations of existing metrics and discuss any drawbacks your metric might have. Finally, you should discuss how players, teams, or fans might use your new metric. Note: simply creating a new measure and ranking players according is <strong>not</strong> sufficient.</p>
-</section>
-<section id="a-more-refined-xg-model-for-soccer" class="level3">
-<h3 class="anchored" data-anchor-id="a-more-refined-xg-model-for-soccer">A More Refined XG Model for Soccer</h3>
-<p>In <a href="../lectures/lecture03.html">Lecture 3</a>, we built a random forests model to estimate the probability of a shot resulting in a goal using many features created by StatsBomb. While this model seemed much more accurate than simpler, parametric models, there is still much room for improvement. For your project, you can continue to develop more complex XG model. Here are some potential directions</p>
-<ul>
-<li>Intuitively, we might expect XG to be monotonic in certain features (e.g., the further away a shot is from the goal, the lower the XG). Unfortunately, random forests does not allow for monotonic constraints. XGBoost is another tree ensemble method that allows for monotonicity. Explore the use of XGBoost to estimate expected goals.</li>
-<li>Our random forest model did not use the exact player locations as features. Intuitively, we might expect XG to vary smoothly in shot location. But if you simply include <code>location.x</code> and <code>location.y</code> as features, the resulting XG is not a smooth function. Explore the use of generalized additive models for creating smoother XG models.</li>
-</ul>
-<p>If you pursue this option, you should build at least 3 different XG models, compare them both quantitatively and qualitatively, and use the “best” model predictions to make a conclusion about player or team performance. At a minimum, you should establish which model is most predictive. But a more ambitious project will draw insights from differences between each models’ predctios<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. If you pursue this option, you should StatsBomb data from at least 3 competitions with more than a handful of match data available.</p>
-</section>
-<section id="expected-goals-in-hockey" class="level3">
-<h3 class="anchored" data-anchor-id="expected-goals-in-hockey">Expected Goals in Hockey</h3>
-<p>The package <a href="https://hockeyr.netlify.app"><strong>hockeyR</strong></a> provides functions for scraping play-by-play data from the National Hockey League. Among many other things, these data include shot distance, shot angle, and the coordinates of each shot. Using ideas from <a href="../lectures/lecture03.html">Lecture 3</a>, develop an XG model for hockey. If you puruse this option, you should build at least 3 different XG models, compare them both quantaitively and qualitatively, and use the “best” model to make conclusions about player or team performance. You can also compare your model predictions to those provided by the package itself.</p>
-</section>
-<section id="nba-heatmaps-expected-points" class="level3">
-<h3 class="anchored" data-anchor-id="nba-heatmaps-expected-points">NBA Heatmaps &amp; Expected Points</h3>
-<!--
-In [Lecture 4[(../lectures/lecture04.qmd) and [Lecture 5](../lectures/lecture05.qmd), we used the [**hoopR**](https://hoopr.sportsdataverse.org) package to scrape NBA play-by-play data, which we then used to estimate adjusted plus/minus.
--->
-<p>This package also includes shot location data. Using these data (and possibly other contextual information about the game state and player), build a model to predict the probability that a player makes a shot. Once built, use the model to compare player performance. For instance, you can convert these probabilities to expected points and explore how closely a player’s total expected points tracks the actual points score. Or you could identify players who score substantially more or less points than what a league-average or replacement-level player might be expected to score given the same shot selection.</p>
-<p>If you puruse this option, you should build and compare at least 3 different models of shot selection. You should then select the “best” model using both qualitative and quantitative considerations.</p>
-</section>
-<section id="war-for-college-football-and-volleyball" class="level3">
-<h3 class="anchored" data-anchor-id="war-for-college-football-and-volleyball">WAR For College Football and Volleyball</h3>
-<p>In <a href="lectures/lecture10.qmd">Lecture 10</a>, we used the <a href="https://www.nflfastr.com"><strong>nflfastR</strong></a> package to scrap play-by-play data from the National Football League. We then used these data to develop a version of Wins Above Replacement for offensive players in the NFL. The package <a href="https://cfbfastr.sportsdataverse.org"><strong>cfbfastR</strong></a> provides similar functinoality for college football. You could try to develop a version of WAR for college football. If you pursue this option, you must carefully deal with the differences between conferences when estimating individual player skills and defining replacement-level.</p>
-<p>The package <a href="https://github.com/JeffreyRStevens/ncaavolleyballr"><strong>ncaavolleyballr</strong></a> provides functions to scrape NCAA Volleyball data<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, including play-by-play logs. Each row in the play-by-play data table correspond to individual events within a point (e.g., a serve, set, attack, kill, etc.) Using these data, develop a version of wins above replacement. To do this, you must first define and estimate an analog of runs value and expected points. Then, you must carefully divide this “currency” among players of different positions (e.g., middle blocker, libero, outside hitter, etc.). If you pursue this option, I highly recommend using the pre-scraped play-by-play data available <a href="https://jeffreyrstevens.github.io/ncaavolleyballr/articles/data.html">here</a> and then accessing player- and team-specific information (e.g., rosters, schedules, season-level statistics) using the package functions.</p>
-</section>
-<section id="adjusted-plusminus-for-college-basketball" class="level3">
-<h3 class="anchored" data-anchor-id="adjusted-plusminus-for-college-basketball">Adjusted Plus/Minus for College Basketball</h3>
-<p>The <a href="https://github.com/lbenz730/ncaahoopR"><strong>ncaahoopR</strong></a> package provides functions for scraping play-by-play data from college basketball. Using a workflow similar to the one presented in <a href="lectures/lecture04.qmd">Lecture 4</a>, convert these data into stint-level data and develop a version of weighted and/or regularized adjusted plus/minus for college basketball.</p>
-</section>
-<section id="extending-ideas-from-baseball-to-cricket" class="level3">
-<h3 class="anchored" data-anchor-id="extending-ideas-from-baseball-to-cricket">Extending Ideas from Baseball to Cricket</h3>
-<p>The package <a href="https://pkg.robjhyndman.com/cricketdata/"><strong>cricketdata</strong></a> provides functions for scraping match-level data from (ESPNCricinfo)[https://www.espncricinfo.com]. <a href="https://himanishganjoo.com">Himanish Ganjoo</a> also provides very detailed ball-by-ball data for a large number of test, one-day international, and T20 matches <a href="https://himanishganjoo.com/cricket-data/">here</a>. You could consider building analogs of expected runs (e.g., as a function of wickets in hand and overs left) or building a model to predict the outcome of an individual ball given its line and length information. An even more ambitous project would develop a version of WAR for batting performance.</p>
 
 
 </section>
@@ -322,8 +310,7 @@ In [Lecture 4[(../lectures/lecture04.qmd) and [Lecture 5](../lectures/lecture05.
 <div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
-<li id="fn1"><p>See the section “Benefiting from training several variants of the model” in <a href="https://www.hudl.com/blog/upgrading-expected-goals">this blogpost</a> from Hudl for some inspiration.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Note that there is another <a href="https://github.com/tyler-widdison/ncaavolleyballR">package</a> with similar functionality and an almost identical name (note the uppercase “R”).<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>If you choose to pursue this option, you may need to use tracking data from previous year’s Big Data Bowl competitions to extract specific match-up information.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
