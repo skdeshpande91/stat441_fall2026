@@ -380,13 +380,23 @@ The hope is, in other words, that we could *differentially shrink* every player'
 Like in our initial analysis, our first multilevel will model the observed EPA's as noisy measurements of some underlying player-specific parameter.
 However, we make an additional model assumption: that the $\alpha_{i}$'s are themselves normally distributed around some grand mean $\alpha_{0}$ with standard deviation $\sigma_{\alpha}.$
 We can specify our model in *two levels*:
+
+
+$$
+\array{
+\textrm{Level 1:} \quad &Y_{ij} = \alpha_{i} + \epsilon_{ij}; \epsilon_{ij} \sim N(0, \sigma^{2}) \quad \textrm{for all}\ j = 1, \ldots, n_{i},\ i = 1, \ldots, I \\
+\textrm{Level 2:} \quad &\alpha_{i} = \alpha_{0} + u_{i}; u_{i} \sim N(0, \sigma^{2}_{\alpha}) \quad \textrm{for all}\ i = 1, \ldots, I
+
+}
+$$
+<!--
 $$
 \begin{align}
 \textrm{Level 1}&: &\quad  Y_{ij} &= \alpha_{i} + \epsilon_{ij}; \epsilon_{ij} \sim N(0, \sigma^{2}) \quad \textrm{for all}\ j = 1, \ldots, n_{i},\ i = 1, \ldots, I \\
 \textrm{Level 2}&: &\quad \alpha_{i} &= \alpha_{0} + u_{i}; u_{i} \sim N(0, \sigma^{2}_{\alpha}) \quad \textrm{for all}\ i = 1, \ldots, I
 \end{align}
 $$
-
+-->
 The Level 1 model says that for each passer $i,$ the observed EPAs on his passing plays are normally distributed around his latent averge EPA per play $\alpha_{i}.$
 The parameter $\sigma$ quantifies the amount by which we expect each passer's EPAs to deviate from his latent average. 
 In our model, we assume that this "within-passer" variability is the same across passers.
