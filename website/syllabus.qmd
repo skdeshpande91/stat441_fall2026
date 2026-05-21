@@ -155,8 +155,8 @@ The following are excellent references and I highly encourage you to read and co
 You may also find the following websites, blogs, and podcasts useful as sources of inspiration as you develop analyses of your own.
 
   * The online textbook [*Analyzing Baseball Data with R*](https://beanumber.github.io/abdwr3e/) and the associated [blog](https://baseballwithr.wordpress.com), which contains lots of helpful resources for analyzing tabular box score data to high-resolution ball tracking data and everything in between
-  * Ron Yurko's Substack [``Statistical Thinking in Sports Analytics''](https://statthinksportsanalytics.substack.com)
-  * The [\textit{Journal of Quantitative Analysis of Sports}](https://www.degruyter.com/journal/key/jqas/html): the premiere venue for academic sports analytics articles. You should have access to all articles through the UW Libraries. Each issue also features a publicly available ``Editor's Choice'' article.
+  * Ron Yurko's Substack ["Statistical Thinking in Sports Analytics"](https://statthinksportsanalytics.substack.com)
+  * The [*Journal of Quantitative Analysis of Sports*](https://www.degruyter.com/journal/key/jqas/html): the premiere venue for academic sports analytics articles. You should have access to all articles through the UW Libraries. Each issue also features a publicly available ``Editor's Choice'' article.
   * The [Open Source Sports podcast](https://open.spotify.com/show/3vTtH2JJXbjrzOtEfjrqc4): Each episode of this podcast focuses on a single academic research paper featuring authors as guests, with discussions about the statistical methodology, relevance and future directions of the research.
   * [Hockey Graphs](https://hockey-graphs.com): a blog that's developed really innovative public-facing hockey analytics.
   * The [Wharton Moneyball Post Game Podcast](https://knowledge.wharton.upenn.edu/shows/moneyball-highlights/): a podcast version of the popular Sirius XM radio show hosted by several Wharton professors and featuring interviews with sport analytics thought leaders
