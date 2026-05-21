@@ -86,6 +86,7 @@ We will often use this palette to annotate scatter plots (e.g., [this one in Lec
 #| fig-height: 5
 #| fig-align: "center"
 #| fig-cap: The 9 colors in the Okabe-Ito colorblind-friendly palette.
+#| fig-alt: "Scatterplot with nine points, each of which is colored with a different element of the color-blind friendly Okabe-Ito palette."
 oi_colors <- 
   palette.colors(palette = "Okabe-Ito")
 par(mar = c(3,3,2,1), mgp = c(1.8, 0.5, 0)) #<1>
