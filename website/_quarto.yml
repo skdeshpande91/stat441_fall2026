@@ -14,6 +14,9 @@ project:
 
 website:
   title: "STAT441"
+  search: 
+     location: navbar
+     type: overlay
   navbar:
     background: "#C5050C"
     foreground: "#FFFFFF"
@@ -52,6 +55,7 @@ website:
    #   background: light
    #   collapse-level: 2
    #   contents: "slides/*.qmd"
+   
     
 format:
   html:
