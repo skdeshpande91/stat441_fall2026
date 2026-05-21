@@ -7,7 +7,7 @@ Welcome to STAT 441 (Adv. Sports Analytics)!
 All course material including lecture slides, code to reproduce the analyses discussed in lecture, and information about the projects will be posted on this website.
 So, please bookmark this page and check it regularly throughout the course.
 
-A PDF copy of the course syllabus is available [here](syllabus/stat441_f26_syllabus.pdf) and an HTML version of the syllabus is available [here](syllabus.qmd)
+Here is a [PDF version](syllabus/stat441_f26_syllabus.pdf) and here is an [HTML version](syllabus.qmd) of the syllabus.
 Below, you will find [more details about course logistics](index.qmd#sec-course-logistics) and important [information about setting up R](index.qmd#sec-R-setup).
 
 ## Course Logistics {#sec-course-logistics}

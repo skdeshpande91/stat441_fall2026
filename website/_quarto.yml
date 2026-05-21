@@ -12,6 +12,8 @@ project:
    #- "slides/*.qmd"
    #- "slides/raw_slides/*.qmd"
 
+language: 
+  search-text-placeholder: Search
 website:
   title: "STAT441"
   search: 
@@ -65,7 +67,7 @@ format:
     axe: 
       output: document
     html-math-method: webtex
-    linkcolor: "#9B0000"
+    linkcolor: "#036796"
     
 
 execute:

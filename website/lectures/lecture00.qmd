@@ -240,7 +240,7 @@ season_box |>
   dplyr::slice_head(n = 10)
 ```
 
-### True Shooting Percentage #{sec-tsp}
+### True Shooting Percentage {#sec-tsp}
 
 Both FGP and eFGP totally ignore free throws. 
 Intuitively, we should expect the best shooter to be proficient at making two-and three-point shots as well as their free throws.

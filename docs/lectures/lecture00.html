@@ -101,9 +101,9 @@ div.csl-indent {
 <script id="quarto-axe-checker-options" type="text/plain">eyJvdXRwdXQiOiJkb2N1bWVudCJ9</script>
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-9c354e064ff05cff0b4c6373cea4dd3f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-9c354e064ff05cff0b4c6373cea4dd3f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-9c354e064ff05cff0b4c6373cea4dd3f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-18f8f5fdcab84f9bfb9e8ec3e9b6dbec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-18f8f5fdcab84f9bfb9e8ec3e9b6dbec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-18f8f5fdcab84f9bfb9e8ec3e9b6dbec.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -124,7 +124,7 @@ div.csl-indent {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
-    "search-text-placeholder": "",
+    "search-text-placeholder": "Search",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -246,7 +246,7 @@ div.csl-indent {
   <li><a href="#sec-percentages" id="toc-sec-percentages" class="nav-link" data-scroll-target="#sec-percentages">From Totals to Percentages</a>
   <ul class="collapse">
   <li><a href="#sec-efgp" id="toc-sec-efgp" class="nav-link" data-scroll-target="#sec-efgp">Effective Field Goal Percentage</a></li>
-  <li><a href="#true-shooting-percentage-sec-tsp" id="toc-true-shooting-percentage-sec-tsp" class="nav-link" data-scroll-target="#true-shooting-percentage-sec-tsp">True Shooting Percentage #{sec-tsp}</a></li>
+  <li><a href="#sec-tsp" id="toc-sec-tsp" class="nav-link" data-scroll-target="#sec-tsp">True Shooting Percentage</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -624,8 +624,8 @@ div.csl-indent {
 </div>
 </div>
 </section>
-<section id="true-shooting-percentage-sec-tsp" class="level3">
-<h3 class="anchored" data-anchor-id="true-shooting-percentage-sec-tsp">True Shooting Percentage #{sec-tsp}</h3>
+<section id="sec-tsp" class="level3">
+<h3 class="anchored" data-anchor-id="sec-tsp">True Shooting Percentage</h3>
 <p>Both FGP and eFGP totally ignore free throws. Intuitively, we should expect the best shooter to be proficient at making two-and three-point shots as well as their free throws. One metric that accounts for all field goals, three pointers, and free throws is <a href="https://en.wikipedia.org/wiki/True_shooting_percentage">true shooting percentage</a> (<img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Ctextrm%7BTSP%7D" alt="\textrm{TSP}" title="\textrm{TSP}" class="math inline">), whose formula is given by <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Cdisplaystyle%20%5Ctextrm%7BTSP%7D%20%3D%20%5Cfrac%7B%5Ctextrm%7BPTS%7D%7D%7B2%20%5Ctimes%20%5Cleft%28%5Ctextrm%7BFGA%7D%20%2B%20%280.44%20%5Ctimes%20%5Ctextrm%7BFTA%7D%29%5Cright%29%7D%2C" alt="\textrm{TSP} = \frac{\textrm{PTS}}{2 \times \left(\textrm{FGA} + (0.44 \times \textrm{FTA})\right)}," title="\textrm{TSP} = \frac{\textrm{PTS}}{2 \times \left(\textrm{FGA} + (0.44 \times \textrm{FTA})\right)}," class="math display"> where <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Ctextrm%7BPTS%7D%20%3D%20%20%5Ctextrm%7BFTM%7D%20%2B%202%20%5Ctimes%20%5Ctextrm%7BFGM%7D%20%2B%20%5Ctextrm%7BTPM%7D" alt="\textrm{PTS} =  \textrm{FTM} + 2 \times \textrm{FGM} + \textrm{TPM}" title="\textrm{PTS} =  \textrm{FTM} + 2 \times \textrm{FGM} + \textrm{TPM}" class="math inline"> is the total number of points scored.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>season_box <span class="ot">&lt;-</span></span>
