@@ -22,3 +22,6 @@ website/slides/raw_slides/lecture*_cache/
 website/lectures/*.RData
 website/slides/raw_slides/*.RData
 
+
+/.quarto/
+**/*.quarto_ipynb

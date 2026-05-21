@@ -61,6 +61,8 @@ format:
     axe: 
       output: document
     html-math-method: webtex
+    linkcolor: "#9B0000"
+    
 
 execute:
   cache: true
