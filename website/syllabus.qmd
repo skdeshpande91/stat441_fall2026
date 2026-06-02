@@ -127,11 +127,14 @@ Your final grade will be based on how many of the 1000 total points you earn dur
 Over 925 points is at least an A, over 875 points is at least an AB, over 800 points is at least a B, over 700 is at least a BC, over 600 points is at least a C, and over 500 point is at least a D.
 Final grade boundaries will be announced no later than December 5, 2025.
 
-## Canvas & Piazza {#sec-course-sites}
+## Piazza {#sec-course-sites}
 
-We will use Canvas for course announcement, assignment submission, and grading. The Canvas course page is accessible via [this link]().
 We will also use Piazza for specific discussions about course content (e.g., sharing additional information/resources related to material discussed in lecture; answering questions about data, method, and code; etc.) and more general discussions about sports analytics (e.g., sharing job postings, open data competition opportunities, popular press articles, and other analyses you might find online etc.)
-The Piazza page is accessible via [this link]().
+Here is a [link to the Piazza page](https://piazza.com/wisc/fall2026/fa26stat441001/home).
+We will also use Canvas for course announcements and to maintain the course gradebook.
+Here is a [link to the Canvas page]().
+
+We will use Box for project submissions and Qualtrics for peer reviews. 
 
 :::{.callout-important}
 ## Access to Canvas and Piazza
