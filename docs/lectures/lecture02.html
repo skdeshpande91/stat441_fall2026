@@ -23,7 +23,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-.display.math{display: block; text-align: center; margin: 0.5rem auto;}
 /* CSS for syntax highlighting */
 html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
@@ -134,6 +133,35 @@ div.csl-indent {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -187,6 +215,10 @@ div.csl-indent {
         <li>
     <a class="dropdown-item" href="../lectures/lecture10.html">
  <span class="dropdown-text">Lecture 10: NFl WAR</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture12.html">
+ <span class="dropdown-text">Lecture 12: Bradley-Terry Models</span></a>
   </li>  
     </ul>
   </li>
@@ -260,6 +292,12 @@ div.csl-indent {
   <div class="sidebar-item-container"> 
   <a href="../lectures/lecture10.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Lecture 10: NFl WAR</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 12: Bradley-Terry Models</span></a>
   </div>
 </li>
     </ul>
@@ -422,8 +460,8 @@ Figure&nbsp;1: Screenshot of the competitions covered in the public data
 </section>
 <section id="sec-init-xg" class="level2">
 <h2 class="anchored" data-anchor-id="sec-init-xg">Estimating Expected Goals</h2>
-<p>Suppose we observe a dataset consisting of <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20n" alt="n" title="n" class="math inline"> shots. For each shot <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20i%20%3D%201%2C%20%5Cldots%2C%20n%2C" alt="i = 1, \ldots, n," title="i = 1, \ldots, n," class="math inline"> let <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20Y_%7Bi%7D" alt="Y_{i}" title="Y_{i}" class="math inline"> be a binary indicator of whether the shot resulted in a goal (<img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20Y_%7Bi%7D%20%3D%201" alt="Y_{i} = 1" title="Y_{i} = 1" class="math inline">) or not (<img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20Y_%7Bi%7D%20%3D%200" alt="Y_{i} = 0" title="Y_{i} = 0" class="math inline">). From the high-resolution tracking data, we can extract a potentially huge number of features about the shot at the moment of it was taken. Possible features include, but are certainly not limited to, the player taking the shot, the body part and side of the body used, the positions of the defenders and goal keepers, and contextual information like the score. Mathematically, we can collect all these features into a (potentially large) vector <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Cboldsymbol%7B%5Cmathbf%7BX%7D%7D_%7Bi%7D." alt="\boldsymbol{\mathbf{X}}_{i}." title="\boldsymbol{\mathbf{X}}_{i}." class="math inline"></p>
-<p>Expected Goals (XG) models work by (i) positing an infinite super-population of shots represented by pairs <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%28%5Cboldsymbol%7B%5Cmathbf%7BX%7D%7D%2C%20Y%29" alt="(\boldsymbol{\mathbf{X}}, Y)" title="(\boldsymbol{\mathbf{X}}, Y)" class="math inline"> of feature vector <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Cboldsymbol%7B%5Cmathbf%7BX%7D%7D" alt="\boldsymbol{\mathbf{X}}" title="\boldsymbol{\mathbf{X}}" class="math inline"> and binary outcome <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20Y" alt="Y" title="Y" class="math inline">; and (ii) assuming that the shots in our dataset constitute a random sample <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%28%5Cboldsymbol%7B%5Cmathbf%7BX%7D%7D_%7B1%7D%2C%20Y_%7B1%7D%29%2C%20%5Cldots%2C%20%28%5Cboldsymbol%7B%5Cmathbf%7BX%7D%7D_%7Bn%7D%2C%20Y_%7Bn%7D%29" alt="(\boldsymbol{\mathbf{X}}_{1}, Y_{1}), \ldots, (\boldsymbol{\mathbf{X}}_{n}, Y_{n})" title="(\boldsymbol{\mathbf{X}}_{1}, Y_{1}), \ldots, (\boldsymbol{\mathbf{X}}_{n}, Y_{n})" class="math inline"> from that population.</p>
+<p>Suppose we observe a dataset consisting of <span class="math inline">\(n\)</span> shots. For each shot <span class="math inline">\(i = 1, \ldots, n,\)</span> let <span class="math inline">\(Y_{i}\)</span> be a binary indicator of whether the shot resulted in a goal (<span class="math inline">\(Y_{i} = 1\)</span>) or not (<span class="math inline">\(Y_{i} = 0\)</span>). From the high-resolution tracking data, we can extract a potentially huge number of features about the shot at the moment of it was taken. Possible features include, but are certainly not limited to, the player taking the shot, the body part and side of the body used, the positions of the defenders and goal keepers, and contextual information like the score. Mathematically, we can collect all these features into a (potentially large) vector <span class="math inline">\(\boldsymbol{\mathbf{X}}_{i}.\)</span></p>
+<p>Expected Goals (XG) models work by (i) positing an infinite super-population of shots represented by pairs <span class="math inline">\((\boldsymbol{\mathbf{X}}, Y)\)</span> of feature vector <span class="math inline">\(\boldsymbol{\mathbf{X}}\)</span> and binary outcome <span class="math inline">\(Y\)</span>; and (ii) assuming that the shots in our dataset constitute a random sample <span class="math inline">\((\boldsymbol{\mathbf{X}}_{1}, Y_{1}), \ldots, (\boldsymbol{\mathbf{X}}_{n}, Y_{n})\)</span> from that population.</p>
 <div class="callout callout-style-default callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -434,10 +472,12 @@ Figure&nbsp;1: Screenshot of the competitions covered in the public data
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For each combination of features <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Cboldsymbol%7B%5Cmathbf%7Bx%7D%7D" alt="\boldsymbol{\mathbf{x}}" title="\boldsymbol{\mathbf{x}}" class="math inline">, the expect goals given <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Cboldsymbol%7B%5Cmathbf%7Bx%7D%7D%2C" alt="\boldsymbol{\mathbf{x}}," title="\boldsymbol{\mathbf{x}}," class="math inline"> which we will denote by <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Ctextrm%7BXG%7D%28%5Cboldsymbol%7B%5Cmathbf%7BX%7D%7D%29" alt="\textrm{XG}(\boldsymbol{\mathbf{X}})" title="\textrm{XG}(\boldsymbol{\mathbf{X}})" class="math inline"> is just the average value of <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20Y" alt="Y" title="Y" class="math inline"> among the (assumed infinite) sub-population of shots with features <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Cboldsymbol%7B%5Cmathbf%7BX%7D%7D%20%3D%20%5Cboldsymbol%7B%5Cmathbf%7Bx%7D%7D." alt="\boldsymbol{\mathbf{X}} = \boldsymbol{\mathbf{x}}." title="\boldsymbol{\mathbf{X}} = \boldsymbol{\mathbf{x}}." class="math inline"> Mathematically, XG is <em>conditional expectation</em>: <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Cdisplaystyle%20%5Ctextrm%7BXG%7D%28%5Cboldsymbol%7B%5Cmathbf%7Bx%7D%7D%29%20%3D%20%5Cmathbb%7BE%7D%5BY%20%5Cvert%20%5Cboldsymbol%7B%5Cmathbf%7BX%7D%7D%20%3D%20%5Cboldsymbol%7B%5Cmathbf%7Bx%7D%7D%5D%2C" alt="\textrm{XG}(\boldsymbol{\mathbf{x}}) = \mathbb{E}[Y \vert \boldsymbol{\mathbf{X}} = \boldsymbol{\mathbf{x}}]," title="\textrm{XG}(\boldsymbol{\mathbf{x}}) = \mathbb{E}[Y \vert \boldsymbol{\mathbf{X}} = \boldsymbol{\mathbf{x}}]," class="math display"></p>
+<p>For each combination of features <span class="math inline">\(\boldsymbol{\mathbf{x}}\)</span>, the expect goals given <span class="math inline">\(\boldsymbol{\mathbf{x}},\)</span> which we will denote by <span class="math inline">\(\textrm{XG}(\boldsymbol{\mathbf{X}})\)</span> is just the average value of <span class="math inline">\(Y\)</span> among the (assumed infinite) sub-population of shots with features <span class="math inline">\(\boldsymbol{\mathbf{X}} = \boldsymbol{\mathbf{x}}.\)</span> Mathematically, XG is <em>conditional expectation</em>: <span class="math display">\[
+\textrm{XG}(\boldsymbol{\mathbf{x}}) = \mathbb{E}[Y \vert \boldsymbol{\mathbf{X}} = \boldsymbol{\mathbf{x}}],
+\]</span></p>
 </div>
 </div>
-<p>Because the shot outcome <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20Y" alt="Y" title="Y" class="math inline"> is binary, <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Ctextrm%7BXG%7D%28%5Cboldsymbol%7B%5Cmathbf%7Bx%7D%7D%29" alt="\textrm{XG}(\boldsymbol{\mathbf{x}})" title="\textrm{XG}(\boldsymbol{\mathbf{x}})" class="math inline"> is the proportion of goals scored within the sub-population of shots defined by the feature combinations <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Cboldsymbol%7B%5Cmathbf%7Bx%7D%7D." alt="\boldsymbol{\mathbf{x}}." title="\boldsymbol{\mathbf{x}}." class="math inline"> In other words, it is the <em>conditional probability</em> of a goal given the shot features <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Cboldsymbol%7B%5Cmathbf%7Bx%7D%7D." alt="\boldsymbol{\mathbf{x}}." title="\boldsymbol{\mathbf{x}}." class="math inline"> On this view, <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Ctextrm%7BXG%7D%28%5Cboldsymbol%7B%5Cmathbf%7Bx%7D%7D%29" alt="\textrm{XG}(\boldsymbol{\mathbf{x}})" title="\textrm{XG}(\boldsymbol{\mathbf{x}})" class="math inline"> provides a quantitative answer to our motivating question “If we were to replay a particular shot over and over again, what fraction of the time does it result in a goal?”</p>
+<p>Because the shot outcome <span class="math inline">\(Y\)</span> is binary, <span class="math inline">\(\textrm{XG}(\boldsymbol{\mathbf{x}})\)</span> is the proportion of goals scored within the sub-population of shots defined by the feature combinations <span class="math inline">\(\boldsymbol{\mathbf{x}}.\)</span> In other words, it is the <em>conditional probability</em> of a goal given the shot features <span class="math inline">\(\boldsymbol{\mathbf{x}}.\)</span> On this view, <span class="math inline">\(\textrm{XG}(\boldsymbol{\mathbf{x}})\)</span> provides a quantitative answer to our motivating question “If we were to replay a particular shot over and over again, what fraction of the time does it result in a goal?”</p>
 <p>The StatsBomb variable <code>shot.body_part.name</code> records the body part with which each shot was taken. Within our dataset of women’s international matches, we can see the breakdown of these body parts.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(wi_events<span class="sc">$</span>shot.body_part.name)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -469,8 +509,8 @@ Figure&nbsp;1: Screenshot of the competitions covered in the public data
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Y =</span> <span class="fu">ifelse</span>(shot.outcome.name <span class="sc">==</span> <span class="st">"Goal"</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<p>Now suppose we only include the body part in <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Cboldsymbol%7B%5Cmathbf%7BX%7D%7D" alt="\boldsymbol{\mathbf{X}}" title="\boldsymbol{\mathbf{X}}" class="math inline">. If we had full access to the infinite super-population of women’s international shots, then we could compute <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Cdisplaystyle%20%5Ctextrm%7BXG%7D%28%5Ctext%7Bright-footed%20shot%7D%29%20%3D%20%5Cmathbb%7BP%7D%28%5Ctext%7Bgoal%7D%20%5Cvert%20%5Ctext%7Bright-footed%20shot%7D%29" alt="\textrm{XG}(\text{right-footed shot}) = \mathbb{P}(\text{goal} \vert \text{right-footed shot})" title="\textrm{XG}(\text{right-footed shot}) = \mathbb{P}(\text{goal} \vert \text{right-footed shot})" class="math display"> by (i) forming a sub-group containing only those right-footed shots and then (ii) calculating the proportion of goals scored within that sub-group. We could similarly compute <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Ctextrm%7BXG%7D%28%5Ctext%7Bleft-footed%20shot%7D%29" alt="\textrm{XG}(\text{left-footed shot})" title="\textrm{XG}(\text{left-footed shot})" class="math inline"> and <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Ctextrm%7BXG%7D%28%5Ctext%7Bheader%7D%29" alt="\textrm{XG}(\text{header})" title="\textrm{XG}(\text{header})" class="math inline"> by calculating the proportion of goals scored within the sub-groups containing, respectively, only left-footed shots and only headers.</p>
-<p>Of course, we don’t have access to the infinite super-population of shots. However, on the assumption that our observed data constitute a sample from that super-population, we can <em>estimate</em> <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Ctextrm%7BXG%7D" alt="\textrm{XG}" title="\textrm{XG}" class="math inline"> by mimicking the idealized calculations described above:</p>
+<p>Now suppose we only include the body part in <span class="math inline">\(\boldsymbol{\mathbf{X}}\)</span>. If we had full access to the infinite super-population of women’s international shots, then we could compute <span class="math display">\[\textrm{XG}(\text{right-footed shot}) = \mathbb{P}(\text{goal} \vert \text{right-footed shot})\]</span> by (i) forming a sub-group containing only those right-footed shots and then (ii) calculating the proportion of goals scored within that sub-group. We could similarly compute <span class="math inline">\(\textrm{XG}(\text{left-footed shot})\)</span> and <span class="math inline">\(\textrm{XG}(\text{header})\)</span> by calculating the proportion of goals scored within the sub-groups containing, respectively, only left-footed shots and only headers.</p>
+<p>Of course, we don’t have access to the infinite super-population of shots. However, on the assumption that our observed data constitute a sample from that super-population, we can <em>estimate</em> <span class="math inline">\(\textrm{XG}\)</span> by mimicking the idealized calculations described above:</p>
 <ol type="1">
 <li>Break the dataset of all observed shots in women’s international matches into several groups based on the body part</li>
 <li>Within these two groups, compute the proportion of goals</li>
@@ -579,7 +619,7 @@ Overhead Kick        Volley
 <h2 class="anchored" data-anchor-id="sec-sophisticated-xg">More Sophisticated XG Models</h2>
 <p>According to our new XG model, the right-footed lob against Austria has a <em>much</em> higher XG than the other shots against Norway and Sweden, which seems much more reasonable than our previous model. But are we fully satisfied with this model?</p>
 <p>One could credibly argue that even though our model returns somewhat more sensible XG estimates, it is still too coarse for to meaningfully compare the shots above. After all, because it does not condition on distance, our model would return exactly the same XG for right-footed volleys taken one meter and 15 meters away from the goal. Similarly, we could try to account for the number of defenders between the shot and the goal and the position of the keeper.</p>
-<p>If we had access to the infinite super-population of shots, conditioning on even more features is conceptually straightforward: we look at the corresponding sub-group of the super-population defined by a particular combination of features and compute the average <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20Y." alt="Y." title="Y." class="math inline"> Unfortunately, with finite data, trying to “bin-and-average” using lots of features can lead to erratic estimates. For instance, here are the five largest and five smallest XG estimates based on body-part and shot technique.</p>
+<p>If we had access to the infinite super-population of shots, conditioning on even more features is conceptually straightforward: we look at the corresponding sub-group of the super-population defined by a particular combination of features and compute the average <span class="math inline">\(Y.\)</span> Unfortunately, with finite data, trying to “bin-and-average” using lots of features can lead to erratic estimates. For instance, here are the five largest and five smallest XG estimates based on body-part and shot technique.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>xg_model2 <span class="sc">|&gt;</span> </span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(XG2)) <span class="sc">|&gt;</span> </span>
@@ -600,7 +640,7 @@ Overhead Kick        Volley
 10 Left Foot           Overhead Kick       0          3</code></pre>
 </div>
 </div>
-<p>Because none of the 3 left-footed lobs in our dataset led to goals, our model estimates <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Ctextrm%7BXG%7D%28%5Ctext%7Bleft-footed%20lob%7D%29" alt="\textrm{XG}(\text{left-footed lob})" title="\textrm{XG}(\text{left-footed lob})" class="math inline"> as 0. Similarly, the rather large <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Ctextrm%7BXG%7D%28%5Ctext%7Bright-footed%20lob%7D%29" alt="\textrm{XG}(\text{right-footed lob})" title="\textrm{XG}(\text{right-footed lob})" class="math inline"> of 33% is based on only 12 shots. Attempting to condition on even more variables would result in estimates based on even smaller sample sizes<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</p>
+<p>Because none of the 3 left-footed lobs in our dataset led to goals, our model estimates <span class="math inline">\(\textrm{XG}(\text{left-footed lob})\)</span> as 0. Similarly, the rather large <span class="math inline">\(\textrm{XG}(\text{right-footed lob})\)</span> of 33% is based on only 12 shots. Attempting to condition on even more variables would result in estimates based on even smaller sample sizes<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</p>
 <p>So, it would appear that we’re stuck between a rock and a hard place. On the one hand, our XG model with two features is still too coarse to quantify important differences between the motivating shots. But, on the other hand, binning and averaging with even more features carries the risk of producing highly erratic, extreme, and somewhat nonsensical estimates<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>.</p>
 <p><em>Statistical models</em> offer a principled approach to overcome these issues. We will explore several such models in <a href="../lectures/lecture03.html">Lecture 3</a>. But for now, we will rely on a model developed by StatsBomb that accounts for a large number of features based on player locations (in two dimensions), the ball location (in three dimension), and other factors like the body part, shot technique, and the actions leading up to the shot (e.g., whether shot was taken off dribble or first touch). You can read more about their model <a href="https://www.hudl.com/blog/upgrading-expected-goals">here</a>. Luckily for us, they include XG estimates for each shot in the public data, under the column <code>shot.statsbomb_xg</code>.</p>
 <p>For instance, here are the XG estimates from StatsBomb’s model for all of Beth Mead’s goals</p>
@@ -622,7 +662,7 @@ Overhead Kick        Volley
 # ℹ 1 more variable: shot.statsbomb_xg &lt;dbl&gt;</code></pre>
 </div>
 </div>
-<p>Recall that XG quantifies a certain hypothetical long-term frequency of scoring a goal: if the shot was replayed under exactly the conditions quantified by the feature vector <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Cboldsymbol%7B%5Cmathbf%7Bx%7D%7D" alt="\boldsymbol{\mathbf{x}}" title="\boldsymbol{\mathbf{x}}" class="math inline">, <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Ctextrm%7BXG%7D%28%5Cboldsymbol%7B%5Cmathbf%7Bx%7D%7D%29" alt="\textrm{XG}(\boldsymbol{\mathbf{x}})" title="\textrm{XG}(\boldsymbol{\mathbf{x}})" class="math inline"> is the proportion of times a goal is scored. So, according to StatsBomb’s proprietary model, if Mead repeatedly attempted the three shots introduced in <a href="#sec-motivation" class="quarto-xref">Section&nbsp;1.1</a>, we should expect them to result in goals 36%, 44%, and 9% of the time. In other words, according to StatsBomb’s model, Meads goal against Sweden is much more impressive than her goals against Austria and Norway. One could argue, further, that this goal was somewhat lucky.</p>
+<p>Recall that XG quantifies a certain hypothetical long-term frequency of scoring a goal: if the shot was replayed under exactly the conditions quantified by the feature vector <span class="math inline">\(\boldsymbol{\mathbf{x}}\)</span>, <span class="math inline">\(\textrm{XG}(\boldsymbol{\mathbf{x}})\)</span> is the proportion of times a goal is scored. So, according to StatsBomb’s proprietary model, if Mead repeatedly attempted the three shots introduced in <a href="#sec-motivation" class="quarto-xref">Section&nbsp;1.1</a>, we should expect them to result in goals 36%, 44%, and 9% of the time. In other words, according to StatsBomb’s model, Meads goal against Sweden is much more impressive than her goals against Austria and Norway. One could argue, further, that this goal was somewhat lucky.</p>
 <p>We can also look at the XG’s of the shots Mead took that <em>didn’t</em> result in goals.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>mead_shots <span class="sc">|&gt;</span></span>
@@ -649,14 +689,14 @@ Overhead Kick        Volley
 </section>
 <section id="sec-goe" class="level2">
 <h2 class="anchored" data-anchor-id="sec-goe">Goals Over Expected</h2>
-<p>By summing the differences <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20Y_%7Bi%7D%20-%20%5Ctextrm%7BXG%7D_%7Bi%7D" alt="Y_{i} - \textrm{XG}_{i}" title="Y_{i} - \textrm{XG}_{i}" class="math inline"> across all of her shots, we can quantify the degree to which Mead under- or over-performed the model expectations.</p>
+<p>By summing the differences <span class="math inline">\(Y_{i} - \textrm{XG}_{i}\)</span> across all of her shots, we can quantify the degree to which Mead under- or over-performed the model expectations.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(mead_shots<span class="sc">$</span>Y <span class="sc">-</span> mead_shots<span class="sc">$</span>shot.statsbomb_xg)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 2.896323</code></pre>
 </div>
 </div>
-<p>We conclude that during EURO 2022, Beth Mead scored 2.9 <strong>more</strong> goals than what StatsBomb’s XG model expected based on the contexts in which she attempted shots. We can repeat this calculation — summing over the difference between shot outcome <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20Y" alt="Y" title="Y" class="math inline"> and <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Ctextrm%7BXG%7D" alt="\textrm{XG}" title="\textrm{XG}" class="math inline"> — for all players in EURO 2022 to find the players that most over-performed and most under-performed the model expectations.</p>
+<p>We conclude that during EURO 2022, Beth Mead scored 2.9 <strong>more</strong> goals than what StatsBomb’s XG model expected based on the contexts in which she attempted shots. We can repeat this calculation — summing over the difference between shot outcome <span class="math inline">\(Y\)</span> and <span class="math inline">\(\textrm{XG}\)</span> — for all players in EURO 2022 to find the players that most over-performed and most under-performed the model expectations.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>goe <span class="ot">&lt;-</span> </span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  euro2022_shots <span class="sc">|&gt;</span></span>
@@ -687,7 +727,7 @@ Overhead Kick        Volley
 <section id="sec-exercises" class="level2">
 <h2 class="anchored" data-anchor-id="sec-exercises">Exercises</h2>
 <ol type="1">
-<li>For each team in EURO 2022, sum the <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Ctextrm%7BXG%7D_%7Bi%7D" alt="\textrm{XG}_{i}" title="\textrm{XG}_{i}" class="math inline"> values and sum the residuals <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20Y_%7Bi%7D%20-%20%5Ctextrm%7BXG%7D_%7Bi%7D." alt="Y_{i} - \textrm{XG}_{i}." title="Y_{i} - \textrm{XG}_{i}." class="math inline"> Which teams most over- or under-performed expectations? What relationship, if any, do you observe between teams’ cumulative XG and their performance relative to the StatsBomb XG model’s expectations?</li>
+<li>For each team in EURO 2022, sum the <span class="math inline">\(\textrm{XG}_{i}\)</span> values and sum the residuals <span class="math inline">\(Y_{i} - \textrm{XG}_{i}.\)</span> Which teams most over- or under-performed expectations? What relationship, if any, do you observe between teams’ cumulative XG and their performance relative to the StatsBomb XG model’s expectations?</li>
 <li>Hudl recently released data from EURO 2025. Repeat the analysis from <a href="#sec-goe" class="quarto-xref">Section&nbsp;6</a> to identify the players with the most extreme goals over expected values from the tournament.</li>
 <li>Repeat Exercise 2.1 using data from EURO 2025</li>
 <li>Hudl also release several full seasons worth of data from professional leagues. Pick one such season and explore the relationships between (i) the cumulative XG the team generates on offense; (ii) the cumulative XG the team gives up on defense; and (iii) the win-loss record across the season.</li>

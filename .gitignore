@@ -23,5 +23,7 @@ website/lectures/*.RData
 website/slides/raw_slides/*.RData
 
 
+website/_freeze
+
 /.quarto/
 **/*.quarto_ipynb

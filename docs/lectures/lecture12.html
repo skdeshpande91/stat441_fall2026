@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Lecture 12: Bradley-Terry Models – STAT441</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/quarto-axe/axe-check.js" type="module"></script>
+<script id="quarto-axe-checker-options" type="text/plain">eyJvdXRwdXQiOiJkb2N1bWVudCJ9</script>
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "Search",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">STAT441</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-lecture-notes" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Lecture Notes</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-lecture-notes">    
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture01.html">
+ <span class="dropdown-text">Lecture 0: Boxscore Metrics</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture02.html">
+ <span class="dropdown-text">Lecture 2: Expected Goals</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture03.html">
+ <span class="dropdown-text">Lecture 3: Estimating XG</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture09.html">
+ <span class="dropdown-text">Lecture 9: Multilevel Modeling</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture10.html">
+ <span class="dropdown-text">Lecture 10: NFl WAR</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture12.html">
+ <span class="dropdown-text">Lecture 12: Bradley-Terry Models</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-projects" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Projects</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-projects">    
+        <li>
+    <a class="dropdown-item" href="../projects/project1.html">
+ <span class="dropdown-text">Project 1 Information</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../projects/project2.html">
+ <span class="dropdown-text">Project 2 Information</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../projects/project3.html">
+ <span class="dropdown-text">Project 3 Information</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture12.html">Lecture 12: Bradley-Terry Models</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 0: Boxscore Metrics</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 2: Expected Goals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 3: Estimating XG</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 9: Multilevel Modeling</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 10: NFl WAR</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture12.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Lecture 12: Bradley-Terry Models</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#motivation-the-2026-ncaa-womens-ice-hockey-tournament" id="toc-motivation-the-2026-ncaa-womens-ice-hockey-tournament" class="nav-link active" data-scroll-target="#motivation-the-2026-ncaa-womens-ice-hockey-tournament">Motivation: The 2026 NCAA Women’s Ice Hockey Tournament</a></li>
+  <li><a href="#sec-bt-def" id="toc-sec-bt-def" class="nav-link" data-scroll-target="#sec-bt-def">The Bradley-Terry Model</a>
+  <ul class="collapse">
+  <li><a href="#sec-ex-probs" id="toc-sec-ex-probs" class="nav-link" data-scroll-target="#sec-ex-probs">Example: Predicted Probabilities</a></li>
+  <li><a href="#sec-ex-tournament" id="toc-sec-ex-tournament" class="nav-link" data-scroll-target="#sec-ex-tournament">Example: Tournament Simulation</a></li>
+  <li><a href="#sec-constraint" id="toc-sec-constraint" class="nav-link" data-scroll-target="#sec-constraint">Identifability</a></li>
+  </ul></li>
+  <li><a href="#sec-data-prep" id="toc-sec-data-prep" class="nav-link" data-scroll-target="#sec-data-prep">D1 Women’s Hockey Results</a>
+  <ul class="collapse">
+  <li><a href="#downloading-pre-scraped-data" id="toc-downloading-pre-scraped-data" class="nav-link" data-scroll-target="#downloading-pre-scraped-data">Downloading pre-scraped data</a></li>
+  <li><a href="#sec-determine-winner" id="toc-sec-determine-winner" class="nav-link" data-scroll-target="#sec-determine-winner">Determining the Winner</a></li>
+  <li><a href="#consistently-formatting-team-name" id="toc-consistently-formatting-team-name" class="nav-link" data-scroll-target="#consistently-formatting-team-name">Consistently formatting team name</a></li>
+  </ul></li>
+  <li><a href="#sec-bt-est" id="toc-sec-bt-est" class="nav-link" data-scroll-target="#sec-bt-est">Fitting Bradley-Terry Models</a>
+  <ul class="collapse">
+  <li><a href="#re-formatting-our-data" id="toc-re-formatting-our-data" class="nav-link" data-scroll-target="#re-formatting-our-data">Re-formatting Our Data</a></li>
+  <li><a href="#estimating-extracting-team-strengths" id="toc-estimating-extracting-team-strengths" class="nav-link" data-scroll-target="#estimating-extracting-team-strengths">Estimating &amp; Extracting Team Strengths</a></li>
+  <li><a href="#sec-series-simulate" id="toc-sec-series-simulate" class="nav-link" data-scroll-target="#sec-series-simulate">Simulating a Best-of-5 Series</a></li>
+  </ul></li>
+  <li><a href="#looking-ahead" id="toc-looking-ahead" class="nav-link" data-scroll-target="#looking-ahead">Looking Ahead</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Lecture 12: Bradley-Terry Models</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="motivation-the-2026-ncaa-womens-ice-hockey-tournament" class="level2">
+<h2 class="anchored" data-anchor-id="motivation-the-2026-ncaa-womens-ice-hockey-tournament">Motivation: The 2026 NCAA Women’s Ice Hockey Tournament</h2>
+<p>The Wisconsin Badgers defeated the Ohio State Buckeyes women in the championship game of the 2026 NCAA Women’s Ice Hockey Tournament<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. During the 2025-26 regular season, the Badgers won 35 games, lost 4 games, and tied 2 games. The Buckeyes won 36 games, lost 5 games, and did not tie any games. In this lecture, we’ll consider the broad question “Did the better team win?” and introduce a framework for measuring latent team strength and predicting the outcome of individual matches.</p>
+<p>To motivate our developments, let’s consider two slightly different — but certainly related — questions, which are somewhat more nuanced than “did the better team win?”:</p>
+<ol type="1">
+<li>If we could repeatedly play the championship game, how often would the Badgers win?</li>
+<li>If the NCAA Championship were awarded to the winner in a “best-of-5” series<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> at a neutral site, what is the likelihood that the Badgers would win the championship?</li>
+</ol>
+<p>To answer these questions, we introduce a model for estimating latent team strengths from pairwise comparisons (i.e., match results; <a href="#sec-bt-def" class="quarto-xref">Section&nbsp;2</a>). We build a data set containing the outcomes of every Division 1 NCAA Women’s Ice Hockey game from the 2025-26 season (<a href="#sec-data-prep" class="quarto-xref">Section&nbsp;3</a>). We then estimate the model parameters (<a href="#sec-bt-est" class="quarto-xref">Section&nbsp;4</a>) before using the model estimates to simulate a best-of-5 series (<a href="#sec-series-simulate" class="quarto-xref">Section&nbsp;4.3</a>) between the Badgers and Buckeyes.</p>
+</section>
+<section id="sec-bt-def" class="level2">
+<h2 class="anchored" data-anchor-id="sec-bt-def">The Bradley-Terry Model</h2>
+<p>Suppose we observe the outcome of <span class="math inline">\(n\)</span> games played between <span class="math inline">\(p\)</span> teams, which we label <span class="math inline">\(1, 2, \ldots, p.\)</span> The basic Bradley-Terry model associates each team <span class="math inline">\(j = 1, \ldots, p,\)</span> with a latent strength <span class="math inline">\(\lambda_{j}\)</span> and asserts that <span class="math display">\[
+\mathbb{P}(\textrm{team i beats team j}) = \frac{e^{\lambda_{i}}}{e^{\lambda_{i}} + e^{\lambda_{j}}} = \frac{1}{1 + e^{-1 \times (\lambda_{i} - \lambda_{j})}}
+\]</span> In other words, under the basic Bradley-Terry model, the log-odds of team <span class="math inline">\(i\)</span> beating team <span class="math inline">\(j\)</span> is <span class="math inline">\(\lambda_{i} - \lambda_{j}.\)</span></p>
+<section id="sec-ex-probs" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-probs">Example: Predicted Probabilities</h3>
+<p>Consider a round-robin tournament between 4 teams (numbered 1, 2, 3, and 4) in which every teams plays every other team exactly once. Further suppose that the latent team strengths are <span class="math inline">\(\lambda_{1} = 1, \lambda_{2} = 0.5, \lambda_{3} = 0.3\)</span> and <span class="math inline">\(\lambda_{4} = 0.\)</span> According to the Bradley-Terry model, if team 1 plays team 2, it is expected to win with probability <span class="math display">\[
+\mathbb{P}(\textrm{team 1 beats team 2}) = \frac{e^{1}}{e^{1} + e^{0.5}} \approx 62\%
+\]</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.5</span>, <span class="fl">0.3</span>, <span class="dv">0</span>)</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> (lambda[<span class="dv">1</span>] <span class="sc">-</span> lambda[<span class="dv">2</span>])))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="2" data-code-annotation="1">It is more numerically stable to compute the difference in strengths on the log-odds scale and apply the inverse logistic transform than to exponentiate the <span class="math inline">\(\lambda\)</span>’s in the numerator and denominator.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6224593</code></pre>
+</div>
+</div>
+<p>Manually computing the probability that each team beats every other team is not too difficulty<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. To compute all these probabilities in one go, we can make use of the <code>outer()</code> function to assemble a matrix containing all pairwise differences of the <span class="math inline">\(\lambda_{i}'\)</span>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">outer</span>(<span class="at">X =</span> lambda, <span class="at">Y =</span> lambda, <span class="at">FUN =</span> <span class="st">"-"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="1" data-code-annotation="1"><code>outer()</code> applies the function specified with the <code>FUN</code> argument to every combination of its arguments <code>X</code> and <code>Y</code>.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4]
+[1,]  0.0  0.5  0.7  1.0
+[2,] -0.5  0.0  0.2  0.5
+[3,] -0.7 -0.2  0.0  0.3
+[4,] -1.0 -0.5 -0.3  0.0</code></pre>
+</div>
+</div>
+<p>Once we have these differences, which are on the log-odds scale, we can apply the <a href="../slides/raw_slides/slides_03.qmd#fig-logistic">inverse logistic</a> function to transform them to the probability scale. The result is a matrix whose <span class="math inline">\((i,j)\)</span> element is <span class="math inline">\(\mathbb{P}(\textrm{team i beats team j})\)</span>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> <span class="fu">outer</span>(<span class="at">X =</span> lambda, <span class="at">Y =</span> lambda, <span class="at">FUN =</span> <span class="st">"-"</span>)))</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-2" class="code-annotation-target"><a href="#annotated-cell-3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">diag</span>(probs) <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(probs, <span class="at">digits =</span> <span class="dv">3</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="2" data-code-annotation="1">The probability of a team beating itself is not well-defined so we will manually set these values to <code>NA</code></span>
+</dd>
+</dl>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      [,1]  [,2]  [,3]  [,4]
+[1,]    NA 0.622 0.668 0.731
+[2,] 0.378    NA 0.550 0.622
+[3,] 0.332 0.450    NA 0.574
+[4,] 0.269 0.378 0.426    NA</code></pre>
+</div>
+</div>
+<p>Armed with the probabilities of each team beating every other team, we can start to compute the probabilities of more elaborate events. Assuming the match outcomes are independent, the probability that team 1 wins its matches against Teams 2 and 3 but loses to Team 4 is <span class="math display">\[
+0.622 \times 0.668 \times (1 - 0.731) \approx 11.1\%
+\]</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(probs[<span class="dv">1</span>,<span class="dv">2</span>] <span class="sc">*</span> probs[<span class="dv">1</span>,<span class="dv">3</span>] <span class="sc">*</span> (<span class="dv">1</span><span class="sc">-</span>probs[<span class="dv">1</span>,<span class="dv">4</span>]), <span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.112</code></pre>
+</div>
+</div>
+<p>We can also compute the probability that Team 2 wins exactly 2 of its 3 games <span class="math display">\[
+\begin{align}
+\mathbb{P}(\textrm{team 2 wins 2 games}) &amp;= \mathbb{P}(\textrm{team 2 beats 1 \&amp; 3 and loses to 4}) \\
+&amp;~+ \mathbb{P}(\textrm{team 2 beats 1 \&amp; 4 and loses to 3}) \\
+&amp;~+ \mathbb{P}(\textrm{team 2 betas 3 \&amp; 4 and loses to 1})
+\end{align}
+\]</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>probs[<span class="dv">2</span>,<span class="dv">1</span>] <span class="sc">*</span> probs[<span class="dv">2</span>,<span class="dv">3</span>] <span class="sc">*</span> probs[<span class="dv">4</span>,<span class="dv">2</span>] <span class="sc">+</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  probs[<span class="dv">2</span>,<span class="dv">1</span>] <span class="sc">*</span> probs[<span class="dv">2</span>,<span class="dv">4</span>] <span class="sc">*</span> probs[<span class="dv">3</span>,<span class="dv">2</span>] <span class="sc">+</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  probs[<span class="dv">1</span>,<span class="dv">2</span>] <span class="sc">*</span> probs[<span class="dv">2</span>,<span class="dv">3</span>] <span class="sc">*</span> probs[<span class="dv">2</span>,<span class="dv">4</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.3971986</code></pre>
+</div>
+</div>
+</section>
+<section id="sec-ex-tournament" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-tournament">Example: Tournament Simulation</h3>
+<p>In our 4-team round-robin tournament, what is the probability that Team 3 finishes in the top-2 in terms of wins<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>? To compute this probability by hand, we would need to enumerate all the possible ways in which Team 3 can finish in the top-2 positions after all 6 matches. While not impossible to do in our 4-team example, such manual computation becomes challenging as we increase the number of teams.</p>
+<p>A much more elegant solution is to estimate this probability via simulation. Specifically, we can use the estimated match outcome probabilities to simulate each of the 6 games in our tournament many, many times. We can then compute the proportion of simulations in which Team 3 finishes in the top-2 in terms of wins.</p>
+<p>To perform this simulation, we begin by enumerating each pair of teams using the <code>combn()</code> function.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">combn</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">m =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,]    1    1    1    2    2    3
+[2,]    2    3    4    3    4    4</code></pre>
+</div>
+</div>
+<p>The function <code>combn()</code> returns an array with two rows (one for each team) and columns for every game in the tournament. It will be more useful for us to convert this into a data table with rows for each game. In this table, we will label the teams <code>player1</code> and <code>player2</code> and also append a column containing the probability that <code>player1</code> beats <code>player2</code></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-hidden="true" tabindex="-1"></a>design <span class="ot">&lt;-</span> </span>
+<span id="annotated-cell-7-2"><a href="#annotated-cell-7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">combn</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">m =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span> </span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-3" class="code-annotation-target"><a href="#annotated-cell-7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="2">2</button><span id="annotated-cell-7-4" class="code-annotation-target"><a href="#annotated-cell-7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="3">3</button><span id="annotated-cell-7-5" class="code-annotation-target"><a href="#annotated-cell-7-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">player1 =</span> V1, <span class="at">player2 =</span> V2) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-7-6"><a href="#annotated-cell-7-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rowwise</span>() <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="4">4</button><span id="annotated-cell-7-7" class="code-annotation-target"><a href="#annotated-cell-7-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">prob =</span> probs[player1, player2]) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-7-8"><a href="#annotated-cell-7-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>()</span>
+<span id="annotated-cell-7-9"><a href="#annotated-cell-7-9" aria-hidden="true" tabindex="-1"></a>design</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="3" data-code-annotation="1">Since <code>combn()</code> returns a matrix whose columns index games, we need to take its transpose</span>
+</dd>
+<dt data-target-cell="annotated-cell-7" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="4" data-code-annotation="2">For the <strong>dplyr</strong> verbs to work, we need to convert our table from a <code>matrix</code> to a <code>data.frame</code></span>
+</dd>
+<dt data-target-cell="annotated-cell-7" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="5" data-code-annotation="3">By default <code>as.data.frame</code> will use the columns names <code>V1</code>, <code>V2</code>, etc. So, we change them here to something more informative</span>
+</dd>
+<dt data-target-cell="annotated-cell-7" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="7" data-code-annotation="4">Without the <code>rowwise()</code>, this line would create columns for all pairwise probabilities and not the desired one.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  player1 player2  prob
+    &lt;int&gt;   &lt;int&gt; &lt;dbl&gt;
+1       1       2 0.622
+2       1       3 0.668
+3       1       4 0.731
+4       2       3 0.550
+5       2       4 0.622
+6       3       4 0.574</code></pre>
+</div>
+</div>
+<p>Since match outcomes are binary, simulating the outcomes of the 6 matches is equivalent to flipping 6 independent coins, each with its own probability of landing heads. We interpret the event that a particular coin lands heads with the event that <code>player1</code> wins the match and the event of the coin landing tails as the event that <code>player2</code> wins the match. We can simulate these binary events using the <code>rbinom()</code> function</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">479</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>outcomes <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="at">n =</span> <span class="dv">6</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> design<span class="sc">$</span>prob)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>outcomes</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0 1 1 0 1 1</code></pre>
+</div>
+</div>
+<p>The first three entries in <code>outcomes</code> correspond to the games in the first three rows of <code>design</code>, which are played between Team 1 and Teams 2, 3, and 4. So, in this simulation Team 1 loses to Team 2 but beats Teams 3 and 4. The fourth and fifth entry in <code>outcomes</code> corresponds to the games between Team 2 and Teams 3 &amp; 4. These entries are <code>0</code> and <code>1,</code> respectively, meaning that in this simulation Team 2 lost to Team 3 but beat Team 4. Finally, the sixth entry corresponds to the game between Team 3 and Team 4. It is equal to <code>1</code>, meaning that in this simulation Team 3 defeated Team 4.</p>
+<p>To tabulate each teams’ wins, we create a temporary data frame containing the participants and a column recording the winner (<code>winner</code>). Then, we can count the number of times each team appears in the column <code>winner</code> using a grouped summary. In this simulation, Teams 1, 2, and 3 each won exactly 2 games.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1" aria-hidden="true" tabindex="-1"></a>tmp_df <span class="ot">&lt;-</span></span>
+<span id="annotated-cell-9-2"><a href="#annotated-cell-9-2" aria-hidden="true" tabindex="-1"></a>  design <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-9-3"><a href="#annotated-cell-9-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(player1, player2) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-9-4"><a href="#annotated-cell-9-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="annotated-cell-9-5"><a href="#annotated-cell-9-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">outcome =</span> outcomes,</span>
+<span id="annotated-cell-9-6"><a href="#annotated-cell-9-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">winner =</span> <span class="fu">ifelse</span>(outcome <span class="sc">==</span> <span class="dv">1</span>, player1, player2),</span>
+<span id="annotated-cell-9-7"><a href="#annotated-cell-9-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">player1 =</span> <span class="fu">factor</span>(player1, <span class="at">levels =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>),</span>
+<span id="annotated-cell-9-8"><a href="#annotated-cell-9-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">player2 =</span> <span class="fu">factor</span>(player2, <span class="at">levels =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>),</span>
+<span id="annotated-cell-9-9"><a href="#annotated-cell-9-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">winner =</span> <span class="fu">factor</span>(winner, <span class="at">levels =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>))</span>
+<span id="annotated-cell-9-10"><a href="#annotated-cell-9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-9-11"><a href="#annotated-cell-9-11" aria-hidden="true" tabindex="-1"></a>wins <span class="ot">&lt;-</span></span>
+<span id="annotated-cell-9-12"><a href="#annotated-cell-9-12" aria-hidden="true" tabindex="-1"></a>  tmp_df <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-9-13"><a href="#annotated-cell-9-13" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(winner) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-9-14"><a href="#annotated-cell-9-14" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">Wins =</span> dplyr<span class="sc">::</span><span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-9-15"><a href="#annotated-cell-9-15" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">Team =</span> winner) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1">1</button><span id="annotated-cell-9-16" class="code-annotation-target"><a href="#annotated-cell-9-16" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">complete</span>(Team, <span class="at">fill =</span> <span class="fu">list</span>(<span class="at">Wins =</span> <span class="dv">0</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-9" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-9" data-code-lines="16" data-code-annotation="1">If a team wins no games, they will not appear in the column <code>winner</code>. Using <code>complete()</code>, we can add rows for these teams and manually assign them 0 wins.</span>
+</dd>
+</dl>
+</div>
+</div>
+<p>We can now repeat this simulation many times, each time recording the number of wins for each team. In the code block below, build an array whose rows correspond to simulation replications and whose columns record the number of wins for each team.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">5000</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>simulated_wins <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">data =</span> <span class="cn">NA</span>, <span class="at">nrow =</span> n_sims, <span class="at">ncol =</span> <span class="dv">4</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(r <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_sims){</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">479</span><span class="sc">+</span>r)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  outcomes <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="at">n =</span> <span class="dv">6</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> design<span class="sc">$</span>prob)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  wins <span class="ot">&lt;-</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    design <span class="sc">|&gt;</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(player1, player2) <span class="sc">|&gt;</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">outcome =</span> outcomes,</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">winner =</span> <span class="fu">ifelse</span>(outcome <span class="sc">==</span> <span class="dv">1</span>, player1, player2),</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">winner =</span> <span class="fu">factor</span>(winner, <span class="at">levels =</span> <span class="fu">unique</span>(<span class="fu">c</span>(design<span class="sc">$</span>player1, design<span class="sc">$</span>player2)))) <span class="sc">|&gt;</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(winner) <span class="sc">|&gt;</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">Wins =</span> dplyr<span class="sc">::</span><span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">Team =</span> winner) <span class="sc">|&gt;</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">complete</span>(Team, <span class="at">fill =</span> <span class="fu">list</span>(<span class="at">Wins =</span> <span class="dv">0</span>))</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>  simulated_wins[r,] <span class="ot">&lt;-</span> wins <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">pull</span>(Wins)</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Out of the 5000 simulations, Team 1 won all 3 of its games in 1534 simulations. Based on this, our <em>estimated</em> probability of Team 1 winning all 3 of its matches is <span class="math inline">\(1534/5000 \approx 30.6\%,\)</span> which is quite close to the exact value of 30.4% (which we can obtain by multiplying <code>probs[1,2] * probs[1,3] * probs[1,4]</code>).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(simulated_wins[,<span class="dv">1</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   0    1    2    3 
+ 163 1105 2198 1534 </code></pre>
+</div>
+</div>
+<p>To estimate the probability that Team 3 finishes in the top-2, we will first rank each team based on the number of games they won in each simulation. Like in <a href="lecture05.qmd">Lecture 5</a>, we will call <code>rank</code> on the negative value of wins so that teams with more wins get lower numerical ranks. In the case of ties, we will assign the minimum possible rank (using the argument <code>ties.method="min"</code>). As an illustration, say that Teams 1 and 2 both won 2 games and Teams 3 and 4 both won 1 game each. This convention would assign Teams 1 and 2 a rank of 1 and Teams 3 and 4 a rank of 3 (there would be no second place).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rank</span>(<span class="sc">-</span><span class="dv">1</span><span class="sc">*</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>), <span class="at">ties.method =</span> <span class="st">"min"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1 1 3 3</code></pre>
+</div>
+</div>
+<p>We compute the team rankings for each simulation replication using the <code>apply()</code> function.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-13"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-13-1"><a href="#annotated-cell-13-1" aria-hidden="true" tabindex="-1"></a>simulated_ranks <span class="ot">&lt;-</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="1">1</button><span id="annotated-cell-13-2" class="code-annotation-target"><a href="#annotated-cell-13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="2">2</button><span id="annotated-cell-13-3" class="code-annotation-target"><a href="#annotated-cell-13-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">apply</span>(<span class="sc">-</span><span class="dv">1</span><span class="sc">*</span>simulated_wins, <span class="at">MARGIN =</span> <span class="dv">1</span>,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="3">3</button><span id="annotated-cell-13-4" class="code-annotation-target"><a href="#annotated-cell-13-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">FUN =</span> rank, <span class="at">ties.method =</span> <span class="st">"min"</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-13" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-13" data-code-lines="2" data-code-annotation="1">In this case, <code>apply()</code> will return a matrix with 4 rows and 5000 columns, so we need to transpose it</span>
+</dd>
+<dt data-target-cell="annotated-cell-13" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-13" data-code-lines="3" data-code-annotation="2">We specify <code>MARGIN = 1</code> because we want to rank values within each row (i.e., simulation replication)</span>
+</dd>
+<dt data-target-cell="annotated-cell-13" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-13" data-code-lines="4" data-code-annotation="3"><code>apply()</code> allows us to pass additional arguments needed for the function we passed via the argument <code>FUN</code>.</span>
+</dd>
+</dl>
+</div>
+</div>
+<p>We find that in 1565 of the 5000 simulations, Team 3 had the most wins (rank of 1) and in 1092 of the 5000 simulations, Team 3 had the second-most wins (rank of 2). So, the estimated probability of Team 3 finished in the top-2 in terms of wins is about 0.531.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(simulated_ranks[,<span class="dv">3</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   1    2    3    4 
+1565 1092 1547  796 </code></pre>
+</div>
+</div>
+</section>
+<section id="sec-constraint" class="level3">
+<h3 class="anchored" data-anchor-id="sec-constraint">Identifability</h3>
+<p>The basic Bradley-Terry model assigns each team <span class="math inline">\(j\)</span> a latent strength <span class="math inline">\(\lambda_{j}\)</span> and models the log-odds of team <span class="math inline">\(i\)</span> beating team <span class="math inline">\(j\)</span> as the difference in strengths <span class="math inline">\(\lambda_{i} - \lambda_{j}.\)</span> Notice that these log-odds (and hence, the probability of team <span class="math inline">\(i\)</span> beating team <span class="math inline">\(j\)</span>) does not change if we add the same constant (e.g., 10) to each <span class="math inline">\(\lambda_{j}.\)</span> This means that we can only estimates the underlying latent strengths up to an additive constant. In practice, we generally fix one of the <span class="math inline">\(\lambda_{j}\)</span>’s to be zero; usually, the team names are represented are <code>factor</code> variables and we simply set the latent strength for the reference level to be zero.</p>
+</section>
+</section>
+<section id="sec-data-prep" class="level2">
+<h2 class="anchored" data-anchor-id="sec-data-prep">D1 Women’s Hockey Results</h2>
+<p>We will fit a Bradley-Terry model to estimate the latent strengths of all D1 Women’s Ice Hockey Teams using results from the 2025-26 regular season. To do so, we need to build a table whose rows represent individual column and which has columns recording the home and away teams and their scores. Since there is no existing R package that scrapes and formats the data we need, we will need to collect the data ourselves.</p>
+<p><a href="https://www.uscho.com">US College Hockey Online</a> is an independent media organization focused on college hockey. In addition to posting articles, weekly polls &amp; rankings, and team &amp; individual statistics, USCHO publishes box score and play-by-play data. For instance, here are the play-by-play pages for Wisconsin’s games against <a href="https://www.uscho.com/gameday/division-i-women/2025-2026/2026-01-24/bemidji-state-vs-wisconsin">Bemidji State on January 24, 2026</a> and against <a href="https://www.uscho.com/gameday/division-i-women/2025-2026/2026-03-22/wisconsin-vs-ohio-state">Ohio State on March 22, 2026</a>.</p>
+<p>Here are the URL’s for both pages:</p>
+<pre><code>https://www.uscho.com/gameday/division-i-women/2025-2026/2026-01-24/bemidji-state-vs-wisconsin</code></pre>
+<p>and</p>
+<pre><code>https://www.uscho.com/gameday/division-i-women/2025-2026/2026-03-22/wisconsin-vs-ohio-state</code></pre>
+<p>Notice that both URLs are highly structured: they each record the division, season, game date, and team identities, with the home team being listed second. This similarity in URL structure and page content suggests that is may be possible to scrape game results in a programmatic fashion. To do so, we would need to first download the full schedule of NCAA D1 hockey games and look up the game date and the home and away teams for each game. Then, we could loop over the schedule, construct a URL using the pattern seen above, and then download and parse the HTML contents of each game-specific page. The R package <a href="https://rvest.tidyverse.org/index.html"><strong>rvest</strong></a> allows us to do this in a relatively straightforward fashion.</p>
+<section id="downloading-pre-scraped-data" class="level3">
+<h3 class="anchored" data-anchor-id="downloading-pre-scraped-data">Downloading pre-scraped data</h3>
+<p>Unfortunately, USCHO changed their API in Fall 2025 in a way that made it much harder to extract the necessary information from the individual game pages. Luckily, they still publish the results of all games as a single table, which we can copy and paste into a spreadsheet program (i.e., Microsoft Excel, Google Sheets, Apple Numbers, OpenLibre Calc, etc.) and save as a comma-separated file. In the next codeblock, we load a CSV file containing the results from 2025-26, which is also available from the <a href="https://github.com/skdeshpande91/stat441_fall2026/blob/main/data/lecture12/">course GitHub repository</a></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>target <span class="ot">&lt;-</span> <span class="fu">url</span>(<span class="st">"https://raw.githubusercontent.com/skdeshpande91/stat441_fall2026/refs/heads/main/data/lecture12/ncaa_d1_2025_2026.csv"</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>raw_data <span class="ot">&lt;-</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> target) <span class="sc">|&gt;</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">HomeScore =</span> <span class="st">`</span><span class="at">Home Score</span><span class="st">`</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">AwayScore =</span> <span class="st">`</span><span class="at">Away Score</span><span class="st">`</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Looking at the first ten rows of <code>raw_data</code>, we see that there are columns for the home and away teams and whether the game went to overtime (<code>OT</code>).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>raw_data <span class="sc">|&gt;</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 11
+   Date   Away  `Away Score` Home  `Home Score` OT    Notes Type  Location TV   
+   &lt;chr&gt;  &lt;chr&gt;        &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt; &lt;chr&gt; &lt;lgl&gt; &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;
+ 1 2025-… (9)&nbsp;…            1 (5)&nbsp;…            0 &lt;NA&gt;  NA    EX    Class o… &lt;NA&gt; 
+ 2 2025-… (6)&nbsp;…            4 Merc…            3 OT    NA    NC    Mercyhu… &lt;NA&gt; 
+ 3 2025-… Minn…            3 RPI&nbsp;…            0 &lt;NA&gt;  NA    NC    Houston… &lt;NA&gt; 
+ 4 2025-… Lind…            0 (13)…            5 &lt;NA&gt;  NA    NC    Herb Br… &lt;NA&gt; 
+ 5 2025-… Durh…            2 Robe…            1 OT    NA    EX    Clearvi… &lt;NA&gt; 
+ 6 2025-… Bish…            0 (7)&nbsp;…            5 &lt;NA&gt;  NA    EX    Cheel A… &lt;NA&gt; 
+ 7 2025-… (12)…            0 (10)…            3 &lt;NA&gt;  NA    EX    M&amp;T Ban… &lt;NA&gt; 
+ 8 2025-… Main…            1 New …            5 &lt;NA&gt;  NA    EX    Whittem… &lt;NA&gt; 
+ 9 2025-… St. …            0 Verm…            8 &lt;NA&gt;  NA    EX    Gutters… &lt;NA&gt; 
+10 2025-… Ston…            2 Bost…            5 &lt;NA&gt;  NA    EX    Silvio … &lt;NA&gt; 
+# ℹ 1 more variable: Winner &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p>There is also a column recording the type of game. At least in the first 10 rows, we see several <strong>ex</strong>hibion and <strong>n</strong>on-<strong>c</strong>onference games. We use the <code>table</code> function to see all the different game types in our dataset.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(raw_data<span class="sc">$</span>Type, <span class="at">useNA =</span> <span class="st">'always'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  AH   EC   EX   HE   NC  NEW   WC &lt;NA&gt; 
+  84  132   12  120  257  112  112    0 </code></pre>
+</div>
+</div>
+<p>It turns out that most of these abbreviations correspond to different conferences <!-- to do conferences --></p>
+</section>
+<section id="sec-determine-winner" class="level3">
+<h3 class="anchored" data-anchor-id="sec-determine-winner">Determining the Winner</h3>
+<p>In order to fit a Bradley-Terry model using these data, we still need to determine whether the home team won the game or not. Intuitively, we can do this by adding a column to <code>raw_data</code> that compares <code>HomeScore</code> to <code>AwayScore</code>. This simple strategy is not quite adequate as there are a number of games in which <code>HomeScore = OppScore</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>raw_data <span class="sc">|&gt;</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(HomeScore <span class="sc">==</span> AwayScore) <span class="sc">|&gt;</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n=</span><span class="dv">5</span>) <span class="sc">|&gt;</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Away, AwayScore, Home, HomeScore)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 4
+  Away                  AwayScore Home                           HomeScore
+  &lt;chr&gt;                     &lt;dbl&gt; &lt;chr&gt;                              &lt;dbl&gt;
+1 Concordia (Que.)              4 (11)&nbsp;Boston University&nbsp;(0-0-0)         4
+2 Merrimack&nbsp;(1-2-1)             2 Union&nbsp;(3-0-1)                          2
+3 Vermont&nbsp;(0-2-1)               1 (12)&nbsp;St. Lawrence&nbsp;(1-3-1)              1
+4 New Hampshire&nbsp;(2-2-1)         1 Union&nbsp;(3-0-2)                          1
+5 Post&nbsp;(0-5-1)                  1 Assumption&nbsp;(1-4-1)                     1</code></pre>
+</div>
+</div>
+<p>By inspecting the individual box score and play-by-play pages for these games, it turns out that they were decided in shootouts after an overtime period. For instance, here is the page for Wisconsin’s <a href="https://www.uscho.com/gameday/division-i-women/2025-2026/2026-01-09/wisconsin-vs-minnesota-duluth">game against Minnesota Duluth on January 9, 2026</a>; Minnesotta Duluth won the shootout 1-0.</p>
+<p>Unfortunately, there is no straightforward, programmatic way to identify the shootout winner from the 45 games decided by shootouts. Luckily, there is a straightforward <em>manual</em> solution:</p>
+<ol type="1">
+<li>Create a new data frame that adds a column in <code>raw_data</code> recording the winner of non-shootout games and is blank (i.e., <code>NA</code>) for shootout games</li>
+<li>Save this new data frame as a CSV file on local machine.</li>
+<li>Go to the individual game page on USCHO’s website for each shootout games and <em>manually</em> edit the column in our CSV.</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>tmp_data <span class="ot">&lt;-</span> </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  raw_data <span class="sc">|&gt;</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Winner =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>      HomeScore <span class="sc">&gt;</span> AwayScore <span class="sc">~</span> Home,</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>      AwayScore <span class="sc">&gt;</span> HomeScore <span class="sc">~</span> Away,</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">.default =</span> <span class="cn">NA_character_</span>))</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">write_csv</span>(tmp_data, <span class="at">file =</span> <span class="st">"ncaa_d1_2025_2026.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Once we manually update the file <code>ncaa_d1_2025_2026.csv</code> with the winners from shootout games, we can read it back into our R session.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>hockey_results <span class="ot">&lt;-</span> </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">"ncaa_d1_2025_2026.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Here are 10 random rows from our new file.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">441</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>hockey_results <span class="sc">|&gt;</span> </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Date, Away, AwayScore, Home, HomeScore, Winner)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 6
+   Date                    Away                 AwayScore Home  HomeScore Winner
+   &lt;chr&gt;                   &lt;chr&gt;                    &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt; 
+ 1 2025-10-04 00:00:00 UTC Maine&nbsp;(0-4-0)                0 (1)&nbsp;…         5 (1)&nbsp;W…
+ 2 2026-01-10 00:00:00 UTC (11)&nbsp;Clarkson&nbsp;(13-7…         2 (13)…         5 (13)&nbsp;…
+ 3 2025-11-08 00:00:00 UTC Dartmouth&nbsp;(2-5-1)            0 Harv…         3 Harva…
+ 4 2025-11-08 00:00:00 UTC Saint Anselm&nbsp;(7-6-0)         4 Post…         0 Saint…
+ 5 2025-10-04 00:00:00 UTC Lindenwood&nbsp;(0-6-0)           2 Minn…         3 Minne…
+ 6 2025-10-10 00:00:00 UTC RIT&nbsp;(2-3-0)                  1 Robe…         2 Rober…
+ 7 2026-01-30 00:00:00 UTC (9)&nbsp;Minnesota Dulut…         2 (2)&nbsp;…         6 (2)&nbsp;O…
+ 8 2026-02-20 00:00:00 UTC (2)&nbsp;Ohio State&nbsp;(29-…         7 Bemi…         1 (2)&nbsp;O…
+ 9 2026-01-10 00:00:00 UTC St. Michael's&nbsp;(1-19…         0 LIU&nbsp;…         4 LIU&nbsp;(…
+10 2025-11-14 00:00:00 UTC Maine&nbsp;(4-7-1)                2 Holy…         1 Maine…</code></pre>
+</div>
+</div>
+</section>
+<section id="consistently-formatting-team-name" class="level3">
+<h3 class="anchored" data-anchor-id="consistently-formatting-team-name">Consistently formatting team name</h3>
+<p>Looking at these ten random rows, we see another issue: USCHO recorded teams’ win-loss-tie records entering each game! For instance, looking at the seventh and eight rows of the table, the winners are</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "(2)&nbsp;Ohio State&nbsp;(24-3-0)" "(2)&nbsp;Ohio State&nbsp;(29-4-0)"</code></pre>
+</div>
+</div>
+<p>In both games, Ohio State was the winner. Before fitting our Bradley-Terry model, we must reformat these data, specifically stripping the seed (the first number in parentheses) and the record (the second parentheses). We use the <a href="https://stringr.tidyverse.org/reference/str_remove.html"><code>str_remove_all</code></a> function from the <a href="https://stringr.tidyverse.org/"><strong>stringr</strong></a> package to remove all parts of the home team, away team, and winner columns contained in parentheses. We also make use of the function <a href="https://stringr.tidyverse.org/reference/str_squish.html"><code>str_squish</code></a> to trim any leading and trailing white spaces. In the codeblock below, we pass a <a href="https://en.wikipedia.org/wiki/Regular_expression">regular expression (regex)</a> as an argument to <code>str_remove</code>. At a very high-level, regular expressions are strings of characters that can specify a matching pattern in text. To find all text within parentheses, we pass the regex <code>"\\([^)]*\\)"</code> as the <code>pattern</code> argument in <code>str_remove</code><a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> Learning to write and work with regex’s is a very useful skill<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> for all data scientists.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>format_name <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  xx <span class="ot">&lt;-</span> </span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    x <span class="sc">|&gt;</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    stringr<span class="sc">::</span><span class="fu">str_remove_all</span>(<span class="at">pattern =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">([^)]*</span><span class="sc">\\</span><span class="st">)"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    stringr<span class="sc">::</span><span class="fu">str_squish</span>()</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(xx)</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>hockey_results <span class="ot">&lt;-</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  hockey_results <span class="sc">|&gt;</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rowwise</span>() <span class="sc">|&gt;</span></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">Home =</span> <span class="fu">format_name</span>(Home),</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">Away =</span> <span class="fu">format_name</span>(Away),</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">Winner =</span> <span class="fu">format_name</span>(Winner)) <span class="sc">|&gt;</span></span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Now, when we look at those same 10 rows from earlier, we see that the seeding and records have been removed.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 6
+   Date                    Away             AwayScore Home      HomeScore Winner
+   &lt;chr&gt;                   &lt;chr&gt;                &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt; 
+ 1 2025-10-04 00:00:00 UTC Maine                    0 Wisconsin         5 Wisco…
+ 2 2026-01-10 00:00:00 UTC Clarkson                 2 Colgate           5 Colga…
+ 3 2025-11-08 00:00:00 UTC Dartmouth                0 Harvard           3 Harva…
+ 4 2025-11-08 00:00:00 UTC Saint Anselm             4 Post              0 Saint…
+ 5 2025-10-04 00:00:00 UTC Lindenwood               2 Minnesot…         3 Minne…
+ 6 2025-10-10 00:00:00 UTC RIT                      1 Robert M…         2 Rober…
+ 7 2026-01-30 00:00:00 UTC Minnesota Duluth         2 Ohio Sta…         6 Ohio …
+ 8 2026-02-20 00:00:00 UTC Ohio State               7 Bemidji …         1 Ohio …
+ 9 2026-01-10 00:00:00 UTC St. Michael's            0 LIU               4 LIU   
+10 2025-11-14 00:00:00 UTC Maine                    2 Holy Cro…         1 Maine </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-bt-est" class="level2">
+<h2 class="anchored" data-anchor-id="sec-bt-est">Fitting Bradley-Terry Models</h2>
+<p>We will use the package <a href="https://github.com/hturner/BradleyTerry2"><strong>BradleyTerry2</strong></a> to fit Bradley-Terry models in R. You can install the package using</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"hturner/BradleyTerry2"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="re-formatting-our-data" class="level3">
+<h3 class="anchored" data-anchor-id="re-formatting-our-data">Re-formatting Our Data</h3>
+<p>The package <strong>BradleyTerry2</strong> uses a somewhat idiosyncratic syntax. Instead of passing a table with one row per game, it instead wants each row to correspond to a home team-away team pair. It further encodes the match results using a pair of numbers, the number of home team wins and the number of away team wins.</p>
+<p>In the following code block, we first divide the data into subgroups corresponding to unique pairs of home and away teams. Then, within each of those subgroups, we count up the number of home team and away team wins.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-26"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-26-1"><a href="#annotated-cell-26-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span></span>
+<span id="annotated-cell-26-2"><a href="#annotated-cell-26-2" aria-hidden="true" tabindex="-1"></a>  hockey_results <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-26" data-target-annotation="1">1</button><span id="annotated-cell-26-3" class="code-annotation-target"><a href="#annotated-cell-26-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Winner) <span class="sc">&amp;</span> Type <span class="sc">!=</span> <span class="st">"EX"</span>) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-26-4"><a href="#annotated-cell-26-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-26" data-target-annotation="2">2</button><span id="annotated-cell-26-5" class="code-annotation-target"><a href="#annotated-cell-26-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">Home_Winner =</span> <span class="fu">ifelse</span>(Home <span class="sc">==</span> Winner, <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="annotated-cell-26-6"><a href="#annotated-cell-26-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">Away_Winner =</span> <span class="fu">ifelse</span>(Away <span class="sc">==</span> Winner, <span class="dv">1</span>, <span class="dv">0</span>)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-26-7"><a href="#annotated-cell-26-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">home.team =</span> Home, <span class="at">away.team =</span> Away) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-26" data-target-annotation="3">3</button><span id="annotated-cell-26-8" class="code-annotation-target"><a href="#annotated-cell-26-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(home.team, away.team) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-26-9"><a href="#annotated-cell-26-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-26" data-target-annotation="4">4</button><span id="annotated-cell-26-10" class="code-annotation-target"><a href="#annotated-cell-26-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">home.win =</span> <span class="fu">sum</span>(Home_Winner),</span>
+<span id="annotated-cell-26-11"><a href="#annotated-cell-26-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">away.win =</span> <span class="fu">sum</span>(Away_Winner), <span class="at">.groups =</span> <span class="st">'drop'</span>)</span>
+<span id="annotated-cell-26-12"><a href="#annotated-cell-26-12" aria-hidden="true" tabindex="-1"></a></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-26" data-target-annotation="5">5</button><span id="annotated-cell-26-13" class="code-annotation-target"><a href="#annotated-cell-26-13" aria-hidden="true" tabindex="-1"></a>unik_teams <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(<span class="fu">c</span>(results<span class="sc">$</span>home.team, results<span class="sc">$</span>away.team)))</span>
+<span id="annotated-cell-26-14"><a href="#annotated-cell-26-14" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span></span>
+<span id="annotated-cell-26-15"><a href="#annotated-cell-26-15" aria-hidden="true" tabindex="-1"></a>  results <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-26-16"><a href="#annotated-cell-26-16" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-26" data-target-annotation="6">6</button><span id="annotated-cell-26-17" class="code-annotation-target"><a href="#annotated-cell-26-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">home.team =</span> <span class="fu">factor</span>(home.team, <span class="at">levels =</span> unik_teams),</span>
+<span id="annotated-cell-26-18"><a href="#annotated-cell-26-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">away.team =</span> <span class="fu">factor</span>(away.team,<span class="at">levels =</span> unik_teams))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-26" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-26" data-code-lines="3" data-code-annotation="1">Remove any games without a winner and all exhibition games</span>
+</dd>
+<dt data-target-cell="annotated-cell-26" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-26" data-code-lines="5,6" data-code-annotation="2">Create two temporary indicators recording whether the home or away team won each game</span>
+</dd>
+<dt data-target-cell="annotated-cell-26" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-26" data-code-lines="8" data-code-annotation="3">Subdivide data table of all games by home team - away team pairs</span>
+</dd>
+<dt data-target-cell="annotated-cell-26" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-26" data-code-lines="10,11" data-code-annotation="4">Count the number of home and away team wins in each subgroup</span>
+</dd>
+<dt data-target-cell="annotated-cell-26" data-target-annotation="5">5</dt>
+<dd>
+<span data-code-cell="annotated-cell-26" data-code-lines="13" data-code-annotation="5">Extract the unique team names</span>
+</dd>
+<dt data-target-cell="annotated-cell-26" data-target-annotation="6">6</dt>
+<dd>
+<span data-code-cell="annotated-cell-26" data-code-lines="17,18" data-code-annotation="6">Convert home and away team identities into factor variables.</span>
+</dd>
+</dl>
+</div>
+</div>
+<p>To better understand the structure of <code>results</code>, we can take a look at a few rows corresponding to Wisconsin’s home games.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>results <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(home.team <span class="sc">==</span> <span class="st">"Wisconsin"</span>) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">slice_sample</span>(<span class="at">n=</span><span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 4
+  home.team away.team       home.win away.win
+  &lt;fct&gt;     &lt;fct&gt;              &lt;dbl&gt;    &lt;dbl&gt;
+1 Wisconsin Mercyhurst             1        0
+2 Wisconsin Vermont                1        0
+3 Wisconsin St. Cloud State        2        0
+4 Wisconsin Maine                  2        0
+5 Wisconsin Minnesota State        3        0</code></pre>
+</div>
+</div>
+<p>The data table records that Wisconsin played Minnesota State at home three times, winning all three.</p>
+</section>
+<section id="estimating-extracting-team-strengths" class="level3">
+<h3 class="anchored" data-anchor-id="estimating-extracting-team-strengths">Estimating &amp; Extracting Team Strengths</h3>
+<p>We’re now ready to estimate the latent strength parameters using the function <code>BTm</code> from the <strong>BradleyTerry2</strong> package.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-28"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-28-1"><a href="#annotated-cell-28-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span></span>
+<span id="annotated-cell-28-2"><a href="#annotated-cell-28-2" aria-hidden="true" tabindex="-1"></a>  BradleyTerry2<span class="sc">::</span><span class="fu">BTm</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-28" data-target-annotation="1">1</button><span id="annotated-cell-28-3" class="code-annotation-target"><a href="#annotated-cell-28-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">outcome =</span> <span class="fu">cbind</span>(home.win, away.win),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-28" data-target-annotation="2">2</button><span id="annotated-cell-28-4" class="code-annotation-target"><a href="#annotated-cell-28-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">player1 =</span> home.team, <span class="at">player2 =</span> away.team,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-28" data-target-annotation="3">3</button><span id="annotated-cell-28-5" class="code-annotation-target"><a href="#annotated-cell-28-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">refcat =</span> <span class="st">"Assumption"</span>,</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-28" data-target-annotation="4">4</button><span id="annotated-cell-28-6" class="code-annotation-target"><a href="#annotated-cell-28-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> results)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-28" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-28" data-code-lines="3" data-code-annotation="1">The <code>outcome</code> argument needs to be a two-column matrix giving the number of home &amp; away team wins for pair of home &amp; away teams.</span>
+</dd>
+<dt data-target-cell="annotated-cell-28" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-28" data-code-lines="4" data-code-annotation="2">We use <code>player1</code> and <code>player2</code> to indicate the home and way teams</span>
+</dd>
+<dt data-target-cell="annotated-cell-28" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-28" data-code-lines="5" data-code-annotation="3">We manually specify the reference team for whom we set <span class="math inline">\(\lambda = 0.\)</span></span>
+</dd>
+<dt data-target-cell="annotated-cell-28" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-28" data-code-lines="6" data-code-annotation="4"><code>BTm</code> looks for the variables referenced in the <code>outcome</code>, <code>player1</code>, and <code>player2</code> arguments within the data table passed in the <code>data</code> argument.</span>
+</dd>
+</dl>
+</div>
+</div>
+<p>The function <code>BTabilities()</code> returns a matrix with columns containing the estimated value of <span class="math inline">\(\lambda\)</span> for each team and the associated standard error. Taking a look at the first few rows, we can verify that <code>BTm</code> set Assumption College’s latent strength to be 0. We further see that the model estimates the next several teams as having very large <span class="math inline">\(\lambda\)</span>’s, suggesting that they are very likely to beat Assumption.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>lambda_hat <span class="ot">&lt;-</span> BradleyTerry2<span class="sc">::</span><span class="fu">BTabilities</span>(fit)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>lambda_hat[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   ability      s.e.
+Assumption        0.000000 0.0000000
+Bemidji State     2.505629 0.9056746
+Boston College    3.175912 0.8034190
+Boston University 2.911217 0.8074112
+Brown             3.264599 0.8090087</code></pre>
+</div>
+</div>
+<p>Wisconsin, Ohio State, Cornell, and Minnesota all have even larger positive estimated strengths. This is not especially surprising, as these are four of the better teams in the country</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>f4_teams <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Ohio State"</span>, <span class="st">"Wisconsin"</span>, <span class="st">"Penn State"</span>, <span class="st">"Northeastern"</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>lambda_hat[f4_teams,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              ability      s.e.
+Ohio State   7.240214 0.9957381
+Wisconsin    7.158640 1.0120701
+Penn State   5.306723 0.9072112
+Northeastern 4.794769 0.8347753</code></pre>
+</div>
+</div>
+<p>For later visualizations, it will be helpful to use three-letter abbreviations for each team instead of printing their full names. There is a <a href="">table of team abbreviations</a> on the course’s GitHub repository. We can load it directly into our R session as follows</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>target <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/skdeshpande91/stat441_fall2026/refs/heads/main/data/lecture12/wd1hockey_teams.csv"</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>team_abbreviations <span class="ot">&lt;-</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> target)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><a href="#fig-lambda-hat-raw" class="quarto-xref">Figure&nbsp;1</a> visualizes the estimated latent strength of each team <em>relative</em> to Assumption. We see the vast majority of the estimates are positive and many of the 95% confidence intervals do not cross 0, indicating that most teams are favored against Assumption.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-32"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-32-1"><a href="#annotated-cell-32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">1</span>), <span class="at">mgp =</span> <span class="fu">c</span>(<span class="fl">1.8</span>, <span class="fl">0.5</span>, <span class="dv">0</span>))</span>
+<span id="annotated-cell-32-2"><a href="#annotated-cell-32-2" aria-hidden="true" tabindex="-1"></a>oi_colors <span class="ot">&lt;-</span> <span class="fu">palette.colors</span>(<span class="at">palette =</span> <span class="st">"Okabe-Ito"</span>)</span>
+<span id="annotated-cell-32-3"><a href="#annotated-cell-32-3" aria-hidden="true" tabindex="-1"></a></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-32" data-target-annotation="1">1</button><span id="annotated-cell-32-4" class="code-annotation-target"><a href="#annotated-cell-32-4" aria-hidden="true" tabindex="-1"></a>n_teams <span class="ot">&lt;-</span> <span class="fu">nrow</span>(lambda_hat)</span>
+<span id="annotated-cell-32-5"><a href="#annotated-cell-32-5" aria-hidden="true" tabindex="-1"></a>y_limit <span class="ot">&lt;-</span> <span class="fu">range</span>(<span class="fu">c</span>(lambda_hat[,<span class="dv">1</span>] <span class="sc">-</span> <span class="dv">2</span><span class="sc">*</span>lambda_hat[,<span class="dv">2</span>], lambda_hat[,<span class="dv">1</span>] <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>lambda_hat[,<span class="dv">2</span>]))</span>
+<span id="annotated-cell-32-6"><a href="#annotated-cell-32-6" aria-hidden="true" tabindex="-1"></a></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-32" data-target-annotation="2">2</button><span id="annotated-cell-32-7" class="code-annotation-target"><a href="#annotated-cell-32-7" aria-hidden="true" tabindex="-1"></a>ix <span class="ot">&lt;-</span> <span class="fu">order</span>(lambda_hat[,<span class="dv">1</span>])</span>
+<span id="annotated-cell-32-8"><a href="#annotated-cell-32-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="dv">1</span>, <span class="at">type =</span> <span class="st">"n"</span>, </span>
+<span id="annotated-cell-32-9"><a href="#annotated-cell-32-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Latent strength (relative to Assumption)"</span>,</span>
+<span id="annotated-cell-32-10"><a href="#annotated-cell-32-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, n_teams), <span class="at">ylim =</span> y_limit,</span>
+<span id="annotated-cell-32-11"><a href="#annotated-cell-32-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">xlab =</span> <span class="st">""</span>,</span>
+<span id="annotated-cell-32-12"><a href="#annotated-cell-32-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Estimated lambda"</span>)</span>
+<span id="annotated-cell-32-13"><a href="#annotated-cell-32-13" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">col =</span> oi_colors[<span class="dv">2</span>], <span class="at">lwd =</span> <span class="fl">0.5</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="annotated-cell-32-14"><a href="#annotated-cell-32-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_teams){</span>
+<span id="annotated-cell-32-15"><a href="#annotated-cell-32-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>(<span class="at">x =</span> <span class="fu">c</span>(i,i), </span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-32" data-target-annotation="3">3</button><span id="annotated-cell-32-16" class="code-annotation-target"><a href="#annotated-cell-32-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> lambda_hat[ix[i],<span class="st">"ability"</span>] <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>,<span class="dv">2</span>) <span class="sc">*</span> lambda_hat[ix[i], <span class="st">"s.e."</span>],</span>
+<span id="annotated-cell-32-17"><a href="#annotated-cell-32-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">col =</span> oi_colors[<span class="dv">9</span>], <span class="at">lwd =</span> <span class="fl">0.5</span>)</span>
+<span id="annotated-cell-32-18"><a href="#annotated-cell-32-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">points</span>(<span class="at">x =</span> i, <span class="at">y =</span> lambda_hat[ix[i],<span class="st">"ability"</span>], <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.5</span>, <span class="at">col =</span> oi_colors[<span class="dv">1</span>])</span>
+<span id="annotated-cell-32-19"><a href="#annotated-cell-32-19" aria-hidden="true" tabindex="-1"></a>    team_name <span class="ot">&lt;-</span> <span class="fu">rownames</span>(lambda_hat)[ix[i]]</span>
+<span id="annotated-cell-32-20"><a href="#annotated-cell-32-20" aria-hidden="true" tabindex="-1"></a>  abbr <span class="ot">&lt;-</span> </span>
+<span id="annotated-cell-32-21"><a href="#annotated-cell-32-21" aria-hidden="true" tabindex="-1"></a>    team_abbreviations <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-32-22"><a href="#annotated-cell-32-22" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(team <span class="sc">==</span> team_name) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">pull</span>(abbr)</span>
+<span id="annotated-cell-32-23"><a href="#annotated-cell-32-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(i <span class="sc">%%</span> <span class="dv">2</span> <span class="sc">==</span> <span class="dv">0</span>){</span>
+<span id="annotated-cell-32-24"><a href="#annotated-cell-32-24" aria-hidden="true" tabindex="-1"></a>      <span class="fu">text</span>(<span class="at">x =</span> i, </span>
+<span id="annotated-cell-32-25"><a href="#annotated-cell-32-25" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="fl">0.25</span> <span class="sc">+</span> lambda_hat[ix[i], <span class="st">"ability"</span>]  <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> lambda_hat[ix[i], <span class="st">"s.e."</span>],</span>
+<span id="annotated-cell-32-26"><a href="#annotated-cell-32-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">labels =</span> abbr, <span class="at">cex =</span> <span class="fl">0.7</span>)</span>
+<span id="annotated-cell-32-27"><a href="#annotated-cell-32-27" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span>{</span>
+<span id="annotated-cell-32-28"><a href="#annotated-cell-32-28" aria-hidden="true" tabindex="-1"></a>      <span class="fu">text</span>(<span class="at">x =</span> i, </span>
+<span id="annotated-cell-32-29"><a href="#annotated-cell-32-29" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="sc">-</span><span class="fl">0.25</span> <span class="sc">+</span> lambda_hat[ix[i], <span class="st">"ability"</span>]  <span class="sc">-</span> <span class="dv">2</span> <span class="sc">*</span> lambda_hat[ix[i], <span class="st">"s.e."</span>],</span>
+<span id="annotated-cell-32-30"><a href="#annotated-cell-32-30" aria-hidden="true" tabindex="-1"></a>       <span class="at">labels =</span> abbr, <span class="at">cex =</span> <span class="fl">0.7</span>)</span>
+<span id="annotated-cell-32-31"><a href="#annotated-cell-32-31" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="annotated-cell-32-32"><a href="#annotated-cell-32-32" aria-hidden="true" tabindex="-1"></a>}</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-32" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-32" data-code-lines="4,5" data-code-annotation="1">Get the number of teams and range of <span class="math inline">\(\hat{\lambda}\)</span>’s</span>
+</dd>
+<dt data-target-cell="annotated-cell-32" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-32" data-code-lines="7" data-code-annotation="2">Sort the <span class="math inline">\(\hat{\lambda}\)</span>’s in increasing order and get the indices</span>
+</dd>
+<dt data-target-cell="annotated-cell-32" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-32" data-code-lines="16" data-code-annotation="3">Confidence interval for <span class="math inline">\(\lambda_{j}\)</span> formed by taking the point estimate <span class="math inline">\(\pm 2\)</span> standard errors</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<div id="fig-lambda-hat-raw" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Point estimate and confidence intervals for the latent strength parameter of each collegiate women's hockey team">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-lambda-hat-raw-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="lecture12_files/figure-html/fig-lambda-hat-raw-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Most teams are favored against the reference team (Assumption College)"><img src="lecture12_files/figure-html/fig-lambda-hat-raw-1.png" class="img-fluid figure-img" alt="Point estimate and confidence intervals for the latent strength parameter of each collegiate women's hockey team" width="768"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lambda-hat-raw-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Most teams are favored against the reference team (Assumption College)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Instead of using Assumption College as the reference, we can re-center our estimated <span class="math inline">\(\hat{\lambda}_{j}\)</span>’s using the function <code>update()</code></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>fit_nh <span class="ot">&lt;-</span> <span class="fu">update</span>(fit, <span class="at">refcat =</span> <span class="st">"New Hampshire"</span>)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>lambda_hat_nh <span class="ot">&lt;-</span> BradleyTerry2<span class="sc">::</span><span class="fu">BTabilities</span>(fit_nh)</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>lambda_hat_nh[<span class="fu">c</span>(<span class="st">"Assumption"</span>, <span class="st">"New Hampshire"</span>, <span class="st">"Wisconsin"</span>, <span class="st">"Ohio State"</span>),]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                ability      s.e.
+Assumption    -2.680999 0.7867704
+New Hampshire  0.000000 0.0000000
+Wisconsin      4.477641 0.8497487
+Ohio State     4.559215 0.8296841</code></pre>
+</div>
+</div>
+<p>Visualizing these shifted <span class="math inline">\(\hat{\lambda}_{j}\)</span>’ we find that some teams are significantly stronger than New Hampshire and others are substantially weaker.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-lambda-hat-nh" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Plot of model parameters with different choice of reference team">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-lambda-hat-nh-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="lecture12_files/figure-html/fig-lambda-hat-nh-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Some teams are significantly stronger and some teams are significantly weaker than New Hampshire"><img src="lecture12_files/figure-html/fig-lambda-hat-nh-1.png" class="img-fluid figure-img" alt="Plot of model parameters with different choice of reference team" width="768"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lambda-hat-nh-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Some teams are significantly stronger and some teams are significantly weaker than New Hampshire
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-series-simulate" class="level3">
+<h3 class="anchored" data-anchor-id="sec-series-simulate">Simulating a Best-of-5 Series</h3>
+<p>According to our model estimates, the probability that Wisconsin beats Ohio State in a single game is about 48%</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> (lambda_hat[<span class="st">"Wisconsin"</span>, <span class="st">"ability"</span>] <span class="sc">-</span> lambda_hat[<span class="st">"Ohio State"</span>, <span class="st">"ability"</span>])))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4796178</code></pre>
+</div>
+</div>
+<p>We can use a simulation to estimate the probability that Wisconsin would defeat Ohio State in a best-of-5 series. We first develop code to simulate the series, recording the eventual winner and the number of games needed to be played. For this simulation, we use a <code>while()</code> loop in which each iteration involves simulating a single game. While running this loop, we keep a running tally of each teams’ wins (<code>wi_wins</code> and <code>osu_wins</code>) as well as the number of games played <code>game_counter</code>. We want to iterate through the loop until either (i) <code>wi_wins == 3 &amp; osu_wins &lt; 3</code> (Wisconsin wins the series) or (ii) <code>osu_wins == 3 &amp; wi_wins &lt; 3</code> (Ohio State wins the series).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-35"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-35" data-target-annotation="1">1</button><span id="annotated-cell-35-1" class="code-annotation-target"><a href="#annotated-cell-35-1" aria-hidden="true" tabindex="-1"></a>wi_wins <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="annotated-cell-35-2"><a href="#annotated-cell-35-2" aria-hidden="true" tabindex="-1"></a>osu_wins <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="annotated-cell-35-3"><a href="#annotated-cell-35-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-35-4"><a href="#annotated-cell-35-4" aria-hidden="true" tabindex="-1"></a>wi_prob <span class="ot">&lt;-</span> </span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-35" data-target-annotation="2">2</button><span id="annotated-cell-35-5" class="code-annotation-target"><a href="#annotated-cell-35-5" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> (lambda_hat[<span class="st">"Wisconsin"</span>, <span class="st">"ability"</span>] <span class="sc">-</span> lambda_hat[<span class="st">"Ohio State"</span>, <span class="st">"ability"</span>])))</span>
+<span id="annotated-cell-35-6"><a href="#annotated-cell-35-6" aria-hidden="true" tabindex="-1"></a></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-35" data-target-annotation="3">3</button><span id="annotated-cell-35-7" class="code-annotation-target"><a href="#annotated-cell-35-7" aria-hidden="true" tabindex="-1"></a>game_counter <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="annotated-cell-35-8"><a href="#annotated-cell-35-8" aria-hidden="true" tabindex="-1"></a>outcomes <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="at">times=</span> <span class="dv">5</span>)</span>
+<span id="annotated-cell-35-9"><a href="#annotated-cell-35-9" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">481</span>)</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-35" data-target-annotation="4">4</button><span id="annotated-cell-35-10" class="code-annotation-target"><a href="#annotated-cell-35-10" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span>( wi_wins  <span class="sc">&lt;</span> <span class="dv">3</span> <span class="sc">&amp;</span> osu_wins <span class="sc">&lt;</span> <span class="dv">3</span> <span class="sc">&amp;</span> game_counter <span class="sc">&lt;</span> <span class="dv">5</span>){</span>
+<span id="annotated-cell-35-11"><a href="#annotated-cell-35-11" aria-hidden="true" tabindex="-1"></a>  game_counter <span class="ot">&lt;-</span> game_counter <span class="sc">+</span> <span class="dv">1</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-35" data-target-annotation="5">5</button><span id="annotated-cell-35-12" class="code-annotation-target"><a href="#annotated-cell-35-12" aria-hidden="true" tabindex="-1"></a>  outcomes[game_counter] <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="at">n =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> wi_prob)</span>
+<span id="annotated-cell-35-13"><a href="#annotated-cell-35-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-35" data-target-annotation="6">6</button><span id="annotated-cell-35-14" class="code-annotation-target"><a href="#annotated-cell-35-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(outcomes[game_counter] <span class="sc">==</span> <span class="dv">1</span>) wi_wins <span class="ot">&lt;-</span> wi_wins <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="annotated-cell-35-15"><a href="#annotated-cell-35-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> <span class="cf">if</span>(outcomes[game_counter] <span class="sc">==</span> <span class="dv">0</span>) osu_wins <span class="ot">&lt;-</span> osu_wins <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="annotated-cell-35-16"><a href="#annotated-cell-35-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-35-17"><a href="#annotated-cell-35-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="annotated-cell-35-18"><a href="#annotated-cell-35-18" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(wi_wins <span class="sc">==</span> <span class="dv">3</span>){ </span>
+<span id="annotated-cell-35-19"><a href="#annotated-cell-35-19" aria-hidden="true" tabindex="-1"></a>  winner <span class="ot">&lt;-</span> <span class="st">"Wisconsin"</span></span>
+<span id="annotated-cell-35-20"><a href="#annotated-cell-35-20" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> <span class="cf">if</span>(osu_wins <span class="sc">==</span> <span class="dv">3</span>){</span>
+<span id="annotated-cell-35-21"><a href="#annotated-cell-35-21" aria-hidden="true" tabindex="-1"></a>  winner <span class="ot">&lt;-</span> <span class="st">"Ohio State"</span></span>
+<span id="annotated-cell-35-22"><a href="#annotated-cell-35-22" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span>{</span>
+<span id="annotated-cell-35-23"><a href="#annotated-cell-35-23" aria-hidden="true" tabindex="-1"></a>  winner <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="annotated-cell-35-24"><a href="#annotated-cell-35-24" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="annotated-cell-35-25"><a href="#annotated-cell-35-25" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="annotated-cell-35-26"><a href="#annotated-cell-35-26" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Series ended after"</span>, game_counter, <span class="st">" games. Winner = "</span>, winner, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="annotated-cell-35-27"><a href="#annotated-cell-35-27" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Wisconsin: "</span>, wi_wins, <span class="st">" Ohio State: "</span>, osu_wins, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="annotated-cell-35-28"><a href="#annotated-cell-35-28" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Game results:"</span>, outcomes, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-35" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-35" data-code-lines="1,2" data-code-annotation="1">Initialize the count of each teams’ wins to be 0</span>
+</dd>
+<dt data-target-cell="annotated-cell-35" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-35" data-code-lines="5" data-code-annotation="2">P(Wisconsin beats Ohio State)</span>
+</dd>
+<dt data-target-cell="annotated-cell-35" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-35" data-code-lines="7" data-code-annotation="3">Initialize the number of games played to 0. This counter is incremented in every loop iteration</span>
+</dd>
+<dt data-target-cell="annotated-cell-35" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-35" data-code-lines="10" data-code-annotation="4">We simulate a game only if the series is not yet decided</span>
+</dd>
+<dt data-target-cell="annotated-cell-35" data-target-annotation="5">5</dt>
+<dd>
+<span data-code-cell="annotated-cell-35" data-code-lines="12" data-code-annotation="5">Simulate outcome of the match: <code>outcome = 1</code> means Wisconsin won and <code>outcome = 0</code> means Ohio State won</span>
+</dd>
+<dt data-target-cell="annotated-cell-35" data-target-annotation="6">6</dt>
+<dd>
+<span data-code-cell="annotated-cell-35" data-code-lines="14,15" data-code-annotation="6">Increment running tallies of each teams’ wins based on <code>outcome</code></span>
+</dd>
+</dl>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Series ended after 4  games. Winner =  Ohio State 
+Wisconsin:  1  Ohio State:  3 
+Game results: 0 0 1 0 NA </code></pre>
+</div>
+</div>
+<p>In this single simulation, Wisconsin loses the first game, wins the second and third game, loses the fourh game, and wins the fifth game. To estimate the probability that Wisconsin wins a 5 game series, we can repeat this simulation many, many times. In the following code block, we create a data frame <code>series_results</code> whose rows corresponding to individual simulation replications and which contains two columns, one recording the winner and the other recording the number of games played to determine the winner.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-36"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-36-1"><a href="#annotated-cell-36-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">5000</span></span>
+<span id="annotated-cell-36-2"><a href="#annotated-cell-36-2" aria-hidden="true" tabindex="-1"></a>series_results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Winner =</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="at">times =</span> n_sims), <span class="at">Games =</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="at">times =</span> n_sims))</span>
+<span id="annotated-cell-36-3"><a href="#annotated-cell-36-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-36-4"><a href="#annotated-cell-36-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-36-5"><a href="#annotated-cell-36-5" aria-hidden="true" tabindex="-1"></a>wi_prob <span class="ot">&lt;-</span> </span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-36" data-target-annotation="1">1</button><span id="annotated-cell-36-6" class="code-annotation-target"><a href="#annotated-cell-36-6" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> (lambda_hat[<span class="st">"Wisconsin"</span>, <span class="st">"ability"</span>] <span class="sc">-</span> lambda_hat[<span class="st">"Ohio State"</span>, <span class="st">"ability"</span>])))</span>
+<span id="annotated-cell-36-7"><a href="#annotated-cell-36-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-36-8"><a href="#annotated-cell-36-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(r <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_sims){</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-36" data-target-annotation="2">2</button><span id="annotated-cell-36-9" class="code-annotation-target"><a href="#annotated-cell-36-9" aria-hidden="true" tabindex="-1"></a>  wi_wins <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="annotated-cell-36-10"><a href="#annotated-cell-36-10" aria-hidden="true" tabindex="-1"></a>  osu_wins <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="annotated-cell-36-11"><a href="#annotated-cell-36-11" aria-hidden="true" tabindex="-1"></a>  game_counter <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="annotated-cell-36-12"><a href="#annotated-cell-36-12" aria-hidden="true" tabindex="-1"></a>  winner <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="annotated-cell-36-13"><a href="#annotated-cell-36-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="annotated-cell-36-14"><a href="#annotated-cell-36-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">479</span><span class="sc">+</span>r)</span>
+<span id="annotated-cell-36-15"><a href="#annotated-cell-36-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span>(wi_wins <span class="sc">&lt;</span> <span class="dv">3</span> <span class="sc">&amp;</span> osu_wins <span class="sc">&lt;</span> <span class="dv">3</span> <span class="sc">&amp;</span> game_counter <span class="sc">&lt;</span> <span class="dv">5</span>){</span>
+<span id="annotated-cell-36-16"><a href="#annotated-cell-36-16" aria-hidden="true" tabindex="-1"></a>    game_counter <span class="ot">&lt;-</span> game_counter <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="annotated-cell-36-17"><a href="#annotated-cell-36-17" aria-hidden="true" tabindex="-1"></a>    outcome <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="at">n =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> wi_prob)</span>
+<span id="annotated-cell-36-18"><a href="#annotated-cell-36-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-36" data-target-annotation="3">3</button><span id="annotated-cell-36-19" class="code-annotation-target"><a href="#annotated-cell-36-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(outcome <span class="sc">==</span> <span class="dv">1</span>) wi_wins <span class="ot">&lt;-</span> wi_wins<span class="sc">+</span><span class="dv">1</span></span>
+<span id="annotated-cell-36-20"><a href="#annotated-cell-36-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> osu_wins <span class="ot">&lt;-</span> osu_wins <span class="ot">&lt;-</span> osu_wins <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="annotated-cell-36-21"><a href="#annotated-cell-36-21" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="annotated-cell-36-22"><a href="#annotated-cell-36-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="annotated-cell-36-23"><a href="#annotated-cell-36-23" aria-hidden="true" tabindex="-1"></a>  series_results[r, <span class="st">"Games"</span>] <span class="ot">&lt;-</span> game_counter</span>
+<span id="annotated-cell-36-24"><a href="#annotated-cell-36-24" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(wi_wins <span class="sc">==</span> <span class="dv">3</span>) series_results[r, <span class="st">"Winner"</span>] <span class="ot">&lt;-</span> <span class="st">"Wisconsin"</span></span>
+<span id="annotated-cell-36-25"><a href="#annotated-cell-36-25" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> <span class="cf">if</span>(osu_wins <span class="sc">==</span> <span class="dv">3</span>) series_results[r, <span class="st">"Winner"</span>] <span class="ot">&lt;-</span> <span class="st">"Ohio State"</span></span>
+<span id="annotated-cell-36-26"><a href="#annotated-cell-36-26" aria-hidden="true" tabindex="-1"></a>}</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-36" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-36" data-code-lines="6" data-code-annotation="1">Since <span class="math inline">\(\mathbb{P}(\textrm{Wisconsin beats Ohio State})\)</span> does not change across simulation iterations, we define this outside the main loop</span>
+</dd>
+<dt data-target-cell="annotated-cell-36" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-36" data-code-lines="9,10,11,12" data-code-annotation="2">At the beginning of each simulation, we need to re-initialize the running tallies of each team’s wins and the number of games played</span>
+</dd>
+<dt data-target-cell="annotated-cell-36" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-36" data-code-lines="19,20" data-code-annotation="3">Since we’re only interested in the ultimate winner and number of games played, there is no need to save the individual match outcomes. But if you want to estimate the probability that Wisconsin wins the series but loses the first game, you’ll need to save individual match outcomes.</span>
+</dd>
+</dl>
+</div>
+</div>
+<p>Across the 5000 simulated series, Wisconsin won 2275 times (45.5%. We further estimate that the series ends in 3 games with probability 24.96% (1248/5000; in 4 games with probability 37.5% (1875/5000); and in 5 games with probability 37.5% (1875/5000)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(series_results<span class="sc">$</span>Winner)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Ohio State  Wisconsin 
+      2725       2275 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(series_results<span class="sc">$</span>Games)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   3    4    5 
+1248 1875 1877 </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="looking-ahead" class="level2">
+<h2 class="anchored" data-anchor-id="looking-ahead">Looking Ahead</h2>
+<p>Some of the games in our dataset were played at team’s home venue (e.g., La Bahn Arena here in Madison) while other games were played a neutral venue (e.g., the championship round of the Beanpot, which is typically played at T.D. Garden in Boston). Our initial Bradley-Terry model does not account for any potential home-ice advantage. In <a href="lecture13.qmd">Lecture 13</a>, we will add an term to our model that is 1 if the a game was played at one of the teams’ home and is 0 if it was played a neutral site.</p>
+<p>We will then simulate a more complex, single-elimination tournament and use the simulation to estimated probabilities of events like “Wisconsin reaches the semi-finals”. To facilitate this, we will save the data table <code>no_ties</code> for future use</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(hockey_results, <span class="at">file =</span> <span class="st">"wd1hockey_regseason_2025_2026.RData"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>In doing so, the Badgers won their second consecutive championship, having beating Ohio State in 2025 as well. You can watch the <a href="https://www.youtube.com/watch?v=gUANkwgxgD0&amp;t=6394s">2024-25 finals</a> and<a href="https://www.youtube.com/watch?v=hzbTC706Ulw">2025-26 finals</a> on YouTube.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>In a “best of” series, teams play each other until one has won a majority of the contests. So, in a “best-of-5” series, the first team to reach 3 wins is declared the series winner. For more, check out the <a href="https://en.wikipedia.org/wiki/Playoff_format#Best-of_formats">Wikipedia entry</a>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>That is, manually computing <code>1/(1 + exp(-1 * (lambda[i] - lambda[j])))</code> for every pair of <code>(i,j)</code>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Many competitions features a round-robin “group stage” with the top-2 finishers for each group advancing to a single-elimination tournament to decide the champion.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>If you are familiar with regex from other classes and/or non-R contexts, you’ll notice the additional backslash in our code. This extra escape character is needed because R (i) passes regex as strings and (ii) already uses the single backslash as an escape character in a string. See the <a href="https://stringr.tidyverse.org/articles/regular-expressions.html#escaping">section on Escaping from the <strong>stringr</strong> vignette</a> for more details.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>For a very brief introduction to their use in the R <em>tidyverse</em>, check of the <a href="https://stringr.tidyverse.org/articles/regular-expressions.html">regular expression vignette of <strong>stringi</strong></a>. You may also find <a href="https://blog.hpc.qmul.ac.uk/Beginners-Guide-to-Regular-Expressions/">this tutorial from Queen Mary’s Univesrity</a> a helpful resource that is a bit more general.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+        for (let i=0; i<annoteTargets.length; i++) {
+          const annoteTarget = annoteTargets[i];
+          const targetCell = annoteTarget.getAttribute("data-target-cell");
+          const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+          const contentFn = () => {
+            const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+            if (content) {
+              const tipContent = content.cloneNode(true);
+              tipContent.classList.add("code-annotation-tip-content");
+              return tipContent.outerHTML;
+            }
+          }
+          const config = {
+            allowHTML: true,
+            content: contentFn,
+            onShow: (instance) => {
+              selectCodeLines(instance.reference);
+              instance.reference.classList.add('code-annotation-active');
+              window.tippy.hideAll();
+            },
+            onHide: (instance) => {
+              unselectCodeLines();
+              instance.reference.classList.remove('code-annotation-active');
+            },
+            maxWidth: 300,
+            delay: [50, 0],
+            duration: [200, 0],
+            offset: [5, 10],
+            arrow: true,
+            appendTo: function(el) {
+              return el.parentElement.parentElement.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'quarto',
+            placement: 'right',
+            popperOptions: {
+              modifiers: [
+              {
+                name: 'flip',
+                options: {
+                  flipVariations: false, // true by default
+                  allowedAutoPlacements: ['right'],
+                  fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
+                },
+              },
+              {
+                name: 'preventOverflow',
+                options: {
+                  mainAxis: false,
+                  altAxis: false
+                }
+              }
+              ]        
+            }      
+          };
+          window.tippy(annoteTarget, config); 
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>

@@ -23,7 +23,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-.display.math{display: block; text-align: center; margin: 0.5rem auto;}
 </style>
 
 
@@ -77,6 +76,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -130,6 +158,10 @@ ul.task-list li input[type="checkbox"] {
         <li>
     <a class="dropdown-item" href="../lectures/lecture10.html">
  <span class="dropdown-text">Lecture 10: NFl WAR</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture12.html">
+ <span class="dropdown-text">Lecture 12: Bradley-Terry Models</span></a>
   </li>  
     </ul>
   </li>
@@ -264,8 +296,10 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="extending-bradley-terry-models" class="level3">
 <h3 class="anchored" data-anchor-id="extending-bradley-terry-models">Extending Bradley-Terry Models</h3>
-<p>In <a href="lectures/lecture12.qmd">Lecture 12</a> and <a href="lectures/lecture13.qmd">Lecture 13</a>, we fit Bradley-Terry models in which every team was assigned a latent strength parameter <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Clambda." alt="\lambda." title="\lambda." class="math inline"> In principle, these strengths could depend on certain covariates. For instance, in basketball, one might obtain more accurate predictions by allowing each team’s <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Clambda" alt="\lambda" title="\lambda" class="math inline"> to vary with their offensive and defensive rating. Or, in tennis, the latent strength of each player might vary systematically with player characteristics like height.</p>
-<p>The <strong>BradelyTerry2</strong> package allows one to fit such models in which the the latent strength for team <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20j" alt="j" title="j" class="math inline"> can be decomposed as <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Cdisplaystyle%20%5Clambda_%7Bj%7D%20%3D%20u_%7Bj%7D%20%2B%20%5Cboldsymbol%7B%5Cmathbf%7Bx%7D%7D_%7Bj%7D%5E%7B%5Ctop%7D%5Cbeta%2C" alt="\lambda_{j} = u_{j} + \boldsymbol{\mathbf{x}}_{j}^{\top}\beta," title="\lambda_{j} = u_{j} + \boldsymbol{\mathbf{x}}_{j}^{\top}\beta," class="math display"> where <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20%5Cboldsymbol%7B%5Cmathbf%7Bx%7D%7D_%7Bj%7D" alt="\boldsymbol{\mathbf{x}}_{j}" title="\boldsymbol{\mathbf{x}}_{j}" class="math inline"> is a vector of team-level covariates and <img style="vertical-align:middle" src="https://latex.codecogs.com/svg.latex?%5Ctextstyle%20u_%7Bj%7D" alt="u_{j}" title="u_{j}" class="math inline"> is a team-specific intercept, capturing all parts of team strength not already explained by the covariates.</p>
+<p>In <a href="lectures/lecture12.qmd">Lecture 12</a> and <a href="lectures/lecture13.qmd">Lecture 13</a>, we fit Bradley-Terry models in which every team was assigned a latent strength parameter <span class="math inline">\(\lambda.\)</span> In principle, these strengths could depend on certain covariates. For instance, in basketball, one might obtain more accurate predictions by allowing each team’s <span class="math inline">\(\lambda\)</span> to vary with their offensive and defensive rating. Or, in tennis, the latent strength of each player might vary systematically with player characteristics like height.</p>
+<p>The <strong>BradelyTerry2</strong> package allows one to fit such models in which the the latent strength for team <span class="math inline">\(j\)</span> can be decomposed as <span class="math display">\[
+\lambda_{j} = u_{j} + \boldsymbol{\mathbf{x}}_{j}^{\top}\beta,
+\]</span> where <span class="math inline">\(\boldsymbol{\mathbf{x}}_{j}\)</span> is a vector of team-level covariates and <span class="math inline">\(u_{j}\)</span> is a team-specific intercept, capturing all parts of team strength not already explained by the covariates.</p>
 <p>If you do a project that uses a Bradley-Terry model, I encourage you to investigate the possibility that the latent strengths might vary with respect to covariates.</p>
 </section>
 </section>
