@@ -557,7 +557,7 @@ We further see that the model estimates the next several teams as having very la
 lambda_hat <- BradleyTerry2::BTabilities(fit)
 lambda_hat[1:5,]
 ```
-Wisconsin, Ohio State, Cornell, and Minnesota all have even larger positive estimated strengths.
+Wisconsin, Ohio State, Penn State, and Northeastern all have even larger positive estimated strengths.
 This is not especially surprising, as these are four of the better teams in the country
 ```{r}
 #| label: view-frozen4-lambda

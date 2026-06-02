@@ -2,16 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.7.32">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Lecture 12: Bradley-Terry Models – STAT441</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -74,16 +71,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../site_libs/quarto-axe/axe-check.js" type="module"></script>
-<script id="quarto-axe-checker-options" type="text/plain">eyJvdXRwdXQiOiJkb2N1bWVudCJ9</script>
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-da920e58b6ff959c98c9ccc31dcc4995.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -115,7 +106,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -128,7 +119,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+      if (mathElements[i].tagName == "SPAN") {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -200,6 +191,10 @@ window.Quarto = {
         <li>
     <a class="dropdown-item" href="../lectures/lecture12.html">
  <span class="dropdown-text">Lecture 12: Bradley-Terry Models</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture13.html">
+ <span class="dropdown-text">Lecture 13: Tournament Simulation</span></a>
   </li>  
     </ul>
   </li>
@@ -281,6 +276,12 @@ window.Quarto = {
  <span class="menu-text">Lecture 12: Bradley-Terry Models</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 13: Tournament Simulation</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -357,8 +358,8 @@ window.Quarto = {
 \mathbb{P}(\textrm{team 1 beats team 2}) = \frac{e^{1}}{e^{1} + e^{0.5}} \approx 62\%
 \]</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.5</span>, <span class="fl">0.3</span>, <span class="dv">0</span>)</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> (lambda[<span class="dv">1</span>] <span class="sc">-</span> lambda[<span class="dv">2</span>])))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.5</span>, <span class="fl">0.3</span>, <span class="dv">0</span>)</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> (lambda[<span class="dv">1</span>] <span class="sc">-</span> lambda[<span class="dv">2</span>])))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
@@ -373,7 +374,7 @@ window.Quarto = {
 </div>
 <p>Manually computing the probability that each team beats every other team is not too difficulty<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. To compute all these probabilities in one go, we can make use of the <code>outer()</code> function to assemble a matrix containing all pairwise differences of the <span class="math inline">\(\lambda_{i}'\)</span>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">outer</span>(<span class="at">X =</span> lambda, <span class="at">Y =</span> lambda, <span class="at">FUN =</span> <span class="st">"-"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">outer</span>(<span class="at">X =</span> lambda, <span class="at">Y =</span> lambda, <span class="at">FUN =</span> <span class="st">"-"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
@@ -392,9 +393,9 @@ window.Quarto = {
 </div>
 <p>Once we have these differences, which are on the log-odds scale, we can apply the <a href="../slides/raw_slides/slides_03.qmd#fig-logistic">inverse logistic</a> function to transform them to the probability scale. The result is a matrix whose <span class="math inline">\((i,j)\)</span> element is <span class="math inline">\(\mathbb{P}(\textrm{team i beats team j})\)</span>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> <span class="fu">outer</span>(<span class="at">X =</span> lambda, <span class="at">Y =</span> lambda, <span class="at">FUN =</span> <span class="st">"-"</span>)))</span>
+<div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> <span class="fu">outer</span>(<span class="at">X =</span> lambda, <span class="at">Y =</span> lambda, <span class="at">FUN =</span> <span class="st">"-"</span>)))</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-2" class="code-annotation-target"><a href="#annotated-cell-3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">diag</span>(probs) <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(probs, <span class="at">digits =</span> <span class="dv">3</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(probs, <span class="at">digits =</span> <span class="dv">3</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
@@ -415,7 +416,7 @@ window.Quarto = {
 0.622 \times 0.668 \times (1 - 0.731) \approx 11.1\%
 \]</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(probs[<span class="dv">1</span>,<span class="dv">2</span>] <span class="sc">*</span> probs[<span class="dv">1</span>,<span class="dv">3</span>] <span class="sc">*</span> (<span class="dv">1</span><span class="sc">-</span>probs[<span class="dv">1</span>,<span class="dv">4</span>]), <span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(probs[<span class="dv">1</span>,<span class="dv">2</span>] <span class="sc">*</span> probs[<span class="dv">1</span>,<span class="dv">3</span>] <span class="sc">*</span> (<span class="dv">1</span><span class="sc">-</span>probs[<span class="dv">1</span>,<span class="dv">4</span>]), <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.112</code></pre>
 </div>
@@ -428,9 +429,9 @@ window.Quarto = {
 \end{align}
 \]</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>probs[<span class="dv">2</span>,<span class="dv">1</span>] <span class="sc">*</span> probs[<span class="dv">2</span>,<span class="dv">3</span>] <span class="sc">*</span> probs[<span class="dv">4</span>,<span class="dv">2</span>] <span class="sc">+</span> </span>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>probs[<span class="dv">2</span>,<span class="dv">1</span>] <span class="sc">*</span> probs[<span class="dv">2</span>,<span class="dv">3</span>] <span class="sc">*</span> probs[<span class="dv">4</span>,<span class="dv">2</span>] <span class="sc">+</span> </span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  probs[<span class="dv">2</span>,<span class="dv">1</span>] <span class="sc">*</span> probs[<span class="dv">2</span>,<span class="dv">4</span>] <span class="sc">*</span> probs[<span class="dv">3</span>,<span class="dv">2</span>] <span class="sc">+</span> </span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  probs[<span class="dv">1</span>,<span class="dv">2</span>] <span class="sc">*</span> probs[<span class="dv">2</span>,<span class="dv">3</span>] <span class="sc">*</span> probs[<span class="dv">2</span>,<span class="dv">4</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  probs[<span class="dv">1</span>,<span class="dv">2</span>] <span class="sc">*</span> probs[<span class="dv">2</span>,<span class="dv">3</span>] <span class="sc">*</span> probs[<span class="dv">2</span>,<span class="dv">4</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.3971986</code></pre>
 </div>
@@ -442,7 +443,7 @@ window.Quarto = {
 <p>A much more elegant solution is to estimate this probability via simulation. Specifically, we can use the estimated match outcome probabilities to simulate each of the 6 games in our tournament many, many times. We can then compute the proportion of simulations in which Team 3 finishes in the top-2 in terms of wins.</p>
 <p>To perform this simulation, we begin by enumerating each pair of teams using the <code>combn()</code> function.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">combn</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">m =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">combn</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">m =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     [,1] [,2] [,3] [,4] [,5] [,6]
 [1,]    1    1    1    2    2    3
@@ -451,7 +452,7 @@ window.Quarto = {
 </div>
 <p>The function <code>combn()</code> returns an array with two rows (one for each team) and columns for every game in the tournament. It will be more useful for us to convert this into a data table with rows for each game. In this table, we will label the teams <code>player1</code> and <code>player2</code> and also append a column containing the probability that <code>player1</code> beats <code>player2</code></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-hidden="true" tabindex="-1"></a>design <span class="ot">&lt;-</span> </span>
+<div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-hidden="true" tabindex="-1"></a>design <span class="ot">&lt;-</span> </span>
 <span id="annotated-cell-7-2"><a href="#annotated-cell-7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">combn</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">m =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span> </span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-3" class="code-annotation-target"><a href="#annotated-cell-7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="2">2</button><span id="annotated-cell-7-4" class="code-annotation-target"><a href="#annotated-cell-7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
@@ -459,7 +460,7 @@ window.Quarto = {
 <span id="annotated-cell-7-6"><a href="#annotated-cell-7-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rowwise</span>() <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="4">4</button><span id="annotated-cell-7-7" class="code-annotation-target"><a href="#annotated-cell-7-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">prob =</span> probs[player1, player2]) <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-7-8"><a href="#annotated-cell-7-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>()</span>
-<span id="annotated-cell-7-9"><a href="#annotated-cell-7-9" aria-hidden="true" tabindex="-1"></a>design</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-7-9"><a href="#annotated-cell-7-9" aria-hidden="true" tabindex="-1"></a>design</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
@@ -494,9 +495,9 @@ window.Quarto = {
 </div>
 <p>Since match outcomes are binary, simulating the outcomes of the 6 matches is equivalent to flipping 6 independent coins, each with its own probability of landing heads. We interpret the event that a particular coin lands heads with the event that <code>player1</code> wins the match and the event of the coin landing tails as the event that <code>player2</code> wins the match. We can simulate these binary events using the <code>rbinom()</code> function</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">479</span>)</span>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">479</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>outcomes <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="at">n =</span> <span class="dv">6</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> design<span class="sc">$</span>prob)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>outcomes</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>outcomes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0 1 1 0 1 1</code></pre>
 </div>
@@ -504,7 +505,7 @@ window.Quarto = {
 <p>The first three entries in <code>outcomes</code> correspond to the games in the first three rows of <code>design</code>, which are played between Team 1 and Teams 2, 3, and 4. So, in this simulation Team 1 loses to Team 2 but beats Teams 3 and 4. The fourth and fifth entry in <code>outcomes</code> corresponds to the games between Team 2 and Teams 3 &amp; 4. These entries are <code>0</code> and <code>1,</code> respectively, meaning that in this simulation Team 2 lost to Team 3 but beat Team 4. Finally, the sixth entry corresponds to the game between Team 3 and Team 4. It is equal to <code>1</code>, meaning that in this simulation Team 3 defeated Team 4.</p>
 <p>To tabulate each teams’ wins, we create a temporary data frame containing the participants and a column recording the winner (<code>winner</code>). Then, we can count the number of times each team appears in the column <code>winner</code> using a grouped summary. In this simulation, Teams 1, 2, and 3 each won exactly 2 games.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1" aria-hidden="true" tabindex="-1"></a>tmp_df <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-9-1"><a href="#annotated-cell-9-1" aria-hidden="true" tabindex="-1"></a>tmp_df <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-9-2"><a href="#annotated-cell-9-2" aria-hidden="true" tabindex="-1"></a>  design <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-9-3"><a href="#annotated-cell-9-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(player1, player2) <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-9-4"><a href="#annotated-cell-9-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
@@ -519,7 +520,7 @@ window.Quarto = {
 <span id="annotated-cell-9-13"><a href="#annotated-cell-9-13" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(winner) <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-9-14"><a href="#annotated-cell-9-14" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">Wins =</span> dplyr<span class="sc">::</span><span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-9-15"><a href="#annotated-cell-9-15" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">Team =</span> winner) <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1">1</button><span id="annotated-cell-9-16" class="code-annotation-target"><a href="#annotated-cell-9-16" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">complete</span>(Team, <span class="at">fill =</span> <span class="fu">list</span>(<span class="at">Wins =</span> <span class="dv">0</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1">1</button><span id="annotated-cell-9-16" class="code-annotation-target"><a href="#annotated-cell-9-16" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">complete</span>(Team, <span class="at">fill =</span> <span class="fu">list</span>(<span class="at">Wins =</span> <span class="dv">0</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-9" data-target-annotation="1">1</dt>
@@ -531,7 +532,7 @@ window.Quarto = {
 </div>
 <p>We can now repeat this simulation many times, each time recording the number of wins for each team. In the code block below, build an array whose rows correspond to simulation replications and whose columns record the number of wins for each team.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">5000</span></span>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">5000</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>simulated_wins <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">data =</span> <span class="cn">NA</span>, <span class="at">nrow =</span> n_sims, <span class="at">ncol =</span> <span class="dv">4</span>)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(r <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_sims){</span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">479</span><span class="sc">+</span>r)</span>
@@ -549,11 +550,11 @@ window.Quarto = {
 <span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">complete</span>(Team, <span class="at">fill =</span> <span class="fu">list</span>(<span class="at">Wins =</span> <span class="dv">0</span>))</span>
 <span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>  simulated_wins[r,] <span class="ot">&lt;-</span> wins <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">pull</span>(Wins)</span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Out of the 5000 simulations, Team 1 won all 3 of its games in 1534 simulations. Based on this, our <em>estimated</em> probability of Team 1 winning all 3 of its matches is <span class="math inline">\(1534/5000 \approx 30.6\%,\)</span> which is quite close to the exact value of 30.4% (which we can obtain by multiplying <code>probs[1,2] * probs[1,3] * probs[1,4]</code>).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(simulated_wins[,<span class="dv">1</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(simulated_wins[,<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
    0    1    2    3 
@@ -562,17 +563,17 @@ window.Quarto = {
 </div>
 <p>To estimate the probability that Team 3 finishes in the top-2, we will first rank each team based on the number of games they won in each simulation. Like in <a href="lecture05.qmd">Lecture 5</a>, we will call <code>rank</code> on the negative value of wins so that teams with more wins get lower numerical ranks. In the case of ties, we will assign the minimum possible rank (using the argument <code>ties.method="min"</code>). As an illustration, say that Teams 1 and 2 both won 2 games and Teams 3 and 4 both won 1 game each. This convention would assign Teams 1 and 2 a rank of 1 and Teams 3 and 4 a rank of 3 (there would be no second place).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rank</span>(<span class="sc">-</span><span class="dv">1</span><span class="sc">*</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>), <span class="at">ties.method =</span> <span class="st">"min"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rank</span>(<span class="sc">-</span><span class="dv">1</span><span class="sc">*</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>), <span class="at">ties.method =</span> <span class="st">"min"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1 1 3 3</code></pre>
 </div>
 </div>
 <p>We compute the team rankings for each simulation replication using the <code>apply()</code> function.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-13"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-13-1"><a href="#annotated-cell-13-1" aria-hidden="true" tabindex="-1"></a>simulated_ranks <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-13"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-13-1"><a href="#annotated-cell-13-1" aria-hidden="true" tabindex="-1"></a>simulated_ranks <span class="ot">&lt;-</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="1">1</button><span id="annotated-cell-13-2" class="code-annotation-target"><a href="#annotated-cell-13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t</span>(</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="2">2</button><span id="annotated-cell-13-3" class="code-annotation-target"><a href="#annotated-cell-13-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">apply</span>(<span class="sc">-</span><span class="dv">1</span><span class="sc">*</span>simulated_wins, <span class="at">MARGIN =</span> <span class="dv">1</span>,</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="3">3</button><span id="annotated-cell-13-4" class="code-annotation-target"><a href="#annotated-cell-13-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">FUN =</span> rank, <span class="at">ties.method =</span> <span class="st">"min"</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="3">3</button><span id="annotated-cell-13-4" class="code-annotation-target"><a href="#annotated-cell-13-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">FUN =</span> rank, <span class="at">ties.method =</span> <span class="st">"min"</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-13" data-target-annotation="1">1</dt>
@@ -592,7 +593,7 @@ window.Quarto = {
 </div>
 <p>We find that in 1565 of the 5000 simulations, Team 3 had the most wins (rank of 1) and in 1092 of the 5000 simulations, Team 3 had the second-most wins (rank of 2). So, the estimated probability of Team 3 finished in the top-2 in terms of wins is about 0.531.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(simulated_ranks[,<span class="dv">3</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(simulated_ranks[,<span class="dv">3</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
    1    2    3    4 
@@ -618,37 +619,36 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="downloading-pre-scraped-data">Downloading pre-scraped data</h3>
 <p>Unfortunately, USCHO changed their API in Fall 2025 in a way that made it much harder to extract the necessary information from the individual game pages. Luckily, they still publish the results of all games as a single table, which we can copy and paste into a spreadsheet program (i.e., Microsoft Excel, Google Sheets, Apple Numbers, OpenLibre Calc, etc.) and save as a comma-separated file. In the next codeblock, we load a CSV file containing the results from 2025-26, which is also available from the <a href="https://github.com/skdeshpande91/stat441_fall2026/blob/main/data/lecture12/">course GitHub repository</a></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>target <span class="ot">&lt;-</span> <span class="fu">url</span>(<span class="st">"https://raw.githubusercontent.com/skdeshpande91/stat441_fall2026/refs/heads/main/data/lecture12/ncaa_d1_2025_2026.csv"</span>)</span>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>target <span class="ot">&lt;-</span> <span class="fu">url</span>(<span class="st">"https://raw.githubusercontent.com/skdeshpande91/stat441_fall2026/refs/heads/main/data/lecture12/ncaa_d1_2025_2026.csv"</span>)</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>raw_data <span class="ot">&lt;-</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> target) <span class="sc">|&gt;</span></span>
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(</span>
 <span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">HomeScore =</span> <span class="st">`</span><span class="at">Home Score</span><span class="st">`</span>,</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">AwayScore =</span> <span class="st">`</span><span class="at">Away Score</span><span class="st">`</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">AwayScore =</span> <span class="st">`</span><span class="at">Away Score</span><span class="st">`</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Looking at the first ten rows of <code>raw_data</code>, we see that there are columns for the home and away teams and whether the game went to overtime (<code>OT</code>).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>raw_data <span class="sc">|&gt;</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>raw_data <span class="sc">|&gt;</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 11
-   Date   Away  `Away Score` Home  `Home Score` OT    Notes Type  Location TV   
-   &lt;chr&gt;  &lt;chr&gt;        &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt; &lt;chr&gt; &lt;lgl&gt; &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;
- 1 2025-… (9)&nbsp;…            1 (5)&nbsp;…            0 &lt;NA&gt;  NA    EX    Class o… &lt;NA&gt; 
- 2 2025-… (6)&nbsp;…            4 Merc…            3 OT    NA    NC    Mercyhu… &lt;NA&gt; 
- 3 2025-… Minn…            3 RPI&nbsp;…            0 &lt;NA&gt;  NA    NC    Houston… &lt;NA&gt; 
- 4 2025-… Lind…            0 (13)…            5 &lt;NA&gt;  NA    NC    Herb Br… &lt;NA&gt; 
- 5 2025-… Durh…            2 Robe…            1 OT    NA    EX    Clearvi… &lt;NA&gt; 
- 6 2025-… Bish…            0 (7)&nbsp;…            5 &lt;NA&gt;  NA    EX    Cheel A… &lt;NA&gt; 
- 7 2025-… (12)…            0 (10)…            3 &lt;NA&gt;  NA    EX    M&amp;T Ban… &lt;NA&gt; 
- 8 2025-… Main…            1 New …            5 &lt;NA&gt;  NA    EX    Whittem… &lt;NA&gt; 
- 9 2025-… St. …            0 Verm…            8 &lt;NA&gt;  NA    EX    Gutters… &lt;NA&gt; 
-10 2025-… Ston…            2 Bost…            5 &lt;NA&gt;  NA    EX    Silvio … &lt;NA&gt; 
-# ℹ 1 more variable: Winner &lt;chr&gt;</code></pre>
+   Date  Away  AwayScore Home  HomeScore OT    Notes Type  Location TV    Winner
+   &lt;chr&gt; &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;lgl&gt; &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt; 
+ 1 2025… (9)&nbsp;…         1 (5)&nbsp;…         0 &lt;NA&gt;  NA    EX    Class o… &lt;NA&gt;  (9)&nbsp;S…
+ 2 2025… (6)&nbsp;…         4 Merc…         3 OT    NA    NC    Mercyhu… &lt;NA&gt;  (6)&nbsp;M…
+ 3 2025… Minn…         3 RPI&nbsp;…         0 &lt;NA&gt;  NA    NC    Houston… &lt;NA&gt;  Minne…
+ 4 2025… Lind…         0 (13)…         5 &lt;NA&gt;  NA    NC    Herb Br… &lt;NA&gt;  (13)&nbsp;…
+ 5 2025… Durh…         2 Robe…         1 OT    NA    EX    Clearvi… &lt;NA&gt;  Durham
+ 6 2025… Bish…         0 (7)&nbsp;…         5 &lt;NA&gt;  NA    EX    Cheel A… &lt;NA&gt;  (7)&nbsp;C…
+ 7 2025… (12)…         0 (10)…         3 &lt;NA&gt;  NA    EX    M&amp;T Ban… &lt;NA&gt;  (10)&nbsp;…
+ 8 2025… Main…         1 New …         5 &lt;NA&gt;  NA    EX    Whittem… &lt;NA&gt;  New H…
+ 9 2025… St. …         0 Verm…         8 &lt;NA&gt;  NA    EX    Gutters… &lt;NA&gt;  Vermo…
+10 2025… Ston…         2 Bost…         5 &lt;NA&gt;  NA    EX    Silvio … &lt;NA&gt;  Bosto…</code></pre>
 </div>
 </div>
 <p>There is also a column recording the type of game. At least in the first 10 rows, we see several <strong>ex</strong>hibion and <strong>n</strong>on-<strong>c</strong>onference games. We use the <code>table</code> function to see all the different game types in our dataset.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(raw_data<span class="sc">$</span>Type, <span class="at">useNA =</span> <span class="st">'always'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(raw_data<span class="sc">$</span>Type, <span class="at">useNA =</span> <span class="st">'always'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
   AH   EC   EX   HE   NC  NEW   WC &lt;NA&gt; 
@@ -661,10 +661,10 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="sec-determine-winner">Determining the Winner</h3>
 <p>In order to fit a Bradley-Terry model using these data, we still need to determine whether the home team won the game or not. Intuitively, we can do this by adding a column to <code>raw_data</code> that compares <code>HomeScore</code> to <code>AwayScore</code>. This simple strategy is not quite adequate as there are a number of games in which <code>HomeScore = OppScore</code>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>raw_data <span class="sc">|&gt;</span></span>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>raw_data <span class="sc">|&gt;</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(HomeScore <span class="sc">==</span> AwayScore) <span class="sc">|&gt;</span></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n=</span><span class="dv">5</span>) <span class="sc">|&gt;</span></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Away, AwayScore, Home, HomeScore)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Away, AwayScore, Home, HomeScore)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 4
   Away                  AwayScore Home                           HomeScore
@@ -684,26 +684,26 @@ window.Quarto = {
 <li>Go to the individual game page on USCHO’s website for each shootout games and <em>manually</em> edit the column in our CSV.</li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>tmp_data <span class="ot">&lt;-</span> </span>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>tmp_data <span class="ot">&lt;-</span> </span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  raw_data <span class="sc">|&gt;</span></span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
 <span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Winner =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
 <span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>      HomeScore <span class="sc">&gt;</span> AwayScore <span class="sc">~</span> Home,</span>
 <span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>      AwayScore <span class="sc">&gt;</span> HomeScore <span class="sc">~</span> Away,</span>
 <span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">.default =</span> <span class="cn">NA_character_</span>))</span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">write_csv</span>(tmp_data, <span class="at">file =</span> <span class="st">"ncaa_d1_2025_2026.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">write_csv</span>(tmp_data, <span class="at">file =</span> <span class="st">"ncaa_d1_2025_2026.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Once we manually update the file <code>ncaa_d1_2025_2026.csv</code> with the winners from shootout games, we can read it back into our R session.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>hockey_results <span class="ot">&lt;-</span> </span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">"ncaa_d1_2025_2026.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>hockey_results <span class="ot">&lt;-</span> </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> <span class="st">"ncaa_d1_2025_2026.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Here are 10 random rows from our new file.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">441</span>)</span>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">441</span>)</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>hockey_results <span class="sc">|&gt;</span> </span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Date, Away, AwayScore, Home, HomeScore, Winner)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Date, Away, AwayScore, Home, HomeScore, Winner)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 6
    Date                    Away                 AwayScore Home  HomeScore Winner
@@ -731,7 +731,7 @@ window.Quarto = {
 </div>
 <p>In both games, Ohio State was the winner. Before fitting our Bradley-Terry model, we must reformat these data, specifically stripping the seed (the first number in parentheses) and the record (the second parentheses). We use the <a href="https://stringr.tidyverse.org/reference/str_remove.html"><code>str_remove_all</code></a> function from the <a href="https://stringr.tidyverse.org/"><strong>stringr</strong></a> package to remove all parts of the home team, away team, and winner columns contained in parentheses. We also make use of the function <a href="https://stringr.tidyverse.org/reference/str_squish.html"><code>str_squish</code></a> to trim any leading and trailing white spaces. In the codeblock below, we pass a <a href="https://en.wikipedia.org/wiki/Regular_expression">regular expression (regex)</a> as an argument to <code>str_remove</code>. At a very high-level, regular expressions are strings of characters that can specify a matching pattern in text. To find all text within parentheses, we pass the regex <code>"\\([^)]*\\)"</code> as the <code>pattern</code> argument in <code>str_remove</code><a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> Learning to write and work with regex’s is a very useful skill<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> for all data scientists.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>format_name <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>format_name <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  xx <span class="ot">&lt;-</span> </span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    x <span class="sc">|&gt;</span></span>
 <span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    stringr<span class="sc">::</span><span class="fu">str_remove_all</span>(<span class="at">pattern =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">([^)]*</span><span class="sc">\\</span><span class="st">)"</span>) <span class="sc">|&gt;</span></span>
@@ -746,7 +746,7 @@ window.Quarto = {
 <span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">Home =</span> <span class="fu">format_name</span>(Home),</span>
 <span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">Away =</span> <span class="fu">format_name</span>(Away),</span>
 <span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">Winner =</span> <span class="fu">format_name</span>(Winner)) <span class="sc">|&gt;</span></span>
-<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now, when we look at those same 10 rows from earlier, we see that the seeding and records have been removed.</p>
 <div class="cell">
@@ -772,14 +772,14 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="sec-bt-est">Fitting Bradley-Terry Models</h2>
 <p>We will use the package <a href="https://github.com/hturner/BradleyTerry2"><strong>BradleyTerry2</strong></a> to fit Bradley-Terry models in R. You can install the package using</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"hturner/BradleyTerry2"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"hturner/BradleyTerry2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="re-formatting-our-data" class="level3">
 <h3 class="anchored" data-anchor-id="re-formatting-our-data">Re-formatting Our Data</h3>
 <p>The package <strong>BradleyTerry2</strong> uses a somewhat idiosyncratic syntax. Instead of passing a table with one row per game, it instead wants each row to correspond to a home team-away team pair. It further encodes the match results using a pair of numbers, the number of home team wins and the number of away team wins.</p>
 <p>In the following code block, we first divide the data into subgroups corresponding to unique pairs of home and away teams. Then, within each of those subgroups, we count up the number of home team and away team wins.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-26"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-26-1"><a href="#annotated-cell-26-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-26"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-26-1"><a href="#annotated-cell-26-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-26-2"><a href="#annotated-cell-26-2" aria-hidden="true" tabindex="-1"></a>  hockey_results <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-26" data-target-annotation="1">1</button><span id="annotated-cell-26-3" class="code-annotation-target"><a href="#annotated-cell-26-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Winner) <span class="sc">&amp;</span> Type <span class="sc">!=</span> <span class="st">"EX"</span>) <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-26-4"><a href="#annotated-cell-26-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
@@ -796,7 +796,7 @@ window.Quarto = {
 <span id="annotated-cell-26-15"><a href="#annotated-cell-26-15" aria-hidden="true" tabindex="-1"></a>  results <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-26-16"><a href="#annotated-cell-26-16" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-26" data-target-annotation="6">6</button><span id="annotated-cell-26-17" class="code-annotation-target"><a href="#annotated-cell-26-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">home.team =</span> <span class="fu">factor</span>(home.team, <span class="at">levels =</span> unik_teams),</span>
-<span id="annotated-cell-26-18"><a href="#annotated-cell-26-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">away.team =</span> <span class="fu">factor</span>(away.team,<span class="at">levels =</span> unik_teams))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-26-18"><a href="#annotated-cell-26-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">away.team =</span> <span class="fu">factor</span>(away.team,<span class="at">levels =</span> unik_teams))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-26" data-target-annotation="1">1</dt>
@@ -828,8 +828,8 @@ window.Quarto = {
 </div>
 <p>To better understand the structure of <code>results</code>, we can take a look at a few rows corresponding to Wisconsin’s home games.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>results <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(home.team <span class="sc">==</span> <span class="st">"Wisconsin"</span>) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">slice_sample</span>(<span class="at">n=</span><span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>results <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(home.team <span class="sc">==</span> <span class="st">"Wisconsin"</span>) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">slice_sample</span>(<span class="at">n=</span><span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 4
   home.team away.team       home.win away.win
@@ -847,12 +847,12 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="estimating-extracting-team-strengths">Estimating &amp; Extracting Team Strengths</h3>
 <p>We’re now ready to estimate the latent strength parameters using the function <code>BTm</code> from the <strong>BradleyTerry2</strong> package.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-28"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-28-1"><a href="#annotated-cell-28-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-28"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-28-1"><a href="#annotated-cell-28-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-28-2"><a href="#annotated-cell-28-2" aria-hidden="true" tabindex="-1"></a>  BradleyTerry2<span class="sc">::</span><span class="fu">BTm</span>(</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-28" data-target-annotation="1">1</button><span id="annotated-cell-28-3" class="code-annotation-target"><a href="#annotated-cell-28-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">outcome =</span> <span class="fu">cbind</span>(home.win, away.win),</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-28" data-target-annotation="2">2</button><span id="annotated-cell-28-4" class="code-annotation-target"><a href="#annotated-cell-28-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">player1 =</span> home.team, <span class="at">player2 =</span> away.team,</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-28" data-target-annotation="3">3</button><span id="annotated-cell-28-5" class="code-annotation-target"><a href="#annotated-cell-28-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">refcat =</span> <span class="st">"Assumption"</span>,</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-28" data-target-annotation="4">4</button><span id="annotated-cell-28-6" class="code-annotation-target"><a href="#annotated-cell-28-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> results)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-28" data-target-annotation="4">4</button><span id="annotated-cell-28-6" class="code-annotation-target"><a href="#annotated-cell-28-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> results)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-28" data-target-annotation="1">1</dt>
@@ -876,8 +876,8 @@ window.Quarto = {
 </div>
 <p>The function <code>BTabilities()</code> returns a matrix with columns containing the estimated value of <span class="math inline">\(\lambda\)</span> for each team and the associated standard error. Taking a look at the first few rows, we can verify that <code>BTm</code> set Assumption College’s latent strength to be 0. We further see that the model estimates the next several teams as having very large <span class="math inline">\(\lambda\)</span>’s, suggesting that they are very likely to beat Assumption.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>lambda_hat <span class="ot">&lt;-</span> BradleyTerry2<span class="sc">::</span><span class="fu">BTabilities</span>(fit)</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>lambda_hat[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>lambda_hat <span class="ot">&lt;-</span> BradleyTerry2<span class="sc">::</span><span class="fu">BTabilities</span>(fit)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>lambda_hat[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                   ability      s.e.
 Assumption        0.000000 0.0000000
@@ -887,10 +887,10 @@ Boston University 2.911217 0.8074112
 Brown             3.264599 0.8090087</code></pre>
 </div>
 </div>
-<p>Wisconsin, Ohio State, Cornell, and Minnesota all have even larger positive estimated strengths. This is not especially surprising, as these are four of the better teams in the country</p>
+<p>Wisconsin, Ohio State, Penn State, and Northeastern all have even larger positive estimated strengths. This is not especially surprising, as these are four of the better teams in the country</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>f4_teams <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Ohio State"</span>, <span class="st">"Wisconsin"</span>, <span class="st">"Penn State"</span>, <span class="st">"Northeastern"</span>)</span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>lambda_hat[f4_teams,]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>f4_teams <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Ohio State"</span>, <span class="st">"Wisconsin"</span>, <span class="st">"Penn State"</span>, <span class="st">"Northeastern"</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>lambda_hat[f4_teams,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>              ability      s.e.
 Ohio State   7.240214 0.9957381
@@ -901,13 +901,13 @@ Northeastern 4.794769 0.8347753</code></pre>
 </div>
 <p>For later visualizations, it will be helpful to use three-letter abbreviations for each team instead of printing their full names. There is a <a href="">table of team abbreviations</a> on the course’s GitHub repository. We can load it directly into our R session as follows</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>target <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/skdeshpande91/stat441_fall2026/refs/heads/main/data/lecture12/wd1hockey_teams.csv"</span></span>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>target <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/skdeshpande91/stat441_fall2026/refs/heads/main/data/lecture12/wd1hockey_teams.csv"</span></span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>team_abbreviations <span class="ot">&lt;-</span></span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> target)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> target)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><a href="#fig-lambda-hat-raw" class="quarto-xref">Figure&nbsp;1</a> visualizes the estimated latent strength of each team <em>relative</em> to Assumption. We see the vast majority of the estimates are positive and many of the 95% confidence intervals do not cross 0, indicating that most teams are favored against Assumption.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-32"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-32-1"><a href="#annotated-cell-32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">1</span>), <span class="at">mgp =</span> <span class="fu">c</span>(<span class="fl">1.8</span>, <span class="fl">0.5</span>, <span class="dv">0</span>))</span>
+<div class="sourceCode cell-code" id="annotated-cell-32"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-32-1"><a href="#annotated-cell-32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">1</span>), <span class="at">mgp =</span> <span class="fu">c</span>(<span class="fl">1.8</span>, <span class="fl">0.5</span>, <span class="dv">0</span>))</span>
 <span id="annotated-cell-32-2"><a href="#annotated-cell-32-2" aria-hidden="true" tabindex="-1"></a>oi_colors <span class="ot">&lt;-</span> <span class="fu">palette.colors</span>(<span class="at">palette =</span> <span class="st">"Okabe-Ito"</span>)</span>
 <span id="annotated-cell-32-3"><a href="#annotated-cell-32-3" aria-hidden="true" tabindex="-1"></a></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-32" data-target-annotation="1">1</button><span id="annotated-cell-32-4" class="code-annotation-target"><a href="#annotated-cell-32-4" aria-hidden="true" tabindex="-1"></a>n_teams <span class="ot">&lt;-</span> <span class="fu">nrow</span>(lambda_hat)</span>
@@ -938,7 +938,7 @@ Northeastern 4.794769 0.8347753</code></pre>
 <span id="annotated-cell-32-29"><a href="#annotated-cell-32-29" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="sc">-</span><span class="fl">0.25</span> <span class="sc">+</span> lambda_hat[ix[i], <span class="st">"ability"</span>]  <span class="sc">-</span> <span class="dv">2</span> <span class="sc">*</span> lambda_hat[ix[i], <span class="st">"s.e."</span>],</span>
 <span id="annotated-cell-32-30"><a href="#annotated-cell-32-30" aria-hidden="true" tabindex="-1"></a>       <span class="at">labels =</span> abbr, <span class="at">cex =</span> <span class="fl">0.7</span>)</span>
 <span id="annotated-cell-32-31"><a href="#annotated-cell-32-31" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="annotated-cell-32-32"><a href="#annotated-cell-32-32" aria-hidden="true" tabindex="-1"></a>}</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-32-32"><a href="#annotated-cell-32-32" aria-hidden="true" tabindex="-1"></a>}</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-32" data-target-annotation="1">1</dt>
@@ -970,9 +970,9 @@ Figure&nbsp;1: Most teams are favored against the reference team (Assumption Col
 </div>
 <p>Instead of using Assumption College as the reference, we can re-center our estimated <span class="math inline">\(\hat{\lambda}_{j}\)</span>’s using the function <code>update()</code></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>fit_nh <span class="ot">&lt;-</span> <span class="fu">update</span>(fit, <span class="at">refcat =</span> <span class="st">"New Hampshire"</span>)</span>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>fit_nh <span class="ot">&lt;-</span> <span class="fu">update</span>(fit, <span class="at">refcat =</span> <span class="st">"New Hampshire"</span>)</span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>lambda_hat_nh <span class="ot">&lt;-</span> BradleyTerry2<span class="sc">::</span><span class="fu">BTabilities</span>(fit_nh)</span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>lambda_hat_nh[<span class="fu">c</span>(<span class="st">"Assumption"</span>, <span class="st">"New Hampshire"</span>, <span class="st">"Wisconsin"</span>, <span class="st">"Ohio State"</span>),]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>lambda_hat_nh[<span class="fu">c</span>(<span class="st">"Assumption"</span>, <span class="st">"New Hampshire"</span>, <span class="st">"Wisconsin"</span>, <span class="st">"Ohio State"</span>),]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                ability      s.e.
 Assumption    -2.680999 0.7867704
@@ -1001,14 +1001,14 @@ Figure&nbsp;2: Some teams are significantly stronger and some teams are signific
 <h3 class="anchored" data-anchor-id="sec-series-simulate">Simulating a Best-of-5 Series</h3>
 <p>According to our model estimates, the probability that Wisconsin beats Ohio State in a single game is about 48%</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> (lambda_hat[<span class="st">"Wisconsin"</span>, <span class="st">"ability"</span>] <span class="sc">-</span> lambda_hat[<span class="st">"Ohio State"</span>, <span class="st">"ability"</span>])))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> (lambda_hat[<span class="st">"Wisconsin"</span>, <span class="st">"ability"</span>] <span class="sc">-</span> lambda_hat[<span class="st">"Ohio State"</span>, <span class="st">"ability"</span>])))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.4796178</code></pre>
 </div>
 </div>
 <p>We can use a simulation to estimate the probability that Wisconsin would defeat Ohio State in a best-of-5 series. We first develop code to simulate the series, recording the eventual winner and the number of games needed to be played. For this simulation, we use a <code>while()</code> loop in which each iteration involves simulating a single game. While running this loop, we keep a running tally of each teams’ wins (<code>wi_wins</code> and <code>osu_wins</code>) as well as the number of games played <code>game_counter</code>. We want to iterate through the loop until either (i) <code>wi_wins == 3 &amp; osu_wins &lt; 3</code> (Wisconsin wins the series) or (ii) <code>osu_wins == 3 &amp; wi_wins &lt; 3</code> (Ohio State wins the series).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-35"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-35" data-target-annotation="1">1</button><span id="annotated-cell-35-1" class="code-annotation-target"><a href="#annotated-cell-35-1" aria-hidden="true" tabindex="-1"></a>wi_wins <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-35"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-35" data-target-annotation="1">1</button><span id="annotated-cell-35-1" class="code-annotation-target"><a href="#annotated-cell-35-1" aria-hidden="true" tabindex="-1"></a>wi_wins <span class="ot">&lt;-</span> <span class="dv">0</span></span>
 <span id="annotated-cell-35-2"><a href="#annotated-cell-35-2" aria-hidden="true" tabindex="-1"></a>osu_wins <span class="ot">&lt;-</span> <span class="dv">0</span></span>
 <span id="annotated-cell-35-3"><a href="#annotated-cell-35-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-35-4"><a href="#annotated-cell-35-4" aria-hidden="true" tabindex="-1"></a>wi_prob <span class="ot">&lt;-</span> </span>
@@ -1035,7 +1035,7 @@ Figure&nbsp;2: Some teams are significantly stronger and some teams are signific
 <span id="annotated-cell-35-25"><a href="#annotated-cell-35-25" aria-hidden="true" tabindex="-1"></a> </span>
 <span id="annotated-cell-35-26"><a href="#annotated-cell-35-26" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Series ended after"</span>, game_counter, <span class="st">" games. Winner = "</span>, winner, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
 <span id="annotated-cell-35-27"><a href="#annotated-cell-35-27" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Wisconsin: "</span>, wi_wins, <span class="st">" Ohio State: "</span>, osu_wins, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="annotated-cell-35-28"><a href="#annotated-cell-35-28" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Game results:"</span>, outcomes, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-35-28"><a href="#annotated-cell-35-28" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Game results:"</span>, outcomes, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-35" data-target-annotation="1">1</dt>
@@ -1072,7 +1072,7 @@ Game results: 0 0 1 0 NA </code></pre>
 </div>
 <p>In this single simulation, Wisconsin loses the first game, wins the second and third game, loses the fourh game, and wins the fifth game. To estimate the probability that Wisconsin wins a 5 game series, we can repeat this simulation many, many times. In the following code block, we create a data frame <code>series_results</code> whose rows corresponding to individual simulation replications and which contains two columns, one recording the winner and the other recording the number of games played to determine the winner.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-36"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-36-1"><a href="#annotated-cell-36-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">5000</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-36"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-36-1"><a href="#annotated-cell-36-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">5000</span></span>
 <span id="annotated-cell-36-2"><a href="#annotated-cell-36-2" aria-hidden="true" tabindex="-1"></a>series_results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Winner =</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="at">times =</span> n_sims), <span class="at">Games =</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="at">times =</span> n_sims))</span>
 <span id="annotated-cell-36-3"><a href="#annotated-cell-36-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-36-4"><a href="#annotated-cell-36-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -1097,7 +1097,7 @@ Game results: 0 0 1 0 NA </code></pre>
 <span id="annotated-cell-36-23"><a href="#annotated-cell-36-23" aria-hidden="true" tabindex="-1"></a>  series_results[r, <span class="st">"Games"</span>] <span class="ot">&lt;-</span> game_counter</span>
 <span id="annotated-cell-36-24"><a href="#annotated-cell-36-24" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(wi_wins <span class="sc">==</span> <span class="dv">3</span>) series_results[r, <span class="st">"Winner"</span>] <span class="ot">&lt;-</span> <span class="st">"Wisconsin"</span></span>
 <span id="annotated-cell-36-25"><a href="#annotated-cell-36-25" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> <span class="cf">if</span>(osu_wins <span class="sc">==</span> <span class="dv">3</span>) series_results[r, <span class="st">"Winner"</span>] <span class="ot">&lt;-</span> <span class="st">"Ohio State"</span></span>
-<span id="annotated-cell-36-26"><a href="#annotated-cell-36-26" aria-hidden="true" tabindex="-1"></a>}</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-36-26"><a href="#annotated-cell-36-26" aria-hidden="true" tabindex="-1"></a>}</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-36" data-target-annotation="1">1</dt>
@@ -1117,13 +1117,13 @@ Game results: 0 0 1 0 NA </code></pre>
 </div>
 <p>Across the 5000 simulated series, Wisconsin won 2275 times (45.5%. We further estimate that the series ends in 3 games with probability 24.96% (1248/5000; in 4 games with probability 37.5% (1875/5000); and in 5 games with probability 37.5% (1875/5000)</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(series_results<span class="sc">$</span>Winner)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(series_results<span class="sc">$</span>Winner)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Ohio State  Wisconsin 
       2725       2275 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(series_results<span class="sc">$</span>Games)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(series_results<span class="sc">$</span>Games)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
    3    4    5 
@@ -1134,10 +1134,10 @@ Ohio State  Wisconsin
 </section>
 <section id="looking-ahead" class="level2">
 <h2 class="anchored" data-anchor-id="looking-ahead">Looking Ahead</h2>
-<p>Some of the games in our dataset were played at team’s home venue (e.g., La Bahn Arena here in Madison) while other games were played a neutral venue (e.g., the championship round of the Beanpot, which is typically played at T.D. Garden in Boston). Our initial Bradley-Terry model does not account for any potential home-ice advantage. In <a href="lecture13.qmd">Lecture 13</a>, we will add an term to our model that is 1 if the a game was played at one of the teams’ home and is 0 if it was played a neutral site.</p>
+<p>Some of the games in our dataset were played at team’s home venue (e.g., La Bahn Arena here in Madison) while other games were played a neutral venue (e.g., the championship round of the Beanpot, which is typically played at T.D. Garden in Boston). Our initial Bradley-Terry model does not account for any potential home-ice advantage. In <a href="../lectures/lecture13.html">Lecture 13</a>, we will add an term to our model that is 1 if the a game was played at one of the teams’ home and is 0 if it was played a neutral site.</p>
 <p>We will then simulate a more complex, single-elimination tournament and use the simulation to estimated probabilities of events like “Wisconsin reaches the semi-finals”. To facilitate this, we will save the data table <code>no_ties</code> for future use</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(hockey_results, <span class="at">file =</span> <span class="st">"wd1hockey_regseason_2025_2026.RData"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(hockey_results, <span class="at">file =</span> <span class="st">"wd1hockey_regseason_2025_2026.RData"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
@@ -1206,14 +1206,13 @@ Ohio State  Wisconsin
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-      const outerScaffold = trigger.parentElement.cloneNode(true);
-      const codeEl = outerScaffold.querySelector('code');
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
         }
-      }
-      return codeEl.innerText;
+        return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

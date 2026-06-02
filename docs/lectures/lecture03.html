@@ -2,16 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.7.32">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Lecture 3: Estimating XG – STAT441</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -62,6 +59,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -93,16 +91,10 @@ div.csl-indent {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../site_libs/quarto-axe/axe-check.js" type="module"></script>
-<script id="quarto-axe-checker-options" type="text/plain">eyJvdXRwdXQiOiJkb2N1bWVudCJ9</script>
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-da920e58b6ff959c98c9ccc31dcc4995.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -134,7 +126,7 @@ div.csl-indent {
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -147,7 +139,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+      if (mathElements[i].tagName == "SPAN") {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -219,6 +211,10 @@ window.Quarto = {
         <li>
     <a class="dropdown-item" href="../lectures/lecture12.html">
  <span class="dropdown-text">Lecture 12: Bradley-Terry Models</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture13.html">
+ <span class="dropdown-text">Lecture 13: Tournament Simulation</span></a>
   </li>  
     </ul>
   </li>
@@ -300,6 +296,12 @@ window.Quarto = {
  <span class="menu-text">Lecture 12: Bradley-Terry Models</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 13: Tournament Simulation</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -366,7 +368,7 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="sec-data-preparation">Data Preparation</h3>
 <p>We will continue to work with all shot event data from women’s international competitions that StatsBomb makes publicly available. Using code from <a href="../lectures/lecture02.html">Lecture 2</a>, we can load in all the shot event data and create a binary outcome recording whether the shot resulted in a goal.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a>wi_shots <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a>wi_shots <span class="ot">&lt;-</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1">1</button><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a>  StatsBombR<span class="sc">::</span><span class="fu">FreeCompetitions</span>() <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="2">2</button><span id="annotated-cell-1-3" class="code-annotation-target"><a href="#annotated-cell-1-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(competition_gender <span class="sc">==</span> <span class="st">"female"</span> <span class="sc">&amp;</span> competition_international)<span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="3">3</button><span id="annotated-cell-1-4" class="code-annotation-target"><a href="#annotated-cell-1-4" aria-hidden="true" tabindex="-1"></a>  StatsBombR<span class="sc">::</span><span class="fu">FreeMatches</span>() <span class="sc">|&gt;</span></span>
@@ -374,7 +376,7 @@ window.Quarto = {
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="5">5</button><span id="annotated-cell-1-6" class="code-annotation-target"><a href="#annotated-cell-1-6" aria-hidden="true" tabindex="-1"></a>  StatsBombR<span class="sc">::</span><span class="fu">allclean</span>() <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-1-7"><a href="#annotated-cell-1-7" aria-hidden="true" tabindex="-1"></a>  StatsBombR<span class="sc">::</span><span class="fu">get.opposingteam</span>() <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="6">6</button><span id="annotated-cell-1-8" class="code-annotation-target"><a href="#annotated-cell-1-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(type.name <span class="sc">==</span> <span class="st">"Shot"</span> <span class="sc">&amp;</span> shot.body_part.name <span class="sc">!=</span> <span class="st">"Other"</span>) <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="7">7</button><span id="annotated-cell-1-9" class="code-annotation-target"><a href="#annotated-cell-1-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Y =</span> <span class="fu">ifelse</span>(shot.outcome.name <span class="sc">==</span> <span class="st">"Goal"</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="7">7</button><span id="annotated-cell-1-9" class="code-annotation-target"><a href="#annotated-cell-1-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Y =</span> <span class="fu">ifelse</span>(shot.outcome.name <span class="sc">==</span> <span class="st">"Goal"</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
@@ -410,7 +412,7 @@ window.Quarto = {
 </div>
 <p>We will also re-construct the two simple XG models, one that conditions only on body part and the other that conditions on body part and technique. We then create a data table with columns containing the body part, technique, and outcome of the shot as well as the XG predictions from both models.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>xg_model1 <span class="ot">&lt;-</span> </span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>xg_model1 <span class="ot">&lt;-</span> </span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  wi_shots <span class="sc">|&gt;</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(shot.body_part.name) <span class="sc">|&gt;</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">XG1 =</span> <span class="fu">mean</span>(Y))</span>
@@ -423,7 +425,7 @@ window.Quarto = {
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  wi_shots <span class="sc">|&gt;</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Y, shot.body_part.name, shot.technique.name) <span class="sc">|&gt;</span></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(<span class="at">y =</span> xg_model1, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"shot.body_part.name"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(<span class="at">y =</span> xg_model2, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"shot.body_part.name"</span>, <span class="st">"shot.technique.name"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(<span class="at">y =</span> xg_model2, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"shot.body_part.name"</span>, <span class="st">"shot.technique.name"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
@@ -441,14 +443,14 @@ window.Quarto = {
 \]</span> where <span class="math inline">\(\mathbb{I}(\hat{p}_{i} \geq 0.5)\)</span> equals 1 when <span class="math inline">\(\hat{p}_{i} \geq 0.5\)</span> and equals 0 otherwise and <span class="math inline">\(\mathbb{I}(y_{i} \neq \mathbb{I}(\hat{p}_{i} \geq 0.5))\)</span> equals 1 when <span class="math inline">\(y_{i}\)</span> is not equal to <span class="math inline">\(\mathbb{I}(\hat{p}_{i} \geq 0.5)\)</span> and equals 0 otherwise. On the view that misclassification rate captures the number of times our predictions are on the wrong side of the 50% boundary, we prefer models with smaller misclassification rate.</p>
 <p>In the context of XG, misclassification rate measures the proportion of times we predict an XG higher than 0.5 for a non-goal or an XG lower than 0.5 for a goal.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-1" class="code-annotation-target"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a>misclass <span class="ot">&lt;-</span> <span class="cf">function</span>(y, phat){</span>
+<div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-1" class="code-annotation-target"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a>misclass <span class="ot">&lt;-</span> <span class="cf">function</span>(y, phat){</span>
 <span id="annotated-cell-3-2"><a href="#annotated-cell-3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>( <span class="fu">mean</span>( (y <span class="sc">!=</span> <span class="dv">1</span><span class="sc">*</span>(phat <span class="sc">&gt;=</span> <span class="fl">0.5</span>))))</span>
 <span id="annotated-cell-3-3"><a href="#annotated-cell-3-3" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="annotated-cell-3-4"><a href="#annotated-cell-3-4" aria-hidden="true" tabindex="-1"></a></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2">2</button><span id="annotated-cell-3-5" class="code-annotation-target"><a href="#annotated-cell-3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"BodyPart misclassification"</span>,</span>
 <span id="annotated-cell-3-6"><a href="#annotated-cell-3-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">misclass</span>(simple_preds<span class="sc">$</span>Y, simple_preds<span class="sc">$</span>XG1), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
 <span id="annotated-cell-3-7"><a href="#annotated-cell-3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"BodyPart+Technique misclassificaiton"</span>, </span>
-<span id="annotated-cell-3-8"><a href="#annotated-cell-3-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">misclass</span>(simple_preds<span class="sc">$</span>Y, simple_preds<span class="sc">$</span>XG2), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-3-8"><a href="#annotated-cell-3-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">misclass</span>(simple_preds<span class="sc">$</span>Y, simple_preds<span class="sc">$</span>XG2), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
@@ -468,19 +470,19 @@ BodyPart+Technique misclassificaiton 0.112 </code></pre>
 </div>
 <p>Our two simple models have identical misclassification rates of about 10.7%. At first glance this is a bit surprising because the two models return different predicted XG values</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Unique XG1 values:"</span>, <span class="fu">sort</span>(<span class="fu">unique</span>(simple_preds<span class="sc">$</span>XG1)), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Unique XG1 values:"</span>, <span class="fu">sort</span>(<span class="fu">unique</span>(simple_preds<span class="sc">$</span>XG1)), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unique XG1 values: 0.1113281 0.1119565 0.1140625 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Unique XG2 values:"</span>, <span class="fu">sort</span>(<span class="fu">unique</span>(simple_preds<span class="sc">$</span>XG2)), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Unique XG2 values:"</span>, <span class="fu">sort</span>(<span class="fu">unique</span>(simple_preds<span class="sc">$</span>XG2)), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Unique XG2 values: 0 0.06372549 0.06756757 0.07142857 0.08920188 0.1034483 0.1131868 0.1207729 0.1214361 0.1632653 0.2083333 </code></pre>
 </div>
 </div>
 <p>On closer inspection, we find that the two simple models both output predicted XG values that are all less than 0.5. So, the thresholded values <span class="math inline">\(\mathbb{I}(\hat{p}_{i} \geq 0.5)\)</span> are identical for both models’ <span class="math inline">\(\hat{p}_{i}\)</span>’s. Just for comparison’s sake, let’s compute the misclassification rate of the proprietary StatsBomb XG model</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"StatsBomb misclassificaiton"</span>, </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">misclass</span>(wi_shots<span class="sc">$</span>Y, wi_shots<span class="sc">$</span>shot.statsbomb_xg), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"StatsBomb misclassificaiton"</span>, </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">misclass</span>(wi_shots<span class="sc">$</span>Y, wi_shots<span class="sc">$</span>shot.statsbomb_xg), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>StatsBomb misclassificaiton 0.095 </code></pre>
 </div>
@@ -497,29 +499,29 @@ BodyPart+Technique misclassificaiton 0.112 </code></pre>
 \textrm{LogLoss} = -1 \times \sum_{i = 1}^{n}{\left[ y_{i} \times \log(\hat{p}_{i}) + (1 - y_{i})\times\log(1-\hat{p}_{i})\right]}.
 \]</span> Notice that if <span class="math inline">\(y_{i} = 1\)</span> as <span class="math inline">\(\hat{p}_{i} \rightarrow 0,\)</span> the term <span class="math inline">\(y_{i} \times \log{\hat{p}_{i}} \rightarrow -\infty.\)</span> So, while the Brier score is mathematically bounded between 0 and 1, the average log-loss can be arbitrarily large. Essentially, log-loss heavily penalizes predictions that are confident (i.e., very close to 0 or 1) but wrong (i.e., different than <span class="math inline">\(y_{i}\)</span>.) Like we did for the misclassification rate, we define a helper function for computing the Brier score and then apply that function to predictions from our two simple XG models and StatsBomb’s XG model.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>brier <span class="ot">&lt;-</span> <span class="cf">function</span>(y, phat){</span>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>brier <span class="ot">&lt;-</span> <span class="cf">function</span>(y, phat){</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">mean</span>( (y <span class="sc">-</span> phat)<span class="sc">^</span><span class="dv">2</span> ))</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"BodyPart Brier"</span>, </span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">brier</span>(simple_preds<span class="sc">$</span>Y, simple_preds<span class="sc">$</span>XG1), <span class="at">digits =</span> <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">brier</span>(simple_preds<span class="sc">$</span>Y, simple_preds<span class="sc">$</span>XG1), <span class="at">digits =</span> <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>BodyPart Brier 0.0996 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"BodyPart+Technique Brier"</span>, </span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">brier</span>(simple_preds<span class="sc">$</span>Y, simple_preds<span class="sc">$</span>XG2) , <span class="at">digits =</span> <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"BodyPart+Technique Brier"</span>, </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">brier</span>(simple_preds<span class="sc">$</span>Y, simple_preds<span class="sc">$</span>XG2) , <span class="at">digits =</span> <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>BodyPart+Technique Brier 0.0991 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"StatsBomb Brier"</span>,</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">brier</span>(wi_shots<span class="sc">$</span>Y, wi_shots<span class="sc">$</span>shot.statsbomb_xg), <span class="at">digits =</span> <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"StatsBomb Brier"</span>,</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">brier</span>(wi_shots<span class="sc">$</span>Y, wi_shots<span class="sc">$</span>shot.statsbomb_xg), <span class="at">digits =</span> <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>StatsBomb Brier 0.0753 </code></pre>
 </div>
 </div>
 <p>When computing log-loss in practice, it’s common to truncate probabilities close to 0 or 1, which ensures the final answer is finite (i.e., avoids trying to compute <code>log(0)</code>).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-10"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-10-1"><a href="#annotated-cell-10-1" aria-hidden="true" tabindex="-1"></a>logloss <span class="ot">&lt;-</span> <span class="cf">function</span>(y, phat){</span>
+<div class="sourceCode cell-code" id="annotated-cell-10"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-10-1"><a href="#annotated-cell-10-1" aria-hidden="true" tabindex="-1"></a>logloss <span class="ot">&lt;-</span> <span class="cf">function</span>(y, phat){</span>
 <span id="annotated-cell-10-2"><a href="#annotated-cell-10-2" aria-hidden="true" tabindex="-1"></a>  </span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-10" data-target-annotation="1">1</button><span id="annotated-cell-10-3" class="code-annotation-target"><a href="#annotated-cell-10-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">any</span>(phat <span class="sc">&lt;</span> <span class="fl">1e-12</span>)) phat[phat <span class="sc">&lt;</span> <span class="fl">1e-12</span>] <span class="ot">&lt;-</span> <span class="fl">1e-12</span></span>
 <span id="annotated-cell-10-4"><a href="#annotated-cell-10-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">any</span>(phat <span class="sc">&gt;</span> <span class="dv">1</span><span class="fl">-1e-12</span>)) phat[phat <span class="sc">&gt;</span> <span class="dv">1</span><span class="fl">-1e-12</span>] <span class="ot">&lt;-</span> <span class="dv">1</span><span class="fl">-1e-12</span></span>
@@ -531,7 +533,7 @@ BodyPart+Technique misclassificaiton 0.112 </code></pre>
 <span id="annotated-cell-10-10"><a href="#annotated-cell-10-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"BodyPart+Technique LogLoss:"</span>, </span>
 <span id="annotated-cell-10-11"><a href="#annotated-cell-10-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">logloss</span>(simple_preds<span class="sc">$</span>Y, simple_preds<span class="sc">$</span>XG2) , <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
 <span id="annotated-cell-10-12"><a href="#annotated-cell-10-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"StatsBomb LogLoss:"</span>,</span>
-<span id="annotated-cell-10-13"><a href="#annotated-cell-10-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">logloss</span>(wi_shots<span class="sc">$</span>Y, wi_shots<span class="sc">$</span>shot.statsbomb_xg), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-10-13"><a href="#annotated-cell-10-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">logloss</span>(wi_shots<span class="sc">$</span>Y, wi_shots<span class="sc">$</span>shot.statsbomb_xg), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-10" data-target-annotation="1">1</dt>
@@ -555,7 +557,7 @@ StatsBomb LogLoss: 0.264 </code></pre>
 <p>In practice, we rarely have access to a separate set of data that we can hold-out of training. Instead, we often (i) divide our data into two parts; (ii) fit our model on one part (the <em>training</em> data); and (iii) assess the predictive performance on the second part (the <em>testing</em> data). Commonly, we use 75% or 80% of the data to train a model and set the remaining part aside as testing data. Moreover, we often create the training/testing split <em>randomly</em>.</p>
 <p>The next codeblock illustrates this workflow. To help create training/testing splits, we start by giving every row its own unique ID. Then, we randomly select a fixed number of rows to form our training dataset.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-11"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-11-1"><a href="#annotated-cell-11-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(wi_shots)</span>
+<div class="sourceCode cell-code" id="annotated-cell-11"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-11-1"><a href="#annotated-cell-11-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(wi_shots)</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="1">1</button><span id="annotated-cell-11-2" class="code-annotation-target"><a href="#annotated-cell-11-2" aria-hidden="true" tabindex="-1"></a>n_train <span class="ot">&lt;-</span> <span class="fu">floor</span>(<span class="fl">0.75</span> <span class="sc">*</span> n)</span>
 <span id="annotated-cell-11-3"><a href="#annotated-cell-11-3" aria-hidden="true" tabindex="-1"></a>n_test <span class="ot">&lt;-</span> n <span class="sc">-</span> n_train</span>
 <span id="annotated-cell-11-4"><a href="#annotated-cell-11-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -569,7 +571,7 @@ StatsBomb LogLoss: 0.264 </code></pre>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="4">4</button><span id="annotated-cell-11-12" class="code-annotation-target"><a href="#annotated-cell-11-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_sample</span>(<span class="at">n =</span> n_train)</span>
 <span id="annotated-cell-11-13"><a href="#annotated-cell-11-13" aria-hidden="true" tabindex="-1"></a>test_data <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-11-14"><a href="#annotated-cell-11-14" aria-hidden="true" tabindex="-1"></a>  wi_shots <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="5">5</button><span id="annotated-cell-11-15" class="code-annotation-target"><a href="#annotated-cell-11-15" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">anti_join</span>(<span class="at">y =</span> train_data, <span class="at">by =</span> <span class="st">"id"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="5">5</button><span id="annotated-cell-11-15" class="code-annotation-target"><a href="#annotated-cell-11-15" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">anti_join</span>(<span class="at">y =</span> train_data, <span class="at">by =</span> <span class="st">"id"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-11" data-target-annotation="1">1</dt>
@@ -597,14 +599,14 @@ StatsBomb LogLoss: 0.264 </code></pre>
 </div>
 <p>As a sanity check, we can check whether any of the <code>id</code>’s in <code>test_data</code> are also in <code>train_data</code>:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(train_data<span class="sc">$</span>id <span class="sc">%in%</span> test_data<span class="sc">$</span>id)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(train_data<span class="sc">$</span>id <span class="sc">%in%</span> test_data<span class="sc">$</span>id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] FALSE</code></pre>
 </div>
 </div>
 <p>Now that we have a single training and testing split, let’s fit our two simple XG models <strong>only using the training data</strong> and then computing the average training and testing losses:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> </span>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> </span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  train_data <span class="sc">|&gt;</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(shot.body_part.name) <span class="sc">|&gt;</span></span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">XG1 =</span> <span class="fu">mean</span>(Y))</span>
@@ -626,21 +628,21 @@ StatsBomb LogLoss: 0.264 </code></pre>
 <span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"BodyPart train log-loss:"</span>,</span>
 <span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">logloss</span>(train_preds<span class="sc">$</span>Y, train_preds<span class="sc">$</span>XG1), <span class="at">digits =</span> <span class="dv">3</span>), </span>
 <span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"test log-loss:"</span>,</span>
-<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">logloss</span>(test_preds<span class="sc">$</span>Y, test_preds<span class="sc">$</span>XG1), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">logloss</span>(test_preds<span class="sc">$</span>Y, test_preds<span class="sc">$</span>XG1), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>BodyPart train log-loss: 0.357 test log-loss: 0.334 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"BodyPart+Technique train log-loss:"</span>,</span>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"BodyPart+Technique train log-loss:"</span>,</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">logloss</span>(train_preds<span class="sc">$</span>Y, train_preds<span class="sc">$</span>XG2), <span class="at">digits =</span> <span class="dv">3</span>), </span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"test log-loss:"</span>,</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">logloss</span>(test_preds<span class="sc">$</span>Y, test_preds<span class="sc">$</span>XG2), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">logloss</span>(test_preds<span class="sc">$</span>Y, test_preds<span class="sc">$</span>XG2), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>BodyPart+Technique train log-loss: 0.355 test log-loss: 0.351 </code></pre>
 </div>
 </div>
 <p>For this training/testing split, we see that the more complex model, which conditioned on both body-part and technique, produced slightly smaller log-loss than the simple model, which only conditioned on body-part. But this may not necessarily always hold. For instance, if we drew a different training/testing split (e.g., by initially setting a different randomization seed), we might observe the opposite:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">478</span>)</span>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">478</span>)</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  wi_shots <span class="sc">|&gt;</span></span>
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_sample</span>(<span class="at">n =</span> n_train)</span>
@@ -670,14 +672,14 @@ StatsBomb LogLoss: 0.264 </code></pre>
 <span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"BodyPart train log-loss:"</span>,</span>
 <span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">logloss</span>(train_preds<span class="sc">$</span>Y, train_preds<span class="sc">$</span>XG1), <span class="at">digits =</span> <span class="dv">3</span>), </span>
 <span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">"test log-loss:"</span>,</span>
-<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">logloss</span>(test_preds<span class="sc">$</span>Y, test_preds<span class="sc">$</span>XG1), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">logloss</span>(test_preds<span class="sc">$</span>Y, test_preds<span class="sc">$</span>XG1), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>BodyPart train log-loss: 0.359 test log-loss: 0.327 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"BodyPart+Technique train log-loss:"</span>,</span>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"BodyPart+Technique train log-loss:"</span>,</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">logloss</span>(train_preds<span class="sc">$</span>Y, train_preds<span class="sc">$</span>XG2), <span class="at">digits =</span> <span class="dv">3</span>), </span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"test log-loss:"</span>,</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">logloss</span>(test_preds<span class="sc">$</span>Y, test_preds<span class="sc">$</span>XG2), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">logloss</span>(test_preds<span class="sc">$</span>Y, test_preds<span class="sc">$</span>XG2), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>BodyPart+Technique train log-loss: 0.356 test log-loss: 0.346 </code></pre>
 </div>
@@ -685,7 +687,7 @@ StatsBomb LogLoss: 0.264 </code></pre>
 <p>On this second random split, the simpler model had better in-sample and out-of-sample performance.</p>
 <p>Instead of relying on a single training/testing split, we generally average the in- and out-of-sample losses across several different random splits. In the code below, we repeat the above exercise using 100 random training/testing splits. Notice that in our for loop, we manually set the seed in a predictable way to ensure reproducibility.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-17"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-17-1"><a href="#annotated-cell-17-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-17"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-17-1"><a href="#annotated-cell-17-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">100</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="1">1</button><span id="annotated-cell-17-2" class="code-annotation-target"><a href="#annotated-cell-17-2" aria-hidden="true" tabindex="-1"></a>train_logloss <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-17-3"><a href="#annotated-cell-17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">matrix</span>(<span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">ncol =</span> n_sims,</span>
 <span id="annotated-cell-17-4"><a href="#annotated-cell-17-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="st">"XG1"</span>,<span class="st">"XG2"</span>), <span class="fu">c</span>()))</span>
@@ -733,7 +735,7 @@ StatsBomb LogLoss: 0.264 </code></pre>
 <span id="annotated-cell-17-46"><a href="#annotated-cell-17-46" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"XG2 training logloss:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(train_logloss[<span class="st">"XG2"</span>,]), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
 <span id="annotated-cell-17-47"><a href="#annotated-cell-17-47" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-17-48"><a href="#annotated-cell-17-48" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"XG1 test logloss:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(test_logloss[<span class="st">"XG1"</span>,]), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="annotated-cell-17-49"><a href="#annotated-cell-17-49" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"XG2 test logloss:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(test_logloss[<span class="st">"XG2"</span>,]), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-17-49"><a href="#annotated-cell-17-49" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"XG2 test logloss:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(test_logloss[<span class="st">"XG2"</span>,]), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-17" data-target-annotation="1">1</dt>
@@ -774,7 +776,7 @@ XG2 test logloss: 0.356 </code></pre>
 <h3 class="anchored" data-anchor-id="sec-simple-logistic">Logistic Regression with One Feature</h3>
 <p>We begin by fitting a model that only conditions on distance to the goal using the function <code>glm()</code>. This function works a lot like <code>lm</code> in that we specify the model using R’s formula interface. Whereas <code>lm()</code> is used only to fit linear models via the method least squares, <code>glm()</code> can be used to fit a much wider range of models<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. So, we use the <code>family</code> argument to tell <code>glm()</code> exactly what model we want to fit.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-18"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-18-1"><a href="#annotated-cell-18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">479</span>)</span>
+<div class="sourceCode cell-code" id="annotated-cell-18"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-18-1"><a href="#annotated-cell-18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">479</span>)</span>
 <span id="annotated-cell-18-2"><a href="#annotated-cell-18-2" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-18-3"><a href="#annotated-cell-18-3" aria-hidden="true" tabindex="-1"></a>  wi_shots <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-18-4"><a href="#annotated-cell-18-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_sample</span>(<span class="at">n =</span> n_train)</span>
@@ -784,7 +786,7 @@ XG2 test logloss: 0.356 </code></pre>
 <span id="annotated-cell-18-8"><a href="#annotated-cell-18-8" aria-hidden="true" tabindex="-1"></a></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-18" data-target-annotation="1">1</button><span id="annotated-cell-18-9" class="code-annotation-target"><a href="#annotated-cell-18-9" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="at">formula =</span> Y<span class="sc">~</span>DistToGoal,</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-18" data-target-annotation="2">2</button><span id="annotated-cell-18-10" class="code-annotation-target"><a href="#annotated-cell-18-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> train_data,</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-18" data-target-annotation="3">3</button><span id="annotated-cell-18-11" class="code-annotation-target"><a href="#annotated-cell-18-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">family =</span> <span class="fu">binomial</span>(<span class="st">"logit"</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-18" data-target-annotation="3">3</button><span id="annotated-cell-18-11" class="code-annotation-target"><a href="#annotated-cell-18-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">family =</span> <span class="fu">binomial</span>(<span class="st">"logit"</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-18" data-target-annotation="1">1</dt>
@@ -804,7 +806,7 @@ XG2 test logloss: 0.356 </code></pre>
 </div>
 <p>The <code>summary</code> function provides a snapshot about the fitted model, showing the individual parameter estimates, their associated standard errors, and whether or not they are statistically significantly different than zero.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -829,7 +831,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <p>We see that the estimate of <span class="math inline">\(\beta_{1},\)</span> the coefficient capturing <code>DistToGoal</code>’s effect on the log-odds of a goal, is negative (-0.11) and that this is statistically significantly different than 0 (the associated p-value is &lt;2e-16). This is reassuring as we might intuitively expect the probability of a goal to decrease the further away a shot is from the goal. Recall that the intercept term <span class="math inline">\(\beta_{0}\)</span> quantifies the log-odds of a goal when <code>DistToGoal = 0</code> (i.e., when a shot is taken from the middle of the goal line). Our model estimates this intercept to about -0.43, which, on the probability scale is about 39%. On the face of it, this doesn’t make a ton of sense: surely shots taken essentially from the middle of the goal line should go in <strong>much</strong> more frequently.</p>
 <p>We can resolve this apparent contradiction by taking a closer look at the range of <code>DistToGoal</code> values in our dataset:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(train_data<span class="sc">$</span>DistToGoal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(train_data<span class="sc">$</span>DistToGoal)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1]  1.860108 92.800862</code></pre>
 </div>
@@ -841,7 +843,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>Extrapolation
+Extrapolation
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -856,7 +858,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 </ol>
 <p>In the code below, we obtain predictions for both the training and testing observations and then compute the average log-loss for this training/testing split.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>train_pred1 <span class="ot">&lt;-</span> </span>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>train_pred1 <span class="ot">&lt;-</span> </span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(<span class="at">object =</span> fit1,</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">newdata =</span> train_data,</span>
 <span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">type =</span> <span class="st">"response"</span>) </span>
@@ -865,18 +867,18 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">newdata =</span> test_data,</span>
 <span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>          <span class="at">type =</span> <span class="st">"response"</span>)</span>
 <span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Dist training logloss:"</span>, <span class="fu">round</span>(<span class="fu">logloss</span>(train_data<span class="sc">$</span>Y, train_pred1), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Dist training logloss:"</span>, <span class="fu">round</span>(<span class="fu">logloss</span>(train_data<span class="sc">$</span>Y, train_pred1), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Dist training logloss: 0.321 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Dist testing logloss:"</span>, <span class="fu">round</span>(<span class="fu">logloss</span>(test_data<span class="sc">$</span>Y, test_pred1), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Dist testing logloss:"</span>, <span class="fu">round</span>(<span class="fu">logloss</span>(test_data<span class="sc">$</span>Y, test_pred1), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Dist testing logloss: 0.305 </code></pre>
 </div>
 </div>
 <p>At least for this training/testing split, the logistic regression model that conditions on distance is a bit more accurate than the simpler models. Before concluding that this model indeed is more accurate than the body-part based model, we will repeat the above calculations using 100 training/testing splits.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">100</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>train_logloss <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="at">times =</span> n_sims)</span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>test_logloss <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="at">times =</span> n_sims)</span>
 <span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -906,11 +908,11 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <span id="cb35-28"><a href="#cb35-28" aria-hidden="true" tabindex="-1"></a>  test_logloss[r] <span class="ot">&lt;-</span></span>
 <span id="cb35-29"><a href="#cb35-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">logloss</span>(test_data<span class="sc">$</span>Y, test_preds)</span>
 <span id="cb35-30"><a href="#cb35-30" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb35-31"><a href="#cb35-31" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Dist training logloss:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(train_logloss), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb35-31"><a href="#cb35-31" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Dist training logloss:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(train_logloss), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Dist training logloss: 0.317 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Dist testing logloss:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(test_logloss), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Dist testing logloss:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(test_logloss), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Dist testing logloss: 0.317 </code></pre>
 </div>
@@ -921,7 +923,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <h3 class="anchored" data-anchor-id="sec-addtl-preds">Accounting for Multiple Predictors</h3>
 <p>It turns out to be relatively straightforward to answer this question with a logistic regression model fit using <code>glm()</code>. Specifically, we can include more variables in the <code>formula</code> argument. Note that we first convert the variables <code>shot.body_part.name</code> to a factor.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>wi_shots <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>wi_shots <span class="ot">&lt;-</span></span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  wi_shots <span class="sc">|&gt;</span></span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
 <span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">shot.body_part.name =</span> <span class="fu">factor</span>(shot.body_part.name))</span>
@@ -938,7 +940,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glm</span>(<span class="at">formula =</span> Y<span class="sc">~</span>DistToGoal <span class="sc">+</span> shot.body_part.name, </span>
 <span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> train_data, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="st">"logit"</span>))</span>
 <span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -975,7 +977,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <p>Reassuringly, the estimates for <span class="math inline">\(\beta_{\textrm{RightFoot}}\)</span> and <span class="math inline">\(\beta_{\textrm{LeftFoot}}\)</span> are positive, indicating that for a fixed distance, the log-odds of scoring a goal on a left- or right-footed shot is higher than headers.</p>
 <p>By repeatedly fitting and assessing our new model using 100 random training/testing splits, we discover that accounting for both body part and shot distance results in even more accurate predictions.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">100</span></span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>train_logloss <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="at">times =</span> n_sims)</span>
 <span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>test_logloss <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="at">times =</span> n_sims)</span>
 <span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -1006,11 +1008,11 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <span id="cb41-29"><a href="#cb41-29" aria-hidden="true" tabindex="-1"></a>  test_logloss[r] <span class="ot">&lt;-</span></span>
 <span id="cb41-30"><a href="#cb41-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">logloss</span>(test_data<span class="sc">$</span>Y, test_preds)</span>
 <span id="cb41-31"><a href="#cb41-31" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb41-32"><a href="#cb41-32" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Dist+BodyPart training logloss:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(train_logloss), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb41-32"><a href="#cb41-32" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Dist+BodyPart training logloss:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(train_logloss), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Dist+BodyPart training logloss: 0.307 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Dist+BodyPart testing logloss:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(test_logloss), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Dist+BodyPart testing logloss:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(test_logloss), <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Dist+BodyPart testing logloss: 0.308 </code></pre>
 </div>
@@ -1021,7 +1023,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <p>Our most accurate model so far accounts for both shot distance and the body part used to attempt the shot. Taking a closer look at the assumed log-odds of a goal, however, reveals a potentially important limitation: the effect of distance is assumed to be the same for all shot-types. That is, the model assume that moving one yard further away decreases the log-odds of a goal of a right-footed shot by exactly the same amount as it would a header.</p>
 <p>Interactions between features in a regression model allow the effect of one factor to vary based on the value of another features. Using R’s formula interface, we can introduce interactions between two variables using <code>*</code>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">479</span>)</span>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">479</span>)</span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span></span>
 <span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  wi_shots <span class="sc">|&gt;</span></span>
 <span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_sample</span>(<span class="at">n =</span> n_train)</span>
@@ -1032,7 +1034,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> </span>
 <span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glm</span>(<span class="at">formula =</span> Y<span class="sc">~</span>DistToGoal <span class="sc">*</span> shot.body_part.name, </span>
 <span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">data =</span> train_data, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="st">"logit"</span>))</span>
-<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -1079,7 +1081,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <li><span class="math inline">\(\beta_{0} + \beta_{\textrm{RightFoot}} + (\beta_{\textrm{DistToGoal}} + \beta_{\textrm{DistToGoal:RightFoot}}) * d\)</span> if the shot was taken with the right foot.</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">100</span></span>
 <span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>train_logloss <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="at">times =</span> n_sims)</span>
 <span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>test_logloss <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="at">times =</span> n_sims)</span>
 <span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -1110,11 +1112,11 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <span id="cb47-29"><a href="#cb47-29" aria-hidden="true" tabindex="-1"></a>  test_logloss[r] <span class="ot">&lt;-</span></span>
 <span id="cb47-30"><a href="#cb47-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">logloss</span>(test_data<span class="sc">$</span>Y, test_preds)</span>
 <span id="cb47-31"><a href="#cb47-31" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb47-32"><a href="#cb47-32" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Dist*BodyPart training logloss:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(train_logloss), <span class="at">digits =</span> <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb47-32"><a href="#cb47-32" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Dist*BodyPart training logloss:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(train_logloss), <span class="at">digits =</span> <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Dist*BodyPart training logloss: 0.3047 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Dist*BodyPart testing logloss:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(test_logloss), <span class="at">digits =</span> <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Dist*BodyPart testing logloss:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(test_logloss), <span class="at">digits =</span> <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Dist*BodyPart testing logloss: 0.3066 </code></pre>
 </div>
@@ -1135,7 +1137,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 </ul>
 <p>The code below pulls out several of these features and creates a training/testing split</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>shot_vars <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>shot_vars <span class="ot">&lt;-</span></span>
 <span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">"Y"</span>,</span>
 <span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"shot.type.name"</span>, </span>
 <span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"shot.technique.name"</span>, <span class="st">"shot.body_part.name"</span>,</span>
@@ -1175,7 +1177,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <span id="cb51-38"><a href="#cb51-38" aria-hidden="true" tabindex="-1"></a>test_data <span class="ot">&lt;-</span></span>
 <span id="cb51-39"><a href="#cb51-39" aria-hidden="true" tabindex="-1"></a>  test_data <span class="sc">|&gt;</span></span>
 <span id="cb51-40"><a href="#cb51-40" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Y =</span> <span class="fu">factor</span>(Y, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb51-41"><a href="#cb51-41" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>id)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb51-41"><a href="#cb51-41" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>How much more predictive accuracy can we squeeze out of an XG model when we account for all these variables? While it is tempting to continue fitting logistic regression models, these models make fairly strong assumptions about how the log-odds of a goal change as we vary the features. Moreover, it becomes increasingly difficult to specify interactions, especially between continuous/numerical factors.</p>
 <p><strong>Random forests</strong> is a powerful regression approach that avoids specifying functional forms and allows for high-order interactions. At a high-level, a random forest model approximates a regression function <span class="math inline">\(\mathbb{E}[Y \vert \boldsymbol{\mathbf{X}}]\)</span> using the sum of several <em>regression trees</em> (which are just piece-wise constant step functions).</p>
@@ -1257,7 +1259,7 @@ Figure&nbsp;4: Complex trees can be represented as sums of simpler trees
 <p>In this course, we will fit random forests models using the <a href="http://imbs-hl.github.io/ranger/"><strong>ranger</strong> package</a>. The main function of that package is called <code>ranger()</code>. Its syntax is somewhat similar to <code>glm()</code> insofar as both functions require us to specify a formula and pass our data in as a data frame (or tibble). Unlike <code>glm()</code>, which required us to specify the argument <code>family = binomial("logit")</code> to fit binary outcomes, <code>ranger()</code> requires us to specify the argument <code>probability=TRUE</code>. This signals to the function that we want predictions on the probability scale and not the <span class="math inline">\(\{0,1\}\)</span>-outcome scale.</p>
 <p>We can also use <code>predict()</code> to get predictions from a model fitted with <code>ranger().</code> But this also involves slightly different syntax: instead of using the argument <code>newdata</code>, we need to use the argument <code>data</code>. Additionally, when making predictions based on a <code>ranger</code> model with <code>probability = TRUE</code>, the function <code>predict</code> returns a named list. One element of that list is called <code>predictions</code> and it is a matrix whose rows correspond to the rows of <code>data</code> and whose columns contain the probabilities <span class="math inline">\(\mathbb{P}(Y = 0)\)</span> and <span class="math inline">\(\mathbb{P}(Y = 1).\)</span> So, to get the predicting XG values, we need to look at the 2nd column of this matrix.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-32"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-32-1"><a href="#annotated-cell-32-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-32"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-32-1"><a href="#annotated-cell-32-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-32" data-target-annotation="1">1</button><span id="annotated-cell-32-2" class="code-annotation-target"><a href="#annotated-cell-32-2" aria-hidden="true" tabindex="-1"></a>  ranger<span class="sc">::</span><span class="fu">ranger</span>(<span class="at">formula =</span> Y<span class="sc">~</span>.,</span>
 <span id="annotated-cell-32-3"><a href="#annotated-cell-32-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> train_data, </span>
 <span id="annotated-cell-32-4"><a href="#annotated-cell-32-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">probability =</span> <span class="cn">TRUE</span>)</span>
@@ -1270,7 +1272,7 @@ Figure&nbsp;4: Complex trees can be represented as sums of simpler trees
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-32" data-target-annotation="3">3</button><span id="annotated-cell-32-11" class="code-annotation-target"><a href="#annotated-cell-32-11" aria-hidden="true" tabindex="-1"></a>          <span class="at">data =</span> test_data)<span class="sc">$</span>predictions[,<span class="dv">2</span>]</span>
 <span id="annotated-cell-32-12"><a href="#annotated-cell-32-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-32-13"><a href="#annotated-cell-32-13" aria-hidden="true" tabindex="-1"></a><span class="fu">logloss</span>(y_train, train_preds)</span>
-<span id="annotated-cell-32-14"><a href="#annotated-cell-32-14" aria-hidden="true" tabindex="-1"></a><span class="fu">logloss</span>(y_test, test_preds)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-32-14"><a href="#annotated-cell-32-14" aria-hidden="true" tabindex="-1"></a><span class="fu">logloss</span>(y_test, test_preds)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-32" data-target-annotation="1">1</dt>
@@ -1288,14 +1290,14 @@ Figure&nbsp;4: Complex trees can be represented as sums of simpler trees
 </dl>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.1135258
-[1] 0.2522654</code></pre>
+<pre><code>[1] 0.1132451
+[1] 0.2523934</code></pre>
 </div>
 </div>
 <p>At least for this training/testing split, our in-sample log-loss is <strong>much</strong> smaller than our out-of-sample log-loss. This is not at all surprising: flexible regression models like random forests are trained to predict the in-sample data and so we should expect to see smaller training errors than testing errors.</p>
 <p>Repeating these calculations over 100 training/testing splits, we can conclude that our more flexible random forest model, which accounts for many more features and can accommodate many more interaction terms than our simple logistic regression model, out-performs the logistic regression models.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">100</span></span>
 <span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>train_logloss <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="at">times =</span> n_sims)</span>
 <span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>test_logloss <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="at">times =</span> n_sims)</span>
 <span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -1336,13 +1338,13 @@ Figure&nbsp;4: Complex trees can be represented as sums of simpler trees
 <span id="cb53-39"><a href="#cb53-39" aria-hidden="true" tabindex="-1"></a>  train_logloss[r] <span class="ot">&lt;-</span> <span class="fu">logloss</span>(y_train, train_preds)</span>
 <span id="cb53-40"><a href="#cb53-40" aria-hidden="true" tabindex="-1"></a>  test_logloss[r] <span class="ot">&lt;-</span> <span class="fu">logloss</span>(y_test, test_preds)</span>
 <span id="cb53-41"><a href="#cb53-41" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb53-42"><a href="#cb53-42" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"RandomForest training logloss:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(train_logloss), <span class="at">digits =</span> <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb53-42"><a href="#cb53-42" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"RandomForest training logloss:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(train_logloss), <span class="at">digits =</span> <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>RandomForest training logloss: 0.1113 </code></pre>
+<pre><code>RandomForest training logloss: 0.1106 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"RandomForest testing logloss:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(test_logloss), <span class="at">digits =</span> <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"RandomForest testing logloss:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(test_logloss), <span class="at">digits =</span> <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>RandomForest testing logloss: 0.2705 </code></pre>
+<pre><code>RandomForest testing logloss: 0.2701 </code></pre>
 </div>
 </div>
 </section>
@@ -1350,7 +1352,7 @@ Figure&nbsp;4: Complex trees can be represented as sums of simpler trees
 <h3 class="anchored" data-anchor-id="sec-comparison">Comparison to StatsBomb’s XG Model</h3>
 <p>Now that we have a much more predictive model, we can compare our model estimates to those from StatsBomb’s proprietary model. In the code below, we re-fit a random forests model to the whole dataset. We then plot our XG estimates against StatsBomb’s.</p>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>full_data <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>full_data <span class="ot">&lt;-</span></span>
 <span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  wi_shots <span class="sc">|&gt;</span></span>
 <span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(dplyr<span class="sc">::</span><span class="fu">all_of</span>(<span class="fu">c</span>(shot_vars)))</span>
 <span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -1363,9 +1365,9 @@ Figure&nbsp;4: Complex trees can be represented as sums of simpler trees
 <span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(wi_shots<span class="sc">$</span>shot.statsbomb_xg, preds,</span>
 <span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.5</span>, <span class="at">col =</span> <span class="fu">rgb</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>, <span class="fl">0.25</span>),</span>
 <span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>),</span>
-<span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"StatsBomb's XG"</span>, <span class="at">ylab =</span> <span class="st">"Our XG"</span>, <span class="at">main =</span> <span class="st">'Comparison of XG estimates'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"StatsBomb's XG"</span>, <span class="at">ylab =</span> <span class="st">"Our XG"</span>, <span class="at">main =</span> <span class="st">'Comparison of XG estimates'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-compare-statsbomb" class="quarto-float quarto-figure quarto-figure-center anchored" width="384" data-fig-align="center">
+<div id="fig-compare-statsbomb" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" width="384">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-compare-statsbomb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture03_files/figure-html/fig-compare-statsbomb-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;5: "><img src="lecture03_files/figure-html/fig-compare-statsbomb-1.png" id="fig-compare-statsbomb" class="img-fluid quarto-figure quarto-figure-center anchored figure-img" width="384"></a>
@@ -1396,12 +1398,12 @@ Figure&nbsp;5
 </section>
 
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-Brieman2001" class="csl-entry" role="listitem">
 Breiman, Leo. 2001. <span>“Random Forests.”</span> <em>Machine Learning</em> 45: 5–23.
 </div>
 <div id="ref-Grinsztajn2022" class="csl-entry" role="listitem">
-Grinsztajn, Léo, Edouard Oyallaon, and Gaël Varoquaux. 2022. <span>“Why Do Tree-Based Models Still Outperfom Deep Learning on Tabular Data?”</span> Unpublished manuscript.
+Grinsztajn, Léo, Edouard Oyallaon, and Gaël Varoquaux. 2022. <span>“Why Do Tree-Based Models Still Outperfom Deep Learning on Tabular Data?”</span>
 </div>
 </div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
@@ -1412,7 +1414,7 @@ Grinsztajn, Léo, Edouard Oyallaon, and Gaël Varoquaux. 2022. <span>“Why Do T
 <li id="fn4"><p>see <a href="https://github.com/statsbomb/open-data/issues/3#issuecomment-436116159">this issue in the StatsBomb’s opendata GitHub repo</a> for more information about the variable definitions. The code to compute these values is available <a href="https://github.com/statsbomb/StatsBombR/blob/master/R/shotinfo.R#L8-L16">here</a>. Note that in the StatsBomb coordinate system, the center of the goal line is at (120,4).<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn5"><p>That is, learn the number and arrangement of the interior and leaf nodes as well as the decision rules and leaf outputs<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn6"><p>To verify this decomposition is correct, imagine stacking the three partitions on top of each other.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn7"><p>The canonical reference is <span class="citation" data-cites="Grinsztajn2022">Grinsztajn et al. (<a href="#ref-Grinsztajn2022" role="doc-biblioref">2022</a>)</span> (<a href="https://arxiv.org/abs/2207.08815">link</a>).<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>The canonical reference is <span class="citation" data-cites="Grinsztajn2022">Grinsztajn, Oyallaon, and Varoquaux (<a href="#ref-Grinsztajn2022" role="doc-biblioref">2022</a>)</span> (<a href="https://arxiv.org/abs/2207.08815">link</a>).<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn8"><p>You can read the full paper <a href="https://link.springer.com/article/10.1023/A:1010933404324">here</a><a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn9"><p>If you want to learn more about regression trees, consider taking STAT 443.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
@@ -1468,14 +1470,13 @@ Grinsztajn, Léo, Edouard Oyallaon, and Gaël Varoquaux. 2022. <span>“Why Do T
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-      const outerScaffold = trigger.parentElement.cloneNode(true);
-      const codeEl = outerScaffold.querySelector('code');
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
         }
-      }
-      return codeEl.innerText;
+        return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
