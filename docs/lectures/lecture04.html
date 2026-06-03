@@ -217,6 +217,14 @@ window.Quarto = {
  <span class="dropdown-text">Lecture 5: Regularized Adjusted Plus/Minus</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="../lectures/lecture06.html">
+ <span class="dropdown-text">Lecture 6: Run Expectancy</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture07.html">
+ <span class="dropdown-text">Lecture 7: Offensive Credit Allocation in Baseball</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../lectures/lecture09.html">
  <span class="dropdown-text">Lecture 9: Multilevel Modeling</span></a>
   </li>  
@@ -304,6 +312,18 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../lectures/lecture05.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Lecture 5: Regularized Adjusted Plus/Minus</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 6: Run Expectancy</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 7: Offensive Credit Allocation in Baseball</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -536,7 +556,7 @@ window.Quarto = {
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="2">2</button><span id="annotated-cell-6-4" class="code-annotation-target"><a href="#annotated-cell-6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">pm =</span> <span class="fu">crossprod</span>(<span class="at">x =</span> X_full, <span class="at">y =</span> stints <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">pull</span>(pts_diff)),</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="3">3</button><span id="annotated-cell-6-5" class="code-annotation-target"><a href="#annotated-cell-6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_pos =</span> <span class="fu">crossprod</span>(<span class="fu">abs</span>(X_full), <span class="at">y =</span> stints <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">pull</span>(n_pos)),</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="4">4</button><span id="annotated-cell-6-6" class="code-annotation-target"><a href="#annotated-cell-6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">minutes =</span> <span class="fu">crossprod</span>(<span class="fu">abs</span>(X_full), <span class="at">y =</span> stints <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">pull</span>(minutes))) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-6-7"><a href="#annotated-cell-6-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(pm))</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="5">5</button><span id="annotated-cell-6-7" class="code-annotation-target"><a href="#annotated-cell-6-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(pm))</span>
 <span id="annotated-cell-6-8"><a href="#annotated-cell-6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(pm) <span class="ot">&lt;-</span> <span class="cn">NULL</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
@@ -555,6 +575,10 @@ window.Quarto = {
 <dt data-target-cell="annotated-cell-6" data-target-annotation="4">4</dt>
 <dd>
 <span data-code-cell="annotated-cell-6" data-code-lines="6" data-code-annotation="4">Compute the number of minutes played by each player. We used <code>dplyr::pull</code> to extract the number of minutes each stint lasted</span>
+</dd>
+<dt data-target-cell="annotated-cell-6" data-target-annotation="5">5</dt>
+<dd>
+<span data-code-cell="annotated-cell-6" data-code-lines="7" data-code-annotation="5">Sort players based on +/-</span>
 </dd>
 </dl>
 </div>
@@ -669,7 +693,7 @@ window.Quarto = {
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Plus-Minus vs Possessions"</span>)</span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">col =</span> oi_colors[<span class="dv">8</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="fig-pm-poss" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Scatterplot of plus/minus and number of possessions played." data-fig-align="center">
+<div id="fig-pm-poss" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Scatterplot of plus/minus and number of possessions played.">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-pm-poss-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture04_files/figure-html/fig-pm-poss-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;1: Relationship between Plus/Minus and number of possessions played"><img src="lecture04_files/figure-html/fig-pm-poss-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Scatterplot of plus/minus and number of possessions played." width="576"></a>

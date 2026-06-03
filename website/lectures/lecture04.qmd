@@ -219,7 +219,7 @@ pm <-
     pm = crossprod(x = X_full, y = stints |> dplyr::pull(pts_diff)), #<2>
     n_pos = crossprod(abs(X_full), y = stints |> dplyr::pull(n_pos)), #<3>
     minutes = crossprod(abs(X_full), y = stints |> dplyr::pull(minutes))) |> #<4>
-  dplyr::arrange(dplyr::desc(pm)) #<7>
+  dplyr::arrange(dplyr::desc(pm)) #<5>
 rownames(pm) <- NULL
 ```
 1. Creates a column containing player ID's
