@@ -225,6 +225,10 @@ window.Quarto = {
  <span class="dropdown-text">Lecture 7: Offensive Credit Allocation in Baseball</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="../lectures/lecture08.html">
+ <span class="dropdown-text">Lecture 8: Defensive Credit Allocation in Baseball</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../lectures/lecture09.html">
  <span class="dropdown-text">Lecture 9: Multilevel Modeling</span></a>
   </li>  
@@ -328,6 +332,12 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 8: Defensive Credit Allocation in Baseball</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../lectures/lecture09.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Lecture 9: Multilevel Modeling</span></a>
   </div>
@@ -421,7 +431,7 @@ window.Quarto = {
 <p>Which of these singles was more valuable to Dodgers? And how much of that value should be specifically credited to Ohtani?</p>
 <p>Because the second single directly resulted in a run scoring, it is tempting to conclude that the second single was more valuable than the first. However, although the Dodgers didn’t score as a result of the first single, Ohtani reached first base, putting his team in a position to potential score more runs than if he had not reached first<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. In terms of allocating credit, it seems natural to give Ohtani all the credit for whatever value was created on his first single. But on his second single, at least some of the value created is attributable to a baserunner scoring from second base. How should we divide credit between Ohtani and that baserunner?</p>
 <p>Over the next several lectures, we will work with pitch-level tracking data from Major League Baseball to answer these questions. In this lecture, we begin by computing the number of runs that a team can <em>expect</em> to score in the remainder of a half-inning (<a href="#sec-expected-runs" class="quarto-xref">Section&nbsp;4</a>). Then, we introduce <em>run values</em> (<a href="#sec-run-value" class="quarto-xref">Section&nbsp;5</a>), a metric that combines changes in the number of a team expects to score and the number of runs actually scored in an at-bat. We conclude by determining which batters created the most run value for their teams (<a href="#sec-batter-prod" class="quarto-xref">Section&nbsp;6</a>).</p>
-<p>In <a href="../lectures/lecture07.html">Lecture 7</a>, we will distribute the run value created in every at-bat between the batter and base runners involved in the at-bat. We will then begin <a href="lecture08.qmd">Lecture 8</a> by distributing the <em>negative</em> of the run value created by the batting team between the pitcher and fielders involved in each at-bat. Finally, we will aggregate the total run value over average created by each player through their hitting, fielding, base running, and pitching and convert that aggregate into a measure of wins above replacement. Our development largely follows <span class="citation" data-cites="Baumer2015_openWAR">(<a href="#ref-Baumer2015_openWAR" role="doc-biblioref">Baumer et al. 2015</a>)</span>, who created a transparent, open-source version of wins above replacement, a cornerstone of baseball analytics.</p>
+<p>In <a href="../lectures/lecture07.html">Lecture 7</a>, we will distribute the run value created in every at-bat between the batter and base runners involved in the at-bat. We will then begin <a href="../lectures/lecture08.html">Lecture 8</a> by distributing the <em>negative</em> of the run value created by the batting team between the pitcher and fielders involved in each at-bat. Finally, we will aggregate the total run value over average created by each player through their hitting, fielding, base running, and pitching and convert that aggregate into a measure of wins above replacement. Our development largely follows <span class="citation" data-cites="Baumer2015_openWAR">(<a href="#ref-Baumer2015_openWAR" role="doc-biblioref">Baumer et al. 2015</a>)</span>, who created a transparent, open-source version of wins above replacement, a cornerstone of baseball analytics.</p>
 </section>
 <section id="sec-statcast" class="level2">
 <h2 class="anchored" data-anchor-id="sec-statcast">Tracking Data in Baseball</h2>
@@ -495,7 +505,7 @@ window.Quarto = {
 <p>In total, <code>raw_statcast2024</code> contains data for 711898 regular season pitches.</p>
 <section id="pitch--and-at-bat-level-descriptions" class="level3">
 <h3 class="anchored" data-anchor-id="pitch--and-at-bat-level-descriptions">Pitch- and At-Bat-level Descriptions</h3>
-<p>Statcast records a ton of information about each pitch including the type of pitch (<code>pitch_type</code>), the velocity of the pitch when it was released (<code>vx0</code>, <code>vy0</code>, <code>vz0</code>), the acceleration of the pitch at about the half-way point between the pitcher and batter (<code>ax</code>, <code>ay</code>, and <code>az</code>), and horizontal and vertical coordinates of the pitch as it crosses the front edge of home plate (<code>plate_x</code>) and (<code>plate_y</code>). The column <code>type</code> also records whether the pitch resulted ball (<code>type=B</code>), a strike (<code>type=S</code>), or whether the ball was put in play (<code>type=X</code>). For balls in play, Statcast also records things like the launch speed and angle (<code>launch_speed</code>, <code>launch_angle</code>), the coordinates on the field where the ball landed (<code>hit_coord_x</code>) and (<code>hit_cord_y</code>), and the position of the first fielder to touch the ball (<code>hit_location</code>). In <a href="lecture08.qmd">Lecture 8</a>, we will work with <code>hit_coord_x</code> and <code>hit_coord_y</code> to build a model that predicts the probability that each fielder makes an out on balls hit to a specific part of the field. As a bit of a preview, here is a plot of all the <code>hit_coord_x</code> and <code>hit_coord_y</code> values.</p>
+<p>Statcast records a ton of information about each pitch including the type of pitch (<code>pitch_type</code>), the velocity of the pitch when it was released (<code>vx0</code>, <code>vy0</code>, <code>vz0</code>), the acceleration of the pitch at about the half-way point between the pitcher and batter (<code>ax</code>, <code>ay</code>, and <code>az</code>), and horizontal and vertical coordinates of the pitch as it crosses the front edge of home plate (<code>plate_x</code>) and (<code>plate_y</code>). The column <code>type</code> also records whether the pitch resulted ball (<code>type=B</code>), a strike (<code>type=S</code>), or whether the ball was put in play (<code>type=X</code>). For balls in play, Statcast also records things like the launch speed and angle (<code>launch_speed</code>, <code>launch_angle</code>), the coordinates on the field where the ball landed (<code>hit_coord_x</code>) and (<code>hit_cord_y</code>), and the position of the first fielder to touch the ball (<code>hit_location</code>). In <a href="../lectures/lecture08.html">Lecture 8</a>, we will work with <code>hit_coord_x</code> and <code>hit_coord_y</code> to build a model that predicts the probability that each fielder makes an out on balls hit to a specific part of the field. As a bit of a preview, here is a plot of all the <code>hit_coord_x</code> and <code>hit_coord_y</code> values.</p>
 <div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">1</span>), <span class="at">mgp =</span> <span class="fu">c</span>(<span class="fl">1.8</span>, <span class="fl">0.5</span>, <span class="dv">0</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(raw_statcast2024<span class="sc">$</span>hit_coord_x, raw_statcast2024<span class="sc">$</span>hit_coord_y, </span>
@@ -766,7 +776,7 @@ post_bat_score     5     5     5     5</code></pre>
 </div>
 </div>
 <p>Cross-referencing the table above with the <a href="https://www.espn.com/mlb/playbyplay/_/gameId/401568469">play-by-play data</a>, we see that the Dodgers score their second run after the 14th pitch of the half-inning (on a Enrique Hernández sacrifice fly); their third run on the very next pitch (Gavin Lux grounding into a fielder’s choice); and their fourth and fifth runs on consecutive pitches (on singles by Mookie Betts and Shohei Ohtani).</p>
-<div id="fig-dodgers-pbp" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Screenshot of play-by-play data" data-fig-align="center">
+<div id="fig-dodgers-pbp" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Screenshot of play-by-play data">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-dodgers-pbp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="figures/lecture06/dodgers_pbp.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;1: Play-by-Play from the March 20, 2024 Dodgers-Padres game"><img src="figures/lecture06/dodgers_pbp.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Screenshot of play-by-play data"></a>

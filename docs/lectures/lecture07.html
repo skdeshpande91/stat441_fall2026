@@ -222,6 +222,10 @@ window.Quarto = {
  <span class="dropdown-text">Lecture 7: Offensive Credit Allocation in Baseball</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="../lectures/lecture08.html">
+ <span class="dropdown-text">Lecture 8: Defensive Credit Allocation in Baseball</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../lectures/lecture09.html">
  <span class="dropdown-text">Lecture 9: Multilevel Modeling</span></a>
   </li>  
@@ -325,6 +329,12 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 8: Defensive Credit Allocation in Baseball</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../lectures/lecture09.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Lecture 9: Multilevel Modeling</span></a>
   </div>
@@ -402,7 +412,7 @@ window.Quarto = {
 <p>Over the next two lectures, we will develop our own version of <em>wins above replacement</em>. Our development largely follows that of <span class="citation" data-cites="Baumer2015_openWAR">Baumer et al. (<a href="#ref-Baumer2015_openWAR" role="doc-biblioref">2015</a>)</span> but with some important differences.</p>
 <section id="sec-conservation" class="level3">
 <h3 class="anchored" data-anchor-id="sec-conservation">Conservation of Runs</h3>
-<p>The central idea — what <span class="citation" data-cites="Baumer2015_openWAR">(<a href="#ref-Baumer2015_openWAR" role="doc-biblioref">Baumer et al. 2015</a>)</span> call the “conservation of runs” framework — is that if the batting team gains <span class="math inline">\(\delta_{i}\)</span> units of run value during an at-bat, the fielding team gains <span class="math inline">\(-\delta_{i}\)</span> units of run value during that same at-bat. In this lecture, we will apportion <span class="math inline">\(\delta_{i}\)</span> between the batters (<a href="#sec-baserunner" class="quarto-xref">Section&nbsp;4</a>) and the baserunners involved in at-bat <span class="math inline">\(i\)</span> (<a href="#sec-batting" class="quarto-xref">Section&nbsp;5</a>) In <a href="lecture08.qmd">Lecture 8</a>, we will apportion <span class="math inline">\(-\delta_{i}\)</span> between the pitcher and fielders involved in at-bat <span class="math inline">\(i.\)</span></p>
+<p>The central idea — what <span class="citation" data-cites="Baumer2015_openWAR">(<a href="#ref-Baumer2015_openWAR" role="doc-biblioref">Baumer et al. 2015</a>)</span> call the “conservation of runs” framework — is that if the batting team gains <span class="math inline">\(\delta_{i}\)</span> units of run value during an at-bat, the fielding team gains <span class="math inline">\(-\delta_{i}\)</span> units of run value during that same at-bat. In this lecture, we will apportion <span class="math inline">\(\delta_{i}\)</span> between the batters (<a href="#sec-baserunner" class="quarto-xref">Section&nbsp;4</a>) and the baserunners involved in at-bat <span class="math inline">\(i\)</span> (<a href="#sec-batting" class="quarto-xref">Section&nbsp;5</a>) In <a href="../lectures/lecture08.html">Lecture 8</a>, we will apportion <span class="math inline">\(-\delta_{i}\)</span> between the pitcher and fielders involved in at-bat <span class="math inline">\(i.\)</span></p>
 </section>
 </section>
 <section id="sec-data-prep" class="level2">
@@ -1064,7 +1074,7 @@ F-statistic: 1.379e+04 on 44 and 182405 DF,  p-value: &lt; 2.2e-16</code></pre>
 </section>
 <section id="sec-looking-ahead" class="level2">
 <h2 class="anchored" data-anchor-id="sec-looking-ahead">Looking Ahead</h2>
-<p>We’ve distributed the run value <span class="math inline">\(\delta_{i}\)</span> created in each at-bat between the batter and base runners and computed season total runs values above average based on batting <span class="math inline">\(\textrm{RAA}^{\textrm{b}}\)</span> and base running <span class="math inline">\(\textrm{RAA}^{\textrm{br}}.\)</span> <a href="lecture08.qmd">Next lecture</a>, we will distribute <span class="math inline">\(-\delta_{i}\)</span> between the pitcher and fielders involved in each at-bat. So that we don’t have to repeat our earlier calculations, we will save <code>raa_br</code> and <code>raa_b</code></p>
+<p>We’ve distributed the run value <span class="math inline">\(\delta_{i}\)</span> created in each at-bat between the batter and base runners and computed season total runs values above average based on batting <span class="math inline">\(\textrm{RAA}^{\textrm{b}}\)</span> and base running <span class="math inline">\(\textrm{RAA}^{\textrm{br}}.\)</span> <a href="../lectures/lecture08.html">Next lecture</a>, we will distribute <span class="math inline">\(-\delta_{i}\)</span> between the pitcher and fielders involved in each at-bat. So that we don’t have to repeat our earlier calculations, we will save <code>raa_br</code> and <code>raa_b</code></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(raa_br, raa_b, <span class="at">file =</span> <span class="st">"mlb_raa_offensive2024.RData"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>

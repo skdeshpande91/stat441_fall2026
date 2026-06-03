@@ -225,6 +225,10 @@ window.Quarto = {
  <span class="dropdown-text">Lecture 7: Offensive Credit Allocation in Baseball</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="../lectures/lecture08.html">
+ <span class="dropdown-text">Lecture 8: Defensive Credit Allocation in Baseball</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../lectures/lecture09.html">
  <span class="dropdown-text">Lecture 9: Multilevel Modeling</span></a>
   </li>  
@@ -328,6 +332,12 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 8: Defensive Credit Allocation in Baseball</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../lectures/lecture09.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Lecture 9: Multilevel Modeling</span></a>
   </div>
@@ -414,7 +424,7 @@ window.Quarto = {
 <li>A 64-yard touchdown by Kavontae Turpin on a pass from Cooper Rush (<a href="https://www.youtube.com/watch?v=U0Zp_is-X18">video link</a>)</li>
 </ul>
 <p>The McConckey touchdown was thrown on a 3rd and 26 from the Charger’s 14 yard line. From that position, teams are expected to score about -1.54 points; that is, starting from that positions, teams, on average, give up points rather than score them. Over the course of the play, the Chargers offense generated around 8.54 points of EP. The Turpin touchdown, on the other hand, was thrown on a 3rd and 10 from the Cowboys’ 36 yard line, a position from which teams score about 0.77 on average. The Cowboys offense generated about 6.23 points of EPA during that play. How much of the created EPA on these plays should be credited to the quarterbacks and how much should be credited to the receivers? Which players</p>
-<p>In this lecture, we will use multilevel modeling to answer these questions. We separately model EPA on passing and running plays. For passing plays, we will decompose the EPA into two parts, the expected points gained while the pass is in the air and the expected points gained on the ground after the catch (if the pass was caught). Each of our multilevel models will include random intercepts for players nested by their position (e.g., passer and receiver in the passing EPA models) and will also adjust for several important fixed effects. From these models, we will determine how many more expected points per play each player adds relative to the league average. Finally, like we did in <a href="lecture08.qmd">Lecture 8</a>, we will translate these expected points added to the win scale and conclude with a version of wins above replacement for offensive players in football. Our development closely follows the nflWAR model introduced by <span class="citation" data-cites="Yurko2019_nflWAR">Yurko et al. (<a href="#ref-Yurko2019_nflWAR" role="doc-biblioref">2019</a>)</span> but makes some simplifications.</p>
+<p>In this lecture, we will use multilevel modeling to answer these questions. We separately model EPA on passing and running plays. For passing plays, we will decompose the EPA into two parts, the expected points gained while the pass is in the air and the expected points gained on the ground after the catch (if the pass was caught). Each of our multilevel models will include random intercepts for players nested by their position (e.g., passer and receiver in the passing EPA models) and will also adjust for several important fixed effects. From these models, we will determine how many more expected points per play each player adds relative to the league average. Finally, like we did in <a href="../lectures/lecture08.html">Lecture 8</a>, we will translate these expected points added to the win scale and conclude with a version of wins above replacement for offensive players in football. Our development closely follows the nflWAR model introduced by <span class="citation" data-cites="Yurko2019_nflWAR">Yurko et al. (<a href="#ref-Yurko2019_nflWAR" role="doc-biblioref">2019</a>)</span> but makes some simplifications.</p>
 <!--
 Briefly, we will model EPA using random player intercepts, which account for the fact that players are generally nested within different positions, while simultaneously adjusting for several important fixed effects.
 We will then convert these random intercepts, which represent, in some sense, the average per-play EPA generated for each player, into an estimate of the number of expected points added by each player.
@@ -1258,7 +1268,7 @@ To avoid this extra step, we'll continue to use our current model[^homework].
 <section id="sec-skill-replacement" class="level3">
 <h3 class="anchored" data-anchor-id="sec-skill-replacement">Replacement Level for Skill Positions</h3>
 <p>Although the IPAA values are interesting and informative, they represent a comparison between players and a nebulously defined average. Recall that IPAA is just a scaled version of IPA, which we defined to be the difference between the player-specific random intercept and a global mean parameter in our multilevel model. That mean does not represent the average of all observed players in the league. Instead, it captures the average intercept across a theoretical, infinite super-population of players from which we assume the set of observed players is sampled. So, it is not strictly correct to say that IPA measures a player’s expected contribution over and above a league-average player’s contribution on a per-play basis.</p>
-<p>To facilitate comparisons that are easier to interpret, we now translate the IPAA values into measures of a player’s contribution relative to a replacement-level player. As discussed in the context of baseball, there are myriad ways to define what replacement level. Like we did in <a href="lecture08.qmd">Lecture 8</a>, we take a roster-based approach and define different replacement levels for different combinations of position and our EPA models. Noting that most NFL teams carry 3 running backs (RBs), 4 wide receivers (WRs), and 2 tight ends (TE), we define replacement levels based o on the following thresholds:</p>
+<p>To facilitate comparisons that are easier to interpret, we now translate the IPAA values into measures of a player’s contribution relative to a replacement-level player. As discussed in the context of baseball, there are myriad ways to define what replacement level. Like we did in <a href="../lectures/lecture08.html">Lecture 8</a>, we take a roster-based approach and define different replacement levels for different combinations of position and our EPA models. Noting that most NFL teams carry 3 running backs (RBs), 4 wide receivers (WRs), and 2 tight ends (TE), we define replacement levels based o on the following thresholds:</p>
 <ul>
 <li>WRs on passing plays: The top <span class="math inline">\(32 \times 4 = 128\)</span> WRs sorted by <em>receiving attempts</em> (i.e., <code>n_rec</code> in <code>pass_ipaa</code>) are non-replacement-level; everyone else is replacement-level</li>
 <li>TEs on passing plays: The top <span class="math inline">\(32 \times 2 = 64\)</span> TEs sorted by <em>receiving attempts</em> are non-replacement-level; everyone else is replacement-level</li>
@@ -1266,7 +1276,7 @@ To avoid this extra step, we'll continue to use our current model[^homework].
 <li>WR/TEs on running plays: The top <span class="math inline">\(32 \times 1 = 32\)</span> WR and TEs sorted by <em>rushing attempts</em> are non-replacement-level; everyone else is replacement-level</li>
 <li>RBs on running plays: The top <span class="math inline">\(32 \times 3 = 96\)</span> RBs sorted by <em>rusing attempts</em> are non-replacement-level; everyone else is replacement-level.</li>
 </ul>
-<p>These definitions allow for the possibility that a RB may be non-replacement-level based on his running but is at or below replacement-level when it comes to receiving. Like we did in <a href="lecture08.qmd">Lecture 8</a>, for every player we can compare his IPAA to the IPAA that a replacement level player would achieve if given the same number of attempts. To compute this “shadow” IPAA, we will multiply the number of attempts by the average IPA value across all corresponding replacement-level players.</p>
+<p>These definitions allow for the possibility that a RB may be non-replacement-level based on his running but is at or below replacement-level when it comes to receiving. Like we did in <a href="../lectures/lecture08.html">Lecture 8</a>, for every player we can compare his IPAA to the IPAA that a replacement level player would achieve if given the same number of attempts. To compute this “shadow” IPAA, we will multiply the number of attempts by the average IPA value across all corresponding replacement-level players.</p>
 <p>The following code computes the receiving attempt thresholds for each position on passing plays. It then computes the replacement-level IPA</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-30"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-30-1"><a href="#annotated-cell-30-1" aria-hidden="true" tabindex="-1"></a>wr_pass_threshold <span class="ot">&lt;-</span> </span>
@@ -1512,7 +1522,7 @@ To avoid this extra step, we'll continue to use our current model[^homework].
 <span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Wins vs Score Differential"</span>,</span>
 <span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="fig-wins-score-plot" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Scatterplot of wins and scoring differential in the NFL" data-fig-align="center">
+<div id="fig-wins-score-plot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Scatterplot of wins and scoring differential in the NFL">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-wins-score-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture10_files/figure-html/fig-wins-score-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Scoring differential is positively associated with wins"><img src="lecture10_files/figure-html/fig-wins-score-plot-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Scatterplot of wins and scoring differential in the NFL" width="576"></a>

@@ -177,6 +177,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Lecture 7: Offensive Credit Allocation in Baseball</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="./lectures/lecture08.html">
+ <span class="dropdown-text">Lecture 8: Defensive Credit Allocation in Baseball</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./lectures/lecture09.html">
  <span class="dropdown-text">Lecture 9: Multilevel Modeling</span></a>
   </li>  
@@ -316,7 +320,7 @@ Tip
 <section id="sec-required-packages" class="level3">
 <h3 class="anchored" data-anchor-id="sec-required-packages">Required Packages</h3>
 <p>Throughout the course, we will make extensive use of several <strong>tidyverse</strong> packages, primarily for data loading, pre-processing, and manipulation. We will also make extensive use of the packages <strong>glmnet</strong>, <strong>lme4</strong>, <strong>mgcv</strong>, and <strong>ranger</strong> for model fitting. As the course progresses, we will introduce and install new package as required. For the most part, these packages will be specific to a particular sport. Every package that we will use in this class is available through either (i) the Comprehensive R Archive Network (CRAN) or (ii) a public GitHub repository maintained by the packager developer. We typically install CRAN packages using the <code>install.packages()</code> command. To install packages hosted on GitHub, we will use the <a href="https://devtools.r-lib.org/reference/remote-reexports.html"><code>install_github()</code></a> function in the <a href="https://devtools.r-lib.org/index.html"><strong>devtools</strong></a> package, which is itself available on CRAN.</p>
-<p>For visualizations, we will try to use colorblind-friendly palettes<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> as much as possible. The package <a href="https://cran.r-project.org/web/packages/colorBlindness/vignettes/colorBlindness.html"><strong>colorBlindness</strong></a> contains several palettes for diverging and qualitative data. We will use the <code>Blue2DarkRed18Steps</code> palette from <strong>colorBlindness</strong> for making heatmaps (e.g., <a href="lectures/lecture08.qmd#fig-out-gam">this one</a>)</p>
+<p>For visualizations, we will try to use colorblind-friendly palettes<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> as much as possible. The package <a href="https://cran.r-project.org/web/packages/colorBlindness/vignettes/colorBlindness.html"><strong>colorBlindness</strong></a> contains several palettes for diverging and qualitative data. We will use the <code>Blue2DarkRed18Steps</code> palette from <strong>colorBlindness</strong> for making heatmaps (e.g., <a href="./lectures/lecture08.html#fig-out-gam">this one</a>)</p>
 <p>Prior to <a href="./lectures/lecture02.html">Lecture 2</a>, please make sure you install the required packages.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"devtools"</span>, <span class="st">"tidyverse"</span>, <span class="st">"glmnet"</span>, <span class="st">"lme4"</span>, <span class="st">"mgcv"</span>, <span class="st">"ranger"</span>, <span class="st">"colorBlindness"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
