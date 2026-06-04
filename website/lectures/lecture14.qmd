@@ -1,0 +1,493 @@
+---
+title: "Lecture 16: Plackett-Luce Models"
+format: html
+execute: 
+  cache: true
+---
+
+## Overview {#sec-overview}
+
+The NFL Draft is an annual meeting in which American football teams select newly eligible players.
+Prior to the NFL Draft, which is typically held in April, many fans and media analysts create *mock drafts*, in which they attempt to predict the order of players selected in the actual draft[^mockhistory].
+While they initially served primarily as entertainment in the off-season, there is now a whole cottage industry of draft experts and analysts who regularly publish mock drafts in the lead up to the NFL Draft.
+These mock drafts can be used by fans to help calibrate expectations.
+They also are increasingly used by teams, who attempt to lean on the "wisdom of the crowd" to glean insight about the relative rankings of players and other teams' preferences.
+
+All this to say: mock drafts contain a considerable amount of information, especially when it comes to comparing players.
+Unlike game results data, in which we observe a winner and loser, mock draft data typically consist of a list of players ranked in some order. 
+In this lecture, we will introduce the Plackett-Luce model , an extension of the Bradley-Terry models we introduced in [Lecture 12](lecture12.qmd), that allows us to derive a single, global ranking of players, based on multiple observed partial rankings. 
+After formally introducing the model (@sec-pl-model) and discussing how to fit the model in R (@sec-fit-pl), we will walk through a simple example with only 3 items (@sec-three-item).
+Then, we fit a Plackett-Luce model to mock drafts of the first three rounds of the NFL draft (@sec-draft) before building a simulation of the first round (@sec-nfl-simulation).
+Using this simulation, we compute the probability that certain prospects being available at certain picks. 
+
+
+## The Plackett-Luce Model {#sec-pl-model}
+
+### Setup
+
+Suppose that $n$ raters[^raters] (numbered $i = 1, \ldots, n$) rank $p$ total items[^items] (numbered $j = 1, 2, \ldots, p$).
+Each rater $i$ reports a rank ordering of their $n_{i}$ items.
+For each rater $i,$ let $i(1), i(2), \ldots, i(n_{i})$ be the *indices* of the items that rater $i.$[^picks]
+Our observations take the form
+$$
+i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
+$$
+which we read to mean that rater $i$'s top-rated item was $i(1),$ followed by $i(2),$ then $i(3),$ etc.
+In other words, although we will **not** assume that each rater fully ranks all $p$ items, we will assume that they provide their top $n_{i}$ rankings
+
+[^raters]: In the context of NFL mock drafts, the raters are the individual mock drafts.
+
+[^items]: In the context of NFL mock drafts, the items are players/prospects.
+
+[^picks]: In the context of NFL mock drafts, $i(k)$ is the player/prospect selected by rater $i$ with pick $k.$
+
+
+The **Plackett-Luce** model assumes that each rater *sequentially* generates their rankings.
+First, they select their top-rated item $i(1)$ out of the set of all items $\{1, 2, \ldots, p\}.$
+Then, conditionally on having selected the first item $i(1),$ they select their second-ranked item $i(2)$ from the set of remaining items $\{1, 2, \ldots, p\} \setminus \{i(1)\}$[^setminus].
+More generally, after selecting the top $k$ items $i(1), \ldots, i(k)$, rater $i$ selects their $(k+1)$-st ranked item from the set of currently available items $\{1, 2, \ldots, p\} \setminus \{i(1), \ldots, i(k)\}.$
+
+The Plackett-Luce model further assumes that each item $j$ has a latent "desirability" $\lambda_{j}$ and that the probability of selecting item $j$ from a subset $\mathcal{S} \subset \{1, 2, \ldots, p\}$
+$$
+\mathbb{P}(\textrm{select } j \textrm{ from } \mathcal{S}) = 
+\begin{cases}
+\frac{e^{\lambda_{j}}}{\sum_{s \in \mathcal{S}}{e^{\lambda_{s}}}} & \textrm{if } j \in \mathcal{S} \\
+0 & \textrm{otherwise}.
+\end{cases}
+$$
+That is, the log of the probability that the rater selects an item out of $\mathcal{S}$ is just the item's latent desirability.
+
+
+The Bradley-Terry model is just the specialization of the Plackett-Luce model to the setting with $p = 2$ items.
+
+:::{.callout-note}
+
+## Note: Identifiability
+
+Like the Bradley-Terry model the latent item parameters $\lambda_{j}$ are not identifiable: translating all of them by an additive constant (e.g., $\lambda_{j} \rightarrow \lambda_{j} + 5$) does not change the underlying probabilities of each observed ranking.
+By convention, one $\lambda_{j}$ is set equal to 0 before the modeling fitting.
+So, all remaining parameter estimates should be interpretted as the *relative* desirability of the remaining items.
+
+:::
+
+[^setminus]: For two discrete sets $A$ and $B,$ $A \setminus B$ consists of all elements of $A$ that are not in $B.$ For instance, if $A = \{1, 2, 3, 4\}$ and $B = \{2,4\},$ then $A \setminus B = \{1,3\}.$
+
+### Example: Plackett-Luce with 3 items {#sec-three-item}
+
+As a concrete example, suppose we have three items $A$, $B$, and $C$ and two raters. 
+Further suppose that Rater 1 ranks $A \succ B \succ C$ and Rater 2 only returns their top-ranked item, which is $C$. 
+According to the Plackett-Luce model, the probability of observing Rater 1's ranking $A \succ B \succ C$ can be decomposed as
+$$
+\begin{align}
+\mathbb{P}(A \succ B \succ C) &= \mathbb{P}(\textrm{select } A \textrm{ from } \{A, B, C\}) \\
+~ &~\times \mathbb{P}(\textrm{select } B \textrm{ from } \{B, C\}) \\
+~ & ~ \times \mathbb{P}(\textrm{select } C \textrm{ from } \{C\}) \\
+~ & = \frac{e^{\lambda_{A}}}{e^{\lambda_{A}} + e^{\lambda_{B}} + e^{\lambda_{C}}} \times \frac{e^{\lambda_{B}}}{e^{\lambda_{B}} + e^{\lambda_{C}}} \times \frac{e^{\lambda_{C}}}{e^{\lambda_{C}}}
+\end{align}
+$$
+Similarly, the probability of observing Rater 2's ranking is 
+$$
+\mathbb{P}(C) = \frac{e^{\lambda_{C}}}{e^{\lambda_{A}} + e^{\lambda_{B}} + e^{\lambda_{C}}}
+$$
+
+
+
+### Fitting Plackett-Luce Models {#sec-fit-pl}
+
+Of course, in reality, we never observe the latent item parameters $\lambda_{1}, \ldots, \lambda_{p}.$
+To estimate these parameters from collections of partial rankings, we will use the [**Plackett-Luce**](https://hturner.github.io/PlackettLuce/) package, which can be installed using the code
+
+```{r}
+#| label: install-pl
+#| eval: false
+#| echo: true
+install.packages("PlackettLuce")
+```
+
+The package includes a function [`PlackettLuce()`](https://hturner.github.io/PlackettLuce/reference/PlackettLuce.html) for fitting the model.
+This function requires the data to be formatted in a very specific way that is, unfortunately, not very easy to visualize with lots of raters and items.
+The package authors have provided a helper function [`as.rankings()`](https://hturner.github.io/PlackettLuce/reference/rankings.html) that takes in a matrix of ratings and re-formats it in a way that can be passed to `PlackettLuce()`.
+
+To illustrate, suppose we have four items $A$, $B,$, $C$, and $D$ and six raters who provide the rankings
+
+  * Rater 1: $A \succ B \succ D \succ C$
+  * Rater 2: $B \succ A$ 
+  * Rater 3: $A \succ D \succ C$
+  * Rater 4: $B \succ D \succ C$
+  * Rater 5: $A \succ B \succ D \succ C$
+  * Rater 6: $A \succ D \succ C$
+
+We can encode these ratings in a matrix $\boldsymbol{\mathbf{R}} = (r_{i,j})$ whose rows correspond to the raters and whose columns correspond to the items.
+If rater $i$ selects item $j$ as their $k$-th ranked item, then we set $r_{i,j} = k$.
+If rater $i$ does not rank item $j$ at all, we leave $r_{i,j}$ empty (i.e., assign it `NA` in R)
+```{r}
+#| label: example-R
+#| eval: true
+#| echo: true
+R <- matrix(
+  c(1,2,4,3,
+    2, 1, NA, NA,
+    1, NA, 3, 2,
+    NA, 1, 3, 2,
+    1, 2, 4, 3,
+    1, NA, 3, 2),
+  nrow = 6, ncol = 4, dimnames = list(c(), c("A", "B", "C", "D")),
+  byrow = TRUE)
+R
+```
+The function `as.rankings()` converts the matrix of rankings into a vector of partial rankings whose elements encode each rater's rankings. 
+```{r}
+#| label: convert-R
+#| eval: true
+#| echo: true
+R_rank <- PlackettLuce::as.rankings(R)
+R_rank
+```
+Once we have our rankings data in a format compatible with `PlackettLuce()`, we can estimate the underlying $\lambda_{j}$'s
+We see that item $A$, which was the top ranked item by the first rater, is selected as the reference item (so $\lambda_{A} = 0$).
+```{r}
+#| label: fit-4
+#| eval: true
+#| echo: true
+
+fit <- PlackettLuce::PlackettLuce(rankings = R_rank)
+lambda_hat <- coef(fit)
+lambda_hat
+```
+
+<!--
+ Work out the selection probabilities
+-->
+
+
+## Consensus Draft Rankings {#sec-draft}
+
+
+Since 2018, [Benjamin Robinson](https://grindingthemocks.substack.com) has built predictive model of the actual NFL draft by combining mock drafts from multiple sources.
+Using these models, he can forecast each propspect's potential draft position and also estimate the inherent value each draft pick[^grinding]
+As part of the [2020 Carnegie Mellon Sports Analytics Conference's Reproducible Research competition](https://stat.cmu.edu/cmsac/conference/2020/), Benjamin released some of the mock draft data he collected in the lead-up to the 2018 NFL Draft.
+In this section, we will work with a subset of the mock draft data he collected in the lead up to the 2018 NFL Draft.
+You can download a [CSV file](https://github.com/skdeshpande91/stat441_fall2026/blob/main/data/lecture14/nfl_mock_drafts.csv) containing the data we will analyze from the course's GitHub repository; it contains the results of the first three rounds of several mock drafts[^datalink].
+The data contains data from 372 distinct mock drafts, each of which ranked up to 96 players (corresponding to the first three rounds).
+
+[^mockhistory]: You can read more about the history of mock drafts [here](https://www.nbcsportsboston.com/nfl/nfl-mock-draft-history-most-accurate-predictors/602506/). 
+
+[^grinding]: You can read more about Benjamin's work on his [Substack](https://grindingthemocks.substack.com).
+
+[^datalink]:You can download the full data set, from which ours was derived, [here](https://bitbucket.org/benjamin_robinson/grindingthebayes/src/master/).
+
+### Data Preparation {#sec-data-prep}
+
+We begin by reading in our data and extracting a list of the unique players and the positions they play.
+
+```{r}
+#| label: read-mock-data
+#| eval: true
+#| echo: true
+#| output: false
+#| warning: false
+#| message: false
+
+target <- "https://raw.githubusercontent.com/skdeshpande91/stat441_fall2026/refs/heads/main/data/lecture14/nfl_mock_drafts.csv"
+raw_data <- readr::read_csv(file = target)
+
+unik_players <- 
+  raw_data |>
+  dplyr::select(name, position) |>
+  unique()
+```
+
+Here are five random rows in `raw_data`
+```{r}
+#| label: head-5
+#| eval: true
+#| echo: true
+set.seed(129)
+raw_data |> dplyr::slice_sample(n = 5)
+```
+
+Each row of `raw_data` corresponds a specific pick within a given mock draft.
+The mock drafts are uniquely identified by the variables `site`, `url`[^url], and `date`[^date]
+
+[^url]: The website from which Benjamin Robinson obtained the mock draft results.
+
+[^date]: The date the mock draft was published 
+
+### Fitting the model
+
+Currently, rows in `raw_data` correspond to the combination of row and pick.
+We need to convert this into a ranking matrix, in which rows correspond to raters, columns correspond to the items, and values record the ranking.
+In other words, we need to convert `raw_data` from long format into wide format[^long].
+We can do this pretty easily with the function `tidyr::pivot_wider()`
+
+```{r}
+#| label: pivot-rankings
+#| eval: true
+#| echo: true
+ranking_matrix <-
+  raw_data |>
+  dplyr::select(site, date, name, pick, url) |> #<1>
+  tidyr::pivot_wider(names_from = name,values_from = pick) |> #<2>
+  dplyr::select(-tidyr::all_of(c("date", "url", "site"))) |> #<3>
+  dplyr::mutate_all( ~replace(., lengths(.)==0, NA)) |> #<4>
+  as.matrix() #<5>
+```
+1. Extract only variables needed to uniquely identify the mock draft (`site`, `date`, and `url`), the player/prospec (`name`), and the pick with which they were selected (`pick`)
+2. Convert from long to wide format
+3. Drop the columns identifying the raters (i.e., mock drafts) as they are now redundant
+4. Fill in missing values with `NA`'s
+5. Convert the data table into a matrix
+
+We now fit the model and extract the estimates $\hat{\lambda}_{j}$'s
+```{r}
+#| label: fit-nfl-pl
+#| eval: true
+#| echo: true
+#| message: false
+#| warning: false
+#| output: false
+mock_rankings <- PlackettLuce::as.rankings(x = ranking_matrix)
+fit <- PlackettLuce::PlackettLuce(rankings = mock_rankings)
+lambda_hat <- coef(fit)
+```
+
+[^long]: See [these notes](https://cengel.github.io/R-data-wrangling/tidyr.html) for nice overview of long vs wide formats
+
+Based on the `{r} nrow(ranking_matrix)` three-round mock drafts, the model estimates Sam Darnold as having the largest latent desirability, closely followed by Saquon Barkley, Josh Rosen, Bradley Chubb, and Quenton Nelson.
+```{r}
+#| label: top-lambdas
+round(sort(lambda_hat, decreasing = TRUE), digits = 3)[1:10]
+```
+## Draft Simulation {#sec-nfl-simulation}
+
+
+We're now in a position to simulate a draft.
+In our simulation, we will **assume** that teams select players in a manner consistent with the underlying Plackett-Luce model.
+That is, the first team will select a player out of the set of all players according to the model's implied probabilities.
+Then, the second team will select a player out of the set of all available players.
+
+:::{.callout-important}
+
+## Assumption Warning
+
+This is a heroic assumption: in actuality, teams make selections based on a range of factors that are not (yet) captured in our Plackett-Luce model.
+As but one example, each team typically creates their own internal rankings of players and different teams have different rankings not only of players but also of positions.
+For simplicity, our simulation assumes that teams are working based on the same rankings estimated with our model.
+To build a more accurate or life-like draft simulator, we would need to model team and player specific rankings, which is a bit beyond the scope of the course.
+
+:::
+
+To illustrate these steps, let's first simulate the first pick of the draft.
+According to the Plackett-Luce model, the probability that player $j$ is selected first is 
+$$
+\frac{e^{\lambda_{j}}}{\sum_{k = 1}^{p}{e^{\lambda_{k}}}}.
+$$
+The following code computes the probability that each available player is selected first overall.
+```{r}
+#| label: first-pick-prob
+#| eval: true
+#| echo: true
+players <- names(lambda_hat) #<1>
+probs <- exp(lambda_hat)/sum(exp(lambda_hat)) #<2>
+round(sort(probs, decreasing = TRUE), digits = 2)[1:10]
+```
+
+We can use the `sample()` function to select a single player according to their corresponding probabilities.
+At least for this simulation, Saquon Barkley is the first player selected
+```{r}
+set.seed(123)
+sample(x = players, size = 1, prob = probs)
+```
+According to the Plackett-Luce model, the probability selecting player $j$ is with the second pick *after Saquon Barkley has already been selected* is
+$$
+\frac{e^{\lambda_{j}}}{\sum_{k = 1}^{p}{e^{\lambda_{k}} \times \mathbf{1}(\textrm{player } k \textrm{ is not Saquon Barkley})}}.
+$$
+Mathematically, this probability is rather cumbersome to write down.
+Luckily, it's easier to compute in R using some clever indexing.
+In the code below, we create separate vectors containing the set of previously selected players and players still available to select; exponentiate the $\hat{\lambda}_{j}$'s for the available players; and then normalize these values to sum to 1 across the available players
+
+```{r}
+#| label: sim-second-pick
+#| eval: true
+#| echo: true
+selected_players <- c("Saquon Barkley") #<1>
+available_players <- players[!players %in% selected_players] #<1>
+probs <- exp(lambda_hat[available_players])/sum(exp(lambda_hat[available_players])) #<2>
+sample(x = available_players, size = 1, prob = probs)
+```
+1. Define vectors of players already selected and players available to be selected
+2. Compute the probabilities of selection among the available players only
+
+At least in this particular simulation, the second player selected is Parris Campbell (who was actually selected in the second round of the NFL draft).
+According to the model, based on all the other players available, the chances that Campbell is selected were quite slim:
+```{r}
+#| label: second-pick-prob
+#| eval: true
+#| echo: true
+probs["Parris Campbell"]
+```
+
+We can now simulate the third pick using virtually identical code as the second pick.
+```{r}
+#| label: third-pick-sim
+#| eval: true
+#| echo: true
+selected_players <- c("Saquon Barkley", "Parris Campbell") 
+available_players <- players[!players %in% selected_players] 
+probs <- exp(lambda_hat[available_players])/sum(exp(lambda_hat[available_players])) 
+sample(x = available_players, size = 1, prob = probs)
+```
+
+### Digression: The Softmax Function
+
+Continuing this simulation for several more picks is conceptually straightforward: as the picks progress, we need to 
+
+  1. Update the running set of players who have already been selected (i.e., update `selected_players`).
+  2. Compute $e^{\lambda_{j}}$ for all the players who remain available.
+  3. Normalize these exponentiated values across available players to obtain selection probabilities.
+  4. Draw a player from the set of available players based on the selection probabilities.
+  
+Steps 2 and 3 describe how to compute the selection probabilities from the Plackett-Luce parameters of the remaining players.
+The mapping from the vector of these parameters into the selection probabilities is known as the [**softmax function**](https://en.wikipedia.org/wiki/Softmax_function)
+
+:::{.callout-note}
+
+## Definition: Softmax
+
+The **softmax** function $\sigma$ maps a vector of $n$ numbers $(x_{1}, \ldots, x_{n})$ into a vector of probabilities
+$$
+\sigma(x_{1}, \ldots, x_{n}) = \left( \frac{e^{x_{1}}}{\sum{e^{x_{i}}}}, \ldots, \frac{e^{x_{n}}}{\sum{e^{x_{i}}}}\right)
+$$
+
+:::
+
+In R, a very fast and numerically stable implemention of the softmax function is available from the [**mclust** package](https://cran.r-project.org/web/packages/mclust/index.html), which can be installed using
+
+```{r}
+#| label: mclust
+#| eval: false
+#| echo: true
+install.packages("mclust")
+```
+  
+The function `mclust::softmax()` is relatively simple to use. 
+The following code compares the third pick probabilities computed using `mclust::softmax()` to our hand-computed calculations.
+Although the differences in this case are essentially negligble, moving forward we will use the somewhat more stable softmax implementation. 
+```{r}
+#| label: softmax-example
+#| eval: true
+#| echo: true
+tmp_probs <- mclust::softmax(x = lambda_hat[available_players]) 
+names(tmp_probs) <- available_players #<1>
+range(tmp_probs - probs) #<2>
+```
+1. The one downside of `mclust::softmax()` is that it doesn't preserve element names. So, we have to re-set the names manually
+2. Compare the probabilities computed by hand (`probs`) and using `mclust::softmax()`.
+
+### First Round Simulation
+
+We're now in a position to simulate the entire first round of the NFL draft many times.
+We can then estimate probabilities of various events (e.g., Saquon being selected in the top-3) by looking at the proportion of simulated drafts in which the events occur.
+
+Like our Markov chain simulations from [Lecture 14](lecture14.qmd), we will use double loop for implement our simulation.
+The outer loop iterates over the various simulation replications while the inner loop iterates over the individual picks in each simulated draft.
+Before starting each simulation replication, we create a container `selected_players` to record the picked players in the order in which they were picked.
+In the inner loop, we update the set of available players, compute the selection probabilities, and then simulate the actual pick.
+After the inner loop concludes, we write `selected_players` into the appropriate row of a large array holding our simulated picks.
+In this array, rows correspond to simulation iterations and columns correspond to picks. 
+
+:::{.callout-warning}
+
+## Warning
+
+The following code takes a few minutes to run
+
+:::
+
+```{r}
+#| label: sim-first-round
+#| eval: true
+#| echo: true
+
+n_sims <- 1e5
+results <- array(dim = c(n_sims, 32)) #<1>
+
+for(r in 1:n_sims){
+  set.seed(479 + 3*r) #<2>
+  
+  selected_players <- rep(NA, times = 32) #<3>
+  available_players <- players #<3>
+  
+  for(i in 1:32){
+    available_players <- players[!players %in% selected_players]
+    probs <- mclust::softmax(x = lambda_hat[available_players])
+    names(probs) <- available_players
+    pick <- sample(x = available_players, size = 1, prob = probs)
+    selected_players[i] <- pick #<4>
+  }
+  results[r,] <- selected_players
+}
+```
+
+Taking a look at the top-5 picks, we see a fair bit of variability simulation-to-simulation
+
+```{r}
+#| label: top-5-variability
+#| eval: true
+#| echo: true
+results[1:5, 1:5]
+```
+To compute the probability that Saquon Barkley is selected in the first three picks, we first define a function that checks whether a given players name appears among the first several entries of a given vector:
+```{r}
+#| label: find-player-fn
+#| eval: true
+#| echo: true
+
+player_picked <- function(x, player, pick){
+  return(player %in% x[1:pick]) #<1>
+}
+player_picked(x = results[1,], player = "Saquon Barkley", pick = 3)
+```
+1. Checks if `player` appears in the first `pick` elements of `x`
+
+We can then *apply* this function to every row of `results` to get a single Boolean (i.e., `TRUE` or `FALSE`) recording whether Saquon was selected in the first three picks.
+To quickly compute the proportion of simulated drafts in which Saquon was picked within the top 3 picks, we can take the mean of these Booleans.
+We find that in 41% of our simulated drafts, Saquon is a top-3 pick
+Note that when we apply a function to an array, additional arguments for the function can be passed to `apply()`.
+
+```{r}
+#| label: saquon-three
+#| eval: true
+#| echo: true
+saquon_pick3 <- apply(X = results, MARGIN = 1, FUN = player_picked, player = "Saquon Barkley", pick = 3)
+mean(saquon_pick3)
+```
+
+Going a bit further, we can even compute quantities like the probability Saquon Barkley is available at pick 11 given that he was not picked in the top-3.
+We can estimate this probability with $N/D$ where
+
+  * $N$ is the number of simulated drafts in which Saquon is **not** picked within the first 10 picks
+  * $D$ is the number of simulated drafts in which Saquon is **not** picked within the first 3 picks
+  
+```{r}
+#| label: conditional
+#| eval: true
+#| echo: true
+saquon_pick10 <- apply(X = results, MARGIN = 1, FUN = player_picked, player = "Saquon Barkley", pick = 10)
+N <- sum(!saquon_pick10)
+D <- sum(!saquon_pick3)
+
+cat("N = ", N, " D = ", D, "\n")
+cat("P(Saquon available at pick 11 | Saquon not taken in top-3) = ", round(100*N/D, digits = 3), "%\n")
+```
+## Cautionary Note{#sec-caution}
+
+The results of the simulated drafts are quite a different than the actual 2018 NFL Draft.
+The discrepancy largely stems from the fact that the probabilistic model underpinning our simulations is rather unrealistic: it assumes, for instance, that each team rates each player identically.
+It also does not account for differential preferences regarding position.
+To make the simulation more realistic, you could consider incorporating player-specific covariates where each $\lambda_{j}$ is a linear function of covariates:
+$$
+\lambda_{j} = \beta_{0} + \beta_{1}x_{j,1} + \cdots + \beta_{p}x_{j,p}.
+$$
+It is possible to use the **PlackettLuce** package to fit such a model with *item*-level covariates. See [this package vignette](https://hturner.github.io/PlackettLuce/articles/PLADMM.html) for details and an example. 
+For the football data, it may be useful to treat position (e.g., quarterback, offensive tackle, etc) as a covariate.
