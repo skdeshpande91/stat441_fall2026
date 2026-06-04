@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.9.37">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -93,9 +93,9 @@ div.csl-indent {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/quarto-axe/axe-check.js" type="module"></script>
 <script id="quarto-axe-checker-options" type="text/plain">eyJvdXRwdXQiOiJkb2N1bWVudCJ9</script>
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
@@ -249,6 +249,10 @@ window.Quarto = {
     <a class="dropdown-item" href="../lectures/lecture14.html">
  <span class="dropdown-text">Lecture 16: Plackett-Luce Models</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture15.html">
+ <span class="dropdown-text">Lecture 15: Markov Chains I</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -377,6 +381,12 @@ window.Quarto = {
  <span class="menu-text">Lecture 16: Plackett-Luce Models</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 15: Markov Chains I</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -439,7 +449,7 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>raw_box <span class="ot">&lt;-</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  hoopR<span class="sc">::</span><span class="fu">load_nba_player_box</span>(<span class="at">seasons =</span> <span class="dv">2002</span><span class="sc">:</span>(hoopR<span class="sc">::</span><span class="fu">most_recent_nba_season</span>()))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>The data table <code>raw_box</code> contains 848009 rows and 57 columns. Checking the column names, we see that there are columns for the numbers of field goals, three point shots, and free throws made and attempted.</p>
+<p>The data table <code>raw_box</code> contains 844696 rows and 57 columns. Checking the column names, we see that there are columns for the numbers of field goals, three point shots, and free throws made and attempted.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(raw_box)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -487,7 +497,7 @@ window.Quarto = {
 <pre><code>── ESPN NBA Player Boxscores from hoopR data repository ───────── hoopR 2.1.0 ──</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>ℹ Data updated: 2026-06-04 07:02:37 CDT</code></pre>
+<pre><code>ℹ Data updated: 2026-05-21 06:49:46 CDT</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 30 × 7
@@ -529,7 +539,7 @@ window.Quarto = {
 <span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span>did_not_play <span class="sc">&amp;</span> </span>
 <span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span>game_date <span class="sc">%in%</span> allstar_dates)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Looking at the data table <code>reg_box</code>, we see that in about 8.6% of rows, the number of minutes played is missing. These likely correspond to players who were active but did not play or logged only a few seconds (generally at the end of games). We will replace these NA values with 0’s and, while doing so, rename some of the columns in <code>reg_box</code>.</p>
+<p>Looking at the data table <code>reg_box</code>, we see that in about 8.7% of rows, the number of minutes played is missing. These likely correspond to players who were active but did not play or logged only a few seconds (generally at the end of games). We will replace these NA values with 0’s and, while doing so, rename some of the columns in <code>reg_box</code>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-6"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1" aria-hidden="true" tabindex="-1"></a>reg_box <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-6-2"><a href="#annotated-cell-6-2" aria-hidden="true" tabindex="-1"></a>  reg_box <span class="sc">|&gt;</span></span>
@@ -582,7 +592,7 @@ window.Quarto = {
 <span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_games =</span> dplyr<span class="sc">::</span><span class="fu">n</span>(),</span>
 <span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>The data table <code>season_box</code> contains 12503 rows, each of corresponds to a single player-season combination. Here is a quick snapshot of some of the data for Dirk Nowitzki</p>
+<p>The data table <code>season_box</code> contains 12499 rows, each of corresponds to a single player-season combination. Here is a quick snapshot of some of the data for Dirk Nowitzki</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>season_box <span class="sc">|&gt;</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(Player <span class="sc">==</span> <span class="st">"Dirk Nowitzki"</span>) <span class="sc">|&gt;</span></span>
@@ -626,13 +636,13 @@ window.Quarto = {
  1 Kobe Bryant          2006   949  2109   179   506   675   788    3184      78
  2 LeBron James         2006   875  1823   127   379   601   814    3361      82
  3 Kobe Bryant          2003   868  1924   124   324   601   713    3401      82
- 4 Shai Gilgeous-Ale…   2025   868  1680   165   444   604   673    2633      77
- 5 LeBron James         2018   857  1580   149   406   388   531    3024      82
- 6 Dwyane Wade          2009   854  1739    88   278   590   771    3048      82
- 7 Kevin Durant         2014   849  1688   192   491   703   805    3118      81
- 8 James Harden         2019   843  1909   378  1028   754   858    2870      78
- 9 Giannis Antetokou…   2024   837  1369    34   124   514   782    2573      73
-10 Tracy McGrady        2003   829  1813   173   448   576   726    2954      75</code></pre>
+ 4 LeBron James         2018   857  1580   149   406   388   531    3024      82
+ 5 Dwyane Wade          2009   854  1739    88   278   590   771    3048      82
+ 6 Kevin Durant         2014   849  1688   192   491   703   805    3118      81
+ 7 James Harden         2019   843  1909   378  1028   754   858    2870      78
+ 8 Giannis Antetokou…   2024   837  1369    34   124   514   782    2573      73
+ 9 Tracy McGrady        2003   829  1813   173   448   576   726    2954      75
+10 Russell Westbrook    2017   824  1941   200   583   710   840    2802      81</code></pre>
 </div>
 </div>
 <p>When we look at the ten “best” shooting seasons, we immediately recognize a lot of superstar players! On the basis of made shots alone, it is tempting to conclude that James Harden’s 2018-19 season is more impressive than Giannis Antetokounmpo’s 2023-24 season; after all, Harden made 6 more shots than Giannis. But taking a closer look, we see that Harden took 540 more to make 6 more baskets than Giannis. Arguably, Gianni’s 2023-24 season is more impressive because he was more <em>efficient</em>.</p>
@@ -708,10 +718,10 @@ window.Quarto = {
  3 DeAndre Jordan   2017 0.714   577
  4 Rudy Gobert      2022 0.713   508
  5 DeAndre Jordan   2015 0.710   534
- 6 Jarrett Allen    2025 0.706   640
+ 6 Jarrett Allen    2025 0.706   581
  7 Nic Claxton      2023 0.705   587
  8 DeAndre Jordan   2016 0.703   508
- 9 Daniel Gafford   2025 0.702   403
+ 9 Jalen Duren      2025 0.694   474
 10 Daniel Gafford   2022 0.693   411</code></pre>
 </div>
 </div>
@@ -741,10 +751,10 @@ window.Quarto = {
  3 DeAndre Jordan   2017 0.714 0.714  0         2      81
  4 Rudy Gobert      2022 0.713 0.713  0         4      66
  5 DeAndre Jordan   2015 0.711 0.710  0.25      4      82
- 6 Jarrett Allen    2025 0.706 0.706  0         5      82
+ 6 Jarrett Allen    2025 0.706 0.706  0         3      74
  7 Nic Claxton      2023 0.705 0.705  0         2      76
  8 DeAndre Jordan   2016 0.703 0.703  0         1      77
- 9 Daniel Gafford   2025 0.702 0.702 NA         0      57
+ 9 Jalen Duren      2025 0.694 0.694 NA         0      70
 10 Daniel Gafford   2022 0.693 0.693  0         1      72</code></pre>
 </div>
 </div>
