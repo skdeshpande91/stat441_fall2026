@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -39,9 +39,9 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/quarto-axe/axe-check.js" type="module"></script>
 <script id="quarto-axe-checker-options" type="text/plain">eyJvdXRwdXQiOiJkb2N1bWVudCJ9</script>
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
@@ -198,6 +198,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#sec-description" id="toc-sec-description" class="nav-link active" data-scroll-target="#sec-description">Description</a></li>
   <li><a href="#sec-learning-outcomes" id="toc-sec-learning-outcomes" class="nav-link" data-scroll-target="#sec-learning-outcomes">Learning Outcomes</a></li>
   <li><a href="#sec-course-requisites" id="toc-sec-course-requisites" class="nav-link" data-scroll-target="#sec-course-requisites">Requisites</a></li>
+  <li><a href="#course-schedule" id="toc-course-schedule" class="nav-link" data-scroll-target="#course-schedule">Course Schedule</a></li>
   <li><a href="#sec-course-staff" id="toc-sec-course-staff" class="nav-link" data-scroll-target="#sec-course-staff">Course Staff &amp; Office Hours</a></li>
   <li><a href="#sec-assignments" id="toc-sec-assignments" class="nav-link" data-scroll-target="#sec-assignments">Assignments &amp; Grading</a>
   <ul class="collapse">
@@ -207,7 +208,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#sec-participation" id="toc-sec-participation" class="nav-link" data-scroll-target="#sec-participation">Participation</a></li>
   <li><a href="#sec-final-grades" id="toc-sec-final-grades" class="nav-link" data-scroll-target="#sec-final-grades">Final Grades</a></li>
   </ul></li>
-  <li><a href="#sec-course-sites" id="toc-sec-course-sites" class="nav-link" data-scroll-target="#sec-course-sites">Piazza</a></li>
+  <li><a href="#sec-course-sites" id="toc-sec-course-sites" class="nav-link" data-scroll-target="#sec-course-sites">Course Management</a></li>
   <li><a href="#sec-resources" id="toc-sec-resources" class="nav-link" data-scroll-target="#sec-resources">Resources</a></li>
   <li><a href="#sec-academic-integrity" id="toc-sec-academic-integrity" class="nav-link" data-scroll-target="#sec-academic-integrity">Academic Integrity</a></li>
   <li><a href="#sec-ai" id="toc-sec-ai" class="nav-link" data-scroll-target="#sec-ai">Policy on the Use of Generative Artificial Intelligence Models</a></li>
@@ -277,17 +278,21 @@ ul.task-list li input[type="checkbox"] {
 <p>If you do not meet the formal course prerequisites and/or have not used R in a previous course, this is <strong>not</strong> the right course for you. Exceptions will not made to the formal course requisites.</p>
 </div>
 </div>
-<p>I will assume <em>fluency</em> with basic R functionality (e.g., assignment, writing and executing scripts, saving data objects, setting environments, installing and loading packages), data manipulation with <strong>dplyr</strong> and other <strong>tidyverse</strong> packages, and visualization using either base R graphics or <strong>ggplot2</strong>. I will additionally assume some familiarity with fitting statistical models in R and interpreting their output (e.g., using <code>lm</code> and <code>glm</code>). <a href="lectures/lecture00.qmd">Here</a> is an example of the type of R coding with which I will assume you are familiar. If you need a refresher on some of the data wrangling in that document, I <strong>strongly</strong> recommend reviewing your old course notes as well as</p>
+<p>I will assume <em>fluency</em> with basic R functionality (e.g., assignment, writing and executing scripts, saving data objects, setting environments, installing and loading packages), data manipulation with <strong>dplyr</strong> and other <strong>tidyverse</strong> packages, and visualization using either base R graphics or <strong>ggplot2</strong>. I will additionally assume some familiarity with fitting statistical models in R and interpreting their output (e.g., using <code>lm</code> and <code>glm</code>). Please see the notes from <a href="./lectures/lecture01.html">Lecture 1</a> for an example of the type of R coding with which I will assume you are already familiar. If you need a refresher on some of the data wrangling in that document, I <strong>strongly</strong> recommend reviewing your old course notes as well as</p>
 <ul>
 <li><a href="https://r4ds.hadley.nz/data-transform.html">Chapter 3</a> and <a href="https://r4ds.hadley.nz/data-tidy.html">Chapter 5</a> of <a href="https://r4ds.hadley.nz"><em>R for Data Science</em></a>.</li>
 <li><a href="https://datasciencebook.ca/intro.html#adding-and-modifying-columns-using-mutate">Section 1.9</a> and <a href="https://datasciencebook.ca/wrangling.html">Chapter 3</a> of <a href="https://datasciencebook.ca"><em>Data Science: A First Introduction</em></a>.</li>
 </ul>
 </section>
+<section id="course-schedule" class="level2">
+<h2 class="anchored" data-anchor-id="course-schedule">Course Schedule</h2>
+<p>Lectures will be held from 8:00am to 9:15am in 1524 Morgridge Hall.</p>
+</section>
 <section id="sec-course-staff" class="level2">
 <h2 class="anchored" data-anchor-id="sec-course-staff">Course Staff &amp; Office Hours</h2>
 <p><strong>Instructor</strong>: <a href="https://skdeshpande91.github.io">Sameer Deshpande</a> (sameer.deshpande@wisc.edu). Instructor office hours will take place on:</p>
 <ul>
-<li>Tuesdays from 9:30am to 11:00am in Morgridge Hall 5586.</li>
+<li>Tuesdays from 9:30am to 11:00am in Morgridge Hall 5586</li>
 <li>Wednesdays from 2:00pm to 4:00pm in Morgridge Hall 5586</li>
 <li>Thursdays from 4:00pm to 6:00pm in Morgridge Hall 5586</li>
 </ul>
@@ -304,8 +309,7 @@ Friday office hours are also a great way to brainstorm project ideas with and to
 </section>
 <section id="sec-assignments" class="level2">
 <h2 class="anchored" data-anchor-id="sec-assignments">Assignments &amp; Grading</h2>
-<p>Your final grade will be based on your performance on three <a href="./syllabus.html#sec-projects">group projects</a> and your <a href="./syllabus.html#sec-participation">overall participation</a>. For each project, groups can earn up to 100 points for their <a href="./syllabus.html#sec-written-report">written report</a> and up to 100 points for their <a href="./syllabus.html#sec-presentation">recorded presentation</a>. After each project, every student will <a href="./syllabus.html#sec-peer-review">peer review</a> three reports and three presentations and complete a <a href="./syllabus.html#sec-team-accountability">team accountability survey</a>. You can earn a total of 10 points for each peer review by (i) completing the provided rubric and (ii) leaving a constructive comment that identities strengths and areas for potential improvement. Students will earn up to 20 points per survey: 10 for completing the survey and 10 based on the feedback from their teammates and their own self-assessment.</p>
-<p>We will use Canvas to handle report and presentation submissions, peer reviews, and team accountability surveys.</p>
+<p>Your final grade will be based on your performance on three <a href="./syllabus.html#sec-projects">group projects</a> and your <a href="./syllabus.html#sec-participation">overall participation</a>. For each project, groups will prepare a <a href="./syllabus.html#sec-written-report">written report</a> and [record a 8–10 minute presentation]((syllabus.qmd#sec-presentation), each worth 100 points. After each project, every student will <a href="./syllabus.html#sec-peer-review">peer review</a> three reports and three presentations and complete a <a href="./syllabus.html#sec-team-accountability">team accountability survey</a>. You can earn a total of 10 points for each peer review by (i) completing the provided rubric and (ii) leaving a constructive comment that identities strengths and areas for potential improvement. Students will earn up to 20 points per survey: 10 for completing the survey and 10 based on the feedback from their teammates and their own self-assessment.</p>
 <section id="sec-projects" class="level3">
 <h3 class="anchored" data-anchor-id="sec-projects">Group Projects</h3>
 <p>There will be three group projects. Each project consists of two parts, a written report and a group presentation. The project due dates are October 9, November 6, and December 4.</p>
@@ -333,7 +337,7 @@ Friday office hours are also a great way to brainstorm project ideas with and to
 </section>
 <section id="sec-peer-review" class="level3">
 <h3 class="anchored" data-anchor-id="sec-peer-review">Peer Reviews</h3>
-<p>After every group project, every student is expected to peer-review the written report and presentations of 3 other teams. The primary purpose of this peer review is to <em>practice</em> providing constructive feedback on both technical and non-technical writing to your fellow data scientists. Peer reviews will be completed on Canvas and a structured evaluation rubric will be provided for each assignment. The peer review process will be single-blinded so teams will not know the identities of their reviewers. Students can earn a total of 20 points for each peer review by (i) completing the provided rubric and (ii) leaving a constructive comment that identities strengths and areas for potential improvement. Peer reviews are due one week after the project assignment due dates; that is, they are due on October 16, November 13, and December 11. A penalty will be assessed for submitting late reviews.</p>
+<p>After every group project, every student is expected to peer-review the written report and presentations of 3 other teams. The primary purpose of this peer review is to <em>practice</em> providing constructive feedback on both technical and non-technical writing to your fellow data scientists. Peer reviews will be completed using Qualtrics and a structured evaluation rubric will be provided for each assignment. The peer review process will be single-blinded so teams will not know the identities of their reviewers. Students can earn a total of 20 points for each peer review by (i) completing the provided rubric and (ii) leaving a constructive comment that identities strengths and areas for potential improvement. Peer reviews are due one week after the project assignment due dates; that is, they are due on October 16, November 13, and December 11. A penalty will be assessed for submitting late reviews.</p>
 </section>
 <section id="sec-team-accountability" class="level3">
 <h3 class="anchored" data-anchor-id="sec-team-accountability">Team Accountability Survey</h3>
@@ -345,12 +349,12 @@ Friday office hours are also a great way to brainstorm project ideas with and to
 </section>
 <section id="sec-final-grades" class="level3">
 <h3 class="anchored" data-anchor-id="sec-final-grades">Final Grades</h3>
-<p>Your final grade will be based on how many of the 1000 total points you earn during the semester. Over 925 points is at least an A, over 875 points is at least an AB, over 800 points is at least a B, over 700 is at least a BC, over 600 points is at least a C, and over 500 point is at least a D. Final grade boundaries will be announced no later than December 5, 2025.</p>
+<p>Your final grade will be based on how many of the 1000 total points you earn during the semester. Over 925 points is at least an A, over 875 points is at least an AB, over 800 points is at least a B, over 700 is at least a BC, over 600 points is at least a C, and over 500 point is at least a D. Final grade boundaries will be announced no later than December 7, 2026.</p>
 </section>
 </section>
 <section id="sec-course-sites" class="level2">
-<h2 class="anchored" data-anchor-id="sec-course-sites">Piazza</h2>
-<p>We will also use Piazza for specific discussions about course content (e.g., sharing additional information/resources related to material discussed in lecture; answering questions about data, method, and code; etc.) and more general discussions about sports analytics (e.g., sharing job postings, open data competition opportunities, popular press articles, and other analyses you might find online etc.) Here is a <a href="https://piazza.com/wisc/fall2026/fa26stat441001/home">link to the Piazza page</a>. We will also use Canvas for course announcements and to maintain the course gradebook. Here is a <a href="">link to the Canvas page</a>.</p>
+<h2 class="anchored" data-anchor-id="sec-course-sites">Course Management</h2>
+<p>We will also use Piazza for specific discussions about course content (e.g., sharing additional information/resources related to material discussed in lecture; answering questions about data, method, and code; etc.) and more general discussions about sports analytics (e.g., sharing job postings, open data competition opportunities, popular press articles, and other analyses you might find online etc.) Here is a <a href="https://piazza.com/wisc/fall2026/fa26stat441001/home">link to the Piazza page</a>. We will also use Canvas for course announcements and to maintain the course gradebook. Here is a <a href="https://canvas.wisc.edu/courses/530312">link to the Canvas page</a>.</p>
 <p>We will use Box for project submissions and Qualtrics for peer reviews.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">

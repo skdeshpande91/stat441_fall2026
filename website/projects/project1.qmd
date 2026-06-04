@@ -90,11 +90,11 @@ Using ideas from [Lecture 3](../lectures/lecture03.qmd), develop an XG model for
 If you puruse this option, you should build at least 3 different XG models, compare them both quantaitively and qualitatively, and use the "best" model to make conclusions about player or team performance.
 You can also compare your model predictions to those provided by the package itself.
 
+<!--
 ### NBA Heatmaps & Expected Points
 
-<!--
-In [Lecture 4[(../lectures/lecture04.qmd) and [Lecture 5](../lectures/lecture05.qmd), we used the [**hoopR**](https://hoopr.sportsdataverse.org) package to scrape NBA play-by-play data, which we then used to estimate adjusted plus/minus.
--->
+In [Lecture 4](../lectures/lecture04.qmd) and [Lecture 5](../lectures/lecture05.qmd), we worked with NBA play-by-play data scraped using the [**hoopR**](https://hoopr.sportsdataverse.org).
+Using that package, you can scrape shot location data.
 This package also includes shot location data.
 Using these data (and possibly other contextual information about the game state and player), build a model to predict the probability that a player makes a shot.
 Once built, use the model to compare player performance.
@@ -102,11 +102,11 @@ For instance, you can convert these probabilities to expected points and explore
 Or you could identify players who score substantially more or less points than what a league-average or replacement-level player might be expected to score given the same shot selection.
 
 If you puruse this option, you should build and compare at least 3 different models of shot selection. You should then select the "best" model using both qualitative and quantitative considerations.
-
+-->
 
 ### WAR For College Football and Volleyball
 
-In [Lecture 10](lectures/lecture10.qmd), we used the [**nflfastR**](https://www.nflfastr.com) package to scrap play-by-play data from the National Football League.
+In [Lecture 10](../lectures/lecture10.qmd), we used the [**nflfastR**](https://www.nflfastr.com) package to scrap play-by-play data from the National Football League.
 We then used these data to develop a version of Wins Above Replacement for offensive players in the NFL.
 The package [**cfbfastR**](https://cfbfastr.sportsdataverse.org) provides similar functinoality for college football.
 You could try to develop a version of WAR for college football.
@@ -124,12 +124,12 @@ If you pursue this option, I highly recommend using the pre-scraped play-by-play
 ### Adjusted Plus/Minus for College Basketball
 
 The [**ncaahoopR**](https://github.com/lbenz730/ncaahoopR) package provides functions for scraping play-by-play data from college basketball.
-Using a workflow similar to the one presented in [Lecture 4](lectures/lecture04.qmd), convert these data into stint-level data and develop a version of weighted and/or regularized adjusted plus/minus for college basketball.
+Using a workflow similar to the one presented in [Lecture 4](../lectures/lecture04.qmd), convert these data into stint-level data and develop a version of weighted and/or regularized adjusted plus/minus for college basketball.
 
 ### Extending Ideas from Baseball to Cricket
 
 The package [**cricketdata**](https://pkg.robjhyndman.com/cricketdata/) provides functions for scraping match-level data from (ESPNCricinfo)[https://www.espncricinfo.com].
 [Himanish Ganjoo](https://himanishganjoo.com) also provides very detailed ball-by-ball data for a large number of test, one-day international, and T20 matches [here](https://himanishganjoo.com/cricket-data/).
 You could consider building analogs of expected runs (e.g., as a function of wickets in hand and overs left) or building a model to predict the outcome of an individual ball given its line and length information.
-An even more ambitous project would develop a version of WAR for batting performance.
+An even more ambitious project would develop a version of WAR for batting performance.
 

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -39,9 +39,9 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/quarto-axe/axe-check.js" type="module"></script>
 <script id="quarto-axe-checker-options" type="text/plain">eyJvdXRwdXQiOiJkb2N1bWVudCJ9</script>
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
@@ -241,7 +241,6 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#develop-a-new-metric" id="toc-develop-a-new-metric" class="nav-link" data-scroll-target="#develop-a-new-metric">Develop a New Metric</a></li>
   <li><a href="#a-more-refined-xg-model-for-soccer" id="toc-a-more-refined-xg-model-for-soccer" class="nav-link" data-scroll-target="#a-more-refined-xg-model-for-soccer">A More Refined XG Model for Soccer</a></li>
   <li><a href="#expected-goals-in-hockey" id="toc-expected-goals-in-hockey" class="nav-link" data-scroll-target="#expected-goals-in-hockey">Expected Goals in Hockey</a></li>
-  <li><a href="#nba-heatmaps-expected-points" id="toc-nba-heatmaps-expected-points" class="nav-link" data-scroll-target="#nba-heatmaps-expected-points">NBA Heatmaps &amp; Expected Points</a></li>
   <li><a href="#war-for-college-football-and-volleyball" id="toc-war-for-college-football-and-volleyball" class="nav-link" data-scroll-target="#war-for-college-football-and-volleyball">WAR For College Football and Volleyball</a></li>
   <li><a href="#adjusted-plusminus-for-college-basketball" id="toc-adjusted-plusminus-for-college-basketball" class="nav-link" data-scroll-target="#adjusted-plusminus-for-college-basketball">Adjusted Plus/Minus for College Basketball</a></li>
   <li><a href="#extending-ideas-from-baseball-to-cricket" id="toc-extending-ideas-from-baseball-to-cricket" class="nav-link" data-scroll-target="#extending-ideas-from-baseball-to-cricket">Extending Ideas from Baseball to Cricket</a></li>
@@ -319,27 +318,32 @@ ul.task-list li input[type="checkbox"] {
 <section id="expected-goals-in-hockey" class="level3">
 <h3 class="anchored" data-anchor-id="expected-goals-in-hockey">Expected Goals in Hockey</h3>
 <p>The package <a href="https://hockeyr.netlify.app"><strong>hockeyR</strong></a> provides functions for scraping play-by-play data from the National Hockey League. Among many other things, these data include shot distance, shot angle, and the coordinates of each shot. Using ideas from <a href="../lectures/lecture03.html">Lecture 3</a>, develop an XG model for hockey. If you puruse this option, you should build at least 3 different XG models, compare them both quantaitively and qualitatively, and use the “best” model to make conclusions about player or team performance. You can also compare your model predictions to those provided by the package itself.</p>
-</section>
-<section id="nba-heatmaps-expected-points" class="level3">
-<h3 class="anchored" data-anchor-id="nba-heatmaps-expected-points">NBA Heatmaps &amp; Expected Points</h3>
 <!--
-In [Lecture 4[(../lectures/lecture04.qmd) and [Lecture 5](../lectures/lecture05.qmd), we used the [**hoopR**](https://hoopr.sportsdataverse.org) package to scrape NBA play-by-play data, which we then used to estimate adjusted plus/minus.
+### NBA Heatmaps & Expected Points
+
+In [Lecture 4](../lectures/lecture04.qmd) and [Lecture 5](../lectures/lecture05.qmd), we worked with NBA play-by-play data scraped using the [**hoopR**](https://hoopr.sportsdataverse.org).
+Using that package, you can scrape shot location data.
+This package also includes shot location data.
+Using these data (and possibly other contextual information about the game state and player), build a model to predict the probability that a player makes a shot.
+Once built, use the model to compare player performance.
+For instance, you can convert these probabilities to expected points and explore how closely a player's total expected points tracks the actual points score.
+Or you could identify players who score substantially more or less points than what a league-average or replacement-level player might be expected to score given the same shot selection.
+
+If you puruse this option, you should build and compare at least 3 different models of shot selection. You should then select the "best" model using both qualitative and quantitative considerations.
 -->
-<p>This package also includes shot location data. Using these data (and possibly other contextual information about the game state and player), build a model to predict the probability that a player makes a shot. Once built, use the model to compare player performance. For instance, you can convert these probabilities to expected points and explore how closely a player’s total expected points tracks the actual points score. Or you could identify players who score substantially more or less points than what a league-average or replacement-level player might be expected to score given the same shot selection.</p>
-<p>If you puruse this option, you should build and compare at least 3 different models of shot selection. You should then select the “best” model using both qualitative and quantitative considerations.</p>
 </section>
 <section id="war-for-college-football-and-volleyball" class="level3">
 <h3 class="anchored" data-anchor-id="war-for-college-football-and-volleyball">WAR For College Football and Volleyball</h3>
-<p>In <a href="lectures/lecture10.qmd">Lecture 10</a>, we used the <a href="https://www.nflfastr.com"><strong>nflfastR</strong></a> package to scrap play-by-play data from the National Football League. We then used these data to develop a version of Wins Above Replacement for offensive players in the NFL. The package <a href="https://cfbfastr.sportsdataverse.org"><strong>cfbfastR</strong></a> provides similar functinoality for college football. You could try to develop a version of WAR for college football. If you pursue this option, you must carefully deal with the differences between conferences when estimating individual player skills and defining replacement-level.</p>
+<p>In <a href="../lectures/lecture10.html">Lecture 10</a>, we used the <a href="https://www.nflfastr.com"><strong>nflfastR</strong></a> package to scrap play-by-play data from the National Football League. We then used these data to develop a version of Wins Above Replacement for offensive players in the NFL. The package <a href="https://cfbfastr.sportsdataverse.org"><strong>cfbfastR</strong></a> provides similar functinoality for college football. You could try to develop a version of WAR for college football. If you pursue this option, you must carefully deal with the differences between conferences when estimating individual player skills and defining replacement-level.</p>
 <p>The package <a href="https://github.com/JeffreyRStevens/ncaavolleyballr"><strong>ncaavolleyballr</strong></a> provides functions to scrape NCAA Volleyball data<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, including play-by-play logs. Each row in the play-by-play data table correspond to individual events within a point (e.g., a serve, set, attack, kill, etc.) Using these data, develop a version of wins above replacement. To do this, you must first define and estimate an analog of runs value and expected points. Then, you must carefully divide this “currency” among players of different positions (e.g., middle blocker, libero, outside hitter, etc.). If you pursue this option, I highly recommend using the pre-scraped play-by-play data available <a href="https://jeffreyrstevens.github.io/ncaavolleyballr/articles/data.html">here</a> and then accessing player- and team-specific information (e.g., rosters, schedules, season-level statistics) using the package functions.</p>
 </section>
 <section id="adjusted-plusminus-for-college-basketball" class="level3">
 <h3 class="anchored" data-anchor-id="adjusted-plusminus-for-college-basketball">Adjusted Plus/Minus for College Basketball</h3>
-<p>The <a href="https://github.com/lbenz730/ncaahoopR"><strong>ncaahoopR</strong></a> package provides functions for scraping play-by-play data from college basketball. Using a workflow similar to the one presented in <a href="lectures/lecture04.qmd">Lecture 4</a>, convert these data into stint-level data and develop a version of weighted and/or regularized adjusted plus/minus for college basketball.</p>
+<p>The <a href="https://github.com/lbenz730/ncaahoopR"><strong>ncaahoopR</strong></a> package provides functions for scraping play-by-play data from college basketball. Using a workflow similar to the one presented in <a href="../lectures/lecture04.html">Lecture 4</a>, convert these data into stint-level data and develop a version of weighted and/or regularized adjusted plus/minus for college basketball.</p>
 </section>
 <section id="extending-ideas-from-baseball-to-cricket" class="level3">
 <h3 class="anchored" data-anchor-id="extending-ideas-from-baseball-to-cricket">Extending Ideas from Baseball to Cricket</h3>
-<p>The package <a href="https://pkg.robjhyndman.com/cricketdata/"><strong>cricketdata</strong></a> provides functions for scraping match-level data from (ESPNCricinfo)[https://www.espncricinfo.com]. <a href="https://himanishganjoo.com">Himanish Ganjoo</a> also provides very detailed ball-by-ball data for a large number of test, one-day international, and T20 matches <a href="https://himanishganjoo.com/cricket-data/">here</a>. You could consider building analogs of expected runs (e.g., as a function of wickets in hand and overs left) or building a model to predict the outcome of an individual ball given its line and length information. An even more ambitous project would develop a version of WAR for batting performance.</p>
+<p>The package <a href="https://pkg.robjhyndman.com/cricketdata/"><strong>cricketdata</strong></a> provides functions for scraping match-level data from (ESPNCricinfo)[https://www.espncricinfo.com]. <a href="https://himanishganjoo.com">Himanish Ganjoo</a> also provides very detailed ball-by-ball data for a large number of test, one-day international, and T20 matches <a href="https://himanishganjoo.com/cricket-data/">here</a>. You could consider building analogs of expected runs (e.g., as a function of wickets in hand and overs left) or building a model to predict the outcome of an individual ball given its line and length information. An even more ambitious project would develop a version of WAR for batting performance.</p>
 
 
 </section>

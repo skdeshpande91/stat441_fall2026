@@ -48,7 +48,7 @@ Basically, whenever a player does something tracked by the scorekeepers or repor
 The R package [[**hoopR**]](https://hoopr.sportsdataverse.org) provides several functions for scraping NBA data from a variety of sources including the NBA Stats API, ESPN, and BasketballReference.
 Up until early-2026, it could be used to scrape play-by-play data from the NBA's website; indeed, the data for this lecture were scraped in Summer 2025.
 Unfortunately, the NBA has since changed its API, rendering many of the package functions non-functional; see [this issue](https://github.com/sportsdataverse/hoopR/issues/183) on the package's GitHub repository for instance.
-Two potential topics for [Project 1](projects/project1.qmd) are (i) take the raw pre-scraped play-by-play data available from the [hoopR-data repository](https://github.com/sportsdataverse/hoopR-data) and programmatically create stint-level data like we work with below; and (ii) develop a new scraper that works with the new NBA Stats API.
+Two potential topics for [Project 1](../projects/project1.qmd) are (i) take the raw pre-scraped play-by-play data available from the [hoopR-data repository](https://github.com/sportsdataverse/hoopR-data) and programmatically create stint-level data like we work with below; and (ii) develop a new scraper that works with the new NBA Stats API.
 
 :::
 

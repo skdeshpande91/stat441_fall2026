@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -39,9 +39,9 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/quarto-axe/axe-check.js" type="module"></script>
 <script id="quarto-axe-checker-options" type="text/plain">eyJvdXRwdXQiOiJkb2N1bWVudCJ9</script>
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
@@ -320,7 +320,7 @@ window.Quarto = {
 </section>
 <section id="extending-bradley-terry-models" class="level3">
 <h3 class="anchored" data-anchor-id="extending-bradley-terry-models">Extending Bradley-Terry Models</h3>
-<p>In <a href="lectures/lecture12.qmd">Lecture 12</a> and <a href="lectures/lecture13.qmd">Lecture 13</a>, we fit Bradley-Terry models in which every team was assigned a latent strength parameter <span class="math inline">\(\lambda.\)</span> In principle, these strengths could depend on certain covariates. For instance, in basketball, one might obtain more accurate predictions by allowing each team’s <span class="math inline">\(\lambda\)</span> to vary with their offensive and defensive rating. Or, in tennis, the latent strength of each player might vary systematically with player characteristics like height.</p>
+<p>In <a href="../lectures/lecture12.html">Lecture 12</a> and <a href="../lectures/lecture13.html">Lecture 13</a>, we fit Bradley-Terry models in which every team was assigned a latent strength parameter <span class="math inline">\(\lambda.\)</span> In principle, these strengths could depend on certain covariates. For instance, in basketball, one might obtain more accurate predictions by allowing each team’s <span class="math inline">\(\lambda\)</span> to vary with their offensive and defensive rating. Or, in tennis, the latent strength of each player might vary systematically with player characteristics like height.</p>
 <p>The <strong>BradelyTerry2</strong> package allows one to fit such models in which the the latent strength for team <span class="math inline">\(j\)</span> can be decomposed as <span class="math display">\[
 \lambda_{j} = u_{j} + \boldsymbol{\mathbf{x}}_{j}^{\top}\beta,
 \]</span> where <span class="math inline">\(\boldsymbol{\mathbf{x}}_{j}\)</span> is a vector of team-level covariates and <span class="math inline">\(u_{j}\)</span> is a team-specific intercept, capturing all parts of team strength not already explained by the covariates.</p>
@@ -329,7 +329,7 @@ window.Quarto = {
 </section>
 <section id="markov-chain-models" class="level2">
 <h2 class="anchored" data-anchor-id="markov-chain-models">Markov chain Models</h2>
-<p>If you choose to analyze a sport in which games (or discrete components of a game) invovles a series of state transitions, a Markov chain model can be used to an simulate entire game (or portions of a game). As we saw in <a href="lectures/lecture14.qmd">Lecture 14</a>, Markov chains can be used to simulate the progression of at-bats within a half-inning. One could take this a step further and model the transition of game-states at a pitch-by-pitch level. Beyond baseball and softball, one can also study American football with a Markov chain in which the states are indexed by factors including, but certainly not limited to, down, distance, and field position. One could also build Markov chains for volleyball and other racquet sports to simulate the trajectories of individual scores (e.g., 0-0, 15-0, 15-15, 30-15, 40-15, game). It may even be possible to use a Markov chain model to simulate a cricket innings at the ball-by-ball or over-by-over level.</p>
+<p>If you choose to analyze a sport in which games (or discrete components of a game) invovles a series of state transitions, a Markov chain model can be used to an simulate entire game (or portions of a game). As we saw in <a href="../lectures/lecture14.qmd">Lecture 14</a>, Markov chains can be used to simulate the progression of at-bats within a half-inning. One could take this a step further and model the transition of game-states at a pitch-by-pitch level. Beyond baseball and softball, one can also study American football with a Markov chain in which the states are indexed by factors including, but certainly not limited to, down, distance, and field position. One could also build Markov chains for volleyball and other racquet sports to simulate the trajectories of individual scores (e.g., 0-0, 15-0, 15-15, 30-15, 40-15, game). It may even be possible to use a Markov chain model to simulate a cricket innings at the ball-by-ball or over-by-over level.</p>
 <p>If you choose to base your simulation around a Markov chain model, you need to carefully define your state-space, identify any potential absorbing states, and estimate the transition probabilities. Depending on the amount of available data, these probabilities may be estimated with a simple binning-or-averaging procedure. But if there is not much data, you may need to fit a multinomial logistic regression model or use an multilevel model to estimate these probabilities.</p>
 <section id="plackett-luce-models" class="level3">
 <h3 class="anchored" data-anchor-id="plackett-luce-models">Plackett-Luce Models</h3>

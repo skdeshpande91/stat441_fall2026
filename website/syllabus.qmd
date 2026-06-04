@@ -30,18 +30,21 @@ Exceptions will not made to the formal course requisites.
 I will assume *fluency* with basic R functionality (e.g., assignment, writing and
 executing scripts, saving data objects, setting environments, installing and loading packages), data manipulation with **dplyr** and other **tidyverse** packages, and visualization using either base R graphics or **ggplot2**. 
 I will additionally assume some familiarity with fitting statistical models in R and interpreting their output (e.g., using `lm` and `glm`).
-[Here](lectures/lecture00.qmd) is an example of the type of R coding with which I will assume you are familiar.
+Please see the notes from [Lecture 1](lectures/lecture01.qmd) for an example of the type of R coding with which I will assume you are already familiar.
 If you need a refresher on some of the data wrangling in that document, I **strongly** recommend reviewing your old course notes as well as
 
   * [Chapter 3](https://r4ds.hadley.nz/data-transform.html) and [Chapter 5](https://r4ds.hadley.nz/data-tidy.html) of [*R for Data Science*](https://r4ds.hadley.nz).
   * [Section 1.9](https://datasciencebook.ca/intro.html#adding-and-modifying-columns-using-mutate) and [Chapter 3](https://datasciencebook.ca/wrangling.html) of [*Data Science: A First Introduction*](https://datasciencebook.ca). 
 
+## Course Schedule
+
+Lectures will be held from 8:00am to 9:15am in 1524 Morgridge Hall.
 
 ## Course Staff & Office Hours {#sec-course-staff}
 
 **Instructor**: [Sameer Deshpande](https://skdeshpande91.github.io) (sameer.deshpande@wisc.edu). Instructor office hours will take place on:
 
-  * Tuesdays from 9:30am to 11:00am in Morgridge Hall 5586.
+  * Tuesdays from 9:30am to 11:00am in Morgridge Hall 5586
   * Wednesdays from 2:00pm to 4:00pm in Morgridge Hall 5586
   * Thursdays from 4:00pm to 6:00pm in Morgridge Hall 5586
 
@@ -61,13 +64,13 @@ If you cannot make the Monday or Wednesday office hours, please email me and sug
 
 
 ## Assignments & Grading {#sec-assignments}
+
 Your final grade will be based on your performance on three [group projects](syllabus.qmd#sec-projects) and your [overall participation](syllabus.qmd#sec-participation).
-For each project, groups can earn up to 100 points for their [written report](syllabus.qmd#sec-written-report) and up to 100 points for their [recorded presentation](syllabus.qmd#sec-presentation).
+For each project, groups will prepare a [written report](syllabus.qmd#sec-written-report) and [record a 8--10 minute presentation]((syllabus.qmd#sec-presentation), each worth 100 points.
 After each project, every student will [peer review](syllabus.qmd#sec-peer-review) three reports and three presentations and complete a [team accountability survey](syllabus.qmd#sec-team-accountability).
 You can earn a total of 10 points for each peer review by (i) completing the provided rubric and (ii) leaving a constructive comment that identities strengths and areas for potential improvement.
 Students will earn up to 20 points per survey: 10 for completing the survey and 10 based on the feedback from their teammates and their own self-assessment. 
 
-We will use Canvas to handle report and presentation submissions, peer reviews, and team accountability surveys.
 
 ### Group Projects {#sec-projects}
 
@@ -105,7 +108,7 @@ Each presentation should include the following elements
 
 After every group project, every student is expected to peer-review the written report and presentations of 3 other teams. 
 The primary purpose of this peer review is to *practice* providing constructive feedback on both technical and non-technical writing to your fellow data scientists.
-Peer reviews will be completed on Canvas and a structured evaluation rubric will be provided for each assignment. 
+Peer reviews will be completed using Qualtrics and a structured evaluation rubric will be provided for each assignment. 
 The peer review process will be single-blinded so teams will not know the identities of their reviewers.
 Students can earn a total of 20 points for each peer review by (i) completing the provided rubric and (ii) leaving a constructive comment that identities strengths and areas for potential improvement.
 Peer reviews are due one week after the project assignment due dates; that is, they are due on October 16, November 13, and December 11.
@@ -125,14 +128,14 @@ An additional 100 points will be awarded based on participation during class, of
 
 Your final grade will be based on how many of the 1000 total points you earn during the semester.
 Over 925 points is at least an A, over 875 points is at least an AB, over 800 points is at least a B, over 700 is at least a BC, over 600 points is at least a C, and over 500 point is at least a D.
-Final grade boundaries will be announced no later than December 5, 2025.
+Final grade boundaries will be announced no later than December 7, 2026.
 
-## Piazza {#sec-course-sites}
+## Course Management {#sec-course-sites}
 
 We will also use Piazza for specific discussions about course content (e.g., sharing additional information/resources related to material discussed in lecture; answering questions about data, method, and code; etc.) and more general discussions about sports analytics (e.g., sharing job postings, open data competition opportunities, popular press articles, and other analyses you might find online etc.)
 Here is a [link to the Piazza page](https://piazza.com/wisc/fall2026/fa26stat441001/home).
 We will also use Canvas for course announcements and to maintain the course gradebook.
-Here is a [link to the Canvas page]().
+Here is a [link to the Canvas page](https://canvas.wisc.edu/courses/530312).
 
 We will use Box for project submissions and Qualtrics for peer reviews. 
 
