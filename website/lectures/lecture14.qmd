@@ -258,8 +258,8 @@ Based on the `{r} nrow(ranking_matrix)` three-round mock drafts, the model estim
 #| label: top-lambdas
 round(sort(lambda_hat, decreasing = TRUE), digits = 3)[1:10]
 ```
-## Draft Simulation {#sec-nfl-simulation}
 
+## Draft Simulation {#sec-nfl-simulation}
 
 We're now in a position to simulate a draft.
 In our simulation, we will **assume** that teams select players in a manner consistent with the underlying Plackett-Luce model.
