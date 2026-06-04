@@ -237,6 +237,10 @@ window.Quarto = {
  <span class="dropdown-text">Lecture 10: NFl WAR</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="../lectures/lecture11.html">
+ <span class="dropdown-text">Lecture 11: Pitch Framing</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../lectures/lecture12.html">
  <span class="dropdown-text">Lecture 12: Bradley-Terry Models</span></a>
   </li>  
@@ -350,6 +354,12 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 11: Pitch Framing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../lectures/lecture12.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Lecture 12: Bradley-Terry Models</span></a>
   </div>
@@ -434,7 +444,7 @@ window.Quarto = {
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.2</span>, </span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="fu">adjustcolor</span>(oi_colors[<span class="dv">1</span>], <span class="at">alpha.f =</span> <span class="fl">0.1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="fig-hc-coordinates" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Scatterplot of batted ball hit coordinates" data-fig-align="center">
+<div id="fig-hc-coordinates" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Scatterplot of batted ball hit coordinates">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-hc-coordinates-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture08_files/figure-html/fig-hc-coordinates-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Locations where all batted balls are first fielded"><img src="lecture08_files/figure-html/fig-hc-coordinates-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Scatterplot of batted ball hit coordinates" width="576"></a>
@@ -519,7 +529,7 @@ x &amp;= 2.5 \times (\texttt{hit\_coord\_x} - 125.42) &amp; y &amp;= 2.5 \times 
 </dl>
 </div>
 <div class="cell-output-display">
-<div id="fig-new-coords" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Scatterplot of batted ball locations with yellow foul lines and white basebaths overlaid" data-fig-align="center">
+<div id="fig-new-coords" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Scatterplot of batted ball locations with yellow foul lines and white basebaths overlaid">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-new-coords-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture08_files/figure-html/fig-new-coords-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;3: Locations where batted balls are first fielded in our transformed coordinate system"><img src="lecture08_files/figure-html/fig-new-coords-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Scatterplot of batted ball locations with yellow foul lines and white basebaths overlaid" width="576"></a>
@@ -679,7 +689,7 @@ FALSE  TRUE
 <span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(raw_grid<span class="sc">$</span>x, raw_grid<span class="sc">$</span>y, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.2</span>, </span>
 <span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">adjustcolor</span>(oi_colors[<span class="dv">3</span>], <span class="at">alpha.f =</span> <span class="fl">0.3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="fig-grid" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Batted ball locations overlaid over a square grid of blue points" data-fig-align="center">
+<div id="fig-grid" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Batted ball locations overlaid over a square grid of blue points">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-grid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture08_files/figure-html/fig-grid-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;4: The initial grid of points contains many locations at which we would not expect balls to be fielded."><img src="lecture08_files/figure-html/fig-grid-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Batted ball locations overlaid over a square grid of blue points" width="576"></a>
@@ -708,7 +718,7 @@ Figure&nbsp;4: The initial grid of points contains many locations at which we wo
 <span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(grid<span class="sc">$</span>x, grid<span class="sc">$</span>y, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.2</span>, </span>
 <span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">adjustcolor</span>(oi_colors[<span class="dv">3</span>], <span class="at">alpha.f =</span> <span class="fl">0.3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="fig-restrict-grid" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Square grid of points restricted to the dimensions of a baseball diamond" data-fig-align="center">
+<div id="fig-restrict-grid" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Square grid of points restricted to the dimensions of a baseball diamond">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-restrict-grid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture08_files/figure-html/fig-restrict-grid-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;5: A restricted grid of spatial locations."><img src="lecture08_files/figure-html/fig-restrict-grid-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Square grid of points restricted to the dimensions of a baseball diamond" width="576"></a>
@@ -837,7 +847,7 @@ Figure&nbsp;5: A restricted grid of spatial locations.
 </dl>
 </div>
 <div class="cell-output-display">
-<div id="fig-bin-probs" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Heatmap of out probabilities" data-fig-align="center">
+<div id="fig-bin-probs" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Heatmap of out probabilities">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-bin-probs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture08_files/figure-html/fig-bin-probs-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;6: Empirical out probabilities based on binning balls in play."><img src="lecture08_files/figure-html/fig-bin-probs-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Heatmap of out probabilities" width="576"></a>
@@ -924,7 +934,7 @@ Figure&nbsp;6: Empirical out probabilities based on binning balls in play.
 </dl>
 </div>
 <div class="cell-output-display">
-<div id="fig-logistic-fit" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Heatmap of out probabilities" data-fig-align="center">
+<div id="fig-logistic-fit" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Heatmap of out probabilities">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-logistic-fit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture08_files/figure-html/fig-logistic-fit-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Figure&nbsp;7: Logistic regression forecasts of out probabilities as a function of location."><img src="lecture08_files/figure-html/fig-logistic-fit-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Heatmap of out probabilities" width="576"></a>
@@ -1003,7 +1013,7 @@ Figure&nbsp;7: Logistic regression forecasts of out probabilities as a function 
 <span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="sc">-</span><span class="dv">90</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">y =</span> <span class="dv">90</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">pch =</span> <span class="dv">16</span>,<span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span>
 <span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="dv">90</span><span class="sc">*</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="fig-out-gam" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Heatamp of out probabilities" data-fig-align="center">
+<div id="fig-out-gam" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Heatamp of out probabilities">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-out-gam-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture08_files/figure-html/fig-out-gam-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Figure&nbsp;8: Heatmap of out probabilities fitted with a generalized additive model"><img src="lecture08_files/figure-html/fig-out-gam-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Heatamp of out probabilities" width="576"></a>

@@ -398,7 +398,7 @@ dodgers_inning <-
   dplyr::mutate(RunsRemaining = dplyr::last(post_bat_score) - bat_score)
 ```
 
-### Putting It All Together
+### Putting It All Together {#sec-runs-remaining}
 
 We're now ready to extend these calculation to every half-inning of every game in the season.
 To do this, we will take advantage of the `dplyr::group_by()` function to apply the same calculation to subsets defined by game and half-inning.

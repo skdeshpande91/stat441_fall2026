@@ -237,6 +237,10 @@ window.Quarto = {
  <span class="dropdown-text">Lecture 10: NFl WAR</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="../lectures/lecture11.html">
+ <span class="dropdown-text">Lecture 11: Pitch Framing</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="../lectures/lecture12.html">
  <span class="dropdown-text">Lecture 12: Bradley-Terry Models</span></a>
   </li>  
@@ -350,6 +354,12 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 11: Pitch Framing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../lectures/lecture12.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Lecture 12: Bradley-Terry Models</span></a>
   </div>
@@ -386,7 +396,7 @@ window.Quarto = {
   <li><a href="#sec-expected-runs" id="toc-sec-expected-runs" class="nav-link" data-scroll-target="#sec-expected-runs">Expected Runs</a>
   <ul class="collapse">
   <li><a href="#sec-compute-runs-scored" id="toc-sec-compute-runs-scored" class="nav-link" data-scroll-target="#sec-compute-runs-scored">Computing Runs Scored in the Half-Inning</a></li>
-  <li><a href="#putting-it-all-together" id="toc-putting-it-all-together" class="nav-link" data-scroll-target="#putting-it-all-together">Putting It All Together</a></li>
+  <li><a href="#sec-runs-remaining" id="toc-sec-runs-remaining" class="nav-link" data-scroll-target="#sec-runs-remaining">Putting It All Together</a></li>
   </ul></li>
   <li><a href="#sec-run-value" id="toc-sec-run-value" class="nav-link" data-scroll-target="#sec-run-value">Run Value</a>
   <ul class="collapse">
@@ -810,8 +820,8 @@ Figure&nbsp;1: Play-by-Play from the March 20, 2024 Dodgers-Padres game
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">RunsRemaining =</span> dplyr<span class="sc">::</span><span class="fu">last</span>(post_bat_score) <span class="sc">-</span> bat_score)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="putting-it-all-together" class="level3">
-<h3 class="anchored" data-anchor-id="putting-it-all-together">Putting It All Together</h3>
+<section id="sec-runs-remaining" class="level3">
+<h3 class="anchored" data-anchor-id="sec-runs-remaining">Putting It All Together</h3>
 <p>We’re now ready to extend these calculation to every half-inning of every game in the season. To do this, we will take advantage of the <code>dplyr::group_by()</code> function to apply the same calculation to subsets defined by game and half-inning.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-17"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-17-1"><a href="#annotated-cell-17-1" aria-hidden="true" tabindex="-1"></a>statcast2024 <span class="ot">&lt;-</span></span>
