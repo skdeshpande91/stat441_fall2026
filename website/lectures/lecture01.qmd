@@ -1,5 +1,5 @@
 ---
-title: "Lecture 0: Boxscore Metrics"
+title: "Lecture 1: Boxscore Metrics"
 format: html
 execute: 
   cache: true

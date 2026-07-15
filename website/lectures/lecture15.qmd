@@ -1,5 +1,5 @@
 ---
-title: "Lecture 15: Markov Chains I"
+title: "Lecture 15: Markov Chains"
 format: html
 execute: 
   cache: true

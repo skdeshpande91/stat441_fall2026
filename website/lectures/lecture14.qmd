@@ -1,5 +1,5 @@
 ---
-title: "Lecture 16: Plackett-Luce Models"
+title: "Lecture 14: Plackett-Luce Models"
 format: html
 execute: 
   cache: true

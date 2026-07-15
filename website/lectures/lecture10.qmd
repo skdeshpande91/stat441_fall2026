@@ -1,5 +1,5 @@
 ---
-title: "Lecture 10: NFl WAR"
+title: "Lecture 10: NFL WAR"
 format: html
 execute: 
   cache: true
