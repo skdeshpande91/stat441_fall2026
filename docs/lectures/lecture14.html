@@ -2,16 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.7.32">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Lecture 16: Plackett-Luce Models – STAT441</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -74,16 +71,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../site_libs/quarto-axe/axe-check.js" type="module"></script>
-<script id="quarto-axe-checker-options" type="text/plain">eyJvdXRwdXQiOiJkb2N1bWVudCJ9</script>
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-da920e58b6ff959c98c9ccc31dcc4995.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -112,7 +103,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -125,7 +116,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+      if (mathElements[i].tagName == "SPAN") {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -448,7 +439,7 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Note: Identifiability
+Note: Identifiability
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -473,7 +464,7 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
 <h3 class="anchored" data-anchor-id="sec-fit-pl">Fitting Plackett-Luce Models</h3>
 <p>Of course, in reality, we never observe the latent item parameters <span class="math inline">\(\lambda_{1}, \ldots, \lambda_{p}.\)</span> To estimate these parameters from collections of partial rankings, we will use the <a href="https://hturner.github.io/PlackettLuce/"><strong>Plackett-Luce</strong></a> package, which can be installed using the code</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"PlackettLuce"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"PlackettLuce"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The package includes a function <a href="https://hturner.github.io/PlackettLuce/reference/PlackettLuce.html"><code>PlackettLuce()</code></a> for fitting the model. This function requires the data to be formatted in a very specific way that is, unfortunately, not very easy to visualize with lots of raters and items. The package authors have provided a helper function <a href="https://hturner.github.io/PlackettLuce/reference/rankings.html"><code>as.rankings()</code></a> that takes in a matrix of ratings and re-formats it in a way that can be passed to <code>PlackettLuce()</code>.</p>
 <p>To illustrate, suppose we have four items <span class="math inline">\(A\)</span>, <span class="math inline">\(B,\)</span>, <span class="math inline">\(C\)</span>, and <span class="math inline">\(D\)</span> and six raters who provide the rankings</p>
@@ -487,7 +478,7 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
 </ul>
 <p>We can encode these ratings in a matrix <span class="math inline">\(\boldsymbol{\mathbf{R}} = (r_{i,j})\)</span> whose rows correspond to the raters and whose columns correspond to the items. If rater <span class="math inline">\(i\)</span> selects item <span class="math inline">\(j\)</span> as their <span class="math inline">\(k\)</span>-th ranked item, then we set <span class="math inline">\(r_{i,j} = k\)</span>. If rater <span class="math inline">\(i\)</span> does not rank item <span class="math inline">\(j\)</span> at all, we leave <span class="math inline">\(r_{i,j}\)</span> empty (i.e., assign it <code>NA</code> in R)</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>R <span class="ot">&lt;-</span> <span class="fu">matrix</span>(</span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>R <span class="ot">&lt;-</span> <span class="fu">matrix</span>(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">3</span>,</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="dv">2</span>, <span class="dv">1</span>, <span class="cn">NA</span>, <span class="cn">NA</span>,</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>, <span class="cn">NA</span>, <span class="dv">3</span>, <span class="dv">2</span>,</span>
@@ -496,7 +487,7 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span>, <span class="cn">NA</span>, <span class="dv">3</span>, <span class="dv">2</span>),</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrow =</span> <span class="dv">6</span>, <span class="at">ncol =</span> <span class="dv">4</span>, <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">c</span>(), <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>)),</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>R</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      A  B  C  D
 [1,]  1  2  4  3
@@ -509,8 +500,8 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
 </div>
 <p>The function <code>as.rankings()</code> converts the matrix of rankings into a vector of partial rankings whose elements encode each rater’s rankings.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>R_rank <span class="ot">&lt;-</span> PlackettLuce<span class="sc">::</span><span class="fu">as.rankings</span>(R)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>R_rank</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>R_rank <span class="ot">&lt;-</span> PlackettLuce<span class="sc">::</span><span class="fu">as.rankings</span>(R)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>R_rank</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "A &gt; B &gt; D &gt; C" "B &gt; A"         "A &gt; D &gt; C"     "B &gt; D &gt; C"    
 [5] "A &gt; B &gt; D &gt; C" "A &gt; D &gt; C"    </code></pre>
@@ -518,9 +509,9 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
 </div>
 <p>Once we have our rankings data in a format compatible with <code>PlackettLuce()</code>, we can estimate the underlying <span class="math inline">\(\lambda_{j}\)</span>’s We see that item <span class="math inline">\(A\)</span>, which was the top ranked item by the first rater, is selected as the reference item (so <span class="math inline">\(\lambda_{A} = 0\)</span>).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> PlackettLuce<span class="sc">::</span><span class="fu">PlackettLuce</span>(<span class="at">rankings =</span> R_rank)</span>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> PlackettLuce<span class="sc">::</span><span class="fu">PlackettLuce</span>(<span class="at">rankings =</span> R_rank)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>lambda_hat <span class="ot">&lt;-</span> <span class="fu">coef</span>(fit)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>lambda_hat</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>lambda_hat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         A          B          C          D 
  0.0000000 -0.5006691 -4.9505260 -2.5287292 </code></pre>
@@ -538,18 +529,18 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
 <h3 class="anchored" data-anchor-id="sec-data-prep">Data Preparation</h3>
 <p>We begin by reading in our data and extracting a list of the unique players and the positions they play.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>target <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/skdeshpande91/stat441_fall2026/refs/heads/main/data/lecture14/nfl_mock_drafts.csv"</span></span>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>target <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/skdeshpande91/stat441_fall2026/refs/heads/main/data/lecture14/nfl_mock_drafts.csv"</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>raw_data <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> target)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>unik_players <span class="ot">&lt;-</span> </span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  raw_data <span class="sc">|&gt;</span></span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(name, position) <span class="sc">|&gt;</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Here are five random rows in <code>raw_data</code></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">129</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>raw_data <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">129</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>raw_data <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 7
   site                         date       name         pick position type  url  
@@ -567,13 +558,13 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
 <h3 class="anchored" data-anchor-id="fitting-the-model">Fitting the model</h3>
 <p>Currently, rows in <code>raw_data</code> correspond to the combination of row and pick. We need to convert this into a ranking matrix, in which rows correspond to raters, columns correspond to the items, and values record the ranking. In other words, we need to convert <code>raw_data</code> from long format into wide format<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>. We can do this pretty easily with the function <code>tidyr::pivot_wider()</code></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-hidden="true" tabindex="-1"></a>ranking_matrix <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-hidden="true" tabindex="-1"></a>ranking_matrix <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-7-2"><a href="#annotated-cell-7-2" aria-hidden="true" tabindex="-1"></a>  raw_data <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-3" class="code-annotation-target"><a href="#annotated-cell-7-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(site, date, name, pick, url) <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="2">2</button><span id="annotated-cell-7-4" class="code-annotation-target"><a href="#annotated-cell-7-4" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(<span class="at">names_from =</span> name,<span class="at">values_from =</span> pick) <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="3">3</button><span id="annotated-cell-7-5" class="code-annotation-target"><a href="#annotated-cell-7-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>tidyr<span class="sc">::</span><span class="fu">all_of</span>(<span class="fu">c</span>(<span class="st">"date"</span>, <span class="st">"url"</span>, <span class="st">"site"</span>))) <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="4">4</button><span id="annotated-cell-7-6" class="code-annotation-target"><a href="#annotated-cell-7-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate_all</span>( <span class="sc">~</span><span class="fu">replace</span>(., <span class="fu">lengths</span>(.)<span class="sc">==</span><span class="dv">0</span>, <span class="cn">NA</span>)) <span class="sc">|&gt;</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="5">5</button><span id="annotated-cell-7-7" class="code-annotation-target"><a href="#annotated-cell-7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="5">5</button><span id="annotated-cell-7-7" class="code-annotation-target"><a href="#annotated-cell-7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
@@ -601,13 +592,13 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
 </div>
 <p>We now fit the model and extract the estimates <span class="math inline">\(\hat{\lambda}_{j}\)</span>’s</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>mock_rankings <span class="ot">&lt;-</span> PlackettLuce<span class="sc">::</span><span class="fu">as.rankings</span>(<span class="at">x =</span> ranking_matrix)</span>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>mock_rankings <span class="ot">&lt;-</span> PlackettLuce<span class="sc">::</span><span class="fu">as.rankings</span>(<span class="at">x =</span> ranking_matrix)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> PlackettLuce<span class="sc">::</span><span class="fu">PlackettLuce</span>(<span class="at">rankings =</span> mock_rankings)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>lambda_hat <span class="ot">&lt;-</span> <span class="fu">coef</span>(fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>lambda_hat <span class="ot">&lt;-</span> <span class="fu">coef</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Based on the 372 three-round mock drafts, the model estimates Sam Darnold as having the largest latent desirability, closely followed by Saquon Barkley, Josh Rosen, Bradley Chubb, and Quenton Nelson.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">sort</span>(lambda_hat, <span class="at">decreasing =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">3</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">sort</span>(lambda_hat, <span class="at">decreasing =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">3</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       Sam Darnold     Saquon Barkley         Josh Rosen      Bradley Chubb 
              0.000             -0.561             -0.997             -1.455 
@@ -628,7 +619,7 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>Assumption Warning
+Assumption Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -639,9 +630,9 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
 \frac{e^{\lambda_{j}}}{\sum_{k = 1}^{p}{e^{\lambda_{k}}}}.
 \]</span> The following code computes the probability that each available player is selected first overall.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-10"><pre class="sourceCode r code-annotation-code code-with-copy"><code class="sourceCode r"><span id="annotated-cell-10-1"><a href="#annotated-cell-10-1" aria-hidden="true" tabindex="-1"></a>players <span class="ot">&lt;-</span> <span class="fu">names</span>(lambda_hat)</span>
+<div class="sourceCode cell-code" id="annotated-cell-10"><pre class="sourceCode r code-annotation-code code-with-copy"><code class="sourceCode r"><span id="annotated-cell-10-1"><a href="#annotated-cell-10-1" aria-hidden="true" tabindex="-1"></a>players <span class="ot">&lt;-</span> <span class="fu">names</span>(lambda_hat)</span>
 <span id="annotated-cell-10-2"><a href="#annotated-cell-10-2" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">exp</span>(lambda_hat)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(lambda_hat))</span>
-<span id="annotated-cell-10-3"><a href="#annotated-cell-10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">sort</span>(probs, <span class="at">decreasing =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">2</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-10-3"><a href="#annotated-cell-10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">sort</span>(probs, <span class="at">decreasing =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">2</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       Sam Darnold     Saquon Barkley         Josh Rosen      Bradley Chubb 
               0.26               0.15               0.09               0.06 
@@ -653,8 +644,8 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
 </div>
 <p>We can use the <code>sample()</code> function to select a single player according to their corresponding probabilities. At least for this simulation, Saquon Barkley is the first player selected</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sample</span>(<span class="at">x =</span> players, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> probs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sample</span>(<span class="at">x =</span> players, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> probs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Saquon Barkley"</code></pre>
 </div>
@@ -663,10 +654,10 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
 \frac{e^{\lambda_{j}}}{\sum_{k = 1}^{p}{e^{\lambda_{k}} \times \mathbf{1}(\textrm{player } k \textrm{ is not Saquon Barkley})}}.
 \]</span> Mathematically, this probability is rather cumbersome to write down. Luckily, it’s easier to compute in R using some clever indexing. In the code below, we create separate vectors containing the set of previously selected players and players still available to select; exponentiate the <span class="math inline">\(\hat{\lambda}_{j}\)</span>’s for the available players; and then normalize these values to sum to 1 across the available players</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-12"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="1">1</button><span id="annotated-cell-12-1" class="code-annotation-target"><a href="#annotated-cell-12-1" aria-hidden="true" tabindex="-1"></a>selected_players <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Saquon Barkley"</span>)</span>
+<div class="sourceCode cell-code" id="annotated-cell-12"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="1">1</button><span id="annotated-cell-12-1" class="code-annotation-target"><a href="#annotated-cell-12-1" aria-hidden="true" tabindex="-1"></a>selected_players <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Saquon Barkley"</span>)</span>
 <span id="annotated-cell-12-2"><a href="#annotated-cell-12-2" aria-hidden="true" tabindex="-1"></a>available_players <span class="ot">&lt;-</span> players[<span class="sc">!</span>players <span class="sc">%in%</span> selected_players]</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="2">2</button><span id="annotated-cell-12-3" class="code-annotation-target"><a href="#annotated-cell-12-3" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">exp</span>(lambda_hat[available_players])<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(lambda_hat[available_players]))</span>
-<span id="annotated-cell-12-4"><a href="#annotated-cell-12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sample</span>(<span class="at">x =</span> available_players, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> probs)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-12-4"><a href="#annotated-cell-12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sample</span>(<span class="at">x =</span> available_players, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> probs)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-12" data-target-annotation="1">1</dt>
@@ -685,7 +676,7 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
 </div>
 <p>At least in this particular simulation, the second player selected is Parris Campbell (who was actually selected in the second round of the NFL draft). According to the model, based on all the other players available, the chances that Campbell is selected were quite slim:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>probs[<span class="st">"Parris Campbell"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>probs[<span class="st">"Parris Campbell"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Parris Campbell 
     0.004122244 </code></pre>
@@ -693,10 +684,10 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
 </div>
 <p>We can now simulate the third pick using virtually identical code as the second pick.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>selected_players <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Saquon Barkley"</span>, <span class="st">"Parris Campbell"</span>) </span>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>selected_players <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Saquon Barkley"</span>, <span class="st">"Parris Campbell"</span>) </span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>available_players <span class="ot">&lt;-</span> players[<span class="sc">!</span>players <span class="sc">%in%</span> selected_players] </span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>probs <span class="ot">&lt;-</span> <span class="fu">exp</span>(lambda_hat[available_players])<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(lambda_hat[available_players])) </span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sample</span>(<span class="at">x =</span> available_players, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> probs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sample</span>(<span class="at">x =</span> available_players, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> probs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Josh Rosen"</code></pre>
 </div>
@@ -717,7 +708,7 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Softmax
+Definition: Softmax
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -728,13 +719,13 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
 </div>
 <p>In R, a very fast and numerically stable implemention of the softmax function is available from the <a href="https://cran.r-project.org/web/packages/mclust/index.html"><strong>mclust</strong> package</a>, which can be installed using</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"mclust"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"mclust"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The function <code>mclust::softmax()</code> is relatively simple to use. The following code compares the third pick probabilities computed using <code>mclust::softmax()</code> to our hand-computed calculations. Although the differences in this case are essentially negligble, moving forward we will use the somewhat more stable softmax implementation.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-16"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-16-1"><a href="#annotated-cell-16-1" aria-hidden="true" tabindex="-1"></a>tmp_probs <span class="ot">&lt;-</span> mclust<span class="sc">::</span><span class="fu">softmax</span>(<span class="at">x =</span> lambda_hat[available_players]) </span>
+<div class="sourceCode cell-code" id="annotated-cell-16"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-16-1"><a href="#annotated-cell-16-1" aria-hidden="true" tabindex="-1"></a>tmp_probs <span class="ot">&lt;-</span> mclust<span class="sc">::</span><span class="fu">softmax</span>(<span class="at">x =</span> lambda_hat[available_players]) </span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="1">1</button><span id="annotated-cell-16-2" class="code-annotation-target"><a href="#annotated-cell-16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(tmp_probs) <span class="ot">&lt;-</span> available_players</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="2">2</button><span id="annotated-cell-16-3" class="code-annotation-target"><a href="#annotated-cell-16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(tmp_probs <span class="sc">-</span> probs)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="2">2</button><span id="annotated-cell-16-3" class="code-annotation-target"><a href="#annotated-cell-16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(tmp_probs <span class="sc">-</span> probs)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-16" data-target-annotation="1">1</dt>
@@ -762,7 +753,7 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Warning
+Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -770,7 +761,7 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-17"><pre class="sourceCode r code-annotation-code code-with-copy"><code class="sourceCode r"><span id="annotated-cell-17-1"><a href="#annotated-cell-17-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="fl">1e5</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-17"><pre class="sourceCode r code-annotation-code code-with-copy"><code class="sourceCode r"><span id="annotated-cell-17-1"><a href="#annotated-cell-17-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="fl">1e5</span></span>
 <span id="annotated-cell-17-2"><a href="#annotated-cell-17-2" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="at">dim =</span> <span class="fu">c</span>(n_sims, <span class="dv">32</span>))</span>
 <span id="annotated-cell-17-3"><a href="#annotated-cell-17-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-17-4"><a href="#annotated-cell-17-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(r <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_sims){</span>
@@ -787,11 +778,11 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
 <span id="annotated-cell-17-15"><a href="#annotated-cell-17-15" aria-hidden="true" tabindex="-1"></a>    selected_players[i] <span class="ot">&lt;-</span> pick</span>
 <span id="annotated-cell-17-16"><a href="#annotated-cell-17-16" aria-hidden="true" tabindex="-1"></a>  }</span>
 <span id="annotated-cell-17-17"><a href="#annotated-cell-17-17" aria-hidden="true" tabindex="-1"></a>  results[r,] <span class="ot">&lt;-</span> selected_players</span>
-<span id="annotated-cell-17-18"><a href="#annotated-cell-17-18" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-17-18"><a href="#annotated-cell-17-18" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Taking a look at the top-5 picks, we see a fair bit of variability simulation-to-simulation</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>results[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>results[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     [,1]               [,2]                 [,3]                
 [1,] "Saquon Barkley"   "Vita Vea"           "Sam Darnold"       
@@ -809,10 +800,10 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
 </div>
 <p>To compute the probability that Saquon Barkley is selected in the first three picks, we first define a function that checks whether a given players name appears among the first several entries of a given vector:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-19"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-19-1"><a href="#annotated-cell-19-1" aria-hidden="true" tabindex="-1"></a>player_picked <span class="ot">&lt;-</span> <span class="cf">function</span>(x, player, pick){</span>
+<div class="sourceCode cell-code" id="annotated-cell-19"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-19-1"><a href="#annotated-cell-19-1" aria-hidden="true" tabindex="-1"></a>player_picked <span class="ot">&lt;-</span> <span class="cf">function</span>(x, player, pick){</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-19" data-target-annotation="1">1</button><span id="annotated-cell-19-2" class="code-annotation-target"><a href="#annotated-cell-19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(player <span class="sc">%in%</span> x[<span class="dv">1</span><span class="sc">:</span>pick])</span>
 <span id="annotated-cell-19-3"><a href="#annotated-cell-19-3" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="annotated-cell-19-4"><a href="#annotated-cell-19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">player_picked</span>(<span class="at">x =</span> results[<span class="dv">1</span>,], <span class="at">player =</span> <span class="st">"Saquon Barkley"</span>, <span class="at">pick =</span> <span class="dv">3</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-19-4"><a href="#annotated-cell-19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">player_picked</span>(<span class="at">x =</span> results[<span class="dv">1</span>,], <span class="at">player =</span> <span class="st">"Saquon Barkley"</span>, <span class="at">pick =</span> <span class="dv">3</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-19" data-target-annotation="1">1</dt>
@@ -827,8 +818,8 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
 </div>
 <p>We can then <em>apply</em> this function to every row of <code>results</code> to get a single Boolean (i.e., <code>TRUE</code> or <code>FALSE</code>) recording whether Saquon was selected in the first three picks. To quickly compute the proportion of simulated drafts in which Saquon was picked within the top 3 picks, we can take the mean of these Booleans. We find that in 41% of our simulated drafts, Saquon is a top-3 pick Note that when we apply a function to an array, additional arguments for the function can be passed to <code>apply()</code>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>saquon_pick3 <span class="ot">&lt;-</span> <span class="fu">apply</span>(<span class="at">X =</span> results, <span class="at">MARGIN =</span> <span class="dv">1</span>, <span class="at">FUN =</span> player_picked, <span class="at">player =</span> <span class="st">"Saquon Barkley"</span>, <span class="at">pick =</span> <span class="dv">3</span>)</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(saquon_pick3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>saquon_pick3 <span class="ot">&lt;-</span> <span class="fu">apply</span>(<span class="at">X =</span> results, <span class="at">MARGIN =</span> <span class="dv">1</span>, <span class="at">FUN =</span> player_picked, <span class="at">player =</span> <span class="st">"Saquon Barkley"</span>, <span class="at">pick =</span> <span class="dv">3</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(saquon_pick3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.41382</code></pre>
 </div>
@@ -839,15 +830,15 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
 <li><span class="math inline">\(D\)</span> is the number of simulated drafts in which Saquon is <strong>not</strong> picked within the first 3 picks</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>saquon_pick10 <span class="ot">&lt;-</span> <span class="fu">apply</span>(<span class="at">X =</span> results, <span class="at">MARGIN =</span> <span class="dv">1</span>, <span class="at">FUN =</span> player_picked, <span class="at">player =</span> <span class="st">"Saquon Barkley"</span>, <span class="at">pick =</span> <span class="dv">10</span>)</span>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>saquon_pick10 <span class="ot">&lt;-</span> <span class="fu">apply</span>(<span class="at">X =</span> results, <span class="at">MARGIN =</span> <span class="dv">1</span>, <span class="at">FUN =</span> player_picked, <span class="at">player =</span> <span class="st">"Saquon Barkley"</span>, <span class="at">pick =</span> <span class="dv">10</span>)</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="sc">!</span>saquon_pick10)</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>D <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="sc">!</span>saquon_pick3)</span>
 <span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"N = "</span>, N, <span class="st">" D = "</span>, D, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"N = "</span>, N, <span class="st">" D = "</span>, D, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>N =  9666  D =  58618 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"P(Saquon available at pick 11 | Saquon not taken in top-3) = "</span>, <span class="fu">round</span>(<span class="dv">100</span><span class="sc">*</span>N<span class="sc">/</span>D, <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"%</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"P(Saquon available at pick 11 | Saquon not taken in top-3) = "</span>, <span class="fu">round</span>(<span class="dv">100</span><span class="sc">*</span>N<span class="sc">/</span>D, <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">"%</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>P(Saquon available at pick 11 | Saquon not taken in top-3) =  16.49 %</code></pre>
 </div>
@@ -930,14 +921,13 @@ i(1) \succ i(2) \succ \cdots \succ i(n_{i}),
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-      const outerScaffold = trigger.parentElement.cloneNode(true);
-      const codeEl = outerScaffold.querySelector('code');
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
         }
-      }
-      return codeEl.innerText;
+        return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

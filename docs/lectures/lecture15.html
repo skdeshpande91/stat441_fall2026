@@ -2,16 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.7.32">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Lecture 15: Markov Chains I – STAT441</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -74,16 +71,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../site_libs/quarto-axe/axe-check.js" type="module"></script>
-<script id="quarto-axe-checker-options" type="text/plain">eyJvdXRwdXQiOiJkb2N1bWVudCJ9</script>
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-da920e58b6ff959c98c9ccc31dcc4995.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -115,7 +106,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -128,7 +119,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+      if (mathElements[i].tagName == "SPAN") {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -435,11 +426,11 @@ window.Quarto = {
 <p>In <a href="../lectures/lecture06.html">Lecture 6</a>, we introduced a state-based representation of baseball: each half-inning consists of several at-bats, each of which can be characterized by (i) the number of outs and (ii) configuration of the base-runners. We then estimated the expected number of runs that team can expect to score following at-bats that begin in each of the 24 combinations of outs and base-runner configurations. Today, we will focus less on evaluating what happens in each at-bat (e.g., using run expectancy or run value) and more on how the game transitions from state-to-state.</p>
 <p>To motivate our work, let’s reconsider our running example from <a href="../lectures/lecture06.html">Lecture 6</a>, the March 20, 2024 game between the Dodgers and Padres. Specifically, let’s load the table <code>atbat2024</code> created in <a href="../lectures/lecture07.html">Lecture 7</a> and look at the sequence of game states that the Dodgers visited during the 8th inning.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"mlb_atbat2024.RData"</span>)</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"mlb_atbat2024.RData"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>dodgers_inning <span class="ot">&lt;-</span> </span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  atbat2024 <span class="sc">|&gt;</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(game_id <span class="sc">==</span> <span class="dv">745444</span> <span class="sc">&amp;</span> inning <span class="sc">==</span> <span class="dv">8</span> <span class="sc">&amp;</span> inning_topbot <span class="sc">==</span> <span class="st">"Top"</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>dodgers_inning <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">select</span>(at_bat_number, outs, BaseRunner, end_events, end_Outs, end_BaseRunner)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>dodgers_inning <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">select</span>(at_bat_number, outs, BaseRunner, end_events, end_Outs, end_BaseRunner)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 8 × 6
   at_bat_number  outs BaseRunner end_events      end_Outs end_BaseRunner
@@ -463,11 +454,11 @@ window.Quarto = {
 <p>From each possible second state, the game could move into multiple possible third states. Continuing this logic until the end of the half-inning, when the game state has <code>Outs = 3</code> and <code>BaseRunner</code> is undefined, the whole sequence of states visited is <em>stochastic</em>. So, if a team were to play the half-inning over and over again, the exact number of states visited (i.e., at-bats) and the precise sequence might vary from repetition to repetition. Markov chains offer a conceptually simple way to model the randomness of the sequence of game states visited in a half-inning.</p>
 <p>To build a Markov chain model for baseball, we need to record the starting and ending state of every at-bat in the 2024 regular season. Recall that in our data table <code>atbat2024,</code> the variable <code>GameState</code> records the value of <span class="math inline">\(G_{t}\)</span> and was formed by concatenating the variables <code>Outs</code> and <code>BaseRunner</code>. In the code below, we create the variable <code>end_GameState</code> recording the ending state of each at-bat.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a>atbat2024 <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a>atbat2024 <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-hidden="true" tabindex="-1"></a>  atbat2024 <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-2-3"><a href="#annotated-cell-2-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-4" class="code-annotation-target"><a href="#annotated-cell-2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">end_BaseRunner =</span> <span class="fu">ifelse</span>(end_Outs <span class="sc">==</span> <span class="dv">3</span>, <span class="st">"000"</span>, end_BaseRunner),</span>
-<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">end_GameState =</span> <span class="fu">paste</span>(end_Outs, end_BaseRunner, <span class="at">sep =</span> <span class="st">"."</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-2-5"><a href="#annotated-cell-2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">end_GameState =</span> <span class="fu">paste</span>(end_Outs, end_BaseRunner, <span class="at">sep =</span> <span class="st">"."</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
@@ -479,7 +470,7 @@ window.Quarto = {
 </div>
 <p>It will later be convenient for us to keep a table listing the single game states as well as the corresponding number of outs and baserunner configurations.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a>outs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>, <span class="dv">3</span>)</span>
+<div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a>outs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>, <span class="dv">3</span>)</span>
 <span id="annotated-cell-3-2"><a href="#annotated-cell-3-2" aria-hidden="true" tabindex="-1"></a>br <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"000"</span>, <span class="st">"100"</span>, <span class="st">"010"</span>, <span class="st">"001"</span>, <span class="st">"110"</span>, <span class="st">"101"</span>, <span class="st">"011"</span>, <span class="st">"111"</span>)</span>
 <span id="annotated-cell-3-3"><a href="#annotated-cell-3-3" aria-hidden="true" tabindex="-1"></a>unik_states <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-3-4"><a href="#annotated-cell-3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expand.grid</span>(<span class="at">outs =</span> outs, <span class="at">BaseRunner =</span> br) <span class="sc">|&gt;</span></span>
@@ -488,7 +479,7 @@ window.Quarto = {
 <span id="annotated-cell-3-7"><a href="#annotated-cell-3-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(outs) <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-3-8"><a href="#annotated-cell-3-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
 <span id="annotated-cell-3-9"><a href="#annotated-cell-3-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">GameState =</span> <span class="fu">paste</span>(outs, BaseRunner, <span class="at">sep =</span> <span class="st">"."</span>)) <span class="sc">|&gt;</span> </span>
-<span id="annotated-cell-3-10"><a href="#annotated-cell-3-10" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(outs, BaseRunner, GameState)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-3-10"><a href="#annotated-cell-3-10" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(outs, BaseRunner, GameState)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
@@ -512,7 +503,7 @@ window.Quarto = {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Markov Chain
+Definition: Markov Chain
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -537,7 +528,7 @@ window.Quarto = {
 \]</span></p>
 <p>The following code <em>simulate</em> 10 time steps from this Markov chain starting from the state <code>2</code></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">479</span>) </span>
+<div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">479</span>) </span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-2" class="code-annotation-target"><a href="#annotated-cell-4-2" aria-hidden="true" tabindex="-1"></a>states <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="2">2</button><span id="annotated-cell-4-3" class="code-annotation-target"><a href="#annotated-cell-4-3" aria-hidden="true" tabindex="-1"></a>transition_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fl">0.6</span>, <span class="fl">0.4</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>), <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
 <span id="annotated-cell-4-4"><a href="#annotated-cell-4-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -554,7 +545,7 @@ window.Quarto = {
 <span id="annotated-cell-4-15"><a href="#annotated-cell-4-15" aria-hidden="true" tabindex="-1"></a>  states_visited[t] <span class="ot">&lt;-</span> next_state</span>
 <span id="annotated-cell-4-16"><a href="#annotated-cell-4-16" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="annotated-cell-4-17"><a href="#annotated-cell-4-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-4-18"><a href="#annotated-cell-4-18" aria-hidden="true" tabindex="-1"></a>states_visited</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-4-18"><a href="#annotated-cell-4-18" aria-hidden="true" tabindex="-1"></a>states_visited</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
@@ -604,7 +595,7 @@ Figure&nbsp;1: Graphical representation of the transition probabilities in a two
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Absorbing State
+Definition: Absorbing State
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -632,7 +623,7 @@ Figure&nbsp;2: Graphical representation of the transition probabilities in a thr
 </div>
 <p>The following code simulates 10 steps of the Markov chain beginning in state <code>1</code>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-5"><pre class="sourceCode r code-annotation-code code-with-copy"><code class="sourceCode r"><span id="annotated-cell-5-1"><a href="#annotated-cell-5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">129</span>) </span>
+<div class="sourceCode cell-code" id="annotated-cell-5"><pre class="sourceCode r code-annotation-code code-with-copy"><code class="sourceCode r"><span id="annotated-cell-5-1"><a href="#annotated-cell-5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">129</span>) </span>
 <span id="annotated-cell-5-2"><a href="#annotated-cell-5-2" aria-hidden="true" tabindex="-1"></a>states <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>, <span class="dv">3</span>)</span>
 <span id="annotated-cell-5-3"><a href="#annotated-cell-5-3" aria-hidden="true" tabindex="-1"></a>transition_matrix <span class="ot">&lt;-</span> </span>
 <span id="annotated-cell-5-4"><a href="#annotated-cell-5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.25</span>,</span>
@@ -652,14 +643,14 @@ Figure&nbsp;2: Graphical representation of the transition probabilities in a thr
 <span id="annotated-cell-5-18"><a href="#annotated-cell-5-18" aria-hidden="true" tabindex="-1"></a>  states_visited[t] <span class="ot">&lt;-</span> next_state</span>
 <span id="annotated-cell-5-19"><a href="#annotated-cell-5-19" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="annotated-cell-5-20"><a href="#annotated-cell-5-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-5-21"><a href="#annotated-cell-5-21" aria-hidden="true" tabindex="-1"></a>states_visited</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-5-21"><a href="#annotated-cell-5-21" aria-hidden="true" tabindex="-1"></a>states_visited</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] 1 2 3 3 3 3 3 3 3 3</code></pre>
 </div>
 </div>
 <p>In this particular simulation, the chain begins in state <code>1</code>, moves to state <code>2,</code> and then moves to the absorbing state <code>3</code>. The following code block repeats the simulation 10 times, each time starting at state <code>1</code> and simulating 10 steps of the Markov chain. Sometimes, the chain immediately moves from <code>1</code> to the absorbing state <code>3</code>. But other times, the chain hops between states <code>1</code> and <code>2</code> before eventually being absorbed.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-6"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-6"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">10</span></span>
 <span id="annotated-cell-6-2"><a href="#annotated-cell-6-2" aria-hidden="true" tabindex="-1"></a>n_steps <span class="ot">&lt;-</span> <span class="dv">10</span></span>
 <span id="annotated-cell-6-3"><a href="#annotated-cell-6-3" aria-hidden="true" tabindex="-1"></a>init_state <span class="ot">&lt;-</span> <span class="dv">1</span></span>
 <span id="annotated-cell-6-4"><a href="#annotated-cell-6-4" aria-hidden="true" tabindex="-1"></a>states_visited <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="at">times =</span> n_steps)</span>
@@ -674,7 +665,7 @@ Figure&nbsp;2: Graphical representation of the transition probabilities in a thr
 <span id="annotated-cell-6-13"><a href="#annotated-cell-6-13" aria-hidden="true" tabindex="-1"></a>              <span class="at">prob =</span> transition_matrix[states_visited[t<span class="dv">-1</span>],])</span>
 <span id="annotated-cell-6-14"><a href="#annotated-cell-6-14" aria-hidden="true" tabindex="-1"></a>  }</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="3">3</button><span id="annotated-cell-6-15" class="code-annotation-target"><a href="#annotated-cell-6-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"Simulation "</span>, r, <span class="st">":"</span>, states_visited, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="annotated-cell-6-16"><a href="#annotated-cell-6-16" aria-hidden="true" tabindex="-1"></a>}</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-6-16"><a href="#annotated-cell-6-16" aria-hidden="true" tabindex="-1"></a>}</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
@@ -712,7 +703,7 @@ T^{A}_{1} = \min\left\{t \geq 1 : X_{t} = 3\right\}.
 \]</span> We can use simulation to study the distribution of <span class="math inline">\(T^{A}_{1}\)</span> and to estimate quantities like <span class="math inline">\(\mathbb{P}(T^{A}_{1} &gt; 3)\)</span> or <span class="math inline">\(\mathbb{P}(T^{A}_{1} = 5).\)</span></p>
 <p>The following code block uses a <code>while()</code> loop to simulate the Markov chain for several iterations until either (i) the absorbing state <code>3</code> is reached or (ii) some maximum number of iterations is hit<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Unlike our earlier simulation code, we will not save the full trajectory of states visited. Instead, we will only keep track of the number of iterations needed until the chain reaches state <code>3</code>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-1" class="code-annotation-target"><a href="#annotated-cell-7-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="fl">1e4</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-1" class="code-annotation-target"><a href="#annotated-cell-7-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="fl">1e4</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="2">2</button><span id="annotated-cell-7-2" class="code-annotation-target"><a href="#annotated-cell-7-2" aria-hidden="true" tabindex="-1"></a>max_iterations <span class="ot">&lt;-</span> <span class="fl">1e3</span></span>
 <span id="annotated-cell-7-3"><a href="#annotated-cell-7-3" aria-hidden="true" tabindex="-1"></a>states <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>)</span>
 <span id="annotated-cell-7-4"><a href="#annotated-cell-7-4" aria-hidden="true" tabindex="-1"></a>transition_matrix <span class="ot">&lt;-</span> </span>
@@ -737,7 +728,7 @@ T^{A}_{1} = \min\left\{t \geq 1 : X_{t} = 3\right\}.
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="8">8</button><span id="annotated-cell-7-23" class="code-annotation-target"><a href="#annotated-cell-7-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(iteration_counter <span class="sc">&lt;</span> max_iterations <span class="sc">&amp;</span> current_state <span class="sc">==</span> <span class="dv">3</span>){</span>
 <span id="annotated-cell-7-24"><a href="#annotated-cell-7-24" aria-hidden="true" tabindex="-1"></a>    absorption_time[r] <span class="ot">&lt;-</span> iteration_counter</span>
 <span id="annotated-cell-7-25"><a href="#annotated-cell-7-25" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="annotated-cell-7-26"><a href="#annotated-cell-7-26" aria-hidden="true" tabindex="-1"></a>}</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-7-26"><a href="#annotated-cell-7-26" aria-hidden="true" tabindex="-1"></a>}</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
@@ -775,16 +766,16 @@ T^{A}_{1} = \min\left\{t \geq 1 : X_{t} = 3\right\}.
 </dl>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Simulation 1000 at 2026-06-04 17:39:32.234314"
-[1] "Simulation 2000 at 2026-06-04 17:39:32.245299"
-[1] "Simulation 3000 at 2026-06-04 17:39:32.255165"
-[1] "Simulation 4000 at 2026-06-04 17:39:32.27176"
-[1] "Simulation 5000 at 2026-06-04 17:39:32.281574"
-[1] "Simulation 6000 at 2026-06-04 17:39:32.292345"
-[1] "Simulation 7000 at 2026-06-04 17:39:32.307976"
-[1] "Simulation 8000 at 2026-06-04 17:39:32.318008"
-[1] "Simulation 9000 at 2026-06-04 17:39:32.327615"
-[1] "Simulation 10000 at 2026-06-04 17:39:32.343872"</code></pre>
+<pre><code>[1] "Simulation 1000 at 2026-07-15 16:56:38.262101"
+[1] "Simulation 2000 at 2026-07-15 16:56:38.273844"
+[1] "Simulation 3000 at 2026-07-15 16:56:38.283675"
+[1] "Simulation 4000 at 2026-07-15 16:56:38.299374"
+[1] "Simulation 5000 at 2026-07-15 16:56:38.308893"
+[1] "Simulation 6000 at 2026-07-15 16:56:38.318463"
+[1] "Simulation 7000 at 2026-07-15 16:56:38.333852"
+[1] "Simulation 8000 at 2026-07-15 16:56:38.343436"
+[1] "Simulation 9000 at 2026-07-15 16:56:38.353212"
+[1] "Simulation 10000 at 2026-07-15 16:56:38.368597"</code></pre>
 </div>
 </div>
 <p>Because there are only 3 states and the probabilities of transitioning to state <code>3</code> from states <code>1</code> and <code>2</code> are relatively high, simulating the Markov chain until it hits state <code>3</code> takes very little time. Tabulating the different values in <code>absorption_time</code>, we see that the chain</p>
@@ -795,7 +786,7 @@ T^{A}_{1} = \min\left\{t \geq 1 : X_{t} = 3\right\}.
 <li>Always reached state <code>3</code> within the maximum number of iterations (as indicated by the fact that there are no <code>NA</code> values in <code>absorption_time</code>)</li>
 </ol>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(absorption_time, <span class="at">useNA =</span> <span class="st">'always'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(absorption_time, <span class="at">useNA =</span> <span class="st">'always'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>absorption_time
    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   18 
@@ -812,30 +803,30 @@ T^{A}_{1} = \min\left\{t \geq 1 : X_{t} = 3\right\}.
 It is important to note, we are <strong>assuming</strong> that the Markov property holds.</p>
 <p>Ultimately, we must estimate the transition probabilities between every pair of the 24 non-absorbing states and the absorbing state corresponding to the end of the half-inning. Because the 9th inning (and any extra innings) can end before a team has amassed three outs<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, we exclude all data from the 9th inning and beyond.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>atbat2024 <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>atbat2024 <span class="ot">&lt;-</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  atbat2024 <span class="sc">|&gt;</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(inning <span class="sc">&lt;</span> <span class="dv">9</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(inning <span class="sc">&lt;</span> <span class="dv">9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="sec-estimate-transitions" class="level3">
 <h3 class="anchored" data-anchor-id="sec-estimate-transitions">Estimating Transition Probabilities</h3>
 <p>A natural estimate of the the probability for transitioning from state <span class="math inline">\(s\)</span> to the state $s’ $ is divide the number of at-bats that start in state <span class="math inline">\(s\)</span> and end in state <span class="math inline">\(s'\)</span> by the number of at-bats that start in state <span class="math inline">\(s.\)</span></p>
 <p>We first build a table that counts the number of at-bats starting in every state</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>start_counts <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>start_counts <span class="ot">&lt;-</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  atbat2024 <span class="sc">|&gt;</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(GameState) <span class="sc">|&gt;</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">n_start =</span> dplyr<span class="sc">::</span><span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">n_start =</span> dplyr<span class="sc">::</span><span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Next, by grouping by each of <code>GameState</code> and <code>end_GameState</code>, we can count the number of times an at-bat started in some state <span class="math inline">\(s\)</span> and ended in state <span class="math inline">\(s'.\)</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>end_counts <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>end_counts <span class="ot">&lt;-</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  atbat2024 <span class="sc">|&gt;</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(GameState, end_GameState) <span class="sc">|&gt;</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">n_start_end =</span> dplyr<span class="sc">::</span><span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">n_start_end =</span> dplyr<span class="sc">::</span><span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>To compute our transition probability estimates, we start by enumerating all possible combinations of starting and ending state. Then, we will append columns containing the starting state counts <code>n_start</code> and the counts of each pair of state transitions (i.e., <code>n_start_end</code>). For certain pairs of transitions that do not appear in our data (e.g., <code>0.000</code> to <code>3.000</code>), we will manually set <code>n_start_end = 0</code>. Finally, we will divide <code>n_start_end</code> by <code>n_start</code></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-12"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-12-1"><a href="#annotated-cell-12-1" aria-hidden="true" tabindex="-1"></a>transitions <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-12"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-12-1"><a href="#annotated-cell-12-1" aria-hidden="true" tabindex="-1"></a>transitions <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-12-2"><a href="#annotated-cell-12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expand.grid</span>(<span class="at">GameState =</span> unik_states<span class="sc">$</span>GameState,</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="1">1</button><span id="annotated-cell-12-3" class="code-annotation-target"><a href="#annotated-cell-12-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">end_GameState =</span> unik_states<span class="sc">$</span>GameState) <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-12-4"><a href="#annotated-cell-12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
@@ -847,7 +838,7 @@ It is important to note, we are <strong>assuming</strong> that the Markov proper
 <span id="annotated-cell-12-10"><a href="#annotated-cell-12-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">prob =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
 <span id="annotated-cell-12-11"><a href="#annotated-cell-12-11" aria-hidden="true" tabindex="-1"></a>      GameState <span class="sc">==</span> <span class="st">"3.000"</span> <span class="sc">&amp;</span> end_GameState <span class="sc">!=</span> <span class="st">"3.000"</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
 <span id="annotated-cell-12-12"><a href="#annotated-cell-12-12" aria-hidden="true" tabindex="-1"></a>      GameState <span class="sc">==</span> <span class="st">"3.000"</span> <span class="sc">&amp;</span> end_GameState <span class="sc">==</span> <span class="st">"3.000"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="annotated-cell-12-13"><a href="#annotated-cell-12-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">.default =</span> prob))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-12-13"><a href="#annotated-cell-12-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">.default =</span> prob))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-12" data-target-annotation="1">1</dt>
@@ -871,10 +862,10 @@ It is important to note, we are <strong>assuming</strong> that the Markov proper
 </div>
 <p>It is perhaps unsurprising to see that some of the highest transition probabilities are from 2-out states (e.g., <code>2.000</code> or <code>2.100</code>) to the absorbing 3-out state.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>transitions <span class="sc">|&gt;</span></span>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>transitions <span class="sc">|&gt;</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(prob)) <span class="sc">|&gt;</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">prob =</span> <span class="fu">round</span>(prob, <span class="at">digits =</span> <span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">prob =</span> <span class="fu">round</span>(prob, <span class="at">digits =</span> <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   GameState end_GameState n_start n_start_end  prob
 1      3.000         3.000      NA           0 1.000
@@ -891,14 +882,14 @@ It is important to note, we are <strong>assuming</strong> that the Markov proper
 </div>
 <p>To form a transition matrix, we will first “widen” the table <code>transitions</code> using the function <a href="https://tidyr.tidyverse.org/reference/pivot_wider.html"><code>tiyr::pivot_wider()</code></a>. We see that each row of the resulting, temporary table, which we call <code>tmp</code>, corresponds to a starting game state value and there are columns for each of the ending game states.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  transitions <span class="sc">|&gt;</span></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(GameState, end_GameState, prob) <span class="sc">|&gt;</span></span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_wider</span>(<span class="at">names_from =</span> <span class="st">"end_GameState"</span>,</span>
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">values_from =</span> <span class="st">"prob"</span>)</span>
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>tmp <span class="sc">|&gt;</span> </span>
 <span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(GameState, <span class="st">`</span><span class="at">0.000</span><span class="st">`</span>, <span class="st">`</span><span class="at">0.100</span><span class="st">`</span>, <span class="st">`</span><span class="at">1.000</span><span class="st">`</span>, <span class="st">`</span><span class="at">2.000</span><span class="st">`</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 5
    GameState `0.000`  `0.100`  `1.000` `2.000`
@@ -918,14 +909,14 @@ It is important to note, we are <strong>assuming</strong> that the Markov proper
 <p>Looking at these selected entries, we find that the estimated transition probability from <code>0.000</code> to <code>2.000</code> is zero. This makes some intuitive sense as the batting team cannot, with no outs and no runners on base, lost two outs in a single at-bat. We also see that the transition probabilities from 1 out states (e.g., <code>1.000</code> and <code>1.1000</code>) to the no-out states (e.g., <code>0.000</code>, <code>0.110</code>, etc.) are also estimated to be zero. Transitions like <code>0.100</code> to <code>0.000</code> correspond to situations in which the at-bat begins with a runner on first base and ends with the batter hitting a homerun and driving in the runner.</p>
 <p>We can now turn this table into a matrix row and column names are the possible starting and ending game states, we will drop the column <code>GameState</code> from <code>tmp</code>, convert it into a matrix, and then assign the rownames.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>state_names <span class="ot">&lt;-</span> tmp <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">pull</span>(GameState)</span>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>state_names <span class="ot">&lt;-</span> tmp <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">pull</span>(GameState)</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>transition_matrix <span class="ot">&lt;-</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  tmp <span class="sc">|&gt;</span></span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>GameState) <span class="sc">|&gt;</span></span>
 <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>()</span>
 <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(transition_matrix) <span class="ot">&lt;-</span> state_names</span>
 <span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(transition_matrix[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="at">digits =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(transition_matrix[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      0.000 0.100 0.010 0.001 0.110
 0.000 0.032 0.231 0.045 0.005 0.000
@@ -969,7 +960,7 @@ Figure&nbsp;3: Graphical representation of transitions between game states in ba
 <h3 class="anchored" data-anchor-id="sec-simulation">Simulating a Half-Inning</h3>
 <p>Now that we have estimated the transition probabilities between all pairs of game states, we are in a position to <em>simulate</em> a single half-inning of baseball. In the following code, we set the initial state to <code>0.000</code>, since an innings begins with no outs and no runners on base. Then, we use a <code>while()</code> loop to simulate a Markov chain that randomly walks between the states (according to the transition matrix) until it hits the absorbing state <code>3.000</code>. We set the maximum iterations to be 30, which is an admittedly gross over-estimate on the number of at-bats that can take place in a single half-inning.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-16"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-16-1"><a href="#annotated-cell-16-1" aria-hidden="true" tabindex="-1"></a>max_iterations <span class="ot">&lt;-</span> <span class="dv">30</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-16"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-16-1"><a href="#annotated-cell-16-1" aria-hidden="true" tabindex="-1"></a>max_iterations <span class="ot">&lt;-</span> <span class="dv">30</span></span>
 <span id="annotated-cell-16-2"><a href="#annotated-cell-16-2" aria-hidden="true" tabindex="-1"></a>states_visited <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="at">times =</span> max_iterations)</span>
 <span id="annotated-cell-16-3"><a href="#annotated-cell-16-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-16-4"><a href="#annotated-cell-16-4" aria-hidden="true" tabindex="-1"></a>iteration_counter <span class="ot">&lt;-</span> <span class="dv">1</span></span>
@@ -984,7 +975,7 @@ Figure&nbsp;3: Graphical representation of transitions between game states in ba
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="3">3</button><span id="annotated-cell-16-13" class="code-annotation-target"><a href="#annotated-cell-16-13" aria-hidden="true" tabindex="-1"></a>  iteration_counter <span class="ot">&lt;-</span> iteration_counter <span class="sc">+</span> <span class="dv">1</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="4">4</button><span id="annotated-cell-16-14" class="code-annotation-target"><a href="#annotated-cell-16-14" aria-hidden="true" tabindex="-1"></a>  states_visited[iteration_counter] <span class="ot">&lt;-</span> current_state</span>
 <span id="annotated-cell-16-15"><a href="#annotated-cell-16-15" aria-hidden="true" tabindex="-1"></a>}</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="5">5</button><span id="annotated-cell-16-16" class="code-annotation-target"><a href="#annotated-cell-16-16" aria-hidden="true" tabindex="-1"></a>states_visited[<span class="dv">1</span><span class="sc">:</span>(iteration_counter)]</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="5">5</button><span id="annotated-cell-16-16" class="code-annotation-target"><a href="#annotated-cell-16-16" aria-hidden="true" tabindex="-1"></a>states_visited[<span class="dv">1</span><span class="sc">:</span>(iteration_counter)]</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-16" data-target-annotation="1">1</dt>
@@ -1019,7 +1010,7 @@ Figure&nbsp;3: Graphical representation of transitions between game states in ba
 <h3 class="anchored" data-anchor-id="sec-halfinning-length">Length of a Half-Inning</h3>
 <p>Like we did in <a href="#sec-three-state" class="quarto-xref">Section&nbsp;3.2</a>, we can use simulation to estimate the distribution of the number of at-bats in a half-inning. Unlike that simulation, however, we will keep track of the whole sequence of states visited instead of the absorption time.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>n_sim <span class="ot">&lt;-</span> <span class="fl">5e4</span></span>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>n_sim <span class="ot">&lt;-</span> <span class="fl">5e4</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>max_iterations <span class="ot">&lt;-</span> <span class="dv">30</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>states_visited <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow =</span> n_sim, <span class="at">ncol =</span> max_iterations)</span>
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -1037,11 +1028,11 @@ Figure&nbsp;3: Graphical representation of transitions between game states in ba
 <span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>    iteration_counter <span class="ot">&lt;-</span> iteration_counter<span class="sc">+</span><span class="dv">1</span></span>
 <span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>    states_visited[r,iteration_counter] <span class="ot">&lt;-</span> current_state</span>
 <span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Here are the first several rows of <code>states_visited</code>, which record the sequence of game states reached in some of our simulations</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>states_visited[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>states_visited[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      [,1]    [,2]    [,3]    [,4]    [,5]    [,6]    [,7]    [,8]
  [1,] "0.000" "1.000" "2.000" "3.000" NA      NA      NA      NA  
@@ -1059,11 +1050,11 @@ Figure&nbsp;3: Graphical representation of transitions between game states in ba
 <p>We find, for instance, that in 5 of the 10 simulations, the pitching team retired the first three batters, none of whom got on base. In Simulation 5, the last at-bat began in state <code>1.100</code> and ended in <code>3.000</code>, which means that the last at-bat involved an inning-ending double play.</p>
 <p>To determine how many at-bats there were in each simulated half-inning, we will first determine which entry in every row is equal to <code>3.000</code>. In the case of simulation 1, for instance, <code>3.000</code> is the 4th entry of row 1. Since the inning ends as soon as the game enters the state <code>3.000</code>, we need to subtract one from this number to compute the number of at-bats in the half-inning.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-19"><pre class="sourceCode r code-annotation-code code-with-copy"><code class="sourceCode r"><span id="annotated-cell-19-1"><a href="#annotated-cell-19-1" aria-hidden="true" tabindex="-1"></a>inning_length <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-19"><pre class="sourceCode r code-annotation-code code-with-copy"><code class="sourceCode r"><span id="annotated-cell-19-1"><a href="#annotated-cell-19-1" aria-hidden="true" tabindex="-1"></a>inning_length <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-19-2"><a href="#annotated-cell-19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(states_visited, </span>
 <span id="annotated-cell-19-3"><a href="#annotated-cell-19-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">MARGIN =</span> <span class="dv">1</span>,</span>
 <span id="annotated-cell-19-4"><a href="#annotated-cell-19-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">FUN =</span> <span class="cf">function</span>(x){ <span class="fu">return</span>(<span class="fu">which</span>(x <span class="sc">==</span> <span class="st">"3.000"</span>) <span class="sc">-</span> <span class="dv">1</span>)} )</span>
-<span id="annotated-cell-19-5"><a href="#annotated-cell-19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(inning_length)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-19-5"><a href="#annotated-cell-19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(inning_length)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>inning_length
     3     4     5     6     7     8     9    10    11    12    13    14    15 
@@ -1072,7 +1063,7 @@ Figure&nbsp;3: Graphical representation of transitions between game states in ba
 </div>
 <p>In 19105 of our 50,000 simulations, the inning ended after exactly 3 at-bats. And in 46303 the inning ended with 6 or fewer at-bats. Interestingly, there is one simulations in which the half-inning included 15 at-bats. Here is the sequence of states visited in that first simulation</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>states_visited[<span class="fu">which</span>(inning_length <span class="sc">==</span> <span class="dv">15</span>)[<span class="dv">1</span>], <span class="dv">1</span><span class="sc">:</span><span class="dv">15</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>states_visited[<span class="fu">which</span>(inning_length <span class="sc">==</span> <span class="dv">15</span>)[<span class="dv">1</span>], <span class="dv">1</span><span class="sc">:</span><span class="dv">15</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "0.000" "0.100" "0.110" "0.110" "1.101" "1.110" "1.111" "1.011" "2.001"
 [10] "2.100" "2.110" "2.010" "2.101" "2.000" "2.100"</code></pre>
@@ -1086,7 +1077,7 @@ Figure&nbsp;3: Graphical representation of transitions between game states in ba
 \]</span> As an example, suppose at an at-bat starts in state <code>1.110</code> and ends in state <code>1.000</code>. The only way for such a transition to occur is for the batter to hit a homerun and drive in runs from 1st and 2nd base. That is, three runs are scored during such an at-bat. We verify that <span class="math inline">\(O_{t} = 1, B_{t} = 2, O_{t}^{\star} = 1\)</span> and <span class="math inline">\(B_{t}^{\star} = 0.\)</span> So, as expected <span class="math inline">\((O_{t} + B_{t} + 1) - (O_{t}^{\star} + B_{t}^{\star}) = 3.\)</span></p>
 <p>We can elaborate our Markov chain simulation to count the number of runs scored in each at-bat. To do this, we will need to look up how many outs and baserunners there are based on each game-state. Rather than determining this programmatically, we can manually update the table <code>unik_states</code>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>unik_states <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>unik_states <span class="ot">&lt;-</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  unik_states <span class="sc">|&gt;</span></span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
 <span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_runners =</span> </span>
@@ -1094,7 +1085,7 @@ Figure&nbsp;3: Graphical representation of transitions between game states in ba
 <span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>        BaseRunner <span class="sc">==</span> <span class="st">"000"</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
 <span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>        BaseRunner <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"100"</span>, <span class="st">"010"</span>, <span class="st">"001"</span>) <span class="sc">~</span> <span class="dv">1</span>,</span>
 <span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>        BaseRunner <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"110"</span>, <span class="st">"101"</span>, <span class="st">"011"</span>) <span class="sc">~</span> <span class="dv">2</span>,</span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>        BaseRunner <span class="sc">==</span> <span class="st">"111"</span> <span class="sc">~</span> <span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>        BaseRunner <span class="sc">==</span> <span class="st">"111"</span> <span class="sc">~</span> <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We now elaborate our Markov chain simulation code to (i) get the number of outs and baserunners at the beginning and end of each simulated at-bat and (ii) add the number of runs scored in the at-bat to a running tally of runs scored in the half-inning.</p>
 <div class="callout callout-style-default callout-warning callout-titled">
@@ -1103,7 +1094,7 @@ Figure&nbsp;3: Graphical representation of transitions between game states in ba
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Warning
+Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1111,7 +1102,7 @@ Figure&nbsp;3: Graphical representation of transitions between game states in ba
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-22"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-22-1"><a href="#annotated-cell-22-1" aria-hidden="true" tabindex="-1"></a>n_sim <span class="ot">&lt;-</span> <span class="fl">5e4</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-22"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-22-1"><a href="#annotated-cell-22-1" aria-hidden="true" tabindex="-1"></a>n_sim <span class="ot">&lt;-</span> <span class="fl">5e4</span></span>
 <span id="annotated-cell-22-2"><a href="#annotated-cell-22-2" aria-hidden="true" tabindex="-1"></a>max_iterations <span class="ot">&lt;-</span> <span class="dv">30</span></span>
 <span id="annotated-cell-22-3"><a href="#annotated-cell-22-3" aria-hidden="true" tabindex="-1"></a>states_visited <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow =</span> n_sim, <span class="at">ncol =</span> max_iterations)</span>
 <span id="annotated-cell-22-4"><a href="#annotated-cell-22-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -1155,7 +1146,7 @@ Figure&nbsp;3: Graphical representation of transitions between game states in ba
 <span id="annotated-cell-22-42"><a href="#annotated-cell-22-42" aria-hidden="true" tabindex="-1"></a>      (n_outs_end <span class="sc">+</span> n_runners_end)</span>
 <span id="annotated-cell-22-43"><a href="#annotated-cell-22-43" aria-hidden="true" tabindex="-1"></a>  }</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-22" data-target-annotation="6">6</button><span id="annotated-cell-22-44" class="code-annotation-target"><a href="#annotated-cell-22-44" aria-hidden="true" tabindex="-1"></a>  runs_scored[r] <span class="ot">&lt;-</span> runs</span>
-<span id="annotated-cell-22-45"><a href="#annotated-cell-22-45" aria-hidden="true" tabindex="-1"></a>}</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-22-45"><a href="#annotated-cell-22-45" aria-hidden="true" tabindex="-1"></a>}</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-22" data-target-annotation="1">1</dt>
@@ -1185,21 +1176,21 @@ Figure&nbsp;3: Graphical representation of transitions between game states in ba
 </dl>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Simulation 5000 at 2026-06-04 17:40:07.154516"
-[1] "Simulation 10000 at 2026-06-04 17:40:38.854496"
-[1] "Simulation 15000 at 2026-06-04 17:41:10.792097"
-[1] "Simulation 20000 at 2026-06-04 17:41:42.882858"
-[1] "Simulation 25000 at 2026-06-04 17:42:14.621359"
-[1] "Simulation 30000 at 2026-06-04 17:42:46.863473"
-[1] "Simulation 35000 at 2026-06-04 17:43:18.792543"
-[1] "Simulation 40000 at 2026-06-04 17:43:50.464323"
-[1] "Simulation 45000 at 2026-06-04 17:44:21.846758"
-[1] "Simulation 50000 at 2026-06-04 17:44:53.890886"</code></pre>
+<pre><code>[1] "Simulation 5000 at 2026-07-15 16:57:12.694387"
+[1] "Simulation 10000 at 2026-07-15 16:57:43.868564"
+[1] "Simulation 15000 at 2026-07-15 16:58:15.373921"
+[1] "Simulation 20000 at 2026-07-15 16:58:47.538521"
+[1] "Simulation 25000 at 2026-07-15 16:59:18.669427"
+[1] "Simulation 30000 at 2026-07-15 16:59:49.835472"
+[1] "Simulation 35000 at 2026-07-15 17:00:21.341258"
+[1] "Simulation 40000 at 2026-07-15 17:00:52.652407"
+[1] "Simulation 45000 at 2026-07-15 17:01:23.594909"
+[1] "Simulation 50000 at 2026-07-15 17:01:54.903706"</code></pre>
 </div>
 </div>
 <p>We can now tabulate the number of runs scored in each simulated half-inning</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(runs_scored)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(runs_scored)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>runs_scored
     0     1     2     3     4     5     6     7     8     9    10    11    12 
@@ -1212,7 +1203,7 @@ Figure&nbsp;3: Graphical representation of transitions between game states in ba
 <h2 class="anchored" data-anchor-id="sec-nstep">Modeling Multiple Steps</h2>
 <p>The <span class="math inline">\((s,s')\)</span> entry of <span class="math inline">\(\boldsymbol{\mathbf{P}}\)</span> is the probability that the chain moves from state <span class="math inline">\(s\)</span> to state <span class="math inline">\(s'.\)</span> Based on the 2024 MLB season, we estimated that approximately 23.06% of at-bats that began in the state <code>1.000</code> ended in the state <code>1.100</code>, so <span class="math inline">\(p_{\textrm{1.000, 1.100}} \approx 0.23\)</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>transition_matrix[<span class="st">"1.000"</span>, <span class="st">"1.100"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>transition_matrix[<span class="st">"1.000"</span>, <span class="st">"1.100"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.2305516</code></pre>
 </div>
@@ -1229,8 +1220,8 @@ Figure&nbsp;3: Graphical representation of transitions between game states in ba
 \]</span> where the sum is taken over <em>all</em> possible states. Because certain states like <code>0.000</code> or <code>3.000</code> are unreachable from <code>1.000</code>, the impossible transitions through those states do not contribute to the sum as the term <span class="math inline">\(p_{1.000,s}\)</span> will be zero.</p>
 <p>Looking carefully at this sum, we recognize the familiar form of matrix multiplication. Specifically, the entry corresponding to (<code>1.000,2.100</code>) in the matrix <span class="math inline">\(\boldsymbol{\mathbf{P}} \times \boldsymbol{\mathbf{P}}\)</span> is <em>precisely</em> the sum above.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-25"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-25" data-target-annotation="1">1</button><span id="annotated-cell-25-1" class="code-annotation-target"><a href="#annotated-cell-25-1" aria-hidden="true" tabindex="-1"></a>P2 <span class="ot">&lt;-</span> transition_matrix <span class="sc">%*%</span> transition_matrix</span>
-<span id="annotated-cell-25-2"><a href="#annotated-cell-25-2" aria-hidden="true" tabindex="-1"></a>P2[<span class="st">"1.000"</span>, <span class="st">"2.100"</span>]</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="annotated-cell-25"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-25" data-target-annotation="1">1</button><span id="annotated-cell-25-1" class="code-annotation-target"><a href="#annotated-cell-25-1" aria-hidden="true" tabindex="-1"></a>P2 <span class="ot">&lt;-</span> transition_matrix <span class="sc">%*%</span> transition_matrix</span>
+<span id="annotated-cell-25-2"><a href="#annotated-cell-25-2" aria-hidden="true" tabindex="-1"></a>P2[<span class="st">"1.000"</span>, <span class="st">"2.100"</span>]</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-25" data-target-annotation="1">1</dt>
@@ -1250,7 +1241,7 @@ Figure&nbsp;3: Graphical representation of transitions between game states in ba
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: n-Step Transition
+Definition: n-Step Transition
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1259,8 +1250,8 @@ Figure&nbsp;3: Graphical representation of transitions between game states in ba
 </div>
 <p>To illustrate, here are several entries of <span class="math inline">\(\boldsymbol{\mathbf{P}}^{2}\)</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>selected_states <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"0.000"</span>, <span class="st">"1.000"</span>, <span class="st">"2.000"</span>, <span class="st">"1.110"</span>, <span class="st">"3.000"</span>)</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(P2[selected_states, selected_states], <span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>selected_states <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"0.000"</span>, <span class="st">"1.000"</span>, <span class="st">"2.000"</span>, <span class="st">"1.110"</span>, <span class="st">"3.000"</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(P2[selected_states, selected_states], <span class="at">digits =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      0.000 1.000 2.000 1.110 3.000
 0.000  0.01  0.04  0.50  0.00  0.00
@@ -1272,8 +1263,8 @@ Figure&nbsp;3: Graphical representation of transitions between game states in ba
 </div>
 <p>Starting from <code>0.000</code>, there is about a 50% chance that the game reaches the state <code>2.000</code> after two at-bats<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. Similarly, there is about a 51% chance that the inning ends within two batters of an at-bat beginning in state <code>1.000</code>. Taking things one step further, we can compute the three-step transition probability matrix:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>P3 <span class="ot">&lt;-</span> P2 <span class="sc">%*%</span> transition_matrix</span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">sort</span>(P3[<span class="st">"0.000"</span>,], <span class="at">decreasing =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>P3 <span class="ot">&lt;-</span> P2 <span class="sc">%*%</span> transition_matrix</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">sort</span>(P3[<span class="st">"0.000"</span>,], <span class="at">decreasing =</span> <span class="cn">TRUE</span>), <span class="at">digits =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>3.000 2.100 2.010 1.110 2.000 2.001 1.101 1.100 1.000 1.011 1.010 0.111 0.110 
  0.38  0.24  0.08  0.08  0.05  0.03  0.03  0.03  0.02  0.02  0.02  0.01  0.01 
@@ -1292,7 +1283,7 @@ Figure&nbsp;3: Graphical representation of transitions between game states in ba
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Absorbing Markov Chain
+Definition: Absorbing Markov Chain
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1305,9 +1296,9 @@ Figure&nbsp;3: Graphical representation of transitions between game states in ba
 \]</span> where <span class="math inline">\(Q\)</span> is a <span class="math inline">\(T \times T\)</span> matrix capturing one-step transition probabilities between non-absorbing states; <span class="math inline">\(R\)</span> is a <span class="math inline">\(T \times A\)</span> matrix capturing one-step transition probabilities between non-absorbing and absorbing states; and <span class="math inline">\(I_{A}\)</span> is the <span class="math inline">\(A \times A\)</span> identity matrix, with ones along the diagonal and zeros in all other entries.</p>
 <p>In our baseball example, there is only <span class="math inline">\(A = 1\)</span> absorbing state and <span class="math inline">\(T = 24\)</span> non-absorbing states. The code below extracts the matrix <span class="math inline">\(Q\)</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>transient_states <span class="ot">&lt;-</span> unik_states <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(GameState <span class="sc">!=</span> <span class="st">"3.000"</span>) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">pull</span>(GameState)</span>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>transient_states <span class="ot">&lt;-</span> unik_states <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(GameState <span class="sc">!=</span> <span class="st">"3.000"</span>) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">pull</span>(GameState)</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>Q <span class="ot">&lt;-</span> transition_matrix[transient_states, transient_states]</span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>R <span class="ot">&lt;-</span> <span class="fu">matrix</span>(transition_matrix[transient_states, <span class="st">"3.000"</span>], <span class="at">ncol =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>R <span class="ot">&lt;-</span> <span class="fu">matrix</span>(transition_matrix[transient_states, <span class="st">"3.000"</span>], <span class="at">ncol =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -1315,7 +1306,7 @@ Figure&nbsp;3: Graphical representation of transitions between game states in ba
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Fundamental Matrix
+Definition: Fundamental Matrix
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1326,8 +1317,8 @@ N = (I_{T} - Q)^{-1}.
 </div>
 <p>For any two transient states <span class="math inline">\(s\)</span> and <span class="math inline">\(s',\)</span> the <span class="math inline">\((s,s')\)</span> entry of <span class="math inline">\(N,\)</span> which we denote as <span class="math inline">\(n_{s,s'}\)</span> counts the <em>expected</em> number of times visits state <span class="math inline">\(s'\)</span> after starting from <span class="math inline">\(s\)</span> before absorption.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">diag</span>(<span class="dv">24</span>) <span class="sc">-</span> Q)</span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(N[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">diag</span>(<span class="dv">24</span>) <span class="sc">-</span> Q)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(N[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>], <span class="at">digits =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      0.000 0.100 0.010 0.001 0.110
 0.000  1.05  0.25  0.06  0.01  0.06
@@ -1339,7 +1330,7 @@ N = (I_{T} - Q)^{-1}.
 </div>
 <p>Looking at several entries of the fundamental matrix of our baseball Markov chain, we notice a few things. First, starting from <code>0.000</code>, we expect the number of times the chain visits <code>0.100</code> about 0.25 times and <code>0.010</code> 0.06 times, on average. We also observe that the diagonal entries all appear to be larger than 1.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">diag</span>(N), <span class="at">digits  =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">diag</span>(N), <span class="at">digits  =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0.000 0.100 0.010 0.001 0.110 0.101 0.011 0.111 1.000 1.100 1.010 1.001 1.110 
  1.05  1.02  1.06  1.01  1.06  1.06  1.02  1.19  1.04  1.02  1.06  1.01  1.06 
@@ -1350,7 +1341,7 @@ N = (I_{T} - Q)^{-1}.
 <p>Recall that the diagonal entry <span class="math inline">\(n_{s,s}\)</span> is the expected number of times that an absorbing chain visits state <span class="math inline">\(s\)</span> after starting from state <span class="math inline">\(s.\)</span> So, if the chain <em>starts</em> at <span class="math inline">\(s,\)</span> it necessarily visits <span class="math inline">\(s\)</span> at least once. These results suggest, for instance, that starting from the state <code>1.111</code> the chain will return to the state <code>1.111</code> about 0.19 more times, on average. Similarly, starting from <code>0.000</code>, the chain expects to return to the starting state <code>0.000</code> only 0.05 more times, on average.</p>
 <p>Summing the entries along the rows of <span class="math inline">\(N\)</span>, we can compute the expected time until the chain is absorbed starting from each state. So, if we are in an at-bat starting with <code>1.000</code>, we would expect to face a total of 1.85 <em>additional</em> batters before the end of the half-inning</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(N[<span class="st">"1.000"</span>,])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(N[<span class="st">"1.000"</span>,])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 2.852232</code></pre>
 </div>
@@ -1441,14 +1432,13 @@ save(transition_matrix, unik_states, file = "atbat2024_markov_chain.RData")
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-      const outerScaffold = trigger.parentElement.cloneNode(true);
-      const codeEl = outerScaffold.querySelector('code');
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
         }
-      }
-      return codeEl.innerText;
+        return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

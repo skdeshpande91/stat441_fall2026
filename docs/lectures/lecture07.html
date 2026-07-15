@@ -2,16 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.7.32">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Lecture 7: Offensive Credit Allocation in Baseball – STAT441</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -62,6 +59,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -93,16 +91,10 @@ div.csl-indent {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../site_libs/quarto-axe/axe-check.js" type="module"></script>
-<script id="quarto-axe-checker-options" type="text/plain">eyJvdXRwdXQiOiJkb2N1bWVudCJ9</script>
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-da920e58b6ff959c98c9ccc31dcc4995.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -131,7 +123,7 @@ div.csl-indent {
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -144,7 +136,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+      if (mathElements[i].tagName == "SPAN") {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -439,17 +431,17 @@ window.Quarto = {
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
 <p>In <a href="../lectures/lecture06.html#sec-run-value">Lecture 6</a>, we computed the run value created by the offensive team in each at-bat of the 2024 MLB regular season. Run value is the sum of (i) the number of runs scored in the at-bat and (ii) the <em>change</em> in the number of runs the batting team is expected to score in the remainder of the half-inning. This change in expected runs is driven by the change in the combination of the number of outs and baserunner configuration. We then <a href="../lectures/lecture06.html#sec-batter-prod">ranked players</a> based on their run value totals, aggregating over all their at-bats. While the resulting rankings did appear to pass the “eye test” — both Aaron Judge and Shohei Ohtani created some of the largest run values — the metric implicitly gives batters all the credit for creating run value.</p>
-<p>Over the next two lectures, we will develop our own version of <em>wins above replacement</em>. Our development largely follows that of <span class="citation" data-cites="Baumer2015_openWAR">Baumer et al. (<a href="#ref-Baumer2015_openWAR" role="doc-biblioref">2015</a>)</span> but with some important differences.</p>
+<p>Over the next two lectures, we will develop our own version of <em>wins above replacement</em>. Our development largely follows that of <span class="citation" data-cites="Baumer2015_openWAR">Baumer, Jensen, and Matthews (<a href="#ref-Baumer2015_openWAR" role="doc-biblioref">2015</a>)</span> but with some important differences.</p>
 <section id="sec-conservation" class="level3">
 <h3 class="anchored" data-anchor-id="sec-conservation">Conservation of Runs</h3>
-<p>The central idea — what <span class="citation" data-cites="Baumer2015_openWAR">(<a href="#ref-Baumer2015_openWAR" role="doc-biblioref">Baumer et al. 2015</a>)</span> call the “conservation of runs” framework — is that if the batting team gains <span class="math inline">\(\delta_{i}\)</span> units of run value during an at-bat, the fielding team gains <span class="math inline">\(-\delta_{i}\)</span> units of run value during that same at-bat. In this lecture, we will apportion <span class="math inline">\(\delta_{i}\)</span> between the batters (<a href="#sec-baserunner" class="quarto-xref">Section&nbsp;4</a>) and the baserunners involved in at-bat <span class="math inline">\(i\)</span> (<a href="#sec-batting" class="quarto-xref">Section&nbsp;5</a>) In <a href="../lectures/lecture08.html">Lecture 8</a>, we will apportion <span class="math inline">\(-\delta_{i}\)</span> between the pitcher and fielders involved in at-bat <span class="math inline">\(i.\)</span></p>
+<p>The central idea — what <span class="citation" data-cites="Baumer2015_openWAR">(<a href="#ref-Baumer2015_openWAR" role="doc-biblioref">Baumer, Jensen, and Matthews 2015</a>)</span> call the “conservation of runs” framework — is that if the batting team gains <span class="math inline">\(\delta_{i}\)</span> units of run value during an at-bat, the fielding team gains <span class="math inline">\(-\delta_{i}\)</span> units of run value during that same at-bat. In this lecture, we will apportion <span class="math inline">\(\delta_{i}\)</span> between the batters (<a href="#sec-baserunner" class="quarto-xref">Section&nbsp;4</a>) and the baserunners involved in at-bat <span class="math inline">\(i\)</span> (<a href="#sec-batting" class="quarto-xref">Section&nbsp;5</a>) In <a href="../lectures/lecture08.html">Lecture 8</a>, we will apportion <span class="math inline">\(-\delta_{i}\)</span> between the pitcher and fielders involved in at-bat <span class="math inline">\(i.\)</span></p>
 </section>
 </section>
 <section id="sec-data-prep" class="level2">
 <h2 class="anchored" data-anchor-id="sec-data-prep">Data Preparation</h2>
 <p>To divide up offensive run value, we need to create a data table whose rows correspond to individual at-bats. This data table must, at a minimum, contain the starting and ending outs and baserunner configurations as well as the identities of the baserunners at the start and end of the at-bat. We will also want to include the columns <code>event</code> and <code>des</code>, which record the events and a narrative description of what happened in the at-bat.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"statcast2024.RData"</span>)</span>
+<div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"statcast2024.RData"</span>)</span>
 <span id="annotated-cell-1-2"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"mlb_runValue2024.RData"</span>)</span>
 <span id="annotated-cell-1-3"><a href="#annotated-cell-1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"mlb_player2024_lookup.RData"</span>)</span>
 <span id="annotated-cell-1-4"><a href="#annotated-cell-1-4" aria-hidden="true" tabindex="-1"></a>raw_atbat2024 <span class="ot">&lt;-</span> </span>
@@ -482,7 +474,7 @@ window.Quarto = {
 <span id="annotated-cell-1-31"><a href="#annotated-cell-1-31" aria-hidden="true" tabindex="-1"></a>         outs, BaseRunner, batter_id, on_1b, on_2b, on_3b, bat_score, fld_score, </span>
 <span id="annotated-cell-1-32"><a href="#annotated-cell-1-32" aria-hidden="true" tabindex="-1"></a>         end_Outs, end_BaseRunner, end_on_1b, end_on_2b, end_on_3b, end_bat_score, end_fld_score,</span>
 <span id="annotated-cell-1-33"><a href="#annotated-cell-1-33" aria-hidden="true" tabindex="-1"></a>         end_events, end_des) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-1-34"><a href="#annotated-cell-1-34" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">inner_join</span>(<span class="at">y =</span> runValue2024, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"game_id"</span>, <span class="st">"at_bat_number"</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-1-34"><a href="#annotated-cell-1-34" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">inner_join</span>(<span class="at">y =</span> runValue2024, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"game_id"</span>, <span class="st">"at_bat_number"</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
@@ -513,10 +505,10 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="sec-adjusted-rv">Adjusted Run Values</h2>
 <p>We want to give credit to the batter and base runners for creating value over and above what would been expected given the game state and the actual outcome of the at-bat. More precisely, recall that <span class="math inline">\(\delta_{i}\)</span> is the run value created in at-bat <span class="math inline">\(i.\)</span> We will denote the game state at the beginning of the at-bat with <span class="math inline">\(\textrm{g}_{i}\)</span> and the ending event with <span class="math inline">\(\textrm{e}_{i}.\)</span> We form the game state variable <span class="math inline">\(\textrm{g}\)</span> by concatenating the <code>Outs</code> and <code>BaseRunners</code> and separating them with a period so that <span class="math inline">\(\textrm{g} = "0.101"\)</span> corresponds to a situation with no outs and runners on first and third base.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a>atbat2024 <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a>atbat2024 <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-hidden="true" tabindex="-1"></a>  raw_atbat2024 <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(end_events) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(end_des)) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">GameState =</span> <span class="fu">paste</span>(outs, BaseRunner, <span class="at">sep =</span> <span class="st">"."</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">GameState =</span> <span class="fu">paste</span>(outs, BaseRunner, <span class="at">sep =</span> <span class="st">"."</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
@@ -532,10 +524,10 @@ window.Quarto = {
 <p>It is tempting to compute the expectation <span class="math inline">\(\mathbb{E}[\delta \vert \textrm{g}, \textrm{e}]\)</span> using the “binning-and-averaging” approach we took when developing our <a href="../lectures/lecture02.html#init-xg">initial XG models back in Lecture 2</a>. Unfortunately, such a procedure is liable to yield extreme and erratic answers as the number of bins is quite large. To wit, there are 24 distinct game states (i.e., combinations of outs and base runners) and 21 different events.</p>
 <p>The 2024 dataset contains only 373 of the 504 total combinations of game state and ending event. Of the observed combinations, there is a huge disparity in the relative frequencies. Some combinations (e.g., triples with no outs and runners on second and third) occurred just once while others (e.g., striking out with no outs and nobody on) occurred close to 10,000 times.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>atbat2024 <span class="sc">|&gt;</span></span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>atbat2024 <span class="sc">|&gt;</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">count</span>(outs, BaseRunner, end_events) <span class="sc">|&gt;</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(n) <span class="sc">|&gt;</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, (dplyr<span class="sc">::</span><span class="fu">n</span>()<span class="sc">-</span><span class="dv">4</span>)<span class="sc">:</span>dplyr<span class="sc">::</span><span class="fu">n</span>()))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, (dplyr<span class="sc">::</span><span class="fu">n</span>()<span class="sc">-</span><span class="dv">4</span>)<span class="sc">:</span>dplyr<span class="sc">::</span><span class="fu">n</span>()))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 4
     outs BaseRunner end_events              n
@@ -561,7 +553,7 @@ window.Quarto = {
 \]</span> where <span class="math inline">\(g_{i}\)</span> and <span class="math inline">\(e_{i}\)</span> record the game state and event of at-bat <span class="math inline">\(i.\)</span></p>
 <p>Solving this problem is equivalent to fitting a linear regression model <em>without an intercept</em><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. We can do this in R using the <code>lm()</code> function and including <code>-1</code> in the <code>formula</code> argument<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. In the following code, we create a temporary data frame that extracts just the run values <span class="math inline">\(\delta\)</span>, game states <span class="math inline">\(\textrm{g}\)</span>, and ending events <span class="math inline">\(\textrm{e}\)</span> from <code>atbats2024</code> and convert the game state and event variables into <code>factors</code>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>tmp_df <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>tmp_df <span class="ot">&lt;-</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  atbat2024 <span class="sc">|&gt;</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(RunValue, GameState, end_events) <span class="sc">|&gt;</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
@@ -569,11 +561,11 @@ window.Quarto = {
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">end_events =</span> <span class="fu">factor</span>(end_events))</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>state_event_fit <span class="ot">&lt;-</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(RunValue <span class="sc">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> GameState <span class="sc">+</span> end_events, <span class="at">data =</span> tmp_df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(RunValue <span class="sc">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> GameState <span class="sc">+</span> end_events, <span class="at">data =</span> tmp_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Using the <code>summary()</code> function, we can take a quick look at the <span class="math inline">\(\alpha\)</span>’s.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(state_event_fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(state_event_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -644,84 +636,79 @@ F-statistic: 1.379e+04 on 44 and 182405 DF,  p-value: &lt; 2.2e-16</code></pre>
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Statistical Significance &amp; Model Assumptions
+Statistical Significance &amp; Model Assumptions
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p>You’ll notice that <code>summary()</code> returns a lot of inferential output (e.g., standard errors, p-values). These are computed under an additional assumption that the true errors <span class="math inline">\(\varepsilon_{i}\)</span> are independent and following a mean-zero normal distribution with constant variance. Since our main interest is prediction, we’re really not interested in checking whether, say, <span class="math inline">\(\alpha_{0:010}\)</span> is statistically significantly different than zero. So, we will not check whether the usual multiple linear model assumptions nor will we attempt. If you did want to make inferential statements about our model parameters, you would need to first check that the multiple linear multiple assumptions are not grossly violated.</p>
 </div>
 </div>
-<p>Equipped with our estimated model parameters, for each at-bat <span class="math inline">\(i,\)</span> let <span class="math inline">\(\hat{\mu}_{i} = \hat{\alpha}_{\textrm{g}_{i}} + \hat{\alpha}_{\textrm{e}_{i}}\)</span> and let <span class="math inline">\(\eta_{i} = \delta_{i} - \hat{\mu}_{i}.\)</span> In terms of dividing credit between the batter and the base runner, we will follow <span class="citation" data-cites="Baumer2015_openWAR">Baumer et al. (<a href="#ref-Baumer2015_openWAR" role="doc-biblioref">2015</a>)</span> and attribute <span class="math inline">\(\hat{\mu}_{i}\)</span> to the batter’s hitting in at-bat <span class="math inline">\(i\)</span> and <span class="math inline">\(\eta_{i}\)</span> to the base running in that at-bat. We will add columns to <code>atbat2024</code> holding the values of <span class="math inline">\(\hat{\mu}\)</span> (<code>mu</code>) and <span class="math inline">\(\eta\)</span> (<code>eta</code>).</p>
+<p>Equipped with our estimated model parameters, for each at-bat <span class="math inline">\(i,\)</span> let <span class="math inline">\(\hat{\mu}_{i} = \hat{\alpha}_{\textrm{g}_{i}} + \hat{\alpha}_{\textrm{e}_{i}}\)</span> and let <span class="math inline">\(\eta_{i} = \delta_{i} - \hat{\mu}_{i}.\)</span> In terms of dividing credit between the batter and the base runner, we will follow <span class="citation" data-cites="Baumer2015_openWAR">Baumer, Jensen, and Matthews (<a href="#ref-Baumer2015_openWAR" role="doc-biblioref">2015</a>)</span> and attribute <span class="math inline">\(\hat{\mu}_{i}\)</span> to the batter’s hitting in at-bat <span class="math inline">\(i\)</span> and <span class="math inline">\(\eta_{i}\)</span> to the base running in that at-bat. We will add columns to <code>atbat2024</code> holding the values of <span class="math inline">\(\hat{\mu}\)</span> (<code>mu</code>) and <span class="math inline">\(\eta\)</span> (<code>eta</code>).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>atbat2024<span class="sc">$</span>eta <span class="ot">&lt;-</span> state_event_fit<span class="sc">$</span>residuals</span>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>atbat2024<span class="sc">$</span>eta <span class="ot">&lt;-</span> state_event_fit<span class="sc">$</span>residuals</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>atbat2024<span class="sc">$</span>mu <span class="ot">&lt;-</span> state_event_fit<span class="sc">$</span>fitted.values</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(atbat2024, <span class="at">file =</span> <span class="st">"mlb_atbat2024.RData"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(atbat2024, <span class="at">file =</span> <span class="st">"mlb_atbat2024.RData"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="sec-baserunner" class="level2">
 <h2 class="anchored" data-anchor-id="sec-baserunner">Baserunning Run Value</h2>
-<p>Ohtani’s second hit against the Padres on March 20, 2024 was a single with runners on first and second and no outs. While Ohtani and the runner originally on first advanced one base, the runner originally on second scored. Because this latter runner advanced more than what might have been otherwise expected, it makes sense to give him a larger share of the <span class="math inline">\(\eta_{i}\)</span> than to the first two runners, who only advanced one base on a single. Following <span class="citation" data-cites="Baumer2015_openWAR">(<a href="#ref-Baumer2015_openWAR" role="doc-biblioref">Baumer et al. 2015, sec. 3.2</a>)</span>, the amount of base running run value <span class="math inline">\(\eta_{i}\)</span> that we assign to base runner <span class="math inline">\(j\)</span> in at-bat <span class="math inline">\(i\)</span> will be proportional to <span class="math inline">\(\kappa_{ij} = \mathbb{P}(K &lt; k_{ij} \vert \textrm{e}_{i}),\)</span> where <span class="math inline">\(k_{ij}\)</span> is the number of bases actually advanced by the base runner.</p>
+<p>Ohtani’s second hit against the Padres on March 20, 2024 was a single with runners on first and second and no outs. While Ohtani and the runner originally on first advanced one base, the runner originally on second scored. Because this latter runner advanced more than what might have been otherwise expected, it makes sense to give him a larger share of the <span class="math inline">\(\eta_{i}\)</span> than to the first two runners, who only advanced one base on a single. Following <span class="citation" data-cites="Baumer2015_openWAR">(<a href="#ref-Baumer2015_openWAR" role="doc-biblioref">Baumer, Jensen, and Matthews 2015, sec. 3.2</a>)</span>, the amount of base running run value <span class="math inline">\(\eta_{i}\)</span> that we assign to base runner <span class="math inline">\(j\)</span> in at-bat <span class="math inline">\(i\)</span> will be proportional to <span class="math inline">\(\kappa_{ij} = \mathbb{P}(K &lt; k_{ij} \vert \textrm{e}_{i}),\)</span> where <span class="math inline">\(k_{ij}\)</span> is the number of bases actually advanced by the base runner.</p>
 <p>Essentially, <span class="math inline">\(\kappa_{ij}\)</span> is the probability that a typical base runner advanced at most the <span class="math inline">\(k_{ij}\)</span> bases advanced by base runner <span class="math inline">\(j\)</span> in at-bat <span class="math inline">\(i\)</span> following event <span class="math inline">\(\textrm{e}_{i}.\)</span> If the base runner does worse than expected (e.g., not advancing from second on a single), then <span class="math inline">\(\kappa_{ij}\)</span> will be very small. But if the base runner does better than expected (e.g., scoring from second on a single), then <span class="math inline">\(\kappa_{ij}\)</span> will be larger. When computing <span class="math inline">\(\kappa_{ij}\)</span> it is crucial that we condition on the actual ending event <span class="math inline">\(\textrm{e}_{i}.\)</span> After all, while we may want to penalize a runner for not advancing from second on a single, we definitely don’t want to penalize a runner for not advancing from second following a strike out!</p>
 <section id="sec-baserunner-advancement" class="level3">
 <h3 class="anchored" data-anchor-id="sec-baserunner-advancement">Baserunner Advancement</h3>
 <p>Unfortunately, StatCast does not compute the number of bases that each runner advances during each at-bat. The following code implements a function that determines the number of bases advanced by the runner on first (if any). It works by first checking whether there is anyone on 1b at the start of the at-bat. If so, it checks whether that player is on first, second, or third base at the end of the at-bat. If not, it parses the at-bat description contained in <code>des</code> and looks for a sentence containing the player’s name. If that sentence contains the words “out” or “caught stealing”, it sets the number of bases advanced to 0. But, if the sentence contains the word “score”, it sets the number of bases advanced to 3, since the runner scored from first.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"mlb_player2024_lookup.RData"</span>)</span>
-<span id="annotated-cell-7-2"><a href="#annotated-cell-7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: mvt-1b-function</span></span>
-<span id="annotated-cell-7-3"><a href="#annotated-cell-7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: true</span></span>
-<span id="annotated-cell-7-4"><a href="#annotated-cell-7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="annotated-cell-7-5"><a href="#annotated-cell-7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-7-6"><a href="#annotated-cell-7-6" aria-hidden="true" tabindex="-1"></a>mvt_1b <span class="ot">&lt;-</span> <span class="cf">function</span>(on_1b, outs, bat_score,</span>
-<span id="annotated-cell-7-7"><a href="#annotated-cell-7-7" aria-hidden="true" tabindex="-1"></a>                   end_on_1b, end_on_2b, end_on_3b, end_Outs, end_bat_score,</span>
-<span id="annotated-cell-7-8"><a href="#annotated-cell-7-8" aria-hidden="true" tabindex="-1"></a>                   des){</span>
-<span id="annotated-cell-7-9"><a href="#annotated-cell-7-9" aria-hidden="true" tabindex="-1"></a>  mvt <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="annotated-cell-7-10"><a href="#annotated-cell-7-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.na</span>(on_1b)){</span>
-<span id="annotated-cell-7-11"><a href="#annotated-cell-7-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># there was someone on 1st base at the start of the at-bat</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-12" class="code-annotation-target"><a href="#annotated-cell-7-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.na</span>(end_on_1b) <span class="sc">&amp;</span> on_1b <span class="sc">==</span> end_on_1b) mvt <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="2">2</button><span id="annotated-cell-7-13" class="code-annotation-target"><a href="#annotated-cell-7-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.na</span>(end_on_2b) <span class="sc">&amp;</span> on_1b <span class="sc">==</span> end_on_2b) mvt <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="3">3</button><span id="annotated-cell-7-14" class="code-annotation-target"><a href="#annotated-cell-7-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.na</span>(end_on_3b) <span class="sc">&amp;</span> on_1b <span class="sc">==</span> end_on_3b) mvt <span class="ot">&lt;-</span> <span class="dv">2</span></span>
-<span id="annotated-cell-7-15"><a href="#annotated-cell-7-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-7-16"><a href="#annotated-cell-7-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">is.na</span>(mvt)){</span>
-<span id="annotated-cell-7-17"><a href="#annotated-cell-7-17" aria-hidden="true" tabindex="-1"></a>      <span class="co"># either there are no baserunners at end of inning or</span></span>
-<span id="annotated-cell-7-18"><a href="#annotated-cell-7-18" aria-hidden="true" tabindex="-1"></a>      <span class="co"># there are baserunners but none of them started on first</span></span>
-<span id="annotated-cell-7-19"><a href="#annotated-cell-7-19" aria-hidden="true" tabindex="-1"></a>      <span class="co"># we need to parse the play</span></span>
-<span id="annotated-cell-7-20"><a href="#annotated-cell-7-20" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Start by grabbing the player name</span></span>
-<span id="annotated-cell-7-21"><a href="#annotated-cell-7-21" aria-hidden="true" tabindex="-1"></a>      player_name <span class="ot">&lt;-</span> player2024_lookup<span class="sc">$</span>Name[<span class="fu">which</span>(player2024_lookup<span class="sc">$</span>key_mlbam <span class="sc">==</span> on_1b)]</span>
-<span id="annotated-cell-7-22"><a href="#annotated-cell-7-22" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Start by splitting it a string</span></span>
-<span id="annotated-cell-7-23"><a href="#annotated-cell-7-23" aria-hidden="true" tabindex="-1"></a>      play_split <span class="ot">&lt;-</span> </span>
-<span id="annotated-cell-7-24"><a href="#annotated-cell-7-24" aria-hidden="true" tabindex="-1"></a>        stringr<span class="sc">::</span><span class="fu">str_split_1</span>(</span>
-<span id="annotated-cell-7-25"><a href="#annotated-cell-7-25" aria-hidden="true" tabindex="-1"></a>          <span class="at">string =</span> stringi<span class="sc">::</span><span class="fu">stri_trans_general</span>(des, <span class="st">"Latin-ASCII"</span>),</span>
-<span id="annotated-cell-7-26"><a href="#annotated-cell-7-26" aria-hidden="true" tabindex="-1"></a>          <span class="at">pattern =</span> <span class="st">"(?&lt;=[[:punct:]])</span><span class="sc">\\</span><span class="st">s(?=[A-Z])"</span>)</span>
-<span id="annotated-cell-7-27"><a href="#annotated-cell-7-27" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="annotated-cell-7-28"><a href="#annotated-cell-7-28" aria-hidden="true" tabindex="-1"></a>      check <span class="ot">&lt;-</span> <span class="fu">sapply</span>(play_split, <span class="at">FUN =</span> grepl, <span class="at">pattern =</span> player_name)</span>
-<span id="annotated-cell-7-29"><a href="#annotated-cell-7-29" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">any</span>(check)){</span>
-<span id="annotated-cell-7-30"><a href="#annotated-cell-7-30" aria-hidden="true" tabindex="-1"></a>        <span class="co"># found something with player name in it</span></span>
-<span id="annotated-cell-7-31"><a href="#annotated-cell-7-31" aria-hidden="true" tabindex="-1"></a>        play <span class="ot">&lt;-</span> play_split[check]</span>
-<span id="annotated-cell-7-32"><a href="#annotated-cell-7-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span>( <span class="fu">any</span>(<span class="fu">grepl</span>(<span class="at">pattern =</span> <span class="st">"out"</span>, <span class="at">x =</span> play) <span class="sc">|</span> <span class="fu">grepl</span>(<span class="at">pattern =</span> <span class="st">"caught stealing"</span>, <span class="at">x =</span> play))) mvt <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># player got out</span></span>
-<span id="annotated-cell-7-33"><a href="#annotated-cell-7-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span> <span class="cf">if</span>(<span class="fu">any</span>(<span class="fu">grepl</span>(<span class="at">pattern =</span> <span class="st">"score"</span>, <span class="at">x =</span> play))) mvt <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="co"># player scored from 1st</span></span>
-<span id="annotated-cell-7-34"><a href="#annotated-cell-7-34" aria-hidden="true" tabindex="-1"></a>      } <span class="cf">else</span>{</span>
-<span id="annotated-cell-7-35"><a href="#annotated-cell-7-35" aria-hidden="true" tabindex="-1"></a>        <span class="co"># player name is not present in play description; and they're not on base</span></span>
-<span id="annotated-cell-7-36"><a href="#annotated-cell-7-36" aria-hidden="true" tabindex="-1"></a>        <span class="co"># if they got caught stealing in the middle of the at-bat this may not be recorded</span></span>
-<span id="annotated-cell-7-37"><a href="#annotated-cell-7-37" aria-hidden="true" tabindex="-1"></a>        <span class="co"># check if Outs &lt; end_Outs</span></span>
-<span id="annotated-cell-7-38"><a href="#annotated-cell-7-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span>(end_Outs <span class="sc">==</span> <span class="dv">3</span> <span class="sc">|</span> outs <span class="sc">&lt;</span> end_Outs <span class="sc">&amp;</span> bat_score <span class="sc">==</span> end_bat_score) mvt <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="annotated-cell-7-39"><a href="#annotated-cell-7-39" aria-hidden="true" tabindex="-1"></a>      } </span>
-<span id="annotated-cell-7-40"><a href="#annotated-cell-7-40" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="annotated-cell-7-41"><a href="#annotated-cell-7-41" aria-hidden="true" tabindex="-1"></a>  } </span>
-<span id="annotated-cell-7-42"><a href="#annotated-cell-7-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(mvt)</span>
-<span id="annotated-cell-7-43"><a href="#annotated-cell-7-43" aria-hidden="true" tabindex="-1"></a>}</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-hidden="true" tabindex="-1"></a>mvt_1b <span class="ot">&lt;-</span> <span class="cf">function</span>(on_1b, outs, bat_score,</span>
+<span id="annotated-cell-7-2"><a href="#annotated-cell-7-2" aria-hidden="true" tabindex="-1"></a>                   end_on_1b, end_on_2b, end_on_3b, end_Outs, end_bat_score,</span>
+<span id="annotated-cell-7-3"><a href="#annotated-cell-7-3" aria-hidden="true" tabindex="-1"></a>                   des){</span>
+<span id="annotated-cell-7-4"><a href="#annotated-cell-7-4" aria-hidden="true" tabindex="-1"></a>  mvt <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="annotated-cell-7-5"><a href="#annotated-cell-7-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.na</span>(on_1b)){</span>
+<span id="annotated-cell-7-6"><a href="#annotated-cell-7-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># there was someone on 1st base at the start of the at-bat</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-7" class="code-annotation-target"><a href="#annotated-cell-7-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.na</span>(end_on_1b) <span class="sc">&amp;</span> on_1b <span class="sc">==</span> end_on_1b) mvt <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="2">2</button><span id="annotated-cell-7-8" class="code-annotation-target"><a href="#annotated-cell-7-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.na</span>(end_on_2b) <span class="sc">&amp;</span> on_1b <span class="sc">==</span> end_on_2b) mvt <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="3">3</button><span id="annotated-cell-7-9" class="code-annotation-target"><a href="#annotated-cell-7-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.na</span>(end_on_3b) <span class="sc">&amp;</span> on_1b <span class="sc">==</span> end_on_3b) mvt <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="annotated-cell-7-10"><a href="#annotated-cell-7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-7-11"><a href="#annotated-cell-7-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">is.na</span>(mvt)){</span>
+<span id="annotated-cell-7-12"><a href="#annotated-cell-7-12" aria-hidden="true" tabindex="-1"></a>      <span class="co"># either there are no baserunners at end of inning or</span></span>
+<span id="annotated-cell-7-13"><a href="#annotated-cell-7-13" aria-hidden="true" tabindex="-1"></a>      <span class="co"># there are baserunners but none of them started on first</span></span>
+<span id="annotated-cell-7-14"><a href="#annotated-cell-7-14" aria-hidden="true" tabindex="-1"></a>      <span class="co"># we need to parse the play</span></span>
+<span id="annotated-cell-7-15"><a href="#annotated-cell-7-15" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Start by grabbing the player name</span></span>
+<span id="annotated-cell-7-16"><a href="#annotated-cell-7-16" aria-hidden="true" tabindex="-1"></a>      player_name <span class="ot">&lt;-</span> player2024_lookup<span class="sc">$</span>Name[<span class="fu">which</span>(player2024_lookup<span class="sc">$</span>key_mlbam <span class="sc">==</span> on_1b)]</span>
+<span id="annotated-cell-7-17"><a href="#annotated-cell-7-17" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Start by splitting it a string</span></span>
+<span id="annotated-cell-7-18"><a href="#annotated-cell-7-18" aria-hidden="true" tabindex="-1"></a>      play_split <span class="ot">&lt;-</span> </span>
+<span id="annotated-cell-7-19"><a href="#annotated-cell-7-19" aria-hidden="true" tabindex="-1"></a>        stringr<span class="sc">::</span><span class="fu">str_split_1</span>(</span>
+<span id="annotated-cell-7-20"><a href="#annotated-cell-7-20" aria-hidden="true" tabindex="-1"></a>          <span class="at">string =</span> stringi<span class="sc">::</span><span class="fu">stri_trans_general</span>(des, <span class="st">"Latin-ASCII"</span>),</span>
+<span id="annotated-cell-7-21"><a href="#annotated-cell-7-21" aria-hidden="true" tabindex="-1"></a>          <span class="at">pattern =</span> <span class="st">"(?&lt;=[[:punct:]])</span><span class="sc">\\</span><span class="st">s(?=[A-Z])"</span>)</span>
+<span id="annotated-cell-7-22"><a href="#annotated-cell-7-22" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="annotated-cell-7-23"><a href="#annotated-cell-7-23" aria-hidden="true" tabindex="-1"></a>      check <span class="ot">&lt;-</span> <span class="fu">sapply</span>(play_split, <span class="at">FUN =</span> grepl, <span class="at">pattern =</span> player_name)</span>
+<span id="annotated-cell-7-24"><a href="#annotated-cell-7-24" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">any</span>(check)){</span>
+<span id="annotated-cell-7-25"><a href="#annotated-cell-7-25" aria-hidden="true" tabindex="-1"></a>        <span class="co"># found something with player name in it</span></span>
+<span id="annotated-cell-7-26"><a href="#annotated-cell-7-26" aria-hidden="true" tabindex="-1"></a>        play <span class="ot">&lt;-</span> play_split[check]</span>
+<span id="annotated-cell-7-27"><a href="#annotated-cell-7-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span>( <span class="fu">any</span>(<span class="fu">grepl</span>(<span class="at">pattern =</span> <span class="st">"out"</span>, <span class="at">x =</span> play) <span class="sc">|</span> <span class="fu">grepl</span>(<span class="at">pattern =</span> <span class="st">"caught stealing"</span>, <span class="at">x =</span> play))) mvt <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># player got out</span></span>
+<span id="annotated-cell-7-28"><a href="#annotated-cell-7-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span> <span class="cf">if</span>(<span class="fu">any</span>(<span class="fu">grepl</span>(<span class="at">pattern =</span> <span class="st">"score"</span>, <span class="at">x =</span> play))) mvt <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="co"># player scored from 1st</span></span>
+<span id="annotated-cell-7-29"><a href="#annotated-cell-7-29" aria-hidden="true" tabindex="-1"></a>      } <span class="cf">else</span>{</span>
+<span id="annotated-cell-7-30"><a href="#annotated-cell-7-30" aria-hidden="true" tabindex="-1"></a>        <span class="co"># player name is not present in play description; and they're not on base</span></span>
+<span id="annotated-cell-7-31"><a href="#annotated-cell-7-31" aria-hidden="true" tabindex="-1"></a>        <span class="co"># if they got caught stealing in the middle of the at-bat this may not be recorded</span></span>
+<span id="annotated-cell-7-32"><a href="#annotated-cell-7-32" aria-hidden="true" tabindex="-1"></a>        <span class="co"># check if Outs &lt; end_Outs</span></span>
+<span id="annotated-cell-7-33"><a href="#annotated-cell-7-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span>(end_Outs <span class="sc">==</span> <span class="dv">3</span> <span class="sc">|</span> outs <span class="sc">&lt;</span> end_Outs <span class="sc">&amp;</span> bat_score <span class="sc">==</span> end_bat_score) mvt <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="annotated-cell-7-34"><a href="#annotated-cell-7-34" aria-hidden="true" tabindex="-1"></a>      } </span>
+<span id="annotated-cell-7-35"><a href="#annotated-cell-7-35" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="annotated-cell-7-36"><a href="#annotated-cell-7-36" aria-hidden="true" tabindex="-1"></a>  } </span>
+<span id="annotated-cell-7-37"><a href="#annotated-cell-7-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(mvt)</span>
+<span id="annotated-cell-7-38"><a href="#annotated-cell-7-38" aria-hidden="true" tabindex="-1"></a>}</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-7" data-code-lines="12" data-code-annotation="1">Runner remained on first, so they advanced 0 bases</span>
+<span data-code-cell="annotated-cell-7" data-code-lines="7" data-code-annotation="1">Runner remained on first, so they advanced 0 bases</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-7" data-code-lines="13" data-code-annotation="2">Runner advanced 1 base (first to second)</span>
+<span data-code-cell="annotated-cell-7" data-code-lines="8" data-code-annotation="2">Runner advanced 1 base (first to second)</span>
 </dd>
 <dt data-target-cell="annotated-cell-7" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-cell="annotated-cell-7" data-code-lines="14" data-code-annotation="3">Runner advanced 2 bases (first to third)</span>
+<span data-code-cell="annotated-cell-7" data-code-lines="9" data-code-annotation="3">Runner advanced 2 bases (first to third)</span>
 </dd>
 </dl>
 </div>
@@ -730,7 +717,7 @@ F-statistic: 1.379e+04 on 44 and 182405 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Show code for computing the number of bases advanced by the batter and the runners on 2nd and 3rd base.</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>mvt_2b <span class="ot">&lt;-</span> <span class="cf">function</span>(on_2b, outs, bat_score,</span>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>mvt_2b <span class="ot">&lt;-</span> <span class="cf">function</span>(on_2b, outs, bat_score,</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                   end_on_2b, end_on_3b, end_Outs, end_bat_score,</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                   des){</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  mvt <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
@@ -832,7 +819,7 @@ F-statistic: 1.379e+04 on 44 and 182405 DF,  p-value: &lt; 2.2e-16</code></pre>
 <span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a>    }</span>
 <span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a>  }</span>
 <span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(mvt)</span>
-<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>We can now apply these functions to every row of our data frame.</p>
@@ -842,7 +829,7 @@ F-statistic: 1.379e+04 on 44 and 182405 DF,  p-value: &lt; 2.2e-16</code></pre>
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Warning
+Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -850,7 +837,7 @@ F-statistic: 1.379e+04 on 44 and 182405 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>baserunning <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>baserunning <span class="ot">&lt;-</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  atbat2024 <span class="sc">|&gt;</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rowwise</span>() <span class="sc">|&gt;</span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
@@ -858,14 +845,14 @@ F-statistic: 1.379e+04 on 44 and 182405 DF,  p-value: &lt; 2.2e-16</code></pre>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">mvt_1b =</span> <span class="fu">mvt_1b</span>(on_1b, outs, bat_score, end_on_1b, end_on_2b, end_on_3b,end_Outs, end_bat_score, end_des),</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">mvt_2b =</span> <span class="fu">mvt_2b</span>(on_2b, outs, bat_score, end_on_2b, end_on_3b, end_Outs, end_bat_score, end_des),</span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">mvt_3b =</span> <span class="fu">mvt_3b</span>(on_3b, outs, bat_score, end_on_3b, end_Outs, end_bat_score, end_des)) <span class="sc">|&gt;</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>() </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="sec-baserunning-prob" class="level3">
 <h3 class="anchored" data-anchor-id="sec-baserunning-prob">Cumulative Baserunning Probabilities</h3>
 <p>Now that we have computed the <span class="math inline">\(k_{ij}\)</span>’s — that is, the number of bases each base runner advanced in each at-bat — we are ready to compute the cumulative base running probabilities <span class="math inline">\(\mathbb{P}(K \leq k  \vert \textrm{e}).\)</span> In the following code, we first group at-bats by the ending event and then compute the proportion of times that the baserunner advances at most <span class="math inline">\(k\)</span> bases. We also set the cumulative probability to zero for situations when there isn’t a runner on a particular base.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>br_batter_probs <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>br_batter_probs <span class="ot">&lt;-</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  baserunning <span class="sc">|&gt;</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(end_events) <span class="sc">|&gt;</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(</span>
@@ -928,12 +915,12 @@ F-statistic: 1.379e+04 on 44 and 182405 DF,  p-value: &lt; 2.2e-16</code></pre>
 <span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>                      <span class="at">names_prefix =</span> <span class="st">"kappa_"</span>,</span>
 <span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>                      <span class="at">values_to =</span> <span class="st">"kappa_3b"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">mvt_3b =</span> <span class="fu">ifelse</span>(mvt_3b <span class="sc">==</span> <span class="st">"NA"</span>, <span class="cn">NA</span>, mvt_3b),</span>
-<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a>                <span class="at">mvt_3b =</span> <span class="fu">as.numeric</span>(mvt_3b))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a>                <span class="at">mvt_3b =</span> <span class="fu">as.numeric</span>(mvt_3b))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The table <code>br_1b_probs</code> contains the cumulative base running probabilities for runners who start on first base broken down by ending event. We find that in about 64.7% of singles, the runner on first advances one base or fewer while in 95.7% of singles, the runner on first advances two bases or fewer.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>br_1b_probs <span class="sc">|&gt;</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(end_events <span class="sc">==</span> <span class="st">"single"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>br_1b_probs <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(end_events <span class="sc">==</span> <span class="st">"single"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 3
   end_events mvt_1b kappa_1b
@@ -950,7 +937,7 @@ F-statistic: 1.379e+04 on 44 and 182405 DF,  p-value: &lt; 2.2e-16</code></pre>
 <h3 class="anchored" data-anchor-id="sec-baserunner-raa">Baserunning Runs Above Average</h3>
 <p>Now that we have the cumulative base running probabilities, we’re (finally) ready to compute <span class="math inline">\(\kappa_{ij}.\)</span> To do so, we will use <code>inner_join()</code>’s to add columns to our <code>baserunning</code> data table with columns for the batter and runners on first, second, and third. Note, whenever there is no baserunner on first base (i.e., <code>on_1b = NA</code>), we will set the corresponding <span class="math inline">\(\kappa\)</span> to 0. Because we want to divide all of <span class="math inline">\(\eta_{i}\)</span> amongst the base runners, we need to normalize the <span class="math inline">\(\kappa_{ij}\)</span> values to sum to 1 within each at-bat. The columns <code>norm_batter</code>, <code>norm_1b</code>, <code>norm_2b</code>, and <code>norm_3b</code> contain these normalized weights.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>baserunning <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>baserunning <span class="ot">&lt;-</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  baserunning <span class="sc">|&gt;</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">inner_join</span>(<span class="at">y =</span> br_batter_probs, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"end_events"</span>, <span class="st">"mvt_batter"</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">inner_join</span>(<span class="at">y =</span> br_1b_probs, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"end_events"</span>, <span class="st">"mvt_1b"</span>)) <span class="sc">|&gt;</span></span>
@@ -961,19 +948,18 @@ F-statistic: 1.379e+04 on 44 and 182405 DF,  p-value: &lt; 2.2e-16</code></pre>
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">norm_batter =</span> kappa_batter<span class="sc">/</span>total_kappa,</span>
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">norm_1b =</span> kappa_1b<span class="sc">/</span>total_kappa,</span>
 <span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">norm_2b =</span> kappa_2b<span class="sc">/</span>total_kappa,</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">norm_3b =</span> kappa_3b<span class="sc">/</span>total_kappa)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">norm_3b =</span> kappa_3b<span class="sc">/</span>total_kappa)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>To illustrate our calculations so far, let’s look at Ohtani’s at-bats from that game against the Padres. First, we see that Ohtani reached first base in all except his fourth at-bat. So, for these four at-bats, his <code>mvt_batter</code> value is 1.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"mlb_player2024_lookup.RData"</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>ohtani_id <span class="ot">&lt;-</span> </span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  player2024_lookup <span class="sc">|&gt;</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(FullName <span class="sc">==</span> <span class="st">"Shohei Ohtani"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(key_mlbam)</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>baserunning <span class="sc">|&gt;</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(game_id <span class="sc">==</span> <span class="dv">745444</span> <span class="sc">&amp;</span> batter_id <span class="sc">==</span> ohtani_id) <span class="sc">|&gt;</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(at_bat_number, mvt_batter, end_des)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>ohtani_id <span class="ot">&lt;-</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  player2024_lookup <span class="sc">|&gt;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(FullName <span class="sc">==</span> <span class="st">"Shohei Ohtani"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(key_mlbam)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>baserunning <span class="sc">|&gt;</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(game_id <span class="sc">==</span> <span class="dv">745444</span> <span class="sc">&amp;</span> batter_id <span class="sc">==</span> ohtani_id) <span class="sc">|&gt;</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(at_bat_number, mvt_batter, end_des)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 3
   at_bat_number mvt_batter end_des                                              
@@ -987,9 +973,9 @@ F-statistic: 1.379e+04 on 44 and 182405 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 <p>In his second at-bat, Ohtani singled with no runners on. So, he should get credit for creating all the base running run value above average on that at-bat. In contrast, we argued earlier that when he drove in a run in his fifth at-bat, the runner who scored from second should get a bit more credit than Ohtani and the runner on first, who only advanced one base. Looking at the weights <code>norm_1b</code>, <code>norm_2b</code>, and <code>norm_batter</code> for this at-bat, we see that indeed, we’re assigning a bit more weight to the runner on second than the runner on first.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>baserunning <span class="sc">|&gt;</span></span>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>baserunning <span class="sc">|&gt;</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(game_id <span class="sc">==</span> <span class="dv">745444</span> <span class="sc">&amp;</span> batter_id <span class="sc">==</span> ohtani_id) <span class="sc">|&gt;</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(at_bat_number, mvt_1b, mvt_2b, mvt_3b, mvt_batter, norm_1b, norm_2b, norm_3b, norm_batter)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(at_bat_number, mvt_1b, mvt_2b, mvt_3b, mvt_batter, norm_1b, norm_2b, norm_3b, norm_batter)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 9
   at_bat_number mvt_1b mvt_2b mvt_3b mvt_batter norm_1b norm_2b norm_3b
@@ -1004,19 +990,19 @@ F-statistic: 1.379e+04 on 44 and 182405 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 <p>Recall that <span class="math inline">\(\eta_{i}\)</span> represents the run value above average generated in at-bat <span class="math inline">\(i\)</span> due to base running. Whenever there is a runner on first at the start of the at-bat, the quantity <span class="math inline">\(\kappa_{i,\textrm{1b}}/\sum_{j}{\kappa_{ij}} \times \eta_{i}\)</span> reflects the run value above average generated in the at-bat due to the base running of the runner initially on first. For each player, we can aggregate these values across all at-bats in which they are on first.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>raa_1b <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>raa_1b <span class="ot">&lt;-</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  baserunning <span class="sc">|&gt;</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(on_1b)) <span class="sc">|&gt;</span></span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">RAA_1b =</span> norm_1b <span class="sc">*</span> eta) <span class="sc">|&gt;</span></span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(on_1b) <span class="sc">|&gt;</span></span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">RAA_1b =</span> <span class="fu">sum</span>(RAA_1b)) <span class="sc">|&gt;</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">key_mlbam =</span> on_1b)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">key_mlbam =</span> on_1b)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can similarly compute the run value above average created by the runners on second base and third base as well as by the batter.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Compute the baserunning runs above average created by batter and the runners on second and third bases</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>raa_2b <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>raa_2b <span class="ot">&lt;-</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  baserunning <span class="sc">|&gt;</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(on_2b)) <span class="sc">|&gt;</span></span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">RAA_2b =</span> norm_2b <span class="sc">*</span> eta) <span class="sc">|&gt;</span></span>
@@ -1037,12 +1023,12 @@ F-statistic: 1.379e+04 on 44 and 182405 DF,  p-value: &lt; 2.2e-16</code></pre>
 <span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">RAA_batter =</span> norm_batter <span class="sc">*</span> eta) <span class="sc">|&gt;</span></span>
 <span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(batter_id) <span class="sc">|&gt;</span></span>
 <span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">RAA_batter =</span> <span class="fu">sum</span>(RAA_batter)) <span class="sc">|&gt;</span></span>
-<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">key_mlbam =</span> batter_id)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">key_mlbam =</span> batter_id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Finally, we can aggregate the total run value above average that each player creates from their base running, which we can <span class="math inline">\(\textrm{RAA}^{\textrm{br}}.\)</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>raa_br <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>raa_br <span class="ot">&lt;-</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  raa_batter <span class="sc">|&gt;</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">full_join</span>(<span class="at">y =</span> raa_1b, <span class="at">by =</span> <span class="st">"key_mlbam"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">full_join</span>(<span class="at">y =</span> raa_2b, <span class="at">by =</span> <span class="st">"key_mlbam"</span>) <span class="sc">|&gt;</span></span>
@@ -1054,7 +1040,7 @@ F-statistic: 1.379e+04 on 44 and 182405 DF,  p-value: &lt; 2.2e-16</code></pre>
 <span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>raa_br <span class="sc">|&gt;</span></span>
 <span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(RAA_br)) <span class="sc">|&gt;</span></span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 7
   Name                key_mlbam RAA_br RAA_batter RAA_1b RAA_2b RAA_3b
@@ -1073,7 +1059,7 @@ F-statistic: 1.379e+04 on 44 and 182405 DF,  p-value: &lt; 2.2e-16</code></pre>
 <h2 class="anchored" data-anchor-id="sec-batting">Crediting Batters</h2>
 <p>We will credit <span class="math inline">\(\hat{\mu}_{i}\)</span> to each batter. The following code block totals the <span class="math inline">\(\hat{\mu}_{i}\)</span> for each batter.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>batting <span class="ot">&lt;-</span> </span>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>batting <span class="ot">&lt;-</span> </span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  atbat2024 <span class="sc">|&gt;</span></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(batter_id, mu) <span class="sc">|&gt;</span></span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">key_mlbam =</span> batter_id)</span>
@@ -1083,13 +1069,13 @@ F-statistic: 1.379e+04 on 44 and 182405 DF,  p-value: &lt; 2.2e-16</code></pre>
 <span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(key_mlbam) <span class="sc">|&gt;</span></span>
 <span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">RAA_b =</span> <span class="fu">sum</span>(mu)) <span class="sc">|&gt;</span></span>
 <span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(<span class="at">y =</span> player2024_lookup, <span class="at">by =</span> <span class="st">"key_mlbam"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Name, key_mlbam, RAA_b)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Name, key_mlbam, RAA_b)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We find a lot of very good batters among the players with highest <span class="math inline">\(\textrm{RAA}^{\textrm{b}}\)</span>’s</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>raa_b <span class="sc">|&gt;</span></span>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>raa_b <span class="sc">|&gt;</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(RAA_b)) <span class="sc">|&gt;</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n=</span><span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n=</span><span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 3
   Name           key_mlbam RAA_b
@@ -1106,7 +1092,7 @@ F-statistic: 1.379e+04 on 44 and 182405 DF,  p-value: &lt; 2.2e-16</code></pre>
 <h2 class="anchored" data-anchor-id="sec-looking-ahead">Looking Ahead</h2>
 <p>We’ve distributed the run value <span class="math inline">\(\delta_{i}\)</span> created in each at-bat between the batter and base runners and computed season total runs values above average based on batting <span class="math inline">\(\textrm{RAA}^{\textrm{b}}\)</span> and base running <span class="math inline">\(\textrm{RAA}^{\textrm{br}}.\)</span> <a href="../lectures/lecture08.html">Next lecture</a>, we will distribute <span class="math inline">\(-\delta_{i}\)</span> between the pitcher and fielders involved in each at-bat. So that we don’t have to repeat our earlier calculations, we will save <code>raa_br</code> and <code>raa_b</code></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(raa_br, raa_b, <span class="at">file =</span> <span class="st">"mlb_raa_offensive2024.RData"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(raa_br, raa_b, <span class="at">file =</span> <span class="st">"mlb_raa_offensive2024.RData"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
@@ -1114,7 +1100,7 @@ F-statistic: 1.379e+04 on 44 and 182405 DF,  p-value: &lt; 2.2e-16</code></pre>
 </section>
 
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-Baumer2015_openWAR" class="csl-entry" role="listitem">
 Baumer, Benjamin S., Shane T. Jensen, and Gregory J. Matthews. 2015. <span>“<span class="nocase">openWAR</span>: An Open Source System for Evaluating Overall Player Performance in <span>Major League Baseball</span>.”</span> <em>Journal of Quantitative Analysis in Sports</em> 11 (2).
 </div>
@@ -1177,14 +1163,13 @@ Baumer, Benjamin S., Shane T. Jensen, and Gregory J. Matthews. 2015. <span>“<s
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-      const outerScaffold = trigger.parentElement.cloneNode(true);
-      const codeEl = outerScaffold.querySelector('code');
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
         }
-      }
-      return codeEl.innerText;
+        return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

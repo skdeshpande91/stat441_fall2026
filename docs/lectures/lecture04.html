@@ -2,16 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.7.32">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Lecture 4: Adjusted Plus/Minus – STAT441</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -62,6 +59,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -93,16 +91,10 @@ div.csl-indent {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../site_libs/quarto-axe/axe-check.js" type="module"></script>
-<script id="quarto-axe-checker-options" type="text/plain">eyJvdXRwdXQiOiJkb2N1bWVudCJ9</script>
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-da920e58b6ff959c98c9ccc31dcc4995.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -134,7 +126,7 @@ div.csl-indent {
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -147,7 +139,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+      if (mathElements[i].tagName == "SPAN") {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -456,7 +448,7 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Definition: Stint
+Definition: Stint
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -471,7 +463,7 @@ window.Quarto = {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Scraping NBA data with <strong>hoopR</strong>
+Scraping NBA data with <strong>hoopR</strong>
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -480,8 +472,8 @@ window.Quarto = {
 </div>
 <p>The file <a href="https://github.com/skdeshpande91/stat441_fall2026/blob/main/data/lecture04/nba_stints_2024_2025.csv">nba_stints_2024_2025.csv</a> lists all stints from the 2024-25 NBA season and the players who were on the court during each stint.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>target <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/skdeshpande91/stat441_fall2026/refs/heads/main/data/lecture04/nba_stints_2024_2025.csv"</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>stints <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> target)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>target <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/skdeshpande91/stat441_fall2026/refs/heads/main/data/lecture04/nba_stints_2024_2025.csv"</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>stints <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="at">file =</span> target)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The first 14 columns of <code>stints</code> record:</p>
 <ul>
@@ -510,7 +502,7 @@ window.Quarto = {
 \]</span></p>
 <p>Although the table <code>stints</code> contains all the information we would need to compute SGA’s +/-, it is not particularly easy to do. To see this, notice that when SGA is on the court and playing at home, his name could appear in any of the columns <code>H1</code>, <code>H2</code>, <code>H3</code>, <code>H4</code>, or <code>H5</code>. To compute <span class="math inline">\(x_{i,\textrm{SGA}}\)</span>, we would need to write some fairly tedious conditional statements. To make it easier to compute individual players’ +/- values, we will form a <em>matrix</em> containing signed on-court indicators. In this matrix, rows will corresponding to stints and columns will correspond to players.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a>n_stints <span class="ot">&lt;-</span> <span class="fu">nrow</span>(stints)</span>
+<div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a>n_stints <span class="ot">&lt;-</span> <span class="fu">nrow</span>(stints)</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2">2</button><span id="annotated-cell-2-2" class="code-annotation-target"><a href="#annotated-cell-2-2" aria-hidden="true" tabindex="-1"></a>unik_players <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-2-3"><a href="#annotated-cell-2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sort</span>(</span>
 <span id="annotated-cell-2-4"><a href="#annotated-cell-2-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unique</span>(</span>
@@ -519,7 +511,7 @@ window.Quarto = {
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="4">4</button><span id="annotated-cell-2-7" class="code-annotation-target"><a href="#annotated-cell-2-7" aria-hidden="true" tabindex="-1"></a>n_players <span class="ot">&lt;-</span> <span class="fu">length</span>(unik_players)</span>
 <span id="annotated-cell-2-8"><a href="#annotated-cell-2-8" aria-hidden="true" tabindex="-1"></a></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="5">5</button><span id="annotated-cell-2-9" class="code-annotation-target"><a href="#annotated-cell-2-9" aria-hidden="true" tabindex="-1"></a>X_full <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> n_stints, <span class="at">ncol =</span> n_players,</span>
-<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10" aria-hidden="true" tabindex="-1"></a>                 <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">c</span>(), unik_players))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-2-10"><a href="#annotated-cell-2-10" aria-hidden="true" tabindex="-1"></a>                 <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">c</span>(), unik_players))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
@@ -547,7 +539,7 @@ window.Quarto = {
 </div>
 <p>Now that we’ve created the matrix <code>X_full</code>, we will loop over every row of <code>stints</code> and extract the home (resp. away) players and put a +1 (resp. -1) in the corresponding entries of <code>X_full</code></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode r code-annotation-code code-with-copy"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_stints){</span>
+<div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode r code-annotation-code code-with-copy"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_stints){</span>
 <span id="annotated-cell-3-2"><a href="#annotated-cell-3-2" aria-hidden="true" tabindex="-1"></a>  home_players <span class="ot">&lt;-</span> </span>
 <span id="annotated-cell-3-3"><a href="#annotated-cell-3-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(stints<span class="sc">$</span>H1[i], stints<span class="sc">$</span>H2[i], stints<span class="sc">$</span>H3[i], stints<span class="sc">$</span>H4[i], stints<span class="sc">$</span>H5[i])</span>
 <span id="annotated-cell-3-4"><a href="#annotated-cell-3-4" aria-hidden="true" tabindex="-1"></a>  away_players <span class="ot">&lt;-</span></span>
@@ -555,22 +547,22 @@ window.Quarto = {
 <span id="annotated-cell-3-6"><a href="#annotated-cell-3-6" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="annotated-cell-3-7"><a href="#annotated-cell-3-7" aria-hidden="true" tabindex="-1"></a>  X_full[i, home_players] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
 <span id="annotated-cell-3-8"><a href="#annotated-cell-3-8" aria-hidden="true" tabindex="-1"></a>  X_full[i, away_players] <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">1</span></span>
-<span id="annotated-cell-3-9"><a href="#annotated-cell-3-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-3-9"><a href="#annotated-cell-3-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>With the matrix <code>X_full</code> in hand, we can now compute SGA’s +/-</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>shai_x <span class="ot">&lt;-</span> X_full[,<span class="st">"Shai Gilgeous-Alexander"</span>]</span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>shai_x <span class="ot">&lt;-</span> X_full[,<span class="st">"Shai Gilgeous-Alexander"</span>]</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>delta <span class="ot">&lt;-</span> stints <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">pull</span>(pts_diff)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(shai_x <span class="sc">*</span> delta)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(shai_x <span class="sc">*</span> delta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 888</code></pre>
 </div>
 </div>
 <p>We now repeat this calculation for Nikola Jokic, who finished second in the MVP voting in the 2024-25 regular season. His overall +/- is <em>substantially</em> smaller than SGA’s.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>jokic_x <span class="ot">&lt;-</span> X_full[,<span class="st">"Nikola Jokic"</span>]</span>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>jokic_x <span class="ot">&lt;-</span> X_full[,<span class="st">"Nikola Jokic"</span>]</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>delta <span class="ot">&lt;-</span> stints <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">pull</span>(pts_diff)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(jokic_x <span class="sc">*</span> delta)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(jokic_x <span class="sc">*</span> delta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 452</code></pre>
 </div>
@@ -590,14 +582,14 @@ window.Quarto = {
 <p>In R, we can compute the transpose of a matrix using the function <a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/t.html"><code>t()</code></a>. But, it turns out that when we want to compute a product like <span class="math inline">\(\boldsymbol{\mathbf{X}}^{\top}\boldsymbol{\Delta},\)</span> it is much more efficient to use the function <a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/crossprod.html"><code>crossprod()</code></a>.</p>
 <p>The following code creates a data table <code>pm</code> with one column containing player id’s another column containing plus/minus values. It then uses an <code>inner_join</code> to append player names. The code also computes the number of possessions played by each player. To this end, let <span class="math inline">\(\textrm{pos}_{i}\)</span> be the number of possessions played during stint <span class="math inline">\(i\)</span>. Notice that <span class="math inline">\(\lvert x_{ij} \rvert\)</span> is equal to 1 whenever player <span class="math inline">\(j\)</span> is on the court and is equal to 0 otherwise. So, the number of possessions played by player <span class="math inline">\(j\)</span> is simply <span class="math inline">\(\sum_{i = 1}^{n}{\lvert x_{ij} \rvert \textrm{pos}_{i}}.\)</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-6"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1" aria-hidden="true" tabindex="-1"></a>pm <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-6"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1" aria-hidden="true" tabindex="-1"></a>pm <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-6-2"><a href="#annotated-cell-6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>( </span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1">1</button><span id="annotated-cell-6-3" class="code-annotation-target"><a href="#annotated-cell-6-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">Name =</span> <span class="fu">colnames</span>(X_full),</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="2">2</button><span id="annotated-cell-6-4" class="code-annotation-target"><a href="#annotated-cell-6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">pm =</span> <span class="fu">crossprod</span>(<span class="at">x =</span> X_full, <span class="at">y =</span> stints <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">pull</span>(pts_diff)),</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="3">3</button><span id="annotated-cell-6-5" class="code-annotation-target"><a href="#annotated-cell-6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_pos =</span> <span class="fu">crossprod</span>(<span class="fu">abs</span>(X_full), <span class="at">y =</span> stints <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">pull</span>(n_pos)),</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="4">4</button><span id="annotated-cell-6-6" class="code-annotation-target"><a href="#annotated-cell-6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">minutes =</span> <span class="fu">crossprod</span>(<span class="fu">abs</span>(X_full), <span class="at">y =</span> stints <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">pull</span>(minutes))) <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="5">5</button><span id="annotated-cell-6-7" class="code-annotation-target"><a href="#annotated-cell-6-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(pm))</span>
-<span id="annotated-cell-6-8"><a href="#annotated-cell-6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(pm) <span class="ot">&lt;-</span> <span class="cn">NULL</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-6-8"><a href="#annotated-cell-6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(pm) <span class="ot">&lt;-</span> <span class="cn">NULL</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
@@ -625,7 +617,7 @@ window.Quarto = {
 </div>
 <p>Looking at the +/- values for a handful of selected players, we notice that SGA had a much higher +/- than many other prominent players in the league.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>selected_players <span class="ot">&lt;-</span> </span>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>selected_players <span class="ot">&lt;-</span> </span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">"Shai Gilgeous-Alexander"</span>, </span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Jayson Tatum"</span>,</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Nikola Jokic"</span>,</span>
@@ -633,7 +625,7 @@ window.Quarto = {
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Luka Doncic"</span>,</span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Anthony Davis"</span>, </span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LeBron James"</span>)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>pm <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(Name <span class="sc">%in%</span> selected_players) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">select</span>(Name, pm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>pm <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(Name <span class="sc">%in%</span> selected_players) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">select</span>(Name, pm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                     Name  pm
 1 Shai Gilgeous-Alexander 888
@@ -647,7 +639,7 @@ window.Quarto = {
 </div>
 <p>The following code helps visualize just how much larger SGA’s +/- was compared to the rest of these selected players and the rest of the league.</p>
 <div class="cell" data-layout-align="center" data-fit-asp="0.5625">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="1">1</button><span id="annotated-cell-8-1" class="code-annotation-target"><a href="#annotated-cell-8-1" aria-hidden="true" tabindex="-1"></a>oi_colors <span class="ot">&lt;-</span> <span class="fu">palette.colors</span>(<span class="at">palette =</span> <span class="st">"Okabe-Ito"</span>)</span>
+<div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="1">1</button><span id="annotated-cell-8-1" class="code-annotation-target"><a href="#annotated-cell-8-1" aria-hidden="true" tabindex="-1"></a>oi_colors <span class="ot">&lt;-</span> <span class="fu">palette.colors</span>(<span class="at">palette =</span> <span class="st">"Okabe-Ito"</span>)</span>
 <span id="annotated-cell-8-2"><a href="#annotated-cell-8-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X_full)</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="2">2</button><span id="annotated-cell-8-3" class="code-annotation-target"><a href="#annotated-cell-8-3" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ncol</span>(X_full)</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="3">3</button><span id="annotated-cell-8-4" class="code-annotation-target"><a href="#annotated-cell-8-4" aria-hidden="true" tabindex="-1"></a>y_lim <span class="ot">&lt;-</span> <span class="fu">max</span>(<span class="fu">abs</span>(pm<span class="sc">$</span>pm)) <span class="sc">*</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.01</span>, <span class="fl">1.01</span>)</span>
@@ -667,7 +659,7 @@ window.Quarto = {
 <span id="annotated-cell-8-18"><a href="#annotated-cell-8-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">points</span>(<span class="at">x =</span> p<span class="sc">+</span><span class="dv">1</span><span class="sc">-</span>i, <span class="at">y =</span> pm<span class="sc">$</span>pm[i], <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.25</span>, <span class="at">col =</span> oi_colors[<span class="dv">9</span>])</span>
 <span id="annotated-cell-8-19"><a href="#annotated-cell-8-19" aria-hidden="true" tabindex="-1"></a>  }</span>
 <span id="annotated-cell-8-20"><a href="#annotated-cell-8-20" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="annotated-cell-8-21"><a href="#annotated-cell-8-21" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">col =</span> oi_colors[<span class="dv">8</span>])</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-8-21"><a href="#annotated-cell-8-21" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">col =</span> oi_colors[<span class="dv">8</span>])</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-8" data-target-annotation="1">1</dt>
@@ -726,14 +718,14 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="sec-pm-issues">Issues with +/-</h3>
 <p>The gap SGA’s +/- and the +/- values for the rest of the league is striking. Is this gap really attributable to difference in skill alone? Or is the gap an artifact of some systematic factors? When we plot each player’s +/- against the number of possessions played, we find much more variation in the +/- values of players who played more possessions than those who played less.</p>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">1</span>), <span class="at">mgp =</span> <span class="fu">c</span>(<span class="fl">1.8</span>, <span class="fl">0.5</span>, <span class="dv">0</span>))</span>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">1</span>), <span class="at">mgp =</span> <span class="fu">c</span>(<span class="fl">1.8</span>, <span class="fl">0.5</span>, <span class="dv">0</span>))</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pm<span class="sc">$</span>n_pos, pm<span class="sc">$</span>pm, </span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.5</span>, <span class="at">col =</span> oi_colors[<span class="dv">9</span>],</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Possessions played"</span>, <span class="at">ylab =</span> <span class="st">"+/-"</span>,</span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Plus-Minus vs Possessions"</span>)</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">col =</span> oi_colors[<span class="dv">8</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">col =</span> oi_colors[<span class="dv">8</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-pm-poss" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Scatterplot of plus/minus and number of possessions played." data-fig-align="center">
+<div id="fig-pm-poss" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Scatterplot of plus/minus and number of possessions played.">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-pm-poss-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture04_files/figure-html/fig-pm-poss-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;1: Relationship between Plus/Minus and number of possessions played"><img src="lecture04_files/figure-html/fig-pm-poss-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Scatterplot of plus/minus and number of possessions played." width="576"></a>
@@ -747,7 +739,7 @@ Figure&nbsp;1: Relationship between Plus/Minus and number of possessions played
 </div>
 <p>Because +/- is an aggregated statistic — that is, it is formed by adding up contributions over the course of a season — this is not wholly surprising. We see that SGA, in particular, played <strong>many</strong> more possessions than the other players with the ten highest +/- values. Consequently, if player A has a higher +/- than player B, we cannot immediately conclude that A is better or more valuable than B due to potential disparities in opportunities.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pm <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n=</span><span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pm <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n=</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                      Name  pm n_pos minutes
 1  Shai Gilgeous-Alexander 888  8159 2837.31
@@ -827,19 +819,19 @@ Y_{i} = \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha} + \epsilon_{i}.
 <p>In practice, we rarely fit linear models like our re-parametrized APM model with manual matrix calculations. Instead, we rely on R’s built-in <code>lm()</code> function to do compute <span class="math inline">\(\hat{\boldsymbol{\beta}}.\)</span> To this end, it suffices to create a data table where each row corresponds to a stint and there are columns containing the margin for the stint and the signed on-court indicators for all <em>non-baseline</em> players.</p>
 <p>Before proceeding, we will build a single data frame combining the first 14 columns of <code>stints</code> with the matrix <code>X_full</code></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>rapm_data <span class="ot">&lt;-</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">bind_cols</span>(stints[,<span class="dv">1</span><span class="sc">:</span><span class="dv">14</span>], X_full)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>rapm_data <span class="ot">&lt;-</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">bind_cols</span>(stints[,<span class="dv">1</span><span class="sc">:</span><span class="dv">14</span>], X_full)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Then, we will define the set of baseline-level players. For our analysis, we will use a 250 minute threshold, classifying any player who played fewer than 250 minutes as baseline-level.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>nonbaseline <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>nonbaseline <span class="ot">&lt;-</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  pm <span class="sc">|&gt;</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(minutes <span class="sc">&gt;=</span> <span class="dv">250</span>) <span class="sc">|&gt;</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(Name)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(Name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Next, we create a data table containing columns for the signed on-court indicators of all non-baseline players and the point differential per 100 possessions. Then, we fit the linear model and extract the estimated parameters.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-13"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-13-1"><a href="#annotated-cell-13-1" aria-hidden="true" tabindex="-1"></a>apm_df <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-13"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-13-1"><a href="#annotated-cell-13-1" aria-hidden="true" tabindex="-1"></a>apm_df <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-13-2"><a href="#annotated-cell-13-2" aria-hidden="true" tabindex="-1"></a>  rapm_data <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-13-3"><a href="#annotated-cell-13-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(tidyr<span class="sc">::</span><span class="fu">all_of</span>(<span class="fu">c</span>(<span class="st">"margin"</span>, nonbaseline)))</span>
 <span id="annotated-cell-13-4"><a href="#annotated-cell-13-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -847,7 +839,7 @@ Y_{i} = \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha} + \epsilon_{i}.
 <span id="annotated-cell-13-6"><a href="#annotated-cell-13-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-13-7"><a href="#annotated-cell-13-7" aria-hidden="true" tabindex="-1"></a></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="2">2</button><span id="annotated-cell-13-8" class="code-annotation-target"><a href="#annotated-cell-13-8" aria-hidden="true" tabindex="-1"></a>beta0 <span class="ot">&lt;-</span> <span class="fu">coefficients</span>(apm_fit)[<span class="dv">1</span>]</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="3">3</button><span id="annotated-cell-13-9" class="code-annotation-target"><a href="#annotated-cell-13-9" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">coefficients</span>(apm_fit)[<span class="sc">-</span><span class="dv">1</span>]</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-13" data-target-annotation="3">3</button><span id="annotated-cell-13-9" class="code-annotation-target"><a href="#annotated-cell-13-9" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">coefficients</span>(apm_fit)[<span class="sc">-</span><span class="dv">1</span>]</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-13" data-target-annotation="1">1</dt>
@@ -867,7 +859,7 @@ Y_{i} = \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha} + \epsilon_{i}.
 </div>
 <p>After inspecting the first few elements, we see that the elements of <code>beta</code> are named and that there is an additional character back-tick in the element names.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>beta[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>beta[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>`Shai Gilgeous-Alexander`           `Luguentz Dort`              `Isaiah Joe` 
                10.2568750                 1.8500194                 4.0660224 
@@ -877,10 +869,10 @@ Y_{i} = \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha} + \epsilon_{i}.
 </div>
 <p>We will build a data table similar to <code>pm</code> containing the id and estimated adjusted plus/minus value of every non-baseline player. To do this, we need to remove the back-tick from the names of <code>beta</code>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-15"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="1">1</button><span id="annotated-cell-15-1" class="code-annotation-target"><a href="#annotated-cell-15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(beta) <span class="ot">&lt;-</span> stringr<span class="sc">::</span><span class="fu">str_remove_all</span>(<span class="at">string =</span> <span class="fu">names</span>(beta), <span class="at">pattern =</span> <span class="st">"`"</span>)</span>
+<div class="sourceCode cell-code" id="annotated-cell-15"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="1">1</button><span id="annotated-cell-15-1" class="code-annotation-target"><a href="#annotated-cell-15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(beta) <span class="ot">&lt;-</span> stringr<span class="sc">::</span><span class="fu">str_remove_all</span>(<span class="at">string =</span> <span class="fu">names</span>(beta), <span class="at">pattern =</span> <span class="st">"`"</span>)</span>
 <span id="annotated-cell-15-2"><a href="#annotated-cell-15-2" aria-hidden="true" tabindex="-1"></a>apm <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-15-3"><a href="#annotated-cell-15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="at">Name =</span> <span class="fu">names</span>(beta), <span class="at">apm =</span> beta)</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="2">2</button><span id="annotated-cell-15-4" class="code-annotation-target"><a href="#annotated-cell-15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(apm) <span class="ot">&lt;-</span> <span class="cn">NULL</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="2">2</button><span id="annotated-cell-15-4" class="code-annotation-target"><a href="#annotated-cell-15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(apm) <span class="ot">&lt;-</span> <span class="cn">NULL</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-15" data-target-annotation="1">1</dt>
@@ -896,10 +888,10 @@ Y_{i} = \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha} + \epsilon_{i}.
 </div>
 <p>The top-10 players based on adjusted plus/minus looks quite a bit different than the raw plus/minus!</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>apm <span class="sc">|&gt;</span></span>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>apm <span class="sc">|&gt;</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(apm)) <span class="sc">|&gt;</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Name, apm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Name, apm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                    Name      apm
 1          Tobias Harris 17.01331
@@ -925,7 +917,7 @@ Y_{i} = \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha} + \epsilon_{i}.
 <li><span class="math inline">\(w_{i} = 1 - (\textrm{StartDiff} - 10)/20\)</span>: if, at the start of stint <span class="math inline">\(i,\)</span> the difference in scores is between 10 and 30 points. This weight smoothly interpolates between 0 (when the difference is 30) and 1 (when the difference is 10).</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-17"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-17-1"><a href="#annotated-cell-17-1" aria-hidden="true" tabindex="-1"></a>wapm_df <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-17"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-17-1"><a href="#annotated-cell-17-1" aria-hidden="true" tabindex="-1"></a>wapm_df <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-17-2"><a href="#annotated-cell-17-2" aria-hidden="true" tabindex="-1"></a>  rapm_data <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-17-3"><a href="#annotated-cell-17-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="1">1</button><span id="annotated-cell-17-4" class="code-annotation-target"><a href="#annotated-cell-17-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">start_diff =</span> <span class="fu">abs</span>(start_home_score <span class="sc">-</span> start_away_score),</span>
@@ -933,7 +925,7 @@ Y_{i} = \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha} + \epsilon_{i}.
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="2">2</button><span id="annotated-cell-17-6" class="code-annotation-target"><a href="#annotated-cell-17-6" aria-hidden="true" tabindex="-1"></a>      start_diff <span class="sc">&lt;</span> <span class="dv">10</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="3">3</button><span id="annotated-cell-17-7" class="code-annotation-target"><a href="#annotated-cell-17-7" aria-hidden="true" tabindex="-1"></a>      start_diff <span class="sc">&gt;</span> <span class="dv">30</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="4">4</button><span id="annotated-cell-17-8" class="code-annotation-target"><a href="#annotated-cell-17-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">.default =</span> <span class="dv">1</span> <span class="sc">-</span> (start_diff<span class="dv">-10</span>)<span class="sc">/</span><span class="dv">20</span>)) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-17-9"><a href="#annotated-cell-17-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(tidyr<span class="sc">::</span><span class="fu">all_of</span>(<span class="fu">c</span>(<span class="st">"margin"</span>, <span class="st">"w"</span>, nonbaseline)))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-17-9"><a href="#annotated-cell-17-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(tidyr<span class="sc">::</span><span class="fu">all_of</span>(<span class="fu">c</span>(<span class="st">"margin"</span>, <span class="st">"w"</span>, nonbaseline)))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-17" data-target-annotation="1">1</dt>
@@ -962,7 +954,7 @@ Y_{i} = \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha} + \epsilon_{i}.
 \]</span> where <span class="math inline">\(\boldsymbol{\mathbf{W}}\)</span> is a <span class="math inline">\(n \times n\)</span> diagonal matrix with the weights <span class="math inline">\(w_{i}\)</span> along the diagonal.</p>
 <p>As with regular APM, in practice, we can fit a weighted APM model using <code>lm()</code>. The main difference is that we must (i) include a vector of weights in the data frame that we pass; (ii) specify the weights using the <code>weights</code> argument; and (iii) exclude the weight variable from the linear predictor.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-18"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-18-1"><a href="#annotated-cell-18-1" aria-hidden="true" tabindex="-1"></a>wapm_fit <span class="ot">&lt;-</span> </span>
+<div class="sourceCode cell-code" id="annotated-cell-18"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-18-1"><a href="#annotated-cell-18-1" aria-hidden="true" tabindex="-1"></a>wapm_fit <span class="ot">&lt;-</span> </span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-18" data-target-annotation="1">1</button><span id="annotated-cell-18-2" class="code-annotation-target"><a href="#annotated-cell-18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm</span>(<span class="at">formula =</span> margin <span class="sc">~</span> . <span class="sc">-</span> w,</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-18" data-target-annotation="2">2</button><span id="annotated-cell-18-3" class="code-annotation-target"><a href="#annotated-cell-18-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">weights =</span> w,</span>
 <span id="annotated-cell-18-4"><a href="#annotated-cell-18-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">data =</span> wapm_df) </span>
@@ -973,7 +965,7 @@ Y_{i} = \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha} + \epsilon_{i}.
 <span id="annotated-cell-18-9"><a href="#annotated-cell-18-9" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(wbeta) <span class="ot">&lt;-</span> stringr<span class="sc">::</span><span class="fu">str_remove_all</span>(<span class="at">string =</span> <span class="fu">names</span>(wbeta), <span class="at">pattern =</span> <span class="st">"`"</span>)</span>
 <span id="annotated-cell-18-10"><a href="#annotated-cell-18-10" aria-hidden="true" tabindex="-1"></a>wapm <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-18-11"><a href="#annotated-cell-18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="at">Name =</span> <span class="fu">names</span>(wbeta), <span class="at">wapm =</span> wbeta)</span>
-<span id="annotated-cell-18-12"><a href="#annotated-cell-18-12" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(wapm) <span class="ot">&lt;-</span> <span class="cn">NULL</span> </span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-18-12"><a href="#annotated-cell-18-12" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(wapm) <span class="ot">&lt;-</span> <span class="cn">NULL</span> </span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-18" data-target-annotation="1">1</dt>
@@ -989,10 +981,10 @@ Y_{i} = \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha} + \epsilon_{i}.
 </div>
 <p>Because we now weigh stints differently, we see that the top-10 players according to our weighted adjusted plus/minus metric is somewhat different than the original adjutsed plus/minus metric.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>wapm <span class="sc">|&gt;</span></span>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>wapm <span class="sc">|&gt;</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(wapm)) <span class="sc">|&gt;</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Name, wapm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Name, wapm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                Name     wapm
 1       Devin Carter 19.48318
@@ -1013,8 +1005,8 @@ Y_{i} = \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha} + \epsilon_{i}.
 <h2 class="anchored" data-anchor-id="sec-looking-ahead">Looking Ahead</h2>
 <p>To fit our adjusted plus/minus model using the method of least squares, we specified a set of baseline-level players and <strong>assumed</strong> that all the baseline players had the exact same partial effect on their team’s average point differential per 100 possessions. This is a very strong and, frankly, unrealistic assumption! The use of baseline players and the assumed equality of their impact was motivated by a <em>numerical</em> challenge, viz.&nbsp;the inability to solve the least squares minimiziation problem when our design matrix <span class="math inline">\(\boldsymbol{\mathbf{Z}}\)</span> had constant row sums. In <a href="../lectures/lecture05.html">Lecture 5</a>, we will introduce an alternative approach to fitting adjusted plus/minus models that avoids the need to specify baseline players by solving a <em>regularized</em> version of the least squares problem. We save our player look-up table, the matrix <code>X_full</code>, and the vector of point differentials per 100 possessions so that we can load them next time.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> apm_df<span class="sc">$</span>margin</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(X_full, Y, rapm_data, <span class="at">file =</span> <span class="st">"nba_rapm_data.RData"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> apm_df<span class="sc">$</span>margin</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(X_full, Y, rapm_data, <span class="at">file =</span> <span class="st">"nba_rapm_data.RData"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="exercises" class="level2">
@@ -1032,7 +1024,7 @@ Y_{i} = \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha} + \epsilon_{i}.
 </section>
 
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-DeshpandeJensen2016" class="csl-entry" role="listitem">
 Deshpande, Sameer K., and Shane T. Jensen. 2016. <span>“Estimating an <span>NBA</span> Player’s Impact on His Team’s Chances of Winning.”</span> <em>Journal of Quantitative Analysis in Sports</em> 12 (2): 51–72.
 </div>
@@ -1098,14 +1090,13 @@ Deshpande, Sameer K., and Shane T. Jensen. 2016. <span>“Estimating an <span>NB
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-      const outerScaffold = trigger.parentElement.cloneNode(true);
-      const codeEl = outerScaffold.querySelector('code');
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
         }
-      }
-      return codeEl.innerText;
+        return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

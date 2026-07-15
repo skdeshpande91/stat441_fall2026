@@ -2,16 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.7.32">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Lecture 8: Defensive Credit Allocation in Baseball – STAT441</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -62,6 +59,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -93,16 +91,10 @@ div.csl-indent {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../site_libs/quarto-axe/axe-check.js" type="module"></script>
-<script id="quarto-axe-checker-options" type="text/plain">eyJvdXRwdXQiOiJkb2N1bWVudCJ9</script>
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-da920e58b6ff959c98c9ccc31dcc4995.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -134,7 +126,7 @@ div.csl-indent {
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -147,7 +139,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+      if (mathElements[i].tagName == "SPAN") {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -443,28 +435,28 @@ window.Quarto = {
 <section id="sec-overview" class="level2">
 <h2 class="anchored" data-anchor-id="sec-overview">Overview</h2>
 <p>In <a href="../lectures/lecture07.html">Lecture 7</a>, we distributed the run value created in each at-bat between the batter and base runners. Aggregating over all at-bats, we computed each player’s <span class="math inline">\(\textrm{RAA}^{\textrm{br}},\)</span> which quantifies how much more run value a player created through his base running than would otherwise be expected based on the starting game states and ending events of the at-bats in which he was involved. We also computed <span class="math inline">\(\textrm{RAA}^{\textrm{b}},\)</span> which quantifies how much more run value a player created through his hitting than would be expected based on his position.</p>
-<p>According to the conservation of runs framework introduced by <span class="citation" data-cites="Baumer2015_openWAR">Baumer et al. (<a href="#ref-Baumer2015_openWAR" role="doc-biblioref">2015</a>)</span>, whenever the batting team creates <span class="math inline">\(\delta\)</span> units of run value in at-bat, the fielding team (necessarily) gives up <span class="math inline">\(\delta\)</span> units of run value. Equivalently, the fielding team creates <span class="math inline">\(-\delta\)</span> units of run value. In this lecture, we discuss how to divide this <span class="math inline">\(-\delta\)</span> run value between the pitchers (<a href="#sec-pitching" class="quarto-xref">Section&nbsp;6</a>) and fielders (<a href="#sec-fielding" class="quarto-xref">Section&nbsp;5</a>).</p>
+<p>According to the conservation of runs framework introduced by <span class="citation" data-cites="Baumer2015_openWAR">Baumer, Jensen, and Matthews (<a href="#ref-Baumer2015_openWAR" role="doc-biblioref">2015</a>)</span>, whenever the batting team creates <span class="math inline">\(\delta\)</span> units of run value in at-bat, the fielding team (necessarily) gives up <span class="math inline">\(\delta\)</span> units of run value. Equivalently, the fielding team creates <span class="math inline">\(-\delta\)</span> units of run value. In this lecture, we discuss how to divide this <span class="math inline">\(-\delta\)</span> run value between the pitchers (<a href="#sec-pitching" class="quarto-xref">Section&nbsp;6</a>) and fielders (<a href="#sec-fielding" class="quarto-xref">Section&nbsp;5</a>).</p>
 <p>For at-bats <span class="math inline">\(i\)</span> that end without the ball being put in play (i.e., a strikeout, walk, or a homerun), we will assign the entirety of the <span class="math inline">\(-\delta_{i}\)</span> run value to the pitcher. But for at-bats that result with balls put in play, we will divide <span class="math inline">\(-\delta_{i}\)</span> into two parts <span class="math inline">\(\delta^{(f)}_{i} = -\delta \times \hat{p}_{i}\)</span> and <span class="math inline">\(\delta^{(p)} = -\delta_{i} \times (1 - \hat{p}_{i})\)</span> where <span class="math inline">\(\hat{p}_{i}\)</span> is an <em>estimate</em> of the probability that play results in an out given the batted ball’s location (<a href="#sec-out-probs" class="quarto-xref">Section&nbsp;3</a>). We will specifically estimate these out probabilities using <strong>Generalized Additive Models</strong> (<a href="#sec-gam" class="quarto-xref">Section&nbsp;4</a>). Finally, we compute how more run value each player creates through their batting, baserunning, pitching, and fielding than a replacement level player (<a href="#sec-war" class="quarto-xref">Section&nbsp;7</a>).</p>
 </section>
 <section id="sec-hit-location-data" class="level2">
 <h2 class="anchored" data-anchor-id="sec-hit-location-data">Hit Location Data</h2>
 <p>We begin by loading several of the data tables created in <a href="../lectures/lecture06.html">Lecture 6</a> and <a href="../lectures/lecture07.html">Lecture 7</a> including <code>statcast2024</code>, which contains pitch-level data for all regular season pitches in 2024, <code>runValue2024</code>, which contains the <span class="math inline">\(\delta_{i}\)</span>’s for each regular season at-bat, and <code>player2024_lookup</code>, which contains the names and MLB Advanced Media identifiers for each player.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"statcast2024.RData"</span>)</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"statcast2024.RData"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"mlb_runValue2024.RData"</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"mlb_player2024_lookup.RData"</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>oi_colors <span class="ot">&lt;-</span> </span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">palette.colors</span>(<span class="at">palette =</span> <span class="st">"Okabe-Ito"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">palette.colors</span>(<span class="at">palette =</span> <span class="st">"Okabe-Ito"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Recall from <a href="../lectures/lecture06.html">Lecture 6</a> that the Statcast variables <code>hit_coord_x</code> and <code>hit_coord_y</code> record the coordinates where each batted ball is first fielded. When we plotted the available <code>hit_coord_x</code> and <code>hit_coord_y</code> values, we saw the outlines of the park, with home plate located around <code>hit_coord_x = 125</code> and <code>hit_coord_y = 200.</code> We can also roughly make out the first and third base lines and the infield.</p>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">1</span>), <span class="at">mgp =</span> <span class="fu">c</span>(<span class="fl">1.8</span>, <span class="fl">0.5</span>, <span class="dv">0</span>))</span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">1</span>), <span class="at">mgp =</span> <span class="fu">c</span>(<span class="fl">1.8</span>, <span class="fl">0.5</span>, <span class="dv">0</span>))</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(statcast2024<span class="sc">$</span>hit_coord_x, statcast2024<span class="sc">$</span>hit_coord_y, </span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"hit_coord_x"</span>, <span class="at">ylab =</span> <span class="st">"hit_coord_y"</span>,</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.2</span>, </span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="fu">adjustcolor</span>(oi_colors[<span class="dv">1</span>], <span class="at">alpha.f =</span> <span class="fl">0.1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="fu">adjustcolor</span>(oi_colors[<span class="dv">1</span>], <span class="at">alpha.f =</span> <span class="fl">0.1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-hc-coordinates" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Scatterplot of batted ball hit coordinates" data-fig-align="center">
+<div id="fig-hc-coordinates" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Scatterplot of batted ball hit coordinates">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-hc-coordinates-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture08_files/figure-html/fig-hc-coordinates-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Locations where all batted balls are first fielded"><img src="lecture08_files/figure-html/fig-hc-coordinates-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Scatterplot of batted ball hit coordinates" width="576"></a>
@@ -478,7 +470,7 @@ Figure&nbsp;1: Locations where all batted balls are first fielded
 </div>
 <p>It is not immediately apparent, however, whether the first base line is on the left or right. Luckily, StatCast also contains the official <a href="https://en.wikipedia.org/wiki/Baseball_positions">fielding position</a> of the player who first fields the ball<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. When we plot just the pitches first fielded by first basemen (<code>hit_location=3</code>), we see that in the original <code>(hit_coord_x, hit_coord_y)</code> coordinate system, first base is on the <em>right</em> hand side of the plot.</p>
 <div class="cell" data-layout-align="center" data-figt-alt="Scatterplot of batted ball locations fielded by the first baseman">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">1</span>), <span class="at">mgp =</span> <span class="fu">c</span>(<span class="fl">1.8</span>, <span class="fl">0.5</span>, <span class="dv">0</span>))</span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">1</span>), <span class="at">mgp =</span> <span class="fu">c</span>(<span class="fl">1.8</span>, <span class="fl">0.5</span>, <span class="dv">0</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(statcast2024<span class="sc">$</span>hit_coord_x[statcast2024<span class="sc">$</span>hit_location<span class="sc">!=</span><span class="dv">3</span>], </span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>     statcast2024<span class="sc">$</span>hit_coord_y[statcast2024<span class="sc">$</span>hit_location <span class="sc">!=</span> <span class="dv">3</span>], </span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"hit_coord_x"</span>, <span class="at">ylab =</span> <span class="st">"hit_coord_y"</span>,</span>
@@ -487,7 +479,7 @@ Figure&nbsp;1: Locations where all batted balls are first fielded
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(statcast2024<span class="sc">$</span>hit_coord_x[statcast2024<span class="sc">$</span>hit_location<span class="sc">==</span><span class="dv">3</span>], </span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>     statcast2024<span class="sc">$</span>hit_coord_y[statcast2024<span class="sc">$</span>hit_location<span class="sc">==</span><span class="dv">3</span>],</span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.2</span>, </span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="fu">adjustcolor</span>(oi_colors[<span class="dv">2</span>], <span class="at">alpha.f =</span> <span class="fl">0.1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="fu">adjustcolor</span>(oi_colors[<span class="dv">2</span>], <span class="at">alpha.f =</span> <span class="fl">0.1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-fielder3" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
@@ -508,7 +500,7 @@ x &amp;= 2.5 \times (\texttt{hit\_coord\_x} - 125.42) &amp; y &amp;= 2.5 \times 
 \]</span></p>
 <p>The following code implements this transformation, storing the new coordinates as <code>x</code> and <code>y</code> and then plots the batted ball locations. It also overlays the first and third base lines, the base paths and places points at the base locations.</p>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-hidden="true" tabindex="-1"></a>statcast2024 <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-4-1"><a href="#annotated-cell-4-1" aria-hidden="true" tabindex="-1"></a>statcast2024 <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-4-2"><a href="#annotated-cell-4-2" aria-hidden="true" tabindex="-1"></a>  statcast2024 <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-4-3"><a href="#annotated-cell-4-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
 <span id="annotated-cell-4-4"><a href="#annotated-cell-4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fl">2.5</span> <span class="sc">*</span> (hit_coord_x <span class="sc">-</span> <span class="fl">125.42</span>),</span>
@@ -535,7 +527,7 @@ x &amp;= 2.5 \times (\texttt{hit\_coord\_x} - 125.42) &amp; y &amp;= 2.5 \times 
 <span id="annotated-cell-4-25"><a href="#annotated-cell-4-25" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span>
 <span id="annotated-cell-4-26"><a href="#annotated-cell-4-26" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="dv">90</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">y =</span> <span class="dv">90</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span>
 <span id="annotated-cell-4-27"><a href="#annotated-cell-4-27" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="sc">-</span><span class="dv">90</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">y =</span> <span class="dv">90</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">pch =</span> <span class="dv">16</span>,<span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span>
-<span id="annotated-cell-4-28"><a href="#annotated-cell-4-28" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="dv">90</span><span class="sc">*</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-4-28"><a href="#annotated-cell-4-28" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="dv">90</span><span class="sc">*</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
@@ -549,7 +541,7 @@ x &amp;= 2.5 \times (\texttt{hit\_coord\_x} - 125.42) &amp; y &amp;= 2.5 \times 
 </dl>
 </div>
 <div class="cell-output-display">
-<div id="fig-new-coords" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Scatterplot of batted ball locations with yellow foul lines and white basebaths overlaid" data-fig-align="center">
+<div id="fig-new-coords" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Scatterplot of batted ball locations with yellow foul lines and white basebaths overlaid">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-new-coords-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture08_files/figure-html/fig-new-coords-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figure&nbsp;3: Locations where batted balls are first fielded in our transformed coordinate system"><img src="lecture08_files/figure-html/fig-new-coords-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Scatterplot of batted ball locations with yellow foul lines and white basebaths overlaid" width="576"></a>
@@ -563,7 +555,7 @@ Figure&nbsp;3: Locations where batted balls are first fielded in our transformed
 </div>
 <p>In <a href="../lectures/lecture07.html">Lecture 7</a>, we created a table <code>atbat2024</code> that contained the beginning and ending states of each at-bat, run value, ending event, and identities of the batter and baserunners. Today, we will build a similar data frame that contains the ending event, identities of the pitcher and fielders, and, if the at-bat resulted in a ball being put into play, the batted ball locations. Like the code we used to build <code>atbat2024</code>, we need to identify the <em>last</em> entry in the column <code>events</code> in each at bat as well as the last entry of the columns <code>x</code>, <code>y</code>, and <code>hit_location</code>. We will also keep the run value.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>def_atbat2024 <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>def_atbat2024 <span class="ot">&lt;-</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  statcast2024 <span class="sc">|&gt;</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(game_id, at_bat_number) <span class="sc">|&gt;</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(pitch_number) <span class="sc">|&gt;</span></span>
@@ -587,14 +579,14 @@ Figure&nbsp;3: Locations where batted balls are first fielded in our transformed
 <span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    end_x, end_y, end_hit_location) <span class="sc">|&gt;</span></span>
 <span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">x =</span> end_x, <span class="at">y =</span> end_y) <span class="sc">|&gt;</span></span>
 <span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">inner_join</span>(<span class="at">y =</span> runValue2024, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"game_id"</span>, <span class="st">"at_bat_number"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(end_events) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(end_des))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(end_events) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(end_des))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="sec-out-probs" class="level2">
 <h2 class="anchored" data-anchor-id="sec-out-probs">Estimating Out Probabilities</h2>
 <p>Recall that we need to estimate the probability that a batted ball results in an out given its coordinate. To do so, we first need to extract those at-bats that resulted in a ball being put in play. The variable <code>end_type</code> in <code>def_atbat2024</code> records whether the last pitch of each at-bat resulted in a strike (<code>end_type = S</code>), a ball (<code>end_type = B</code>), or a ball being hit into play (<code>end_type = X</code>). As a sanity check, let’s take a look at the ending event for all at-bats with <code>end_type = X</code>. Reassuringly, none of them can occur without a ball being hit.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(def_atbat2024<span class="sc">$</span>end_events[def_atbat2024<span class="sc">$</span>end_type <span class="sc">==</span> <span class="st">"X"</span>], <span class="at">useNA =</span> <span class="st">'always'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(def_atbat2024<span class="sc">$</span>end_events[def_atbat2024<span class="sc">$</span>end_type <span class="sc">==</span> <span class="st">"X"</span>], <span class="at">useNA =</span> <span class="st">'always'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
                    double               double_play               field_error 
@@ -613,7 +605,7 @@ Figure&nbsp;3: Locations where batted balls are first fielded in our transformed
 </div>
 <p>As another sanity check, when we tabulate the <code>end_events</code> for all at-bats with <code>end_type != X</code>, we do not see any of the hitting events from above.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(def_atbat2024<span class="sc">$</span>end_events[def_atbat2024<span class="sc">$</span>end_type <span class="sc">!=</span> <span class="st">"X"</span>], <span class="at">useNA =</span> <span class="st">'always'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(def_atbat2024<span class="sc">$</span>end_events[def_atbat2024<span class="sc">$</span>end_type <span class="sc">!=</span> <span class="st">"X"</span>], <span class="at">useNA =</span> <span class="st">'always'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
        catcher_interf          hit_by_pitch           intent_walk 
@@ -626,13 +618,13 @@ Figure&nbsp;3: Locations where batted balls are first fielded in our transformed
 </div>
 <p>So, we can isolate those at-bats with a ball put in play by filtering on <code>end_type</code>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>bip <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>bip <span class="ot">&lt;-</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  def_atbat2024 <span class="sc">|&gt;</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(end_type <span class="sc">==</span> <span class="st">"X"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(end_type <span class="sc">==</span> <span class="st">"X"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The columns <code>end_events</code> includes values <code>fielders_choice</code> and <code>fielders_choice_out</code>. Presumably, balls recorded as <code>fielders_choice</code> did not result in an out while those recorded as <code>fielders_choice_out</code> did. To check whether this is the case, we will search from the string “out” in the description of the at-bat (<code>des</code>) for all balls with <code>event = fielders_choice</code></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">grepl</span>(<span class="st">"out"</span>, bip<span class="sc">$</span>end_des[bip<span class="sc">$</span>end_events <span class="sc">==</span> <span class="st">"fielders_choice"</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">grepl</span>(<span class="st">"out"</span>, bip<span class="sc">$</span>end_des[bip<span class="sc">$</span>end_events <span class="sc">==</span> <span class="st">"fielders_choice"</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 FALSE  TRUE 
@@ -641,11 +633,11 @@ FALSE  TRUE
 </div>
 <p>Curiously, there are two instances where the play is recorded as a fielder’s choice but the string “out” appears. Investigating further, in one instance the string “out” appears as part of a player’s name while in the other, the play actually did result in an out.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(<span class="fu">grepl</span>(<span class="st">"out"</span>, bip<span class="sc">$</span>end_des) <span class="sc">&amp;</span> bip<span class="sc">$</span>end_events <span class="sc">==</span> <span class="st">"fielders_choice"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(<span class="fu">grepl</span>(<span class="st">"out"</span>, bip<span class="sc">$</span>end_des) <span class="sc">&amp;</span> bip<span class="sc">$</span>end_events <span class="sc">==</span> <span class="st">"fielders_choice"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 10252 65236</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>bip<span class="sc">$</span>end_des[<span class="fu">which</span>(<span class="fu">grepl</span>(<span class="st">"out"</span>, bip<span class="sc">$</span>end_des) <span class="sc">&amp;</span> bip<span class="sc">$</span>end_events <span class="sc">==</span> <span class="st">"fielders_choice"</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>bip<span class="sc">$</span>end_des[<span class="fu">which</span>(<span class="fu">grepl</span>(<span class="st">"out"</span>, bip<span class="sc">$</span>end_des) <span class="sc">&amp;</span> bip<span class="sc">$</span>end_events <span class="sc">==</span> <span class="st">"fielders_choice"</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Mike Trout reaches on a fielder's choice, fielded by shortstop David Hamilton. Anthony Rendon to 3rd. Nolan Schanuel to 2nd. Throwing error by shortstop David Hamilton."        
 [2] "Ryan Jeffers reaches on a fielder's choice, fielded by second baseman Colt Keith. Byron Buxton scores. Ryan Jeffers out at 2nd, catcher Jake Rogers to first baseman Mark Canha."</code></pre>
@@ -653,7 +645,7 @@ FALSE  TRUE
 </div>
 <p>We will manually change the value of <code>end_events</code> in row 65236 to “fielders_choice_out”. For fitting our out probability model, we will focus only on those at-bats that did not end with a home run. We will also drop at-bats for which the batted ball locations are missing.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>bip<span class="sc">$</span>end_events[<span class="dv">65236</span>] <span class="ot">&lt;-</span> <span class="st">"fielders_choice_out"</span></span>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>bip<span class="sc">$</span>end_events[<span class="dv">65236</span>] <span class="ot">&lt;-</span> <span class="st">"fielders_choice_out"</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>out_events <span class="ot">&lt;-</span> </span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">"double_play"</span>, <span class="st">"field_out"</span>, <span class="st">"fielders_choice_out"</span>,</span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"force_out"</span>, <span class="st">"grounded_into_double_play"</span>, </span>
@@ -662,26 +654,26 @@ FALSE  TRUE
 <span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>bip <span class="ot">&lt;-</span></span>
 <span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  bip <span class="sc">|&gt;</span></span>
 <span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(end_events <span class="sc">!=</span> <span class="st">"home_run"</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(x) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(y)) <span class="sc">|&gt;</span></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Out =</span> <span class="fu">ifelse</span>(end_events <span class="sc">%in%</span> out_events, <span class="dv">1</span>, <span class="dv">0</span>)) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Out =</span> <span class="fu">ifelse</span>(end_events <span class="sc">%in%</span> out_events, <span class="dv">1</span>, <span class="dv">0</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="binning-and-averaging" class="level3">
 <h3 class="anchored" data-anchor-id="binning-and-averaging">Binning and Averaging</h3>
 <p>One potential approach works by dividing the field into small rectangular regions and computing the proportion of balls landing within each region that result in an out. To this end, we will first create a grid of 3ft x 3ft squares that covers the range of our batted ball locations.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(bip<span class="sc">$</span>x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(bip<span class="sc">$</span>x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] -287.725  290.575</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(bip<span class="sc">$</span>y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(bip<span class="sc">$</span>y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] -91.85 459.35</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-15"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="1">1</button><span id="annotated-cell-15-1" class="code-annotation-target"><a href="#annotated-cell-15-1" aria-hidden="true" tabindex="-1"></a>grid_sep <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-15"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="1">1</button><span id="annotated-cell-15-1" class="code-annotation-target"><a href="#annotated-cell-15-1" aria-hidden="true" tabindex="-1"></a>grid_sep <span class="ot">&lt;-</span> <span class="dv">3</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="2">2</button><span id="annotated-cell-15-2" class="code-annotation-target"><a href="#annotated-cell-15-2" aria-hidden="true" tabindex="-1"></a>x_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="sc">-</span><span class="dv">300</span>, <span class="at">to =</span> <span class="dv">300</span>, <span class="at">by =</span> grid_sep)</span>
 <span id="annotated-cell-15-3"><a href="#annotated-cell-15-3" aria-hidden="true" tabindex="-1"></a>y_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="sc">-</span><span class="dv">100</span>, <span class="at">to =</span> <span class="dv">500</span>, <span class="at">by =</span> grid_sep)</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="3">3</button><span id="annotated-cell-15-4" class="code-annotation-target"><a href="#annotated-cell-15-4" aria-hidden="true" tabindex="-1"></a>raw_grid <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">x =</span> x_grid, <span class="at">y =</span> y_grid)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="3">3</button><span id="annotated-cell-15-4" class="code-annotation-target"><a href="#annotated-cell-15-4" aria-hidden="true" tabindex="-1"></a>raw_grid <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">x =</span> x_grid, <span class="at">y =</span> y_grid)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-15" data-target-annotation="1">1</dt>
@@ -701,15 +693,15 @@ FALSE  TRUE
 </div>
 <p>The table <code>grid</code> contains many combinations of <code>x</code> and <code>y</code> that do not represent plausible batted ball locations. In the figure below, we plot all batted ball locations and overlay all the grid points.</p>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">1</span>), <span class="at">mgp =</span> <span class="fu">c</span>(<span class="fl">1.8</span>, <span class="fl">0.5</span>, <span class="dv">0</span>))</span>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">1</span>), <span class="at">mgp =</span> <span class="fu">c</span>(<span class="fl">1.8</span>, <span class="fl">0.5</span>, <span class="dv">0</span>))</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(bip<span class="sc">$</span>x, bip<span class="sc">$</span>y, </span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">300</span>, <span class="dv">300</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="dv">500</span>),</span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.2</span>, </span>
 <span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="fu">adjustcolor</span>(oi_colors[<span class="dv">1</span>], <span class="at">alpha.f =</span> <span class="fl">0.2</span>))</span>
 <span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(raw_grid<span class="sc">$</span>x, raw_grid<span class="sc">$</span>y, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.2</span>, </span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">adjustcolor</span>(oi_colors[<span class="dv">3</span>], <span class="at">alpha.f =</span> <span class="fl">0.3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">adjustcolor</span>(oi_colors[<span class="dv">3</span>], <span class="at">alpha.f =</span> <span class="fl">0.3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-grid" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Batted ball locations overlaid over a square grid of blue points" data-fig-align="center">
+<div id="fig-grid" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Batted ball locations overlaid over a square grid of blue points">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-grid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture08_files/figure-html/fig-grid-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;4: The initial grid of points contains many locations at which we would not expect balls to be fielded."><img src="lecture08_files/figure-html/fig-grid-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Batted ball locations overlaid over a square grid of blue points" width="576"></a>
@@ -728,7 +720,7 @@ Figure&nbsp;4: The initial grid of points contains many locations at which we wo
 <li><code>sqrt(x^2 +y^2 &lt; 580)</code>: these are locations very far from home plate</li>
 </ol>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>grid <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>grid <span class="ot">&lt;-</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  raw_grid <span class="sc">|&gt;</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(y <span class="sc">+</span> x <span class="sc">&gt;</span> <span class="sc">-</span><span class="dv">100</span> <span class="sc">&amp;</span> y <span class="sc">-</span> x <span class="sc">&gt;</span> <span class="sc">-</span><span class="dv">100</span> <span class="sc">&amp;</span> <span class="fu">sqrt</span>(x<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> y<span class="sc">^</span><span class="dv">2</span>) <span class="sc">&lt;</span> <span class="dv">580</span>)</span>
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(bip<span class="sc">$</span>x, bip<span class="sc">$</span>y, </span>
@@ -736,9 +728,9 @@ Figure&nbsp;4: The initial grid of points contains many locations at which we wo
 <span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.2</span>, </span>
 <span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="fu">adjustcolor</span>(oi_colors[<span class="dv">1</span>], <span class="at">alpha.f =</span> <span class="fl">0.2</span>))</span>
 <span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(grid<span class="sc">$</span>x, grid<span class="sc">$</span>y, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.2</span>, </span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">adjustcolor</span>(oi_colors[<span class="dv">3</span>], <span class="at">alpha.f =</span> <span class="fl">0.3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">adjustcolor</span>(oi_colors[<span class="dv">3</span>], <span class="at">alpha.f =</span> <span class="fl">0.3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-restrict-grid" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Square grid of points restricted to the dimensions of a baseball diamond" data-fig-align="center">
+<div id="fig-restrict-grid" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Square grid of points restricted to the dimensions of a baseball diamond">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-restrict-grid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture08_files/figure-html/fig-restrict-grid-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;5: A restricted grid of spatial locations."><img src="lecture08_files/figure-html/fig-restrict-grid-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Square grid of points restricted to the dimensions of a baseball diamond" width="576"></a>
@@ -752,8 +744,8 @@ Figure&nbsp;5: A restricted grid of spatial locations.
 </div>
 <p>We can use the <code>cut()</code> function to divide the <code>x</code> and <code>y</code> values in <code>bip</code> into small bins. Here is a quick example of how <code>cut</code> works: we first create a vector with a few numbers. The <code>breaks</code> argument of <code>cut</code> tells it the end points of each bin.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.11</span>, <span class="fl">0.23</span>, <span class="fl">0.45</span>, <span class="fl">0.67</span>, <span class="fl">0.99</span>, <span class="fl">0.02</span>) </span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cut</span>(x, <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">by =</span> <span class="fl">0.1</span>))  </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.11</span>, <span class="fl">0.23</span>, <span class="fl">0.45</span>, <span class="fl">0.67</span>, <span class="fl">0.99</span>, <span class="fl">0.02</span>) </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cut</span>(x, <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">by =</span> <span class="fl">0.1</span>))  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] (0.1,0.2] (0.2,0.3] (0.4,0.5] (0.6,0.7] (0.9,1]   (0,0.1]  
 10 Levels: (0,0.1] (0.1,0.2] (0.2,0.3] (0.3,0.4] (0.4,0.5] ... (0.9,1]</code></pre>
@@ -761,7 +753,7 @@ Figure&nbsp;5: A restricted grid of spatial locations.
 </div>
 <p>Below, we first <code>cut</code> the values of <code>x</code> and <code>y</code> that appear in <code>bip</code>. Then, using a grouped summary, we can compute the number of balls hit to each bin and the proportion of those balls that result in an out.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-19"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-19-1"><a href="#annotated-cell-19-1" aria-hidden="true" tabindex="-1"></a>bin_probs <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-19"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-19-1"><a href="#annotated-cell-19-1" aria-hidden="true" tabindex="-1"></a>bin_probs <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-19-2"><a href="#annotated-cell-19-2" aria-hidden="true" tabindex="-1"></a>  bip <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-19-3"><a href="#annotated-cell-19-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(x, y, Out) <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-19-4"><a href="#annotated-cell-19-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
@@ -771,7 +763,7 @@ Figure&nbsp;5: A restricted grid of spatial locations.
 <span id="annotated-cell-19-8"><a href="#annotated-cell-19-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(</span>
 <span id="annotated-cell-19-9"><a href="#annotated-cell-19-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">out_prob =</span> <span class="fu">mean</span>(Out), </span>
 <span id="annotated-cell-19-10"><a href="#annotated-cell-19-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_balls =</span> dplyr<span class="sc">::</span><span class="fu">n</span>(),</span>
-<span id="annotated-cell-19-11"><a href="#annotated-cell-19-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-19-11"><a href="#annotated-cell-19-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-19" data-target-annotation="1">1</dt>
@@ -783,17 +775,17 @@ Figure&nbsp;5: A restricted grid of spatial locations.
 </div>
 <p>We can now bin the <code>x</code> and <code>y</code> values contained in <code>grid</code> and, using a <code>left_join()</code>, append a column that contains the estimated probability of an out hit to each 3ft x 3ft square in our grid. Note that if there is a combination of <code>x_bin</code> and <code>y_bin</code> in <code>grid</code> that is not contained in <code>bin_prob</code>, the estimated probability will be <code>NA</code>. These are grid squares in which no balls were hit.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>grid_probs_bin <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>grid_probs_bin <span class="ot">&lt;-</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  grid <span class="sc">|&gt;</span></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x_bin =</span> <span class="fu">cut</span>(x, <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">300</span><span class="sc">-</span>grid_sep<span class="sc">/</span><span class="dv">2</span>, <span class="dv">300</span><span class="sc">+</span>grid_sep<span class="sc">/</span><span class="dv">2</span>, <span class="at">by =</span> <span class="dv">3</span>)),</span>
 <span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y_bin =</span> <span class="fu">cut</span>(y, <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">100</span><span class="sc">-</span>grid_sep<span class="sc">/</span><span class="dv">2</span>, <span class="dv">500</span><span class="sc">+</span>grid_sep<span class="sc">/</span><span class="dv">2</span>, <span class="at">by =</span> <span class="dv">3</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(<span class="at">y =</span> bin_probs, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"x_bin"</span>, <span class="st">"y_bin"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(<span class="at">y =</span> bin_probs, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"x_bin"</span>, <span class="st">"y_bin"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can now make a heatmap of our estimated probabilities by looping over the rows in <code>grid_prob_bins</code>, drawing a small rectangle with corners <code>(x-1.5, y-1.5)</code>, <code>(x + 1.5, y-1.5)</code>, <code>(x+1.5, y+1.5)</code>, and <code>(x-1.5, y+1.5)</code>, and shading the rectangle based on the corresponding out probability.</p>
 <!-- redraw and add a legend at the top -->
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-21"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-21" data-target-annotation="1">1</button><span id="annotated-cell-21-1" class="code-annotation-target"><a href="#annotated-cell-21-1" aria-hidden="true" tabindex="-1"></a>col_list <span class="ot">&lt;-</span> colorBlindness<span class="sc">::</span>Blue2DarkRed18Steps</span>
+<div class="sourceCode cell-code" id="annotated-cell-21"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-21" data-target-annotation="1">1</button><span id="annotated-cell-21-1" class="code-annotation-target"><a href="#annotated-cell-21-1" aria-hidden="true" tabindex="-1"></a>col_list <span class="ot">&lt;-</span> colorBlindness<span class="sc">::</span>Blue2DarkRed18Steps</span>
 <span id="annotated-cell-21-2"><a href="#annotated-cell-21-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-21-3"><a href="#annotated-cell-21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">1</span>), <span class="at">mgp =</span> <span class="fu">c</span>(<span class="fl">1.8</span>, <span class="fl">0.5</span>, <span class="dv">0</span>))</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-21" data-target-annotation="2">2</button><span id="annotated-cell-21-4" class="code-annotation-target"><a href="#annotated-cell-21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="dv">1</span>, <span class="at">type =</span> <span class="st">"n"</span>,</span>
@@ -825,7 +817,7 @@ Figure&nbsp;5: A restricted grid of spatial locations.
 <span id="annotated-cell-21-30"><a href="#annotated-cell-21-30" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span>
 <span id="annotated-cell-21-31"><a href="#annotated-cell-21-31" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="dv">90</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">y =</span> <span class="dv">90</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span>
 <span id="annotated-cell-21-32"><a href="#annotated-cell-21-32" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="sc">-</span><span class="dv">90</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">y =</span> <span class="dv">90</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">pch =</span> <span class="dv">16</span>,<span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span>
-<span id="annotated-cell-21-33"><a href="#annotated-cell-21-33" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="dv">90</span><span class="sc">*</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-21-33"><a href="#annotated-cell-21-33" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="dv">90</span><span class="sc">*</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-21" data-target-annotation="1">1</dt>
@@ -867,7 +859,7 @@ Figure&nbsp;5: A restricted grid of spatial locations.
 </dl>
 </div>
 <div class="cell-output-display">
-<div id="fig-bin-probs" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Heatmap of out probabilities" data-fig-align="center">
+<div id="fig-bin-probs" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Heatmap of out probabilities">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-bin-probs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture08_files/figure-html/fig-bin-probs-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;6: Empirical out probabilities based on binning balls in play."><img src="lecture08_files/figure-html/fig-bin-probs-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Heatmap of out probabilities" width="576"></a>
@@ -884,7 +876,7 @@ Figure&nbsp;6: Empirical out probabilities based on binning balls in play.
 <h3 class="anchored" data-anchor-id="sec-logistic">A Logistic Regression Model for Outs</h3>
 <p>Our naively estimated out probabilities leave much to be desired. For one thing, there are lots of “gaps” in the fitted surface where our initial model can’t make a prediction. These are the cells in our grid into which no balls were hit. Of much greater concern are the sharp discontinuities evident in the figure. In fact, there are many regions where the fitted out probability jumps from 0% to 100% to 0% in the span of about 6 feet. Such discontinuities are <em>artifacts</em> of the small sample sizes within some of the bins. Indeed, we find that about 85% of the grid cells contain 10 or fewer observations</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(bin_probs<span class="sc">$</span>n_balls <span class="sc">&lt;=</span> <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(bin_probs<span class="sc">$</span>n_balls <span class="sc">&lt;=</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.8480883</code></pre>
 </div>
@@ -896,14 +888,14 @@ Figure&nbsp;6: Empirical out probabilities based on binning balls in play.
 \log\left(\frac{\mathbb{P}(\textrm{out})}{1 - \mathbb{P}(\textrm{out})} \right) = \beta_{0} + \beta_{x}x + \beta_{y}y
 \]</span> We can estimate these parameters using <code>glm()</code> and then compute the fitted probability for every cell in our grid.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-23"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-23-1"><a href="#annotated-cell-23-1" aria-hidden="true" tabindex="-1"></a>logit_fit <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-23"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-23-1"><a href="#annotated-cell-23-1" aria-hidden="true" tabindex="-1"></a>logit_fit <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-23-2"><a href="#annotated-cell-23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glm</span>(Out <span class="sc">~</span> x <span class="sc">+</span> y,</span>
 <span id="annotated-cell-23-3"><a href="#annotated-cell-23-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"logit"</span>), <span class="at">data =</span> bip)</span>
 <span id="annotated-cell-23-4"><a href="#annotated-cell-23-4" aria-hidden="true" tabindex="-1"></a>grid_logit_preds <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-23-5"><a href="#annotated-cell-23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(<span class="at">object =</span> logit_fit, </span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-23" data-target-annotation="1">1</button><span id="annotated-cell-23-6" class="code-annotation-target"><a href="#annotated-cell-23-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">newdata =</span> grid, <span class="at">type =</span> <span class="st">"response"</span>)</span>
 <span id="annotated-cell-23-7"><a href="#annotated-cell-23-7" aria-hidden="true" tabindex="-1"></a>grid_logit_cols <span class="ot">&lt;-</span> </span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-23" data-target-annotation="2">2</button><span id="annotated-cell-23-8" class="code-annotation-target"><a href="#annotated-cell-23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rgb</span>(<span class="fu">colorRamp</span>(col_list,<span class="at">bias=</span><span class="dv">1</span>)(grid_logit_preds)<span class="sc">/</span><span class="dv">255</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-23" data-target-annotation="2">2</button><span id="annotated-cell-23-8" class="code-annotation-target"><a href="#annotated-cell-23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rgb</span>(<span class="fu">colorRamp</span>(col_list,<span class="at">bias=</span><span class="dv">1</span>)(grid_logit_preds)<span class="sc">/</span><span class="dv">255</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-23" data-target-annotation="1">1</dt>
@@ -919,7 +911,7 @@ Figure&nbsp;6: Empirical out probabilities based on binning balls in play.
 </div>
 <p>The fitted logistic regression model predicts that the probability of an out decreases as one moves vertically away from home plate. The model further predicts that balls hit into the outfield tend not to result in outs, which is at odds with what we see in the data. Indeed, our earlier plot revealed pockets of high out probability in the outfield, roughly corresponding to the usual positioning of the left, right, and center fielders.</p>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-24"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-24-1"><a href="#annotated-cell-24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">1</span>), <span class="at">mgp =</span> <span class="fu">c</span>(<span class="fl">1.8</span>, <span class="fl">0.5</span>, <span class="dv">0</span>))</span>
+<div class="sourceCode cell-code" id="annotated-cell-24"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-24-1"><a href="#annotated-cell-24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">1</span>), <span class="at">mgp =</span> <span class="fu">c</span>(<span class="fl">1.8</span>, <span class="fl">0.5</span>, <span class="dv">0</span>))</span>
 <span id="annotated-cell-24-2"><a href="#annotated-cell-24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="dv">1</span>, <span class="at">type =</span> <span class="st">"n"</span>, </span>
 <span id="annotated-cell-24-3"><a href="#annotated-cell-24-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">300</span>, <span class="dv">300</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>, <span class="dv">500</span>), </span>
 <span id="annotated-cell-24-4"><a href="#annotated-cell-24-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">yaxt =</span> <span class="st">"n"</span>, <span class="at">bty =</span> <span class="st">"n"</span>, </span>
@@ -944,7 +936,7 @@ Figure&nbsp;6: Empirical out probabilities based on binning balls in play.
 <span id="annotated-cell-24-23"><a href="#annotated-cell-24-23" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span>
 <span id="annotated-cell-24-24"><a href="#annotated-cell-24-24" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="dv">90</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">y =</span> <span class="dv">90</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span>
 <span id="annotated-cell-24-25"><a href="#annotated-cell-24-25" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="sc">-</span><span class="dv">90</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">y =</span> <span class="dv">90</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">pch =</span> <span class="dv">16</span>,<span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span>
-<span id="annotated-cell-24-26"><a href="#annotated-cell-24-26" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="dv">90</span><span class="sc">*</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-24-26"><a href="#annotated-cell-24-26" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="dv">90</span><span class="sc">*</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-24" data-target-annotation="1">1</dt>
@@ -954,7 +946,7 @@ Figure&nbsp;6: Empirical out probabilities based on binning balls in play.
 </dl>
 </div>
 <div class="cell-output-display">
-<div id="fig-logistic-fit" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Heatmap of out probabilities" data-fig-align="center">
+<div id="fig-logistic-fit" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Heatmap of out probabilities">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-logistic-fit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture08_files/figure-html/fig-logistic-fit-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Figure&nbsp;7: Logistic regression forecasts of out probabilities as a function of location."><img src="lecture08_files/figure-html/fig-logistic-fit-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Heatmap of out probabilities" width="576"></a>
@@ -974,7 +966,7 @@ Figure&nbsp;7: Logistic regression forecasts of out probabilities as a function 
 <p>Generalized Additive Models (or GAMs) are an elegant way to introduce non-linearity and create spatially smooth maps. In our context, a GAM model expresses <span class="math inline">\(s(x,y)\)</span> as a linear combination of a large number of two-dimensional <em>splines</em> functions. Each spline function is a piecewise polynomial that is localized to a small region of <span class="math inline">\((x,y)\)</span> space, meaning that it is non-zero inside the region and zero outside the region. Such spline functions can be linearly combined to approximate really complicated functions arbitrarily well<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
 <p>We can fit GAMs in R using the <a href="https://cran.r-project.org/web/packages/mgcv/refman/mgcv.html"><strong>mgcv</strong></a> package, which can be installed using</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"mgcv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"mgcv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The package provides two fitting functions, <code>gam()</code> and <code>bam()</code>, which is recommended for very large data sets like <code>bip</code>. Both functions are similar <code>lm()</code> and <code>glm()</code> in that they require users to specify a formula and, in the case of non-continuous outcomes, a link function. The main difference is the term <code>s()</code>, which is used to signal to <code>gam()</code> or <code>bam()</code> that we want to smooth over whatever variables appear inside of the brackets of <code>s()</code>. In our case, because we wish to smooth over both <code>x</code> and <code>y</code>, we will include the terms <code>s(x,y)</code></p>
 <div class="callout callout-style-default callout-important callout-titled">
@@ -983,7 +975,7 @@ Figure&nbsp;7: Logistic regression forecasts of out probabilities as a function 
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>Warning
+Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -991,14 +983,14 @@ Figure&nbsp;7: Logistic regression forecasts of out probabilities as a function 
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mgcv)</span>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mgcv)</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>gam_fit <span class="ot">&lt;-</span></span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bam</span>(<span class="at">formula =</span> Out <span class="sc">~</span> <span class="fu">s</span>(x,y), </span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link=</span><span class="st">"logit"</span>), <span class="at">data =</span> bip)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link=</span><span class="st">"logit"</span>), <span class="at">data =</span> bip)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>After fitting our GAM, we can visualize the estimated out probabilities:</p>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>grid_gam_preds <span class="ot">&lt;-</span> </span>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>grid_gam_preds <span class="ot">&lt;-</span> </span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(<span class="at">object =</span> gam_fit,</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">newdata =</span> grid, <span class="at">type =</span> <span class="st">"response"</span>)</span>
 <span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -1031,9 +1023,9 @@ Figure&nbsp;7: Logistic regression forecasts of out probabilities as a function 
 <span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span>
 <span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="dv">90</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">y =</span> <span class="dv">90</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span>
 <span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="sc">-</span><span class="dv">90</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">y =</span> <span class="dv">90</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">pch =</span> <span class="dv">16</span>,<span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span>
-<span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="dv">90</span><span class="sc">*</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="dv">90</span><span class="sc">*</span><span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.8</span>, <span class="at">col =</span> <span class="st">"white"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-out-gam" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Heatamp of out probabilities" data-fig-align="center">
+<div id="fig-out-gam" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Heatamp of out probabilities">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-out-gam-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture08_files/figure-html/fig-out-gam-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Figure&nbsp;8: Heatmap of out probabilities fitted with a generalized additive model"><img src="lecture08_files/figure-html/fig-out-gam-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Heatamp of out probabilities" width="576"></a>
@@ -1050,7 +1042,7 @@ Figure&nbsp;8: Heatmap of out probabilities fitted with a generalized additive m
 <h3 class="anchored" data-anchor-id="sec-divide-delta">Dividing Defensive Run Value</h3>
 <p>Recall that if at-bat <span class="math inline">\(i\)</span> results in a ball put in play, we will distribute <span class="math inline">\(\delta_{i}^{(f)} = -\delta_{i} \times \hat{p}_{i}\)</span> to the fielders and assign <span class="math inline">\(\delta_{i}^{(p)} = -\delta \times (1 - \hat{p}_{i})\)</span> to the pitcher. The following code adds a column to <code>def_atbat2024</code> containing the predicted out probabilities from our fitted GAM. Note that this column contains <code>NA</code> values for those at-bats that did not result in a ball in play (e.g., they ended with a walk or a strikeout or a home run) For the vast majority of these at-bats, we will manually set <span class="math inline">\(\hat{p}_{i} = 0\)</span> so that the pitcher gets all the credit (i.e., <span class="math inline">\(\delta^{(p)}_{i} = -\delta_{i}\)</span>).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-28"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-28-1"><a href="#annotated-cell-28-1" aria-hidden="true" tabindex="-1"></a>all_preds <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-28"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-28-1"><a href="#annotated-cell-28-1" aria-hidden="true" tabindex="-1"></a>all_preds <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-28-2"><a href="#annotated-cell-28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(<span class="at">object =</span> gam_fit, </span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-28" data-target-annotation="1">1</button><span id="annotated-cell-28-3" class="code-annotation-target"><a href="#annotated-cell-28-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">newdata =</span> def_atbat2024,</span>
 <span id="annotated-cell-28-4"><a href="#annotated-cell-28-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">type =</span> <span class="st">"response"</span>)</span>
@@ -1062,7 +1054,7 @@ Figure&nbsp;8: Heatmap of out probabilities fitted with a generalized additive m
 <span id="annotated-cell-28-10"><a href="#annotated-cell-28-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_out =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-28" data-target-annotation="3">3</button><span id="annotated-cell-28-11" class="code-annotation-target"><a href="#annotated-cell-28-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(p_out) <span class="sc">&amp;</span> end_events <span class="sc">==</span> <span class="st">"home_run"</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-28" data-target-annotation="4">4</button><span id="annotated-cell-28-12" class="code-annotation-target"><a href="#annotated-cell-28-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(p_out) <span class="sc">&amp;</span> end_type <span class="sc">!=</span> <span class="st">"X"</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
-<span id="annotated-cell-28-13"><a href="#annotated-cell-28-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">.default =</span> p_out))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-28-13"><a href="#annotated-cell-28-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">.default =</span> p_out))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-28" data-target-annotation="1">1</dt>
@@ -1086,7 +1078,7 @@ Figure&nbsp;8: Heatmap of out probabilities fitted with a generalized additive m
 </div>
 <p>Even after manually setting <span class="math inline">\(\hat{p}_{i} = 0\)</span> on the at-bats that didn’t end with the ball in play, there are still some <code>NA</code> values in the column <code>p_out</code>. On further inspection, it looks like these were at-bats in which the ball was put in play but are missing hit locations.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(def_atbat2024<span class="sc">$</span>end_events[<span class="fu">is.na</span>(def_atbat2024<span class="sc">$</span>p_out)], <span class="at">useNA =</span> <span class="st">"always"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(def_atbat2024<span class="sc">$</span>end_events[<span class="fu">is.na</span>(def_atbat2024<span class="sc">$</span>p_out)], <span class="at">useNA =</span> <span class="st">"always"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
                    double                 field_out grounded_into_double_play 
@@ -1094,30 +1086,30 @@ Figure&nbsp;8: Heatmap of out probabilities fitted with a generalized additive m
                    single                    triple                      &lt;NA&gt; 
                         4                         1                         0 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(def_atbat2024<span class="sc">$</span>x[<span class="fu">is.na</span>(def_atbat2024<span class="sc">$</span>p_out)]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(def_atbat2024<span class="sc">$</span>x[<span class="fu">is.na</span>(def_atbat2024<span class="sc">$</span>p_out)]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 14</code></pre>
 </div>
 </div>
 <p>We will remove these rows from our calculations</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>def_atbat2024 <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>def_atbat2024 <span class="ot">&lt;-</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  def_atbat2024 <span class="sc">|&gt;</span></span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(p_out))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(p_out))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can now finally compute <span class="math inline">\(\delta^{(f)}_{i}\)</span> and <span class="math inline">\(\delta^{(p)}_{i}\)</span> for each at-bat.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>def_atbat2024 <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>def_atbat2024 <span class="ot">&lt;-</span></span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  def_atbat2024 <span class="sc">|&gt;</span></span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
 <span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">delta_p =</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p_out) <span class="sc">*</span> RunValue,</span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">delta_f =</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> p_out <span class="sc">*</span> RunValue)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">delta_f =</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> p_out <span class="sc">*</span> RunValue)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
 <section id="sec-fielding" class="level2">
 <h2 class="anchored" data-anchor-id="sec-fielding">Fielding Run Values</h2>
-<p>If a ball is hit towards deep left field and results in the fielding team creating a large <span class="math inline">\(-\delta\)</span>, how much blame should the third baseman, who is on the opposite side of the park receive? Following <span class="citation" data-cites="Baumer2015_openWAR">Baumer et al. (<a href="#ref-Baumer2015_openWAR" role="doc-biblioref">2015</a>)</span>, we will apportion <span class="math inline">\(\delta_{i}^{(f)},\)</span> the portion of the run value <span class="math inline">\(-\delta_{i}\)</span> attributable to the fielding in at-bat <span class="math inline">\(i\)</span>, based on each fielder’s responsibility for making an out on the batted ball. Specifically, we will assign <span class="math inline">\(w_{i,\ell} \times \delta_{i}^{(f)}\)</span> to the fielder playing position <span class="math inline">\(\ell \in \{1, 2, \ldots, 9\}\)</span> during the at-bat where <span class="math display">\[
+<p>If a ball is hit towards deep left field and results in the fielding team creating a large <span class="math inline">\(-\delta\)</span>, how much blame should the third baseman, who is on the opposite side of the park receive? Following <span class="citation" data-cites="Baumer2015_openWAR">Baumer, Jensen, and Matthews (<a href="#ref-Baumer2015_openWAR" role="doc-biblioref">2015</a>)</span>, we will apportion <span class="math inline">\(\delta_{i}^{(f)},\)</span> the portion of the run value <span class="math inline">\(-\delta_{i}\)</span> attributable to the fielding in at-bat <span class="math inline">\(i\)</span>, based on each fielder’s responsibility for making an out on the batted ball. Specifically, we will assign <span class="math inline">\(w_{i,\ell} \times \delta_{i}^{(f)}\)</span> to the fielder playing position <span class="math inline">\(\ell \in \{1, 2, \ldots, 9\}\)</span> during the at-bat where <span class="math display">\[
 w_{i,\ell} = \frac{\hat{p}_{i,\ell}}{\hat{p}_{i,1} + \cdots + \hat{p}_{i,9}}
 \]</span> and <span class="math inline">\(\hat{p}_{i,\ell}\)</span> is the probability that fielder <span class="math inline">\(\ell\)</span> makes the out given the location of the batted ball.</p>
 <p>To estimate the <span class="math inline">\(\hat{p}_{i,\ell}\)</span>’s, we will fit 9 separate GAMs, one for each fielding position. For fielding position <span class="math inline">\(\ell,\)</span> we will create a new variable that is equal to 1 if the ball in play resulted in an out was initially fielded by the player at position <span class="math inline">\(\ell.\)</span> Unlike our overall out probability model, which we fit using data from all batted balls, each position-specific GAM will be fitted using data from the subset of batted balls that are reasonably close to the typical position location. For instance, when fitting the model for the first basemen, we won’t include data from balls hit into deep left field. We compute the coordinates of the typical position by taking the average value of the <code>x</code> and <code>y</code> coordinates of all batted balls fielded by players at position <span class="math inline">\(\ell.\)</span> We fit each position-specific GAM using batted balls hit within 150 ft of this typical location<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
@@ -1127,7 +1119,7 @@ w_{i,\ell} = \frac{\hat{p}_{i,\ell}}{\hat{p}_{i,1} + \cdots + \hat{p}_{i,9}}
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>Warning
+Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1135,7 +1127,7 @@ w_{i,\ell} = \frac{\hat{p}_{i,\ell}}{\hat{p}_{i,1} + \cdots + \hat{p}_{i,9}}
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-33"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-33" data-target-annotation="1">1</button><span id="annotated-cell-33-1" class="code-annotation-target"><a href="#annotated-cell-33-1" aria-hidden="true" tabindex="-1"></a>mid_x <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="at">times =</span> <span class="dv">9</span>)</span>
+<div class="sourceCode cell-code" id="annotated-cell-33"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-33" data-target-annotation="1">1</button><span id="annotated-cell-33-1" class="code-annotation-target"><a href="#annotated-cell-33-1" aria-hidden="true" tabindex="-1"></a>mid_x <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="at">times =</span> <span class="dv">9</span>)</span>
 <span id="annotated-cell-33-2"><a href="#annotated-cell-33-2" aria-hidden="true" tabindex="-1"></a>mid_y <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="at">times =</span> <span class="dv">9</span>)</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-33" data-target-annotation="2">2</button><span id="annotated-cell-33-3" class="code-annotation-target"><a href="#annotated-cell-33-3" aria-hidden="true" tabindex="-1"></a>fit_list <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
 <span id="annotated-cell-33-4"><a href="#annotated-cell-33-4" aria-hidden="true" tabindex="-1"></a>fit_time <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="at">times =</span> <span class="dv">9</span>)</span>
@@ -1167,7 +1159,7 @@ w_{i,\ell} = \frac{\hat{p}_{i,\ell}}{\hat{p}_{i,1} + \cdots + \hat{p}_{i,9}}
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-33" data-target-annotation="10">10</button><span id="annotated-cell-33-30" class="code-annotation-target"><a href="#annotated-cell-33-30" aria-hidden="true" tabindex="-1"></a>  preds <span class="ot">&lt;-</span> <span class="fu">predict</span>(<span class="at">object =</span> fit_list[[l]], <span class="at">newdata =</span> tmp_df, <span class="at">type =</span> <span class="st">"response"</span>)</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-33" data-target-annotation="11">11</button><span id="annotated-cell-33-31" class="code-annotation-target"><a href="#annotated-cell-33-31" aria-hidden="true" tabindex="-1"></a>  def_atbat2024[[<span class="fu">paste0</span>(<span class="st">"p_out_"</span>, l)]] <span class="ot">&lt;-</span> preds</span>
 <span id="annotated-cell-33-32"><a href="#annotated-cell-33-32" aria-hidden="true" tabindex="-1"></a>}</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-33" data-target-annotation="12">12</button><span id="annotated-cell-33-33" class="code-annotation-target"><a href="#annotated-cell-33-33" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(fit_list, mid_x, mid_y, <span class="at">file =</span> <span class="st">"position_gam_fits.RData"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-33" data-target-annotation="12">12</button><span id="annotated-cell-33-33" class="code-annotation-target"><a href="#annotated-cell-33-33" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(fit_list, mid_x, mid_y, <span class="at">file =</span> <span class="st">"position_gam_fits.RData"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-33" data-target-annotation="1">1</dt>
@@ -1225,7 +1217,7 @@ w_{i,\ell} = \frac{\hat{p}_{i,\ell}}{\hat{p}_{i,1} + \cdots + \hat{p}_{i,9}}
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>def_atbat2024 <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>def_atbat2024 <span class="ot">&lt;-</span></span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  def_atbat2024 <span class="sc">|&gt;</span></span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
 <span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_out_1 =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
@@ -1281,12 +1273,12 @@ w_{i,\ell} = \frac{\hat{p}_{i,\ell}}{\hat{p}_{i,1} + \cdots + \hat{p}_{i,9}}
 <span id="cb37-54"><a href="#cb37-54" aria-hidden="true" tabindex="-1"></a>      end_type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"S"</span>, <span class="st">"B"</span>) <span class="sc">~</span> <span class="cn">NA</span>,</span>
 <span id="cb37-55"><a href="#cb37-55" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(x) <span class="sc">|</span> <span class="fu">is.na</span>(y) <span class="sc">~</span> <span class="cn">NA</span>,</span>
 <span id="cb37-56"><a href="#cb37-56" aria-hidden="true" tabindex="-1"></a>      <span class="fu">sqrt</span>( (x <span class="sc">-</span> mid_x[<span class="dv">9</span>])<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> (y <span class="sc">-</span> mid_y[<span class="dv">9</span>])<span class="sc">^</span><span class="dv">2</span>) <span class="sc">&gt;=</span> <span class="dv">150</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
-<span id="cb37-57"><a href="#cb37-57" aria-hidden="true" tabindex="-1"></a>      <span class="at">.default =</span> p_out_9))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb37-57"><a href="#cb37-57" aria-hidden="true" tabindex="-1"></a>      <span class="at">.default =</span> p_out_9))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>We now normalize the <span class="math inline">\(\hat{p}_{i,\ell}\)</span> values to get the weights <span class="math inline">\(w_{i,\ell}\)</span> measuring the responsibility of each fielder for making an out in the at-bat.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>def_atbat2024 <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>def_atbat2024 <span class="ot">&lt;-</span></span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  def_atbat2024 <span class="sc">|&gt;</span></span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
 <span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_weight =</span> p_out_1 <span class="sc">+</span> p_out_2 <span class="sc">+</span> p_out_3 <span class="sc">+</span></span>
@@ -1300,12 +1292,12 @@ w_{i,\ell} = \frac{\hat{p}_{i,\ell}}{\hat{p}_{i,1} + \cdots + \hat{p}_{i,9}}
 <span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">w6 =</span> p_out_6<span class="sc">/</span>total_weight,</span>
 <span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">w7 =</span> p_out_7<span class="sc">/</span>total_weight,</span>
 <span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">w8 =</span> p_out_8<span class="sc">/</span>total_weight,</span>
-<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">w9 =</span> p_out_9<span class="sc">/</span>total_weight)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">w9 =</span> p_out_9<span class="sc">/</span>total_weight)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now, for each fielding position, we can compute <span class="math inline">\(w_{i,\ell} \times \delta^{(f)}_{i}\)</span> and aggregate these values across players at that position to compute <span class="math inline">\(\textrm{RAA}_{\ell}^{(f)},\)</span> which quantifies the total run value created by the player through their fielding at position <span class="math inline">\(\ell.\)</span> Negative values of <span class="math inline">\(\textrm{RAA}_{\ell}^{(f)}\)</span> suggest that the player’s fielding at position <span class="math inline">\(\ell\)</span> netted <em>positive</em> run value for the batting team, thereby negatively impacthing his own team.</p>
 <p>Here is the calculation for first basemen (fielding position number <span class="math inline">\(\ell = 3\)</span>). Taking a looking at the largest <span class="math inline">\(\textrm{RAA}_{\ell}^{f}\)</span> values, we see several recent <a href="https://en.wikipedia.org/wiki/Gold_Glove_Award">Golden Glove</a> winners who are known for their fielding prowess (Santana, Walker, Goldschmidt, Olson).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>raa_f3 <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>raa_f3 <span class="ot">&lt;-</span></span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  def_atbat2024 <span class="sc">|&gt;</span></span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">RAA_f3 =</span> delta_f <span class="sc">*</span> w3) <span class="sc">|&gt;</span></span>
 <span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(fielder_3_id) <span class="sc">|&gt;</span></span>
@@ -1316,7 +1308,7 @@ w_{i,\ell} = \frac{\hat{p}_{i,\ell}}{\hat{p}_{i,1} + \cdots + \hat{p}_{i,9}}
 <span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">inner_join</span>(<span class="at">y =</span> player2024_lookup, <span class="at">by =</span> <span class="st">"key_mlbam"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Name, RAA_f3) <span class="sc">|&gt;</span></span>
 <span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(RAA_f3)) <span class="sc">|&gt;</span></span>
-<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 2
    Name             RAA_f3
@@ -1337,7 +1329,7 @@ w_{i,\ell} = \frac{\hat{p}_{i,\ell}}{\hat{p}_{i,1} + \cdots + \hat{p}_{i,9}}
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code computes the fielding RAA for all positions.</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>raa_f1 <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>raa_f1 <span class="ot">&lt;-</span></span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  def_atbat2024 <span class="sc">|&gt;</span></span>
 <span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">RAA_f1 =</span> delta_f <span class="sc">*</span> w1) <span class="sc">|&gt;</span></span>
 <span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(pitcher_id) <span class="sc">|&gt;</span></span>
@@ -1407,12 +1399,12 @@ w_{i,\ell} = \frac{\hat{p}_{i,\ell}}{\hat{p}_{i,1} + \cdots + \hat{p}_{i,9}}
 <span id="cb41-68"><a href="#cb41-68" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(fielder_9_id) <span class="sc">|&gt;</span></span>
 <span id="cb41-69"><a href="#cb41-69" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">RAA_f9 =</span> <span class="fu">sum</span>(RAA_f9, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb41-70"><a href="#cb41-70" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename</span>(<span class="at">key_mlbam =</span> fielder_9_id) <span class="sc">|&gt;</span></span>
-<span id="cb41-71"><a href="#cb41-71" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(key_mlbam, RAA_f9)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb41-71"><a href="#cb41-71" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(key_mlbam, RAA_f9)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Like we did when computing <span class="math inline">\(\textrm{RAA}^{(br)}\)</span> in <a href="../lectures/lecture07.html">Lecture 7</a>, we will concatenate <code>raa_f1</code>, …, <code>raa_f9</code> and sum every players total contributions across all fielding positions.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>raa_f <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>raa_f <span class="ot">&lt;-</span></span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  raa_f1 <span class="sc">|&gt;</span></span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">full_join</span>(<span class="at">y =</span> raa_f2, <span class="at">by =</span> <span class="st">"key_mlbam"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">full_join</span>(<span class="at">y =</span> raa_f3, <span class="at">by =</span> <span class="st">"key_mlbam"</span>) <span class="sc">|&gt;</span></span>
@@ -1430,14 +1422,14 @@ w_{i,\ell} = \frac{\hat{p}_{i,\ell}}{\hat{p}_{i,1} + \cdots + \hat{p}_{i,9}}
 <span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a>      RAA_f5 <span class="sc">+</span> RAA_f6 <span class="sc">+</span> RAA_f7 <span class="sc">+</span> RAA_f8 <span class="sc">+</span> RAA_f9) <span class="sc">|&gt;</span></span>
 <span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">inner_join</span>(<span class="at">y =</span> player2024_lookup, <span class="at">by =</span> <span class="st">"key_mlbam"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb42-18"><a href="#cb42-18" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Name, key_mlbam, RAA_f, RAA_f1, RAA_f2, RAA_f3, RAA_f4, RAA_f5,</span>
-<span id="cb42-19"><a href="#cb42-19" aria-hidden="true" tabindex="-1"></a>                RAA_f6, RAA_f7, RAA_f8, RAA_f9)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb42-19"><a href="#cb42-19" aria-hidden="true" tabindex="-1"></a>                RAA_f6, RAA_f7, RAA_f8, RAA_f9)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="sec-pitching" class="level2">
 <h2 class="anchored" data-anchor-id="sec-pitching">Pitching Run Values</h2>
 <p>Recall that <span class="math inline">\(\delta_{i}^{(p)}\)</span> is the amount of run value created by the pitcher in at-bat <span class="math inline">\(i.\)</span> Summing this value across all at-bats involving each pitcher, we obtain each pitchers <span class="math inline">\(\textrm{RAA}^{(p)}.\)</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>raa_p <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>raa_p <span class="ot">&lt;-</span></span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  def_atbat2024 <span class="sc">|&gt;</span></span>
 <span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(pitcher_id, delta_p) <span class="sc">|&gt;</span></span>
 <span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(pitcher_id) <span class="sc">|&gt;</span></span>
@@ -1448,7 +1440,7 @@ w_{i,\ell} = \frac{\hat{p}_{i,\ell}}{\hat{p}_{i,1} + \cdots + \hat{p}_{i,9}}
 <span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>raa_p <span class="sc">|&gt;</span></span>
 <span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(RAA_p)) <span class="sc">|&gt;</span></span>
-<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 3
   Name         key_mlbam RAA_p
@@ -1463,14 +1455,14 @@ w_{i,\ell} = \frac{\hat{p}_{i,\ell}}{\hat{p}_{i,1} + \cdots + \hat{p}_{i,9}}
 <p>We see that the two 2024 <a href="https://en.wikipedia.org/wiki/Cy_Young_Award">Cy Young Award</a> winners<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>, Tarik Skubal and Chris Sale, have the highest <span class="math inline">\(\textrm{RAA}^{(p)}\)</span> values.</p>
 <p>We will save both <code>raa_f</code> and <code>raa_p</code> for later use</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(raa_f, raa_p, <span class="at">file =</span> <span class="st">"mlb_raa_defensive2024.RData"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(raa_f, raa_p, <span class="at">file =</span> <span class="st">"mlb_raa_defensive2024.RData"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="sec-war" class="level2">
 <h2 class="anchored" data-anchor-id="sec-war">Replacement Level</h2>
 <p>We now combine the fielding and pitching RAA values with the baserunning and batting RAA values we computed in <a href="../lectures/lecture07.html">Lecture 7</a> into a single table.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"mlb_raa_offensive2024.RData"</span>)</span>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"mlb_raa_offensive2024.RData"</span>)</span>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>raa <span class="ot">&lt;-</span></span>
 <span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  raa_b <span class="sc">|&gt;</span></span>
@@ -1487,7 +1479,7 @@ w_{i,\ell} = \frac{\hat{p}_{i,\ell}}{\hat{p}_{i,1} + \cdots + \hat{p}_{i,9}}
 <span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a>raa <span class="sc">|&gt;</span></span>
 <span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(RAA)) <span class="sc">|&gt;</span></span>
 <span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Name, RAA, RAA_b, RAA_br, RAA_f, RAA_p) <span class="sc">|&gt;</span></span>
-<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 6
    Name                RAA  RAA_b   RAA_br RAA_f RAA_p
@@ -1504,9 +1496,9 @@ w_{i,\ell} = \frac{\hat{p}_{i,\ell}}{\hat{p}_{i,1} + \cdots + \hat{p}_{i,9}}
 10 Francisco Lindor   93.8 30.9    -4.15    67.1     0</code></pre>
 </div>
 </div>
-<p><span class="math inline">\(RAA\)</span> is a comprehensive measure of a player’s performance that accounts not only for the actual runs scored (or given up) due to his contributions but also the changes in the expected runs that can be attributed to his play. We constructed <span class="math inline">\(RAA\)</span> so that larger numbers indicate better performance. While the absolute <span class="math inline">\(RAA\)</span> values are useful on their own, they become even more useful — and easier to interpret — when calibrated to measure performance <em>relative</em> to a baseline player. As argued by <span class="citation" data-cites="Baumer2015_openWAR">Baumer et al. (<a href="#ref-Baumer2015_openWAR" role="doc-biblioref">2015</a>)</span>, although comparing an individual players <span class="math inline">\(RAA\)</span> to the league-average value is intuitive, average players are themselves quite valuable. Further, it is not reasonable to expect a team to be able to replace any player with a league average one. Thus, it is more useful to compare each player’s performance relative to a replacement-level player.</p>
-<p>As discussed in class (and also in <span class="citation" data-cites="Baumer2015_openWAR">(<a href="#ref-Baumer2015_openWAR" role="doc-biblioref">Baumer et al. 2015, sec. 3.8</a>)</span>), existing definitions of replacement level are fairly arbitrary. For instance, back in 2010, <a href="https://library.fangraphs.com/misc/war/replacement-level/">FanGraphs</a> asserted that a team of players making the minimum MLB salary would win 29.7% of its games (so between 48 and 49 games). Similar definitions have been adopted by other sites like Baseball Propsectus and Baseball Reference. Unfortunately, there is little empirical justification for this number.</p>
-<p>We will instead use <span class="citation" data-cites="Baumer2015_openWAR">Baumer et al. (<a href="#ref-Baumer2015_openWAR" role="doc-biblioref">2015</a>)</span>’s roster-based definition of replacement level, which is motivated and computed as follows:</p>
+<p><span class="math inline">\(RAA\)</span> is a comprehensive measure of a player’s performance that accounts not only for the actual runs scored (or given up) due to his contributions but also the changes in the expected runs that can be attributed to his play. We constructed <span class="math inline">\(RAA\)</span> so that larger numbers indicate better performance. While the absolute <span class="math inline">\(RAA\)</span> values are useful on their own, they become even more useful — and easier to interpret — when calibrated to measure performance <em>relative</em> to a baseline player. As argued by <span class="citation" data-cites="Baumer2015_openWAR">Baumer, Jensen, and Matthews (<a href="#ref-Baumer2015_openWAR" role="doc-biblioref">2015</a>)</span>, although comparing an individual players <span class="math inline">\(RAA\)</span> to the league-average value is intuitive, average players are themselves quite valuable. Further, it is not reasonable to expect a team to be able to replace any player with a league average one. Thus, it is more useful to compare each player’s performance relative to a replacement-level player.</p>
+<p>As discussed in class (and also in <span class="citation" data-cites="Baumer2015_openWAR">(<a href="#ref-Baumer2015_openWAR" role="doc-biblioref">Baumer, Jensen, and Matthews 2015, sec. 3.8</a>)</span>), existing definitions of replacement level are fairly arbitrary. For instance, back in 2010, <a href="https://library.fangraphs.com/misc/war/replacement-level/">FanGraphs</a> asserted that a team of players making the minimum MLB salary would win 29.7% of its games (so between 48 and 49 games). Similar definitions have been adopted by other sites like Baseball Propsectus and Baseball Reference. Unfortunately, there is little empirical justification for this number.</p>
+<p>We will instead use <span class="citation" data-cites="Baumer2015_openWAR">Baumer, Jensen, and Matthews (<a href="#ref-Baumer2015_openWAR" role="doc-biblioref">2015</a>)</span>’s roster-based definition of replacement level, which is motivated and computed as follows:</p>
 <ol type="1">
 <li>Each of the 30 major league teams typically carries 25 players, 13 of whom are position players and 12 of whom are pitchers</li>
 <li>On any given day, there are generally <span class="math inline">\(12 \times 30 = 360\)</span> pitchers and <span class="math inline">\(13 \times 30 = 390\)</span> active players.</li>
@@ -1514,13 +1506,13 @@ w_{i,\ell} = \frac{\hat{p}_{i,\ell}}{\hat{p}_{i,1} + \cdots + \hat{p}_{i,9}}
 </ol>
 <p>Remember that our table <code>def_atbat2024</code> contains information from all available at-bats in the 2024 regular season. We can use the data in this table to count the number of plate appearances for each non-pitcher and number of batters faced by each pitcher. To this end, we first create lists of the MLB Advanced Media IDs of all pitchers and all non-pitchers who appear in our dataset.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-42"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-42" data-target-annotation="1">1</button><span id="annotated-cell-42-1" class="code-annotation-target"><a href="#annotated-cell-42-1" aria-hidden="true" tabindex="-1"></a>all_players <span class="ot">&lt;-</span> <span class="fu">unique</span>(</span>
+<div class="sourceCode cell-code" id="annotated-cell-42"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-42" data-target-annotation="1">1</button><span id="annotated-cell-42-1" class="code-annotation-target"><a href="#annotated-cell-42-1" aria-hidden="true" tabindex="-1"></a>all_players <span class="ot">&lt;-</span> <span class="fu">unique</span>(</span>
 <span id="annotated-cell-42-2"><a href="#annotated-cell-42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(def_atbat2024<span class="sc">$</span>batter_id, def_atbat2024<span class="sc">$</span>pitcher_id, def_atbat2024<span class="sc">$</span>fielder_2_id,</span>
 <span id="annotated-cell-42-3"><a href="#annotated-cell-42-3" aria-hidden="true" tabindex="-1"></a>    def_atbat2024<span class="sc">$</span>fielder_3_id, def_atbat2024<span class="sc">$</span>fielder_4_id, def_atbat2024<span class="sc">$</span>fielder_5_id,</span>
 <span id="annotated-cell-42-4"><a href="#annotated-cell-42-4" aria-hidden="true" tabindex="-1"></a>    def_atbat2024<span class="sc">$</span>fielder_6_id, def_atbat2024<span class="sc">$</span>fielder_7_id, def_atbat2024<span class="sc">$</span>fielder_8_id, def_atbat2024<span class="sc">$</span>fielder_9_id))</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-42" data-target-annotation="2">2</button><span id="annotated-cell-42-5" class="code-annotation-target"><a href="#annotated-cell-42-5" aria-hidden="true" tabindex="-1"></a>pitchers <span class="ot">&lt;-</span> <span class="fu">unique</span>(def_atbat2024<span class="sc">$</span>pitcher_id)</span>
 <span id="annotated-cell-42-6"><a href="#annotated-cell-42-6" aria-hidden="true" tabindex="-1"></a></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-42" data-target-annotation="3">3</button><span id="annotated-cell-42-7" class="code-annotation-target"><a href="#annotated-cell-42-7" aria-hidden="true" tabindex="-1"></a>position_players <span class="ot">&lt;-</span> all_players[<span class="sc">!</span>all_players <span class="sc">%in%</span> pitchers]</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-42" data-target-annotation="3">3</button><span id="annotated-cell-42-7" class="code-annotation-target"><a href="#annotated-cell-42-7" aria-hidden="true" tabindex="-1"></a>position_players <span class="ot">&lt;-</span> all_players[<span class="sc">!</span>all_players <span class="sc">%in%</span> pitchers]</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-42" data-target-annotation="1">1</dt>
@@ -1540,7 +1532,7 @@ w_{i,\ell} = \frac{\hat{p}_{i,\ell}}{\hat{p}_{i,1} + \cdots + \hat{p}_{i,9}}
 </div>
 <p>Using grouped summaries, we can count the number of at-bats faced by each position player as a batter and by each pitcher. Since the overwhelming majority of at-bats involved only one batter, these counts effectively tell us the number of batters faced by each pitcher.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-43"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-43-1"><a href="#annotated-cell-43-1" aria-hidden="true" tabindex="-1"></a>position_pa <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-43"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-43-1"><a href="#annotated-cell-43-1" aria-hidden="true" tabindex="-1"></a>position_pa <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-43-2"><a href="#annotated-cell-43-2" aria-hidden="true" tabindex="-1"></a>  def_atbat2024 <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-43" data-target-annotation="1">1</button><span id="annotated-cell-43-3" class="code-annotation-target"><a href="#annotated-cell-43-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(batter_id <span class="sc">%in%</span> position_players) <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-43-4"><a href="#annotated-cell-43-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(batter_id) <span class="sc">|&gt;</span></span>
@@ -1560,7 +1552,7 @@ w_{i,\ell} = \frac{\hat{p}_{i,\ell}}{\hat{p}_{i,1} + \cdots + \hat{p}_{i,9}}
 <span id="annotated-cell-43-18"><a href="#annotated-cell-43-18" aria-hidden="true" tabindex="-1"></a>repl_pitchers <span class="ot">&lt;-</span> pitcher_pa<span class="sc">$</span>key_mlbam[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">360</span>)]</span>
 <span id="annotated-cell-43-19"><a href="#annotated-cell-43-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-43-20"><a href="#annotated-cell-43-20" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Cut-off for position players:"</span>, position_pa<span class="sc">$</span>n[<span class="dv">390</span>], <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="annotated-cell-43-21"><a href="#annotated-cell-43-21" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Cut-off for pitchers:"</span>, pitcher_pa<span class="sc">$</span>n[<span class="dv">360</span>], <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-43-21"><a href="#annotated-cell-43-21" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Cut-off for pitchers:"</span>, pitcher_pa<span class="sc">$</span>n[<span class="dv">360</span>], <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-43" data-target-annotation="1">1</dt>
@@ -1592,7 +1584,7 @@ Cut-off for pitchers: 210 </code></pre>
 </div>
 <p>Ultimately, we wish to compare each player’s <span class="math inline">\(RAA\)</span> to the <span class="math inline">\(RAA\)</span> that would have been created had the player been replaced by a replacement-level player. To estimate this counter-factual <span class="math inline">\(RAA\)</span>, we will divide the total <span class="math inline">\(RAA\)</span> produced by all replacement-level players by the total number of plate appearances.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-44"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-44-1"><a href="#annotated-cell-44-1" aria-hidden="true" tabindex="-1"></a>repl_position_raa <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-44"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-44-1"><a href="#annotated-cell-44-1" aria-hidden="true" tabindex="-1"></a>repl_position_raa <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-44-2"><a href="#annotated-cell-44-2" aria-hidden="true" tabindex="-1"></a>  raa <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-44-3"><a href="#annotated-cell-44-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(key_mlbam <span class="sc">%in%</span> repl_position_players) <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-44" data-target-annotation="1">1</button><span id="annotated-cell-44-4" class="code-annotation-target"><a href="#annotated-cell-44-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">inner_join</span>(<span class="at">y =</span> position_pa, <span class="at">by =</span> <span class="st">"key_mlbam"</span>) <span class="sc">|&gt;</span></span>
@@ -1605,7 +1597,7 @@ Cut-off for pitchers: 210 </code></pre>
 <span id="annotated-cell-44-11"><a href="#annotated-cell-44-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(Name, key_mlbam, RAA, n) </span>
 <span id="annotated-cell-44-12"><a href="#annotated-cell-44-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-44-13"><a href="#annotated-cell-44-13" aria-hidden="true" tabindex="-1"></a>repl_avg_pos <span class="ot">&lt;-</span> <span class="fu">sum</span>(repl_position_raa<span class="sc">$</span>RAA)<span class="sc">/</span><span class="fu">sum</span>(repl_position_raa<span class="sc">$</span>n)</span>
-<span id="annotated-cell-44-14"><a href="#annotated-cell-44-14" aria-hidden="true" tabindex="-1"></a>repl_avg_pitch <span class="ot">&lt;-</span> <span class="fu">sum</span>(repl_pitch_raa<span class="sc">$</span>RAA)<span class="sc">/</span><span class="fu">sum</span>(repl_pitch_raa<span class="sc">$</span>n)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-44-14"><a href="#annotated-cell-44-14" aria-hidden="true" tabindex="-1"></a>repl_avg_pitch <span class="ot">&lt;-</span> <span class="fu">sum</span>(repl_pitch_raa<span class="sc">$</span>RAA)<span class="sc">/</span><span class="fu">sum</span>(repl_pitch_raa<span class="sc">$</span>n)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-44" data-target-annotation="1">1</dt>
@@ -1617,7 +1609,7 @@ Cut-off for pitchers: 210 </code></pre>
 </div>
 <p>We see that the replacement-level RAA per-at-bat is 0 for position players and -0.03 for pitchers. Multiplying the the replacement-level per-at-bat RAA values by the number of plate appearances faced by each non-replacement-level player gives us an estimate of how each player’s replacement-level “shadow” would perform. Finally, using the heuristic of 10 runs per win, dividing the difference between the actual RAA and the RAA for the replacement-level shadow yields our wins above replacement for position players.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>position_war <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>position_war <span class="ot">&lt;-</span></span>
 <span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  raa <span class="sc">|&gt;</span></span>
 <span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span>key_mlbam <span class="sc">%in%</span> repl_position_players) <span class="sc">|&gt;</span></span>
 <span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">inner_join</span>(<span class="at">y =</span> position_pa, <span class="at">by =</span> <span class="st">"key_mlbam"</span>) <span class="sc">|&gt;</span> </span>
@@ -1627,7 +1619,7 @@ Cut-off for pitchers: 210 </code></pre>
 <span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>position_war <span class="sc">|&gt;</span></span>
 <span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(WAR)) <span class="sc">|&gt;</span></span>
-<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 6
    Name              key_mlbam   RAA     n shadowRAA   WAR
@@ -1646,7 +1638,7 @@ Cut-off for pitchers: 210 </code></pre>
 </div>
 <p>We can run a similar calculation for pitchers.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>pitch_war <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>pitch_war <span class="ot">&lt;-</span></span>
 <span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  raa <span class="sc">|&gt;</span></span>
 <span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span>key_mlbam <span class="sc">%in%</span> repl_pitchers) <span class="sc">|&gt;</span></span>
 <span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">inner_join</span>(<span class="at">y =</span> pitcher_pa, <span class="at">by =</span> <span class="st">"key_mlbam"</span>) <span class="sc">|&gt;</span></span>
@@ -1656,7 +1648,7 @@ Cut-off for pitchers: 210 </code></pre>
 <span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>pitch_war <span class="sc">|&gt;</span></span>
 <span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(WAR)) <span class="sc">|&gt;</span></span>
-<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 10 × 6
    Name            key_mlbam   RAA     n shadowRAA   WAR
@@ -1685,7 +1677,7 @@ Cut-off for pitchers: 210 </code></pre>
 </section>
 
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-Baumer2015_openWAR" class="csl-entry" role="listitem">
 Baumer, Benjamin S., Shane T. Jensen, and Gregory J. Matthews. 2015. <span>“<span class="nocase">openWAR</span>: An Open Source System for Evaluating Overall Player Performance in <span>Major League Baseball</span>.”</span> <em>Journal of Quantitative Analysis in Sports</em> 11 (2).
 </div>
@@ -1749,14 +1741,13 @@ Baumer, Benjamin S., Shane T. Jensen, and Gregory J. Matthews. 2015. <span>“<s
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-      const outerScaffold = trigger.parentElement.cloneNode(true);
-      const codeEl = outerScaffold.querySelector('code');
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
         }
-      }
-      return codeEl.innerText;
+        return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

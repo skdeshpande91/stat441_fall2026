@@ -2,16 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.7.32">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Lecture 5: Regularized Adjusted Plus/Minus – STAT441</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -74,16 +71,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-d0ae9245876894da5ac7e18953ecc5cc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../site_libs/quarto-axe/axe-check.js" type="module"></script>
-<script id="quarto-axe-checker-options" type="text/plain">eyJvdXRwdXQiOiJkb2N1bWVudCJ9</script>
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-da920e58b6ff959c98c9ccc31dcc4995.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -115,7 +106,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -128,7 +119,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+      if (mathElements[i].tagName == "SPAN") {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -437,7 +428,7 @@ Y_{i} = \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha} + \epsilon_{i}.
 \]</span></p>
 <p>At the <a href="../lectures/lecture04.html#sec-looking-ahead">end of Lecture 4</a>, we saved a copy of the full matrix <span class="math inline">\(\boldsymbol{\mathbf{X}}\)</span> (which we called <code>X_full</code>) of signed on-court indicators, a vector of point differentials per 100 possessions <span class="math inline">\(\boldsymbol{Y}\)</span> (<code>Y</code>), and a look-up table containing player id numbers and names. We load those objects into our environment.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"nba_rapm_data.RData"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"nba_rapm_data.RData"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
@@ -465,13 +456,13 @@ Y_{i} = \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha} + \epsilon_{i}.
 <p>To recap, by fitting a ridge regression model instead of an ordinary linear model, we are able to estimate an adjusted plus/minus value <em>for all players</em>, thereby avoiding having to specify an arbitrary baseline-level. Although this is conceptually easy, finding a suitable <span class="math inline">\(\lambda\)</span> via cross-validation is quite an involved process. Luckily for us, the function <a href="https://glmnet.stanford.edu/reference/cv.glmnet.html"><code>cv.glmnet()</code></a> from the <a href="https://glmnet.stanford.edu/articles/glmnet.html"><strong>glmnet</strong> package</a> automates the process (including specifying the initial grid).</p>
 <p>The following code shows how to perform the cross-validation, plots the cross-validation error for each value of <span class="math inline">\(\lambda\)</span>, and selects the <span class="math inline">\(\lambda\)</span> with smallest error.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">479</span>)</span>
+<div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-1" class="code-annotation-target"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">479</span>)</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2">2</button><span id="annotated-cell-2-2" class="code-annotation-target"><a href="#annotated-cell-2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
 <span id="annotated-cell-2-3"><a href="#annotated-cell-2-3" aria-hidden="true" tabindex="-1"></a>cv_fit <span class="ot">&lt;-</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3">3</button><span id="annotated-cell-2-4" class="code-annotation-target"><a href="#annotated-cell-2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cv.glmnet</span>(<span class="at">x =</span> X_full, <span class="at">y =</span> Y,</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="4">4</button><span id="annotated-cell-2-5" class="code-annotation-target"><a href="#annotated-cell-2-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">alpha =</span> <span class="dv">0</span>,</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="5">5</button><span id="annotated-cell-2-6" class="code-annotation-target"><a href="#annotated-cell-2-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">standardize =</span> <span class="cn">FALSE</span>)</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="6">6</button><span id="annotated-cell-2-7" class="code-annotation-target"><a href="#annotated-cell-2-7" aria-hidden="true" tabindex="-1"></a>lambda_min <span class="ot">&lt;-</span> cv_fit<span class="sc">$</span>lambda.min</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="6">6</button><span id="annotated-cell-2-7" class="code-annotation-target"><a href="#annotated-cell-2-7" aria-hidden="true" tabindex="-1"></a>lambda_min <span class="ot">&lt;-</span> cv_fit<span class="sc">$</span>lambda.min</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
@@ -503,10 +494,10 @@ Y_{i} = \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha} + \epsilon_{i}.
 </div>
 <p>We can plot the out-of-sample error as a function of <span class="math inline">\(\lambda\)</span>:</p>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">1</span>), <span class="at">mgp =</span> <span class="fu">c</span>(<span class="fl">1.8</span>, <span class="fl">0.5</span>, <span class="dv">0</span>))</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cv_fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">1</span>), <span class="at">mgp =</span> <span class="fu">c</span>(<span class="fl">1.8</span>, <span class="fl">0.5</span>, <span class="dv">0</span>))</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cv_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-plot-cv" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Plot of out-of-sample error plotted against regularizaiton parameter" data-fig-align="center">
+<div id="fig-plot-cv" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Plot of out-of-sample error plotted against regularizaiton parameter">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-plot-cv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture05_files/figure-html/fig-plot-cv-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Out-of-sample error plotted against regularization parameter (lambda)"><img src="lecture05_files/figure-html/fig-plot-cv-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Plot of out-of-sample error plotted against regularizaiton parameter" width="576"></a>
@@ -524,7 +515,7 @@ Figure&nbsp;1: Out-of-sample error plotted against regularization parameter (lam
 <p>We can now fit a ridge regression model with the cross-validated choice of <span class="math inline">\(\lambda\)</span> using data from all our stints. Because we do not need to run cross-validation again, we use the function <code>glmnet</code> instead of <code>cv.glmnet</code>.</p>
 <p>In the following code, we actually fit a ridge regression model using <em>all</em> values of <span class="math inline">\(\lambda\)</span> from the grid constructed by <code>cv.glmnet()</code>. This is because the function <code>glmnet</code> can behave a little strangely when only one value of <span class="math inline">\(\lambda\)</span> is specified<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. Then, we pull out the estimated coefficients corresponding to the optimal <span class="math inline">\(\lambda\)</span> value.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-1" class="code-annotation-target"><a href="#annotated-cell-4-1" aria-hidden="true" tabindex="-1"></a>lambda_index <span class="ot">&lt;-</span> <span class="fu">which</span>(cv_fit<span class="sc">$</span>lambda <span class="sc">==</span> lambda_min)</span>
+<div class="sourceCode cell-code" id="annotated-cell-4"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-4" data-target-annotation="1">1</button><span id="annotated-cell-4-1" class="code-annotation-target"><a href="#annotated-cell-4-1" aria-hidden="true" tabindex="-1"></a>lambda_index <span class="ot">&lt;-</span> <span class="fu">which</span>(cv_fit<span class="sc">$</span>lambda <span class="sc">==</span> lambda_min)</span>
 <span id="annotated-cell-4-2"><a href="#annotated-cell-4-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-4-3"><a href="#annotated-cell-4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glmnet</span>(<span class="at">x =</span> X_full, <span class="at">y =</span> Y,</span>
 <span id="annotated-cell-4-4"><a href="#annotated-cell-4-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">alpha =</span> <span class="dv">0</span>,</span>
@@ -537,7 +528,7 @@ Figure&nbsp;1: Out-of-sample error plotted against regularization parameter (lam
 <span id="annotated-cell-4-11"><a href="#annotated-cell-4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
 <span id="annotated-cell-4-12"><a href="#annotated-cell-4-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">Name =</span> <span class="fu">names</span>(alpha_hat),</span>
 <span id="annotated-cell-4-13"><a href="#annotated-cell-4-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">rapm =</span> alpha_hat)</span>
-<span id="annotated-cell-4-14"><a href="#annotated-cell-4-14" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(rapm) <span class="ot">&lt;-</span> <span class="cn">NULL</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-4-14"><a href="#annotated-cell-4-14" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(rapm) <span class="ot">&lt;-</span> <span class="cn">NULL</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-4" data-target-annotation="1">1</dt>
@@ -561,9 +552,9 @@ Figure&nbsp;1: Out-of-sample error plotted against regularization parameter (lam
 </div>
 <p>We recognize many super-star-level players (e.g., Gilgeous-Alexander, Dončić, Jokić, Giannis) among those with the highest <em>regularized</em> adjusted plus/minus values.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>rapm <span class="sc">|&gt;</span></span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>rapm <span class="sc">|&gt;</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(rapm)) <span class="sc">|&gt;</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                      Name     rapm
 1  Shai Gilgeous-Alexander 3.603398
@@ -581,12 +572,12 @@ Figure&nbsp;1: Out-of-sample error plotted against regularization parameter (lam
 <p>Recall that in our regularized adjusted plus/minus model, the individual <span class="math inline">\(\alpha_{j}\)</span>’s correspond to a somewhat absurd counter-factual. Specifically, <span class="math inline">\(\alpha_{j}\)</span> represents the amount by which a team’s point differential per 100 possession increases if they go from playing 4-on-5 to playing 5-on-5 with player <span class="math inline">\(j\)</span> on the court. Differences of the form <span class="math inline">\(\alpha_{j} - \alpha_{j'}\)</span> are much more useful than the single <span class="math inline">\(\alpha_{j}\)</span> values. By replacing player <span class="math inline">\(j'\)</span> with player <span class="math inline">\(j,\)</span> a team can expect to score <span class="math inline">\(\alpha_{j} - \alpha_{j'}\)</span> more points per 100 possessions.</p>
 <p>For instance, by replacing Luka Dončić with Anthony Davis, teams are expected to score an additional -3.4 points per possession<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>luka_rapm <span class="ot">&lt;-</span> rapm <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(Name <span class="sc">==</span> <span class="st">"Luka Doncic"</span>) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">pull</span>(rapm)</span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>luka_rapm <span class="ot">&lt;-</span> rapm <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(Name <span class="sc">==</span> <span class="st">"Luka Doncic"</span>) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">pull</span>(rapm)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>ad_rapm <span class="ot">&lt;-</span> rapm <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(Name <span class="sc">==</span> <span class="st">"Anthony Davis"</span>) <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">pull</span>(rapm)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>ad_rapm <span class="sc">-</span> luka_rapm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>ad_rapm <span class="sc">-</span> luka_rapm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -3.418218</code></pre>
+<pre><code>[1] -3.417006</code></pre>
 </div>
 </div>
 </section>
@@ -615,7 +606,7 @@ Important
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-1" class="code-annotation-target"><a href="#annotated-cell-7-1" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="dv">500</span></span>
+<div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1">1</button><span id="annotated-cell-7-1" class="code-annotation-target"><a href="#annotated-cell-7-1" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="dv">500</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="2">2</button><span id="annotated-cell-7-2" class="code-annotation-target"><a href="#annotated-cell-7-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X_full)</span>
 <span id="annotated-cell-7-3"><a href="#annotated-cell-7-3" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ncol</span>(X_full)</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="3">3</button><span id="annotated-cell-7-4" class="code-annotation-target"><a href="#annotated-cell-7-4" aria-hidden="true" tabindex="-1"></a>player_names <span class="ot">&lt;-</span> <span class="fu">colnames</span>(X_full)</span>
@@ -634,7 +625,7 @@ Important
 <span id="annotated-cell-7-17"><a href="#annotated-cell-7-17" aria-hidden="true" tabindex="-1"></a>           <span class="at">standardize =</span> <span class="cn">FALSE</span>)</span>
 <span id="annotated-cell-7-18"><a href="#annotated-cell-7-18" aria-hidden="true" tabindex="-1"></a>  tmp_alpha <span class="ot">&lt;-</span> fit<span class="sc">$</span>beta[,lambda_index]</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="9">9</button><span id="annotated-cell-7-19" class="code-annotation-target"><a href="#annotated-cell-7-19" aria-hidden="true" tabindex="-1"></a>  boot_rapm[b, <span class="fu">names</span>(tmp_alpha)] <span class="ot">&lt;-</span> tmp_alpha</span>
-<span id="annotated-cell-7-20"><a href="#annotated-cell-7-20" aria-hidden="true" tabindex="-1"></a>}</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-7-20"><a href="#annotated-cell-7-20" aria-hidden="true" tabindex="-1"></a>}</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
@@ -678,12 +669,12 @@ Important
 </div>
 <p>We can now compute the difference between Dončić’s and Davis’ estimated RAPM values for every bootstrap estimate. We find that the overwhelming majority of these samples are negative, suggesting that that we can be virtually certain that a team is expected to score score <em>fewer</em> points per 100 possessions by replacing Dončić by Davis.</p>
 <div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="1">1</button><span id="annotated-cell-8-1" class="code-annotation-target"><a href="#annotated-cell-8-1" aria-hidden="true" tabindex="-1"></a>boot_diff <span class="ot">&lt;-</span> boot_rapm[,<span class="st">"Anthony Davis"</span>] <span class="sc">-</span> boot_rapm[,<span class="st">"Luka Doncic"</span>]</span>
+<div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="1">1</button><span id="annotated-cell-8-1" class="code-annotation-target"><a href="#annotated-cell-8-1" aria-hidden="true" tabindex="-1"></a>boot_diff <span class="ot">&lt;-</span> boot_rapm[,<span class="st">"Anthony Davis"</span>] <span class="sc">-</span> boot_rapm[,<span class="st">"Luka Doncic"</span>]</span>
 <span id="annotated-cell-8-2"><a href="#annotated-cell-8-2" aria-hidden="true" tabindex="-1"></a></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="2">2</button><span id="annotated-cell-8-3" class="code-annotation-target"><a href="#annotated-cell-8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(boot_diff,</span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="3">3</button><span id="annotated-cell-8-4" class="code-annotation-target"><a href="#annotated-cell-8-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">breaks =</span> <span class="dv">20</span>,</span>
 <span id="annotated-cell-8-5"><a href="#annotated-cell-8-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Bootstrap Distribution of Davis-Doncic"</span>, </span>
-<span id="annotated-cell-8-6"><a href="#annotated-cell-8-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Difference"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="annotated-cell-8-6"><a href="#annotated-cell-8-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Difference"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-8" data-target-annotation="1">1</dt>
@@ -701,7 +692,7 @@ Important
 </dl>
 </div>
 <div class="cell-output-display">
-<div id="fig-bootstrap-diff" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Histogram of bootstrap samples of difference between Doncic &amp; Davis" data-fig-align="center">
+<div id="fig-bootstrap-diff" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Histogram of bootstrap samples of difference between Doncic &amp; Davis">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-bootstrap-diff-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture05_files/figure-html/fig-bootstrap-diff-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Bootstrap distribution of difference between Doncic &amp; Davis"><img src="lecture05_files/figure-html/fig-bootstrap-diff-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Histogram of bootstrap samples of difference between Doncic &amp; Davis" width="576"></a>
@@ -715,7 +706,7 @@ Figure&nbsp;2: Bootstrap distribution of difference between Doncic &amp; Davis
 </div>
 <p>We can form an uncertainty interval using the sample quantiles of the bootstrapped differences between Davis’ and Dončić’s RAPM values.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1">1</button><span id="annotated-cell-9-1" class="code-annotation-target"><a href="#annotated-cell-9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(boot_diff, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="annotated-cell-9"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-9" data-target-annotation="1">1</button><span id="annotated-cell-9-1" class="code-annotation-target"><a href="#annotated-cell-9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(boot_diff, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-hidden code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-9" data-target-annotation="1">1</dt>
@@ -726,7 +717,7 @@ Figure&nbsp;2: Bootstrap distribution of difference between Doncic &amp; Davis
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      2.5%      97.5% 
--6.3794524 -0.4867187 </code></pre>
+-6.3776674 -0.4839716 </code></pre>
 </div>
 </div>
 <p>We conclude with 95% confidence that by replacing Dončić by Davis, the Mavericks are expected to score between 0.48 and 6.3 <em>fewer</em> points per 100 possessions.</p>
@@ -736,26 +727,26 @@ Figure&nbsp;2: Bootstrap distribution of difference between Doncic &amp; Davis
 <p>Just like we computed the difference between Dončić’s and Davis’ RAPM estimates for every bootstrap re-sample, we can compute the <em>rank</em> of SGA’s RAPM estimate in every bootstrap sample. Then, we can look at the bootstrap distribution of these ranks to get an idea about the uncertainty in the rank.</p>
 <p>The <code>rank()</code> function returns the sample ranks of the values in vector. For instance,</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">3</span>, <span class="fl">2.5</span>, <span class="sc">-</span><span class="dv">2</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rank</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">3</span>, <span class="fl">2.5</span>, <span class="sc">-</span><span class="dv">2</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rank</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 5 2 4 3 1</code></pre>
 </div>
 </div>
 <p>Notice that the smallest value in <code>x</code> (-2) is ranked 1 and the largest value in <code>x</code> (100) is ranked 5. This demonstrates that <code>rank()</code> assigns ranks in increasing order. If we wanted the largest value to be ranked 1, the second largest ranked 2, etc., then we need to call <code>rank</code> on the negative values:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rank</span>(<span class="sc">-</span>x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rank</span>(<span class="sc">-</span>x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1 4 2 3 5</code></pre>
 </div>
 </div>
 <p>The following code confirms that SGA ranked first in terms of the original RAPM estimate.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>rapm <span class="ot">&lt;-</span></span>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>rapm <span class="ot">&lt;-</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  rapm <span class="sc">|&gt;</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">rank_rapm =</span> <span class="fu">rank</span>(<span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> rapm))</span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>rapm <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(Name <span class="sc">==</span> <span class="st">"Shai Gilgeous-Alexander"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>rapm <span class="sc">|&gt;</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(Name <span class="sc">==</span> <span class="st">"Shai Gilgeous-Alexander"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                     Name     rapm rank_rapm
 1 Shai Gilgeous-Alexander 3.603398         1</code></pre>
@@ -763,17 +754,17 @@ Figure&nbsp;2: Bootstrap distribution of difference between Doncic &amp; Davis
 </div>
 <p>To quantify the uncertainty in SGA’s RAPM ranking, we need to rank the values within every bootstrap estimate of <span class="math inline">\(\boldsymbol{\alpha}.\)</span> In other words, we need to rank the values within every row of <code>boot_rapm</code>. We can do this using the <code>apply()</code> function. For our purposes, <code>apply()</code> runs a function (specified using the <code>FUN</code> argument) on every row or column of a two-dimensional array. To run the function along every row, one specifies the argument <code>MAR = 1</code> and to run the function along every column, one specifies the argument <code>MAR = 2</code>. Notice that the output has <span class="math inline">\(p\)</span> rows (one for every player) and <span class="math inline">\(B\)</span> columns (one for every bootstrap iteration).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>boot_rank <span class="ot">&lt;-</span> </span>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>boot_rank <span class="ot">&lt;-</span> </span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(<span class="sc">-</span><span class="dv">1</span><span class="sc">*</span>boot_rapm, <span class="at">MARGIN =</span> <span class="dv">1</span>, <span class="at">FUN =</span> rank)</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(boot_rank)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(boot_rank)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 569 500</code></pre>
 </div>
 </div>
 <p>To get the bootstrap distribution of SGA’s ranking, we need to extract the values from the corresponding row of <code>boot_rank</code>. In the following code, we first look up SGA’s player ID and then get the values from the row of <code>boot_rank</code> that is named with SGA’s ID.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>sga_ranks <span class="ot">&lt;-</span> boot_rank[<span class="st">"Shai Gilgeous-Alexander"</span>,]</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(sga_ranks)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>sga_ranks <span class="ot">&lt;-</span> boot_rank[<span class="st">"Shai Gilgeous-Alexander"</span>,]</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(sga_ranks)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>sga_ranks
   1   2   3   4   5   6   7   8   9  10  11  12  13  14  16  17  18  19  20  21 
@@ -786,7 +777,7 @@ Figure&nbsp;2: Bootstrap distribution of difference between Doncic &amp; Davis
 </div>
 <p>It turns out that SGA had the highest RAPM value in just 58 of our 500 bootstrap samples and the second-highest RAPM value in 59 of our bootstrap samples. We can form a 95% bootstrap uncertainty interval around his overall ranking by computing the sample quantiles of these rankings.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(sga_ranks, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(sga_ranks, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  2.5%  97.5% 
  1.000 50.525 </code></pre>
@@ -868,14 +859,13 @@ Figure&nbsp;2: Bootstrap distribution of difference between Doncic &amp; Davis
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-      const outerScaffold = trigger.parentElement.cloneNode(true);
-      const codeEl = outerScaffold.querySelector('code');
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
         }
-      }
-      return codeEl.innerText;
+        return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

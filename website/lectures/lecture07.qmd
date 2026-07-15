@@ -213,7 +213,6 @@ If not, it parses the at-bat description contained in `des` and looks for a sent
 If that sentence contains the words "out" or "caught stealing", it sets the number of bases advanced to 0.
 But, if the sentence contains the word "score", it sets the number of bases advanced to 3, since the runner scored from first.
 ```{r}
-load("mlb_player2024_lookup.RData")
 #| label: mvt-1b-function
 #| eval: true
 #| echo: true
@@ -506,7 +505,6 @@ First, we see that Ohtani reached first base in all except his fourth at-bat.
 So, for these four at-bats, his `mvt_batter` value is 1.
 ```{r}
 #| label: ohtani-des
-load("mlb_player2024_lookup.RData")
 ohtani_id <- 
   player2024_lookup |>
   dplyr::filter(FullName == "Shohei Ohtani") |>
