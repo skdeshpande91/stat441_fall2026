@@ -24,7 +24,7 @@ Because the formal pre-requisites for this course are STAT 333 or 340, you are e
 :::{.callout-important}
 ## Warning
 If you do not meet the formal course prerequisites and/or have not used R in a previous course, this is **not** the right course for you. 
-Exceptions will not made to the formal course requisites.
+Exceptions will **not** be made to the formal course requisites.
 :::
 
 I will assume *fluency* with basic R functionality (e.g., assignment, writing and
@@ -45,17 +45,16 @@ Lectures will be held from 8:00am to 9:15am in 1524 Morgridge Hall.
 **Instructor**: [Sameer Deshpande](https://skdeshpande91.github.io) (sameer.deshpande@wisc.edu). Instructor office hours will take place on:
 
   * Tuesdays from 9:30am to 11:00am in Morgridge Hall 5586
-  * Wednesdays from 2:00pm to 4:00pm in Morgridge Hall 5586
-  * Thursdays from 4:00pm to 6:00pm in Morgridge Hall 5586
+  * Thursdays from 4:00pm to 5:30pm in Morgridge Hall 5586
+  * Fridays from 3:00pm to 4:30pm in Morgridge Hall 5631
 
-<!--
-Office hours on Mondays and Wednesdays are designed for one-on-one meetings with the instructor.
-While the main purpose of Monday and Wednesday office hours is to discuss your specific experience and learning in the course, feel free to stop by to chat about your educational and career goals and/or any personal sports analytic projects you might be pursuing.
+Office hours on Tuesdays and Thursdays are designed for one-on-one meetings with the instructor.
+While the main purpose of Tuesdays and Thursday office hours is to discuss your specific experience and learning in the course, please feel free to stop by to chat about your educational and career goals and/or any personal sports analytic projects you might be pursuing.
 
 Friday office hours are intended for collaborative and small group work.
 During Friday office hours, small groups can step through analyses from lecture, work on the exercises, and on their team projects with the instructor and other students. 
 Friday office hours are also a great way to brainstorm project ideas with and to get feedback from other teams. 
--->
+
 
 If you have specific questions about the course content (e.g., parsing a particular bit of syntax or understanding a step in an analysis), I encourage you to ask the question on Piazza and to attend Friday office hours. 
 If you cannot make the Monday or Wednesday office hours, please email me and suggest some times at which you are free. 
@@ -65,11 +64,14 @@ If you cannot make the Monday or Wednesday office hours, please email me and sug
 
 ## Assignments & Grading {#sec-assignments}
 
-Your final grade will be based on your performance on three [group projects](syllabus.qmd#sec-projects) and your [overall participation](syllabus.qmd#sec-participation).
+Your final grade will be based on your performance on three [group projects](syllabus.qmd#sec-projects), completion of two [exercises](syllabus.qmd#exercises), and your [overall participation](syllabus.qmd#sec-participation).
 For each project, groups will prepare a [written report](syllabus.qmd#sec-written-report) and [record a 8--10 minute presentation]((syllabus.qmd#sec-presentation), each worth 100 points.
 After each project, every student will [peer review](syllabus.qmd#sec-peer-review) three reports and three presentations and complete a [team accountability survey](syllabus.qmd#sec-team-accountability).
-You can earn a total of 10 points for each peer review by (i) completing the provided rubric and (ii) leaving a constructive comment that identities strengths and areas for potential improvement.
-Students will earn up to 20 points per survey: 10 for completing the survey and 10 based on the feedback from their teammates and their own self-assessment. 
+You can earn a total of 20 points for each peer review by (i) completing the provided rubric and (ii) leaving a constructive comment that identities strengths and areas for potential improvement.
+
+Students will earn up to 20 points per group participation survey: 10 for completing the survey and 10 based on the feedback from their teammates and their own self-assessment. 
+
+Finally, students will earn up to 100 points for completing two exercises. 
 
 
 ### Group Projects {#sec-projects}
@@ -120,21 +122,33 @@ After each project submission, you will fill out a team accountability survey.
 You can earn up to 40 points per project submission: 10 for completing the survey and 10 based on the feedback from their teammates and their own self-assessment. 
 In total, students can earn up to 120 points based on their level of participation in their project groups.
 
+### Exercises {#sec-exercises}
+
+The [Exercises page](exercises.qmd) of the course website contains a list of exercises for each lecture. 
+These exercises provide an opportunity for students to replicate and extend the analyses presented in lecture.
+They are meant, in other words, to give you even more practice *doing* sports analytics. 
+On that view, you are encouraged to do as many as you can over the course of the semester.
+
+However, for the purposes of assessment, you are required to submit written solutions (with all code necessary to reproduce the results included) to **two** exercises based on different sports and to contribute to the Piazza discussion about those same problems.
+Your solution to exercises from a given lecture will be due **one** weeks after the schedule lecture.
+Exercise solutions will be graded essentially on completion: so long as you submit a reproducible analysis, you will earn full marks. 
+
+
 ### Participation {#sec-participation}
 
-An additional 100 points will be awarded based on participation during class, office hours, and online discussions on Piazza.
+An additional 60 points will be awarded based on participation during class, office hours, and online discussions on Piazza.
 
 ### Final Grades {#sec-final-grades}
 
 Your final grade will be based on how many of the 1000 total points you earn during the semester.
-Over 925 points is at least an A, over 875 points is at least an AB, over 800 points is at least a B, over 700 is at least a BC, over 600 points is at least a C, and over 500 point is at least a D.
+Over 950 points is at least an A, over 875 points is at least an AB, over 800 points is at least a B, over 700 is at least a BC, over 600 points is at least a C, and over 500 point is at least a D.
 Final grade boundaries will be announced no later than December 7, 2026.
 
 ## Course Management {#sec-course-sites}
 
 We will also use Piazza for specific discussions about course content (e.g., sharing additional information/resources related to material discussed in lecture; answering questions about data, method, and code; etc.) and more general discussions about sports analytics (e.g., sharing job postings, open data competition opportunities, popular press articles, and other analyses you might find online etc.)
 Here is a [link to the Piazza page](https://piazza.com/wisc/fall2026/fa26stat441001/home).
-We will also use Canvas for course announcements and to maintain the course gradebook.
+We will also use Canvas for course announcements and to maintain the course grade book.
 Here is a [link to the Canvas page](https://canvas.wisc.edu/courses/530312).
 
 We will use Box for project submissions and Qualtrics for peer reviews. 

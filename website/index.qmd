@@ -24,19 +24,18 @@ You are not permitted to record the lectures either.
 **Instructor**: [Sameer Deshpande](https://skdeshpande91.github.io) (sameer.deshpande@wisc.edu). Instructor office hours will take place on:
 
   * Tuesdays from 9:30am to 11:00am in Morgridge Hall 5586.
-  * Wednesdays from 2:00pm to 4:00pm in Morgridge Hall 5586
-  * Thursdays from 4:00pm to 6:00pm in Morgridge Hall 5586
+  * Thursdays from 4:00pm to 5:30pm in Morgridge Hall 5586
+  * Fridays from 3:00pm to 4:30pm in Morgridge Hall 5631
 
-<!--
-Office hours on Mondays and Wednesdays are designed for one-on-one meetings with the instructor.
-While the main purpose of Monday and Wednesday office hours is to discuss your specific experience and learning in the course, feel free to stop by to chat about your educational and career goals and/or any personal sports analytic projects you might be pursuing.
+Office hours on Tuesdays and Thursdays are designed for one-on-one meetings with the instructor.
+While the main purpose of Tuesdays and Thursday office hours is to discuss your specific experience and learning in the course, please feel free to stop by to chat about your educational and career goals and/or any personal sports analytic projects you might be pursuing.
 
 Friday office hours are intended for collaborative and small group work.
 During Friday office hours, small groups can step through analyses from lecture, work on the exercises, and on their team projects with the instructor and other students. 
 Friday office hours are also a great way to brainstorm project ideas with and to get feedback from other teams. 
--->
+
 If you have specific questions about the course content (e.g., parsing a particular bit of syntax or understanding a step in an analysis), I encourage you to ask the question on Piazza and to attend Friday office hours. 
-If you cannot make the Monday or Wednesday office hours, please email me and suggest some times at which you are free. 
+If you cannot make the Tuesday or Thursday office hours, please email me and suggest some times at which you are free. 
 
 **Teaching Assistant**: TBA. 
 
