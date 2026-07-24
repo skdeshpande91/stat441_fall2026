@@ -1,0 +1,514 @@
+---
+title: "Lecture 16: NFL Drive Simulation I"
+format: html
+execute: 
+  cache: true
+---
+
+## Motivation: NFL Overtime Rules {#sec-intro}
+
+:::{.callout-important}
+
+## Acknowledgement
+
+This analysis extends a [fantastic case study](https://statsbylopez.netlify.app/post/resampling-nfl-drives/) first published by Mike Lopez.
+
+:::
+
+National Football League (NFL) games consist of four 15-minute quarters. 
+Prior to 1974, when the score was tied at the end of the fourth quarter, the game was declared a tie.
+Between 1974 and 2010, the league adopted a "sudden death" overtime period: both teams would play for an additional 15 minutes and the first team to score any points during that period was declared the winner.
+Under the sudden death rules, there was a clear advantage to possessing the ball first: by kicking a successful field goal, you could win the game without giving the opposing team an opportunity to possess the ball.
+As kickers steadily improved, the winner of sudden death overtime became increasingly determined by the result of the coin flip used to determine first possession.
+
+In 2010, the NFL adopted "modified sudden death" overtime rules in which both teams have a chance to possess the ball *unless* the first team scores a touchdown on their opening possession.
+If the second team gets possession (e.g., by forcing a turnover, a punt, or giving up only a field goal to the first team), the winner is whichever team has the higher score at the end of the second team's possession.
+If the game is still tied after the second team's possession, the team that scores next wins the game. 
+
+In 2019, the Kansas City Chiefs proposed a further change to the NFL's overtime rule to allow both teams an opportunity to possess the ball, even if the first team scored an opening drive touchdown[^kcstar].
+Since both teams are guaranteed possession, there is arguably some advantage to deferring possession: the second team will know exactly how many points they need to score in order to win or extend the game. 
+To quantify the potential advantages and disadvantages of receiving the ball second under the proposed rules, the NFL League Office set out to estimate the probability that the second team, when trailing by a touchdown, actually scores a touchdown.
+If this probability is extremely low, there is not much justification for the rule change.
+
+[^kcstar]: Read more about the specific details in [this](https://www.kansascity.com/sports/spt-columns-blogs/for-petes-sake/article257657753.html) article from the *Kansas City Star*.
+
+### Overview {#sec-overview}
+
+Over the next several lectures, we will use play-by-play data from 20 NFL seasons (1999-2000 to 2018-19) to
+
+  * Establish the advantage of possessing the ball first under sudden death and modified sudden death overtimes
+  * Estimate the distribution of outcomes for the second team's possession after giving up an opening drive touchdown under the proposed rules 
+
+At first glance, both of these tasks seeem straightforward.
+The advantage of first possession under the sudden death overtime rules can be quantified using the probability that the first team kicks a field goal or scores a touchdown on their opening possession.
+To compute this probability, we can look at all games played between 1999 and 2009 and count the number of times the team with first possession scored on their opening overtime drive.
+To assess the potential benefits of possessing the ball second under the proposed rules, it is tempting to find all drives immediately following an opening drive touchdown and compute the proportion of those drives that also resulted in a touchdown. 
+While there are many such drives, none of them quite capture the unique scenario presented by the proposed overtime rules.
+That is because, under the proposed rules[^eventually], if the first team scored an opening drive touchdown, the second team
+
+  1. Will *never* punt or kick a field goal on fourth down[^guarantee]
+  2. Must score a touchdown to extend the game
+  3. Are relatively unconcerned about the clock[^fourdown]
+
+[^eventually]: The rules were eventually adopted in 2022, after a particularly thrilling game playoff game between [Kansas City and the Buffalo](https://www.espn.com/nfl/recap/_/gameId/401326633), in which the lead changed three times in the last two minutes of regulation.
+
+[^guarantee]: Doing so would **guarantee** that the team loses the game.
+
+[^fourdown]: In regulation games, teams trailing by fewer than 7 points near the ends of halfs often eschew punting or kicking --- the so-called "four down territory." But decision making in those situations is often affected by things like time left or numbers of timeouts that are less materially important in the proposed overtime.
+
+We will instead evaluate the proposed rules by *simulating* entire drives for the team possessing the ball second in overtime while trailing by a touchdown.
+Rather than building a statistical model to predict the number of yards gained on any one play given the down, distance, and field position (hereafter *starting context*), we will instead use *re-sampling*.
+Specifically, we will simulate the outcome of the current play by randomly selecting a historical play with *similar* starting context and using its outcome. 
+
+### Play-by-Play Data {#sec-data-prep}
+
+We will work with NFL play-by-play data that has already been scraped by tne **nflfastR** team.
+These data are [available online](https://github.com/nflverse/nflverse-data/releases/tag/pbp) and can be loaded into an R session using the `nflfastR::load_pbp()` function.
+
+```{r}
+#| label: load-data-preview
+#| eval: false
+#| echo: true
+raw_pbp <- nflfastR::load_pbp(seasons = 1999:2018)
+save(raw_pbp, file = "nfl_pbp_1999_2018.RData")
+```
+
+```{r}
+#| label: load-data-hidden
+#| eval: true
+#| echo: false
+#| cache-lazy: false
+load("nfl_pbp_1999_2018.RData")
+```
+
+
+The data frame `raw_pbp` contains `{r} nrow(raw_pbp)` rows, each recording the values of `{r} ncol(raw_pbp)` different variables.
+Each row corresponds to a different entry in a play-by-play table (like [this one from a 2016 game between the Cowboys and Packers](https://www.espn.com/nfl/playbyplay/_/gameId/400874733)).
+The **nflfastR** team provides a [searchable data dictionary](https://nflreadr.nflverse.com/articles/dictionary_pbp.html) that describes each varible.
+Of particular importance for our purposes are the variables `fixed_drive` and `fixed_drive_results`, which 
+were constructed by **nflfastR** and, respectively, index drives within games and record the result of each drive.
+
+## Benefits of First Possession in Overtime {#sec-first-possession}
+
+As noted in @sec-intro, there is an arguably an intuitive advantage to possessing the ball first under the sudden death overtime rules: if the first team scores any points at all, they immediately win the game without giving the other team an opportunity to possess the ball.
+To quantify this advantage, we will count the number of overtime games played between 1999 and 2009 in which (i) the first team ultimately wins the game and (ii) the first team wins the game as a result of an opening drive score.
+
+To these ends, we must first identify all regular season games between the 1999 and 2010 that went to overtime.
+The following code filters the full play-by-play data table to include just those plays from overtime.
+Then, it extracts a unique game identifier (the variable `game_id`).
+```{r}
+#| label: identify-sd-ot
+#| eval: true
+#| echo: true
+
+sd_ot_game_id <-
+  raw_pbp |>
+  dplyr::filter(season %in% 1999:2009 & season_type == "REG") |> #<1>
+  dplyr::filter(game_half == "Overtime") |> #<2>
+  dplyr::pull(game_id) |> #<3>
+  unique() #<4>
+```
+1. Restrict attention to regular season games from 1999-2000 to 2009-10
+2. The variable `game_half` only takes values `Half1`, `Half2`, and `Overtime`.
+3. Extracts the unique game identifier
+4. Without this line, we would get multiple copies of every `game_id`, one for every play in every game. 
+
+In total, `{r} length(sd_ot_game_id)` games went to overtime between 1999 and 2010. 
+**nflfastR** includes the variable `result`, which records the  final score margin from the perspective of the home team[^result].
+The following code identifies the winning team for each overtime game. 
+```{r}
+#| label: get-sd-ot-winner
+#| eval: true
+#| echo: true
+sd_ot_winner <-
+  raw_pbp |>
+  dplyr::filter(game_id %in% sd_ot_game_id) |>
+  dplyr::select(game_id, result, home_team, away_team) |>
+  unique() |> #<1>
+  dplyr::mutate(
+    Winner = dplyr::case_when(
+      result > 0 ~ home_team, #<2>
+      result < 0 ~ away_team, #<2>
+      result == 0 ~ NA_character_)) #<2>
+```
+1. Each play within the same game contains exactly the same values of `game_id`, `result`, `home_team`, and `away_team`
+2. We need to account for the possibility of a tie!
+
+[^result]: So, positive (resp. negative) values of `result` correspond to home (resp. away) team wins.
+
+Now that we have extracted the winner of each overtime game, we must determine which team possessed the ball first in overtime.
+The variable `posteam` in our play-by-play dataset records the team with possession at the start of each play.
+So, we could determine the first possession by sorting the overtime plays in chronological order (e.g., using one of `game_seconds_remaining` or `half_seconds_remaining`) and then pulling out the first value of `posteam`.
+Unfortunately, especially for games further in the past, the play-by-play data does not correctly record timestamps.
+As an example, here are the first several entries for the [Week 1 game in the 1999-2000 season between the Dallas and Washington](https://www.espn.com/nfl/boxscore/_/gameId/190912028).
+Notice that both `game_seconds_remaining` and `time` are fixed throughout each drive[^ot-time-stamp]
+```{r}
+#| label: dal-was-ot-example
+#| eval: true
+#| echo: true
+raw_pbp |>
+  dplyr::filter(game_id == "1999_01_DAL_WAS" & game_half == "Overtime") |>
+  dplyr::select(game_seconds_remaining, time, desc) |>
+  dplyr::slice_head(n = 14)
+```
+[^ot-time-stamp]: These variables are almost certainly derived from the narrative description (`desc`) of each play, which for some early games only records the time at the start of each drive. 
+
+Luckily, **nflfastR** indexes each drive within a game consecutively starting from 1 with the variable `fixed_drive`. 
+As an illustration, here are the plays from that 1999 Dallas-Washington game showing `fixed_drive` along with two other variables, `fixed_drive_result` (which records the result of each drive) and `posteam`.
+
+```{r}
+#| label: dal-was-fixed-drive
+#| eval: true
+#| echo: true
+raw_pbp |>
+  dplyr::filter(game_id == "1999_01_DAL_WAS" & game_half == "Overtime") |>
+  dplyr::select(fixed_drive, fixed_drive_result, posteam, desc) |>
+  dplyr::slice_head(n = 14)
+```
+Using the variable `fixed_drive`, we can identify the team who had possession first by extracting only those plays from overtime, sorting the plays by `fixed_drive`, and looking up the first entry of `posteam`.
+
+```{r}
+#| label: get-ot-first-team
+#| eval: true
+#| echo: true
+
+sd_ot_first <-
+  raw_pbp |>
+  dplyr::filter(game_id %in% sd_ot_game_id & game_half == "Overtime") |>
+  dplyr::group_by(game_id) |> #<1>
+  dplyr::arrange(fixed_drive) |> #<1>
+  dplyr::filter(!is.na(game_seconds_remaining)) |> #<2>
+  dplyr::mutate(
+    first_pos = dplyr::first(posteam), #<3>
+    first_drive_result = dplyr::first(fixed_drive_result)) |> #<3>
+  dplyr::select(game_id, first_pos, first_drive_result) |>
+  unique() |> #<4>
+  dplyr::arrange(game_id)
+```
+1. Sort plays by `drive_number` *within* each game
+2. Some (but not all) games have additional informational rows and don't record the team with first possession. A cursory inspection of the data revealed that these rows also did not record the number of seconds left in the period. So, by filtering to those plays with non-missing time values, we can extract the identity of the first team using `dplyr::first()`.
+3. Extract the identity of the first team with possession of the ball and the result of the opening drive
+4. When called on a grouped data frame `mutate()` adds columns to every row. So, we will have multiple copies of the variables `game_id`, `first_pos`, and `first_drive_results`, one for each play in each game.  
+
+We can now join `sd_ot_winner` and `sd_ot_first` to create a single table that records the winner, first team with possession, and the result of the opening drive of each overtime game between 1999 and 2010.
+```{r}
+#| label: sd-ot-join
+#| eval: true
+#| echo: true
+sd_ot <-
+  sd_ot_winner |>
+  dplyr::select(game_id, Winner) |>
+  dplyr::left_join(y = sd_ot_first, by = "game_id")
+```
+
+We find that in roughly `{r} paste0(round(100*mean(sd_ot$Winner == sd_ot$first_pos, na.rm = TRUE), digits = 1),"%")` of overtime games, the team with first possession in overtime eventually won the game.
+```{r}
+#| label: first-team-win-prob
+#| eval: true
+#| echo: true
+mean(sd_ot$Winner == sd_ot$first_pos, na.rm = TRUE) #<1>
+```
+1. Because some entries of `Winner` could be `NA` (due to ties), we need to remove those entries before computing the mean.
+
+Further, the majority of games won by the first team were won as the result of an opening drive field goal or touchdown that denied the second team possession
+
+```{r}
+#| label: first-team-win-opening
+#| eval: true
+#| echo: true
+sum(sd_ot$Winner == sd_ot$first_pos & sd_ot$first_drive_result %in% c("Touchdown", "Field goal"), na.rm = TRUE)
+```
+
+Using almost identically the same code as above, we can quantify the first possession advantage under the NFL's modified sudden death overtime rules, which were instituted during the 2010-11 season.
+```{r}
+#| label: msd-ot
+#| eval: true
+#| echo: true
+#| code-fold: true
+
+msd_ot_game_id <-
+  raw_pbp |>
+  dplyr::filter(season %in% 2010:2018) |>
+  dplyr::filter(game_half == "Overtime") |> 
+  dplyr::pull(game_id) |> 
+  unique()
+
+msd_ot_winner <-
+  raw_pbp |>
+  dplyr::filter(game_id %in% msd_ot_game_id) |>
+  dplyr::select(game_id, result, home_team, away_team) |>
+  unique() |>
+  dplyr::mutate(
+    Winner = dplyr::case_when(
+      result > 0 ~ home_team,
+      result < 0 ~ away_team,
+      result == 0 ~ NA_character_))
+
+msd_ot_first <-
+  raw_pbp |>
+  dplyr::filter(game_id %in% msd_ot_game_id & game_half == "Overtime") |>
+  dplyr::group_by(game_id) |> #<1>
+  dplyr::arrange(fixed_drive) |> #<1> |>
+  dplyr::filter(!is.na(game_seconds_remaining)) |> #<2>
+  dplyr::mutate(first_pos = dplyr::first(posteam), first_drive_result = dplyr::first(fixed_drive_result)) |> #<3>
+  dplyr::select(game_id, first_pos, first_drive_result) |>
+  unique() |>
+  dplyr::arrange(game_id)
+
+msd_ot <-
+  msd_ot_winner |>
+  dplyr::select(game_id, Winner) |>
+  dplyr::left_join(y = msd_ot_first, by = "game_id")
+
+mean(msd_ot$Winner == msd_ot$first_pos, na.rm = TRUE)
+
+```
+So, between 2010 and 2019, the team possessing the ball first during the modified sudden death overtime rules won just over 50% of the time[^caveat].
+
+We can further insight into how the modified sudden death overtime rules changed teams' strategic decision making from the distribution of first drive results in both overtime eras.
+Under the sudden death rules, the first team attempted field goals on about `{r} paste0(round(100*mean(sd_ot$first_drive_result %in% c("Field goal", "Missed field goal")), digits = 1), "%")` of their opening drives.
+```{r}
+#| label: sd-first-results-prop
+#| eval: true
+#| echo: true
+round(table(sd_ot$first_drive_result)/nrow(sd_ot), digits = 2)
+```
+Under the modified sudden death rules, the first team attempted field goals on only about `{r} paste0(round(100*mean(msd_ot$first_drive_result %in% c("Field goal", "Missed field goal")), digits = 1), "%")`
+Just as interesting, by comparing the distributions of the first possession results in the two overtime eras, we find that the first team attempted substantially fewer field goals under modified sudden death rules than under the initial sudden death rules.
+```{r}
+#| label: msd-first-results-prop
+#| eval: true
+#| echo: true
+round(table(msd_ot$first_drive_result)/nrow(msd_ot), digits = 2)
+```
+[^caveat]: Beginning the 2017-18, the NFL shortened the overtime period from 15 minutes to 10 minutes. As an exercise, try computing the proportion using only games between 2010-11 and 2016-17. 
+
+Interestingly, we find that roughly the same proportion of first drives ended with turnovers, opponent touchdowns[^opptd], and punts.
+But, as we might expect, under the modified sudden death rules, the first team attempted substantively fewer field goals. 
+
+
+[^opptd]: I.e., interceptions or fumbles returned by the defense for a touch down
+
+
+
+## Setting Up For Drive Simulation {#sec-sim-setup}
+
+Under the proposed overtime rules, both teams would have an opportunity to possess the ball *even if the first team scored an opening-drive touchdown*.
+At least on paper, these rules give the second team an opportunity to win or extend the game, regardless of how the first team's possession ends.
+Further, this guaranteed possession may change the decision calculus for teams when it comes to electing to receive the ball first.
+Specifically, one could argue that the proposed rules *favor* the second team as they would know exactly what they'd need to do to win or extend the game.
+
+As noted in @sec-intro, we will build a drive simulator to estimate the probability that the second team, when trailing by a touchdown in overtime, is able to extend the game by scoring a touchdown. 
+Our simulation will work by repeatedly sampling the outcome of each simulated play from the pool of actual plays with similar starting *context*, which we define as the combination of position on the field (`yardline_100`)[^yardline100], down (`down`), and distance to the first down marker (`ydstogo`).
+In the simulation, we use the starting context and sampled outcome of each play to determine the starting context of the next simulated play.
+
+[^yardline100]: Distance from the line of scrimmage to the end zone. The closer (resp. further) the offense is to scoring, the smaller (resp. larger) the value of `yardline_100`. 
+
+To power our simulation, we need to build a pool of representative plays from which to sample outcomes based on the following criteria:
+
+  1. The possessing team should be trailing by 6, 7, or 8 points: we're interested in estimating how likely the second team is to scoring a touchdown after giving up an opening drive touchdown in overtime
+  2. The play must come from a drive that does not span multiple quarters: under the proposed overtime rules, the second team loses if their drive doesn't end before the end of the overtime period
+  3. We should exclude all plays from punt or field goal formation: under the proposed overtime rules, the second team will *never* attempt a punt or field goal
+
+We will further restrict our pool of plays to be those from regular season games between the 2008 and 2019.
+```{r}
+#| label: restrict-pbp
+#| eval: true
+#| echo: true
+pbp <- 
+  raw_pbp |> 
+  dplyr::filter(season %in% 2008:2018 & season_type == "REG")
+```
+
+To identify drives spanning multiple quarters, we first group `raw_pbp` by both `game_id` and `fixed_drive.`
+Then, for each combination of game and drive identifier, we can count the number of distinct values of `qtr` that appear in the rows of the play-by-play sub-table.
+If the drive spanes multiple quarters, this count will exceed 1.
+```{r}
+#| label: find-multi-qtr-drives
+#| eval: true
+#| echo: true
+multi_qtr_drives <- 
+  pbp |>
+  dplyr::group_by(game_id, fixed_drive) |> 
+  dplyr::summarise(n_qtrs = dplyr::n_distinct(qtr), .groups = "drop") |> #<1>
+  dplyr::filter(n_qtrs > 1) #<2>
+```
+1. Count how many distinct values of `qtr` there are for each combination of `game_id` and `fixed_drive`
+2. If a drive spans multiple quarters, `n_qtrs` will exceed 1.
+
+
+### Determining Starting and Ending Contexts
+
+Each row in `pbp` contains several variables recording the *context* (i.e., yard line, down, distance to the first down marker, quarter, time remaining, scores) at the start of each play-by-play entry.
+In our simulation study, every time we randomly sample a representative play (based on the starting context), we will determine the ending context for that play and use that to set the starting context for the next simulated play.
+Unfortunately, **nflfastR** does not automatically record the ending context.
+So, we will need to manually add columns to our dataset recording the ending context.
+
+To this end, we will 
+
+  1. Remove all plays from drives spanning multiple quarters using the function [`dplyr::anti_join()](https://dplyr.tidyverse.org/reference/filter-joins.html)
+  2. Group the remaining plays by both `game_id`, `game_half`, and `fixed_drive`[^combogroup]
+  3, Arrange the rows by the number of seconds remaining in the game
+  4. Look up the next value of several contextual variables using the function `dplyr::lead()`.
+```{r}
+#| label: next-context-1
+#| eval: true
+#| echo: true
+
+raw_plays <-
+  pbp |>
+  dplyr::anti_join(y = multi_qtr_drives, by = c("game_id", "fixed_drive")) |> #<1>
+  dplyr::filter(season_type == "REG" & game_half %in% c("Half1", "Half2")) |> #<2>
+  dplyr::group_by(game_id, game_half, fixed_drive) |>
+  dplyr::arrange(dplyr::desc(game_seconds_remaining)) |> #<3>
+  dplyr::mutate(
+    next_yardline_100 = dplyr::lead(yardline_100),
+    next_down = dplyr::lead(down),
+    next_ydstogo = dplyr::lead(ydstogo),
+    next_half_seconds_remaining = dplyr::lead(half_seconds_remaining)) |>
+  dplyr::ungroup() |>
+  dplyr::arrange(game_id, dplyr::desc(game_seconds_remaining))
+```
+1. Removes all rows from drives spanning multiple quarters
+2. Restricts attention to drives in the first or second half of regular season games
+3. Sort plays within a drive in chronological order
+
+
+[^combogroup]: Remember, `fixed_drive` uniquely determines drives *within a game* but not across games. 
+
+Now, each row of `raw_plays` contains the starting and ending context for each play. 
+So, in our simulation code, as soon as we sample a play based on its starting context, we can immediately determine the starting context for the next play using the newly constructed variables `next_yardline_100`, `next_down`, `next_ydstogo`, and `next_half_seconds`.
+However, because we only need to simulate the second possession (and not subsequent possessions), we need to stop the simulation if a sampled play ends with a touchdown or turnover. 
+One way to do this is to set the ending context variables to `NA` for such plays and then include some conditional logic in our simulation code to draw the next play only when the ending context variables are not `NA`.
+
+Unfortunately, as shown during lecture, the code block above does not correctly set `next_yardline` immediately after touchdowns.
+In the code block below, we manually set the ending contextual variables to `NA` following a touchdown, interception, or turnover.
+
+```{r}
+#| label: next-context-final
+#| eval: true
+#| echo: true
+raw_plays <-
+  pbp |>
+  dplyr::anti_join(y = multi_qtr_drives, by = c("game_id", "fixed_drive")) |> #<1>
+  dplyr::filter(season_type == "REG" & game_half %in% c("Half1", "Half2")) |> #<2>
+  dplyr::group_by(game_id, game_half, fixed_drive) |>
+  dplyr::arrange(dplyr::desc(game_seconds_remaining)) |> #<3>
+  dplyr::mutate(
+    next_yardline_100 = dplyr::lead(yardline_100),
+    next_down = dplyr::lead(down),
+    next_ydstogo = dplyr::lead(ydstogo)) |>
+  dplyr::mutate(
+    next_yardline_100 = dplyr::case_when(
+      touchdown == 1 ~ 0,
+      fumble_lost == 1 | interception == 1 ~ NA,
+      .default = next_yardline_100),
+   next_down = ifelse(touchdown == 1 | fumble_lost == 1 | interception == 1, NA, next_down), #<4>
+   next_ydstogo = ifelse(touchdown == 1 | fumble_lost == 1 | interception == 1, NA, next_ydstogo)) |> #<4>
+  dplyr::ungroup() |>
+  dplyr::mutate(next_half_seconds_remaining = dplyr::lead(half_seconds_remaining)) |>
+  dplyr::arrange(game_id, dplyr::desc(game_seconds_remaining)) 
+```
+1. Arrange plays within each drive in chronological order
+2. Look up the next value of each contextual variable
+3. Sort plays within a drive in chronological order
+4. Manually set ending context to `NA` for drive-ending plays
+
+### Putting it All Together
+
+We're now in a position to build our pool of representative plays.
+In doing so, we need to restrict attention to those drives where the possessing team trails by 6, 7, or 8 points.
+Because the second team will **never** line up in a field goal or punt formation under the proposed overtime rules, we will also remove fake field goal and punts.
+
+```{r}
+#| label: build-final-pool
+#| eval: true
+#| echo: true
+start_context <- #<1>
+  c("half_seconds_remaining", "yardline_100", "down", "ydstogo") #<1>
+end_context <- #<1>
+  c("next_half_seconds_remaining", "next_yardline_100", "next_down",  #<1>
+    "next_ydstogo") #<1>
+outcomes <- #<1>
+  c("touchdown", "first_down", "penalty", "fumble", "fumble_lost", #<1>
+    "interception", "sack") #<1>
+play_vars <- c("play_type", "pass_attempt", "complete_pass", #<1>
+               "rush_attempt",  #<1>
+               "game_id", start_context, #<1>
+               end_context, outcomes, "desc", "yards", "time_elapsed") #<1>
+
+plays <-
+  raw_plays |>
+  dplyr::filter(half_seconds_remaining > 120) |> #<2>
+  dplyr::filter(score_differential %in% c(-6, -7, -8)) |> #<3>
+  dplyr::filter(two_point_attempt == 0) |> #<4>
+  dplyr::filter(play_type %in% c("run", "pass", "no_play")) |> #<5>
+  dplyr::filter(!grepl("Punt formation", desc) & !grepl("Field goal formation", desc)) |> #<6>
+  dplyr::filter(!grepl("punt", desc) & !grepl("kick", desc)) |> #<6>
+  dplyr::mutate(yards = yardline_100 - next_yardline_100,  #<7>
+                time_elapsed = half_seconds_remaining - next_half_seconds_remaining) |> #<7>
+  dplyr::select(tidyr::all_of(play_vars)) #<8>
+
+```
+1. Define the variables needed for our simulation
+2. We will only use plays that happen before the final 2 minutes of a half
+3. We restrict attention to those plays in which possessing team trails by 6, 7, or 8 points
+4. Remove plays corresponding to two-point conversion attempts
+5. When there is a pre-snap penalty, `play_type == "no play"`
+6. Remove plays where (i) the offense lines up in punt or field goal formation or (ii) otherwise punts or kicks the ball
+7. `yards` records the total number of yards gained in the play while `time_elapsed` records time between the snap of the ball on this play and the next play
+8. Extract only the variables needed for our simulation
+
+Note that hte variable `time_elapsed` includes both the time from the snap to the end of the of the current play **and** the time from the end of the current play to the snap of the next play.
+In other words, it includes the time it takes for the ball to be spotted, huddles and substitutions to occur, and for teams to get lined up again.
+Although **nflfastR** does not record the amount of time elapsed during a play, it does record how many seconds remain on the play clock[^playclock] when the ball is snapped (`play_clock`) and the game time at the end of each play (`end_clock_time`).
+Using these variables, one could decompose our `time_elapsed` variable into its two constituent parts[^exercise]
+
+[^playclock]: Teams have 40 seconds following the end of the previous play to snap the ball. 
+
+### Starting Position
+
+Our simulation will work by randomly selecting the outcome of actual plays with similar starting context as the current simulated play.
+We have so far built a pool of representative plays from which to sample the outcomes conditionally given the starting context.
+The very last required ingredients are *randomly sampling* the starting field position and the amount of time remaining for the second possession.
+
+To determine the *distribution* of potential starting positions and the amount of time remaining in the overtime period, we can first identify all regular season games featuring a touchdown in the first drive.
+Then, we can get the starting context for the first play of the *second* possession in each of those games
+Because the proposed overtime period is only 10 minutes long, we need to exclude those games in which the first team scored an opening drive touchdown in more than 10 minutes. 
+
+```{r}
+#| label: drive2-start
+#| eval: true
+#| echo: true
+
+opening_score_games <-
+  pbp |>
+  dplyr::filter(fixed_drive == 1 & fixed_drive_result == "Touchdown") |>
+  dplyr::pull(game_id) |>
+  unique()
+
+drive2 <-
+  pbp |>
+  dplyr::filter(game_id %in% opening_score_games & fixed_drive == 2) |>
+  dplyr::filter(score_differential %in% c(-6, -7, -8)) |>
+  dplyr::arrange(game_id, dplyr::desc(game_seconds_remaining))
+
+drive2_start <-
+  drive2 |>
+  dplyr::group_by(game_id) |>
+  dplyr::filter(play_type %in% c("run", "pass", "no_play") & kickoff_attempt == 0) |>
+  dplyr::slice_head(n=1) |>
+  dplyr::ungroup() |>
+  dplyr::select(yardline_100, quarter_seconds_remaining) |>
+  dplyr::filter(quarter_seconds_remaining > 300) #<1>
+```
+1. Regulation quarters are 15 minutes long. So, if at least 300 seconds remain in the quarter at the start of the *second* possession, the first drive took less than 10 minutes.
+
+We will save `plays` and `drive2_start` so that we can load them back into our R session during [Lecture 18](lecture18.qmd).
+```{r}
+#| label: save-pool
+#| eval: true
+#| echo: true
+save(plays, drive2_start, file = "nfl_drive_simulation_data.RData")
+```
+

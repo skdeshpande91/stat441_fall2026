@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Lecture 16: NFL Drive Simulation I – STAT441</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/quarto-axe/axe-check.js" type="module"></script>
+<script id="quarto-axe-checker-options" type="text/plain">eyJvdXRwdXQiOiJkb2N1bWVudCJ9</script>
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "Search",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">STAT441</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-lecture-notes" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Lecture Notes</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-lecture-notes">    
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture01.html">
+ <span class="dropdown-text">Lecture 1: Boxscore Metrics</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture02.html">
+ <span class="dropdown-text">Lecture 2: Expected Goals</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture03.html">
+ <span class="dropdown-text">Lecture 3: Estimating XG</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture04.html">
+ <span class="dropdown-text">Lecture 4: Adjusted Plus/Minus</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture05.html">
+ <span class="dropdown-text">Lecture 5: Regularized Adjusted Plus/Minus</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture06.html">
+ <span class="dropdown-text">Lecture 6: Run Expectancy</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture07.html">
+ <span class="dropdown-text">Lecture 7: Offensive Credit Allocation in Baseball</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture08.html">
+ <span class="dropdown-text">Lecture 8: Defensive Credit Allocation in Baseball</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture09.html">
+ <span class="dropdown-text">Lecture 9: Multilevel Modeling</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture10.html">
+ <span class="dropdown-text">Lecture 10: NFL WAR</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture11.html">
+ <span class="dropdown-text">Lecture 11: Pitch Framing</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture12.html">
+ <span class="dropdown-text">Lecture 12: Bradley-Terry Models</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture13.html">
+ <span class="dropdown-text">Lecture 13: Tournament Simulation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture14.html">
+ <span class="dropdown-text">Lecture 14: Plackett-Luce Models</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture15.html">
+ <span class="dropdown-text">Lecture 15: Markov Chains</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture16.html">
+ <span class="dropdown-text">Lecture 16: NFL Drive Simulation I</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lectures/lecture17.html">
+ <span class="dropdown-text">Lecture 17: NFL Drive Simulation II</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-projects" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Projects</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-projects">    
+        <li>
+    <a class="dropdown-item" href="../projects/project1.html">
+ <span class="dropdown-text">Project 1 Information</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../projects/project2.html">
+ <span class="dropdown-text">Project 2 Information</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../projects/project3.html">
+ <span class="dropdown-text">Project 3 Information</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/lecture16.html">Lecture 16: NFL Drive Simulation I</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 1: Boxscore Metrics</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 2: Expected Goals</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 3: Estimating XG</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 4: Adjusted Plus/Minus</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 5: Regularized Adjusted Plus/Minus</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 6: Run Expectancy</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 7: Offensive Credit Allocation in Baseball</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 8: Defensive Credit Allocation in Baseball</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 9: Multilevel Modeling</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 10: NFL WAR</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 11: Pitch Framing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 12: Bradley-Terry Models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 13: Tournament Simulation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 14: Plackett-Luce Models</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 15: Markov Chains</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture16.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Lecture 16: NFL Drive Simulation I</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/lecture17.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lecture 17: NFL Drive Simulation II</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#sec-intro" id="toc-sec-intro" class="nav-link active" data-scroll-target="#sec-intro">Motivation: NFL Overtime Rules</a>
+  <ul class="collapse">
+  <li><a href="#sec-overview" id="toc-sec-overview" class="nav-link" data-scroll-target="#sec-overview">Overview</a></li>
+  <li><a href="#sec-data-prep" id="toc-sec-data-prep" class="nav-link" data-scroll-target="#sec-data-prep">Play-by-Play Data</a></li>
+  </ul></li>
+  <li><a href="#sec-first-possession" id="toc-sec-first-possession" class="nav-link" data-scroll-target="#sec-first-possession">Benefits of First Possession in Overtime</a></li>
+  <li><a href="#sec-sim-setup" id="toc-sec-sim-setup" class="nav-link" data-scroll-target="#sec-sim-setup">Setting Up For Drive Simulation</a>
+  <ul class="collapse">
+  <li><a href="#determining-starting-and-ending-contexts" id="toc-determining-starting-and-ending-contexts" class="nav-link" data-scroll-target="#determining-starting-and-ending-contexts">Determining Starting and Ending Contexts</a></li>
+  <li><a href="#putting-it-all-together" id="toc-putting-it-all-together" class="nav-link" data-scroll-target="#putting-it-all-together">Putting it All Together</a></li>
+  <li><a href="#starting-position" id="toc-starting-position" class="nav-link" data-scroll-target="#starting-position">Starting Position</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Lecture 16: NFL Drive Simulation I</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="sec-intro" class="level2">
+<h2 class="anchored" data-anchor-id="sec-intro">Motivation: NFL Overtime Rules</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Acknowledgement
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This analysis extends a <a href="https://statsbylopez.netlify.app/post/resampling-nfl-drives/">fantastic case study</a> first published by Mike Lopez.</p>
+</div>
+</div>
+<p>National Football League (NFL) games consist of four 15-minute quarters. Prior to 1974, when the score was tied at the end of the fourth quarter, the game was declared a tie. Between 1974 and 2010, the league adopted a “sudden death” overtime period: both teams would play for an additional 15 minutes and the first team to score any points during that period was declared the winner. Under the sudden death rules, there was a clear advantage to possessing the ball first: by kicking a successful field goal, you could win the game without giving the opposing team an opportunity to possess the ball. As kickers steadily improved, the winner of sudden death overtime became increasingly determined by the result of the coin flip used to determine first possession.</p>
+<p>In 2010, the NFL adopted “modified sudden death” overtime rules in which both teams have a chance to possess the ball <em>unless</em> the first team scores a touchdown on their opening possession. If the second team gets possession (e.g., by forcing a turnover, a punt, or giving up only a field goal to the first team), the winner is whichever team has the higher score at the end of the second team’s possession. If the game is still tied after the second team’s possession, the team that scores next wins the game.</p>
+<p>In 2019, the Kansas City Chiefs proposed a further change to the NFL’s overtime rule to allow both teams an opportunity to possess the ball, even if the first team scored an opening drive touchdown<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Since both teams are guaranteed possession, there is arguably some advantage to deferring possession: the second team will know exactly how many points they need to score in order to win or extend the game. To quantify the potential advantages and disadvantages of receiving the ball second under the proposed rules, the NFL League Office set out to estimate the probability that the second team, when trailing by a touchdown, actually scores a touchdown. If this probability is extremely low, there is not much justification for the rule change.</p>
+<section id="sec-overview" class="level3">
+<h3 class="anchored" data-anchor-id="sec-overview">Overview</h3>
+<p>Over the next several lectures, we will use play-by-play data from 20 NFL seasons (1999-2000 to 2018-19) to</p>
+<ul>
+<li>Establish the advantage of possessing the ball first under sudden death and modified sudden death overtimes</li>
+<li>Estimate the distribution of outcomes for the second team’s possession after giving up an opening drive touchdown under the proposed rules</li>
+</ul>
+<p>At first glance, both of these tasks seeem straightforward. The advantage of first possession under the sudden death overtime rules can be quantified using the probability that the first team kicks a field goal or scores a touchdown on their opening possession. To compute this probability, we can look at all games played between 1999 and 2009 and count the number of times the team with first possession scored on their opening overtime drive. To assess the potential benefits of possessing the ball second under the proposed rules, it is tempting to find all drives immediately following an opening drive touchdown and compute the proportion of those drives that also resulted in a touchdown. While there are many such drives, none of them quite capture the unique scenario presented by the proposed overtime rules. That is because, under the proposed rules<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, if the first team scored an opening drive touchdown, the second team</p>
+<ol type="1">
+<li>Will <em>never</em> punt or kick a field goal on fourth down<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></li>
+<li>Must score a touchdown to extend the game</li>
+<li>Are relatively unconcerned about the clock<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></li>
+</ol>
+<p>We will instead evaluate the proposed rules by <em>simulating</em> entire drives for the team possessing the ball second in overtime while trailing by a touchdown. Rather than building a statistical model to predict the number of yards gained on any one play given the down, distance, and field position (hereafter <em>starting context</em>), we will instead use <em>re-sampling</em>. Specifically, we will simulate the outcome of the current play by randomly selecting a historical play with <em>similar</em> starting context and using its outcome.</p>
+</section>
+<section id="sec-data-prep" class="level3">
+<h3 class="anchored" data-anchor-id="sec-data-prep">Play-by-Play Data</h3>
+<p>We will work with NFL play-by-play data that has already been scraped by tne <strong>nflfastR</strong> team. These data are <a href="https://github.com/nflverse/nflverse-data/releases/tag/pbp">available online</a> and can be loaded into an R session using the <code>nflfastR::load_pbp()</code> function.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>raw_pbp <span class="ot">&lt;-</span> nflfastR<span class="sc">::</span><span class="fu">load_pbp</span>(<span class="at">seasons =</span> <span class="dv">1999</span><span class="sc">:</span><span class="dv">2018</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(raw_pbp, <span class="at">file =</span> <span class="st">"nfl_pbp_1999_2018.RData"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The data frame <code>raw_pbp</code> contains 937379 rows, each recording the values of 372 different variables. Each row corresponds to a different entry in a play-by-play table (like <a href="https://www.espn.com/nfl/playbyplay/_/gameId/400874733">this one from a 2016 game between the Cowboys and Packers</a>). The <strong>nflfastR</strong> team provides a <a href="https://nflreadr.nflverse.com/articles/dictionary_pbp.html">searchable data dictionary</a> that describes each varible. Of particular importance for our purposes are the variables <code>fixed_drive</code> and <code>fixed_drive_results</code>, which were constructed by <strong>nflfastR</strong> and, respectively, index drives within games and record the result of each drive.</p>
+</section>
+</section>
+<section id="sec-first-possession" class="level2">
+<h2 class="anchored" data-anchor-id="sec-first-possession">Benefits of First Possession in Overtime</h2>
+<p>As noted in <a href="#sec-intro" class="quarto-xref">Section&nbsp;1</a>, there is an arguably an intuitive advantage to possessing the ball first under the sudden death overtime rules: if the first team scores any points at all, they immediately win the game without giving the other team an opportunity to possess the ball. To quantify this advantage, we will count the number of overtime games played between 1999 and 2009 in which (i) the first team ultimately wins the game and (ii) the first team wins the game as a result of an opening drive score.</p>
+<p>To these ends, we must first identify all regular season games between the 1999 and 2010 that went to overtime. The following code filters the full play-by-play data table to include just those plays from overtime. Then, it extracts a unique game identifier (the variable <code>game_id</code>).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a>sd_ot_game_id <span class="ot">&lt;-</span></span>
+<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-hidden="true" tabindex="-1"></a>  raw_pbp <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(season <span class="sc">%in%</span> <span class="dv">1999</span><span class="sc">:</span><span class="dv">2009</span> <span class="sc">&amp;</span> season_type <span class="sc">==</span> <span class="st">"REG"</span>) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2">2</button><span id="annotated-cell-2-4" class="code-annotation-target"><a href="#annotated-cell-2-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(game_half <span class="sc">==</span> <span class="st">"Overtime"</span>) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3">3</button><span id="annotated-cell-2-5" class="code-annotation-target"><a href="#annotated-cell-2-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(game_id) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="4">4</button><span id="annotated-cell-2-6" class="code-annotation-target"><a href="#annotated-cell-2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>()</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="3" data-code-annotation="1">Restrict attention to regular season games from 1999-2000 to 2009-10</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="4" data-code-annotation="2">The variable <code>game_half</code> only takes values <code>Half1</code>, <code>Half2</code>, and <code>Overtime</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="5" data-code-annotation="3">Extracts the unique game identifier</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="6" data-code-annotation="4">Without this line, we would get multiple copies of every <code>game_id</code>, one for every play in every game.</span>
+</dd>
+</dl>
+</div>
+</div>
+<p>In total, 169 games went to overtime between 1999 and 2010. <strong>nflfastR</strong> includes the variable <code>result</code>, which records the final score margin from the perspective of the home team<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>. The following code identifies the winning team for each overtime game.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-3"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a>sd_ot_winner <span class="ot">&lt;-</span></span>
+<span id="annotated-cell-3-2"><a href="#annotated-cell-3-2" aria-hidden="true" tabindex="-1"></a>  raw_pbp <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(game_id <span class="sc">%in%</span> sd_ot_game_id) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(game_id, result, home_team, away_team) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1">1</button><span id="annotated-cell-3-5" class="code-annotation-target"><a href="#annotated-cell-3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-3-6"><a href="#annotated-cell-3-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="annotated-cell-3-7"><a href="#annotated-cell-3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">Winner =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2">2</button><span id="annotated-cell-3-8" class="code-annotation-target"><a href="#annotated-cell-3-8" aria-hidden="true" tabindex="-1"></a>      result <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">~</span> home_team,</span>
+<span id="annotated-cell-3-9"><a href="#annotated-cell-3-9" aria-hidden="true" tabindex="-1"></a>      result <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">~</span> away_team,</span>
+<span id="annotated-cell-3-10"><a href="#annotated-cell-3-10" aria-hidden="true" tabindex="-1"></a>      result <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="cn">NA_character_</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="5" data-code-annotation="1">Each play within the same game contains exactly the same values of <code>game_id</code>, <code>result</code>, <code>home_team</code>, and <code>away_team</code></span>
+</dd>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="8,9,10" data-code-annotation="2">We need to account for the possibility of a tie!</span>
+</dd>
+</dl>
+</div>
+</div>
+<p>Now that we have extracted the winner of each overtime game, we must determine which team possessed the ball first in overtime. The variable <code>posteam</code> in our play-by-play dataset records the team with possession at the start of each play. So, we could determine the first possession by sorting the overtime plays in chronological order (e.g., using one of <code>game_seconds_remaining</code> or <code>half_seconds_remaining</code>) and then pulling out the first value of <code>posteam</code>. Unfortunately, especially for games further in the past, the play-by-play data does not correctly record timestamps. As an example, here are the first several entries for the <a href="https://www.espn.com/nfl/boxscore/_/gameId/190912028">Week 1 game in the 1999-2000 season between the Dallas and Washington</a>. Notice that both <code>game_seconds_remaining</code> and <code>time</code> are fixed throughout each drive<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>raw_pbp <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(game_id <span class="sc">==</span> <span class="st">"1999_01_DAL_WAS"</span> <span class="sc">&amp;</span> game_half <span class="sc">==</span> <span class="st">"Overtime"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(game_seconds_remaining, time, desc) <span class="sc">|&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">14</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 14 × 3
+   game_seconds_remaining time  desc                                            
+                    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;                                           
+ 1                    900 15:00 T.Gowin kicks 63 yards from DAL 30 to WAS 7. B.…
+ 2                    900 15:00 (15:00) B.Johnson pass incomplete to A.Connell. 
+ 3                    900 15:00 (15:00) B.Johnson pass to L.Centers to WAS 34 f…
+ 4                    900 15:00 (15:00) B.Johnson pass to I.Fryar pushed ob at …
+ 5                    900 15:00 (15:00) S.Davis to DAL 45 for 7 yards (C.Willia…
+ 6                    900 15:00 (15:00) B.Johnson pass incomplete to I.Fryar (C…
+ 7                    900 15:00 (15:00) B.Johnson sacked at WAS 47 for -8 yards…
+ 8                    900 15:00 (15:00) M.Turk punts 48 yards to DAL 5, Center-…
+ 9                    767 12:47 (12:47) E.Smith right guard to DAL 7 for 2 yard…
+10                    767 12:47 (12:47) T.Aikman pass to E.Smith ran ob at DAL …
+11                    767 12:47 (12:47) T.Aikman pass to D.Johnston to DAL 20 f…
+12                    767 12:47 (12:47) T.Aikman pass to C.Warren ran ob at DAL…
+13                    767 12:47 (12:47) T.Aikman pass to R.Ismail for 76 yards,…
+14                      0 00:00 END GAME                                        </code></pre>
+</div>
+</div>
+<p>Luckily, <strong>nflfastR</strong> indexes each drive within a game consecutively starting from 1 with the variable <code>fixed_drive</code>. As an illustration, here are the plays from that 1999 Dallas-Washington game showing <code>fixed_drive</code> along with two other variables, <code>fixed_drive_result</code> (which records the result of each drive) and <code>posteam</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>raw_pbp <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(game_id <span class="sc">==</span> <span class="st">"1999_01_DAL_WAS"</span> <span class="sc">&amp;</span> game_half <span class="sc">==</span> <span class="st">"Overtime"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(fixed_drive, fixed_drive_result, posteam, desc) <span class="sc">|&gt;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">14</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 14 × 4
+   fixed_drive fixed_drive_result posteam desc                                  
+         &lt;dbl&gt; &lt;chr&gt;              &lt;chr&gt;   &lt;chr&gt;                                 
+ 1          28 Punt               WAS     T.Gowin kicks 63 yards from DAL 30 to…
+ 2          28 Punt               WAS     (15:00) B.Johnson pass incomplete to …
+ 3          28 Punt               WAS     (15:00) B.Johnson pass to L.Centers t…
+ 4          28 Punt               WAS     (15:00) B.Johnson pass to I.Fryar pus…
+ 5          28 Punt               WAS     (15:00) S.Davis to DAL 45 for 7 yards…
+ 6          28 Punt               WAS     (15:00) B.Johnson pass incomplete to …
+ 7          28 Punt               WAS     (15:00) B.Johnson sacked at WAS 47 fo…
+ 8          28 Punt               WAS     (15:00) M.Turk punts 48 yards to DAL …
+ 9          29 Touchdown          DAL     (12:47) E.Smith right guard to DAL 7 …
+10          29 Touchdown          DAL     (12:47) T.Aikman pass to E.Smith ran …
+11          29 Touchdown          DAL     (12:47) T.Aikman pass to D.Johnston t…
+12          29 Touchdown          DAL     (12:47) T.Aikman pass to C.Warren ran…
+13          29 Touchdown          DAL     (12:47) T.Aikman pass to R.Ismail for…
+14          29 Touchdown          &lt;NA&gt;    END GAME                              </code></pre>
+</div>
+</div>
+<p>Using the variable <code>fixed_drive</code>, we can identify the team who had possession first by extracting only those plays from overtime, sorting the plays by <code>fixed_drive</code>, and looking up the first entry of <code>posteam</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-6"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1" aria-hidden="true" tabindex="-1"></a>sd_ot_first <span class="ot">&lt;-</span></span>
+<span id="annotated-cell-6-2"><a href="#annotated-cell-6-2" aria-hidden="true" tabindex="-1"></a>  raw_pbp <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-6-3"><a href="#annotated-cell-6-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(game_id <span class="sc">%in%</span> sd_ot_game_id <span class="sc">&amp;</span> game_half <span class="sc">==</span> <span class="st">"Overtime"</span>) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1">1</button><span id="annotated-cell-6-4" class="code-annotation-target"><a href="#annotated-cell-6-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(game_id) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-6-5"><a href="#annotated-cell-6-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(fixed_drive) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="2">2</button><span id="annotated-cell-6-6" class="code-annotation-target"><a href="#annotated-cell-6-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(game_seconds_remaining)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-6-7"><a href="#annotated-cell-6-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="3">3</button><span id="annotated-cell-6-8" class="code-annotation-target"><a href="#annotated-cell-6-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">first_pos =</span> dplyr<span class="sc">::</span><span class="fu">first</span>(posteam),</span>
+<span id="annotated-cell-6-9"><a href="#annotated-cell-6-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">first_drive_result =</span> dplyr<span class="sc">::</span><span class="fu">first</span>(fixed_drive_result)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-6-10"><a href="#annotated-cell-6-10" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(game_id, first_pos, first_drive_result) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="4">4</button><span id="annotated-cell-6-11" class="code-annotation-target"><a href="#annotated-cell-6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-6-12"><a href="#annotated-cell-6-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(game_id)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-6" data-code-lines="4,5" data-code-annotation="1">Sort plays by <code>drive_number</code> <em>within</em> each game</span>
+</dd>
+<dt data-target-cell="annotated-cell-6" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-6" data-code-lines="6" data-code-annotation="2">Some (but not all) games have additional informational rows and don’t record the team with first possession. A cursory inspection of the data revealed that these rows also did not record the number of seconds left in the period. So, by filtering to those plays with non-missing time values, we can extract the identity of the first team using <code>dplyr::first()</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-6" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-6" data-code-lines="8,9" data-code-annotation="3">Extract the identity of the first team with possession of the ball and the result of the opening drive</span>
+</dd>
+<dt data-target-cell="annotated-cell-6" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-6" data-code-lines="11" data-code-annotation="4">When called on a grouped data frame <code>mutate()</code> adds columns to every row. So, we will have multiple copies of the variables <code>game_id</code>, <code>first_pos</code>, and <code>first_drive_results</code>, one for each play in each game.</span>
+</dd>
+</dl>
+</div>
+</div>
+<p>We can now join <code>sd_ot_winner</code> and <code>sd_ot_first</code> to create a single table that records the winner, first team with possession, and the result of the opening drive of each overtime game between 1999 and 2010.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>sd_ot <span class="ot">&lt;-</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  sd_ot_winner <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(game_id, Winner) <span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(<span class="at">y =</span> sd_ot_first, <span class="at">by =</span> <span class="st">"game_id"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>We find that in roughly 62.9% of overtime games, the team with first possession in overtime eventually won the game.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="1">1</button><span id="annotated-cell-8-1" class="code-annotation-target"><a href="#annotated-cell-8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(sd_ot<span class="sc">$</span>Winner <span class="sc">==</span> sd_ot<span class="sc">$</span>first_pos, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-8" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-8" data-code-lines="1" data-code-annotation="1">Because some entries of <code>Winner</code> could be <code>NA</code> (due to ties), we need to remove those entries before computing the mean.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6287425</code></pre>
+</div>
+</div>
+<p>Further, the majority of games won by the first team were won as the result of an opening drive field goal or touchdown that denied the second team possession</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(sd_ot<span class="sc">$</span>Winner <span class="sc">==</span> sd_ot<span class="sc">$</span>first_pos <span class="sc">&amp;</span> sd_ot<span class="sc">$</span>first_drive_result <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Touchdown"</span>, <span class="st">"Field goal"</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 63</code></pre>
+</div>
+</div>
+<p>Using almost identically the same code as above, we can quantify the first possession advantage under the NFL’s modified sudden death overtime rules, which were instituted during the 2010-11 season.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-10"><pre class="sourceCode r code-annotation-code code-with-copy"><code class="sourceCode r"><span id="annotated-cell-10-1"><a href="#annotated-cell-10-1" aria-hidden="true" tabindex="-1"></a>msd_ot_game_id <span class="ot">&lt;-</span></span>
+<span id="annotated-cell-10-2"><a href="#annotated-cell-10-2" aria-hidden="true" tabindex="-1"></a>  raw_pbp <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-10-3"><a href="#annotated-cell-10-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(season <span class="sc">%in%</span> <span class="dv">2010</span><span class="sc">:</span><span class="dv">2018</span>) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-10-4"><a href="#annotated-cell-10-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(game_half <span class="sc">==</span> <span class="st">"Overtime"</span>) <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-10-5"><a href="#annotated-cell-10-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(game_id) <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-10-6"><a href="#annotated-cell-10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>()</span>
+<span id="annotated-cell-10-7"><a href="#annotated-cell-10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-10-8"><a href="#annotated-cell-10-8" aria-hidden="true" tabindex="-1"></a>msd_ot_winner <span class="ot">&lt;-</span></span>
+<span id="annotated-cell-10-9"><a href="#annotated-cell-10-9" aria-hidden="true" tabindex="-1"></a>  raw_pbp <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-10-10"><a href="#annotated-cell-10-10" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(game_id <span class="sc">%in%</span> msd_ot_game_id) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-10-11"><a href="#annotated-cell-10-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(game_id, result, home_team, away_team) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-10-12"><a href="#annotated-cell-10-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-10-13"><a href="#annotated-cell-10-13" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="annotated-cell-10-14"><a href="#annotated-cell-10-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">Winner =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="annotated-cell-10-15"><a href="#annotated-cell-10-15" aria-hidden="true" tabindex="-1"></a>      result <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">~</span> home_team,</span>
+<span id="annotated-cell-10-16"><a href="#annotated-cell-10-16" aria-hidden="true" tabindex="-1"></a>      result <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">~</span> away_team,</span>
+<span id="annotated-cell-10-17"><a href="#annotated-cell-10-17" aria-hidden="true" tabindex="-1"></a>      result <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="cn">NA_character_</span>))</span>
+<span id="annotated-cell-10-18"><a href="#annotated-cell-10-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-10-19"><a href="#annotated-cell-10-19" aria-hidden="true" tabindex="-1"></a>msd_ot_first <span class="ot">&lt;-</span></span>
+<span id="annotated-cell-10-20"><a href="#annotated-cell-10-20" aria-hidden="true" tabindex="-1"></a>  raw_pbp <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-10-21"><a href="#annotated-cell-10-21" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(game_id <span class="sc">%in%</span> msd_ot_game_id <span class="sc">&amp;</span> game_half <span class="sc">==</span> <span class="st">"Overtime"</span>) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-10-22"><a href="#annotated-cell-10-22" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(game_id) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-10-23"><a href="#annotated-cell-10-23" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(fixed_drive) <span class="sc">|&gt;</span> <span class="co">#&lt;1&gt; |&gt;</span></span>
+<span id="annotated-cell-10-24"><a href="#annotated-cell-10-24" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(game_seconds_remaining)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-10-25"><a href="#annotated-cell-10-25" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">first_pos =</span> dplyr<span class="sc">::</span><span class="fu">first</span>(posteam), <span class="at">first_drive_result =</span> dplyr<span class="sc">::</span><span class="fu">first</span>(fixed_drive_result)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-10-26"><a href="#annotated-cell-10-26" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(game_id, first_pos, first_drive_result) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-10-27"><a href="#annotated-cell-10-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-10-28"><a href="#annotated-cell-10-28" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(game_id)</span>
+<span id="annotated-cell-10-29"><a href="#annotated-cell-10-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-10-30"><a href="#annotated-cell-10-30" aria-hidden="true" tabindex="-1"></a>msd_ot <span class="ot">&lt;-</span></span>
+<span id="annotated-cell-10-31"><a href="#annotated-cell-10-31" aria-hidden="true" tabindex="-1"></a>  msd_ot_winner <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-10-32"><a href="#annotated-cell-10-32" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(game_id, Winner) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-10-33"><a href="#annotated-cell-10-33" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(<span class="at">y =</span> msd_ot_first, <span class="at">by =</span> <span class="st">"game_id"</span>)</span>
+<span id="annotated-cell-10-34"><a href="#annotated-cell-10-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-10-35"><a href="#annotated-cell-10-35" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(msd_ot<span class="sc">$</span>Winner <span class="sc">==</span> msd_ot<span class="sc">$</span>first_pos, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5034483</code></pre>
+</div>
+</div>
+<p>So, between 2010 and 2019, the team possessing the ball first during the modified sudden death overtime rules won just over 50% of the time<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>.</p>
+<p>We can further insight into how the modified sudden death overtime rules changed teams’ strategic decision making from the distribution of first drive results in both overtime eras. Under the sudden death rules, the first team attempted field goals on about 36.1% of their opening drives.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">table</span>(sd_ot<span class="sc">$</span>first_drive_result)<span class="sc">/</span><span class="fu">nrow</span>(sd_ot), <span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+       Field goal Missed field goal     Opp touchdown              Punt 
+             0.30              0.06              0.02              0.42 
+        Touchdown          Turnover Turnover on downs 
+             0.07              0.12              0.01 </code></pre>
+</div>
+</div>
+<p>Under the modified sudden death rules, the first team attempted field goals on only about 20.4% Just as interesting, by comparing the distributions of the first possession results in the two overtime eras, we find that the first team attempted substantially fewer field goals under modified sudden death rules than under the initial sudden death rules.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">table</span>(msd_ot<span class="sc">$</span>first_drive_result)<span class="sc">/</span><span class="fu">nrow</span>(msd_ot), <span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+       Field goal Missed field goal     Opp touchdown              Punt 
+             0.17              0.03              0.02              0.47 
+        Touchdown          Turnover Turnover on downs 
+             0.16              0.11              0.03 </code></pre>
+</div>
+</div>
+<p>Interestingly, we find that roughly the same proportion of first drives ended with turnovers, opponent touchdowns<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>, and punts. But, as we might expect, under the modified sudden death rules, the first team attempted substantively fewer field goals.</p>
+</section>
+<section id="sec-sim-setup" class="level2">
+<h2 class="anchored" data-anchor-id="sec-sim-setup">Setting Up For Drive Simulation</h2>
+<p>Under the proposed overtime rules, both teams would have an opportunity to possess the ball <em>even if the first team scored an opening-drive touchdown</em>. At least on paper, these rules give the second team an opportunity to win or extend the game, regardless of how the first team’s possession ends. Further, this guaranteed possession may change the decision calculus for teams when it comes to electing to receive the ball first. Specifically, one could argue that the proposed rules <em>favor</em> the second team as they would know exactly what they’d need to do to win or extend the game.</p>
+<p>As noted in <a href="#sec-intro" class="quarto-xref">Section&nbsp;1</a>, we will build a drive simulator to estimate the probability that the second team, when trailing by a touchdown in overtime, is able to extend the game by scoring a touchdown. Our simulation will work by repeatedly sampling the outcome of each simulated play from the pool of actual plays with similar starting <em>context</em>, which we define as the combination of position on the field (<code>yardline_100</code>)<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>, down (<code>down</code>), and distance to the first down marker (<code>ydstogo</code>). In the simulation, we use the starting context and sampled outcome of each play to determine the starting context of the next simulated play.</p>
+<p>To power our simulation, we need to build a pool of representative plays from which to sample outcomes based on the following criteria:</p>
+<ol type="1">
+<li>The possessing team should be trailing by 6, 7, or 8 points: we’re interested in estimating how likely the second team is to scoring a touchdown after giving up an opening drive touchdown in overtime</li>
+<li>The play must come from a drive that does not span multiple quarters: under the proposed overtime rules, the second team loses if their drive doesn’t end before the end of the overtime period</li>
+<li>We should exclude all plays from punt or field goal formation: under the proposed overtime rules, the second team will <em>never</em> attempt a punt or field goal</li>
+</ol>
+<p>We will further restrict our pool of plays to be those from regular season games between the 2008 and 2019.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>pbp <span class="ot">&lt;-</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  raw_pbp <span class="sc">|&gt;</span> </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(season <span class="sc">%in%</span> <span class="dv">2008</span><span class="sc">:</span><span class="dv">2018</span> <span class="sc">&amp;</span> season_type <span class="sc">==</span> <span class="st">"REG"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>To identify drives spanning multiple quarters, we first group <code>raw_pbp</code> by both <code>game_id</code> and <code>fixed_drive.</code> Then, for each combination of game and drive identifier, we can count the number of distinct values of <code>qtr</code> that appear in the rows of the play-by-play sub-table. If the drive spanes multiple quarters, this count will exceed 1.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-14"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-14-1"><a href="#annotated-cell-14-1" aria-hidden="true" tabindex="-1"></a>multi_qtr_drives <span class="ot">&lt;-</span> </span>
+<span id="annotated-cell-14-2"><a href="#annotated-cell-14-2" aria-hidden="true" tabindex="-1"></a>  pbp <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-14-3"><a href="#annotated-cell-14-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(game_id, fixed_drive) <span class="sc">|&gt;</span> </span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="1">1</button><span id="annotated-cell-14-4" class="code-annotation-target"><a href="#annotated-cell-14-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">n_qtrs =</span> dplyr<span class="sc">::</span><span class="fu">n_distinct</span>(qtr), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="2">2</button><span id="annotated-cell-14-5" class="code-annotation-target"><a href="#annotated-cell-14-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(n_qtrs <span class="sc">&gt;</span> <span class="dv">1</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-14" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-14" data-code-lines="4" data-code-annotation="1">Count how many distinct values of <code>qtr</code> there are for each combination of <code>game_id</code> and <code>fixed_drive</code></span>
+</dd>
+<dt data-target-cell="annotated-cell-14" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-14" data-code-lines="5" data-code-annotation="2">If a drive spans multiple quarters, <code>n_qtrs</code> will exceed 1.</span>
+</dd>
+</dl>
+</div>
+</div>
+<section id="determining-starting-and-ending-contexts" class="level3">
+<h3 class="anchored" data-anchor-id="determining-starting-and-ending-contexts">Determining Starting and Ending Contexts</h3>
+<p>Each row in <code>pbp</code> contains several variables recording the <em>context</em> (i.e., yard line, down, distance to the first down marker, quarter, time remaining, scores) at the start of each play-by-play entry. In our simulation study, every time we randomly sample a representative play (based on the starting context), we will determine the ending context for that play and use that to set the starting context for the next simulated play. Unfortunately, <strong>nflfastR</strong> does not automatically record the ending context. So, we will need to manually add columns to our dataset recording the ending context.</p>
+<p>To this end, we will</p>
+<ol type="1">
+<li>Remove all plays from drives spanning multiple quarters using the function <a href="https://dplyr.tidyverse.org/reference/filter-joins.html">`dplyr::anti_join()</a></li>
+<li>Group the remaining plays by both <code>game_id</code>, <code>game_half</code>, and <code>fixed_drive</code><a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a> 3, Arrange the rows by the number of seconds remaining in the game</li>
+<li>Look up the next value of several contextual variables using the function <code>dplyr::lead()</code>.</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-15"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-15-1"><a href="#annotated-cell-15-1" aria-hidden="true" tabindex="-1"></a>raw_plays <span class="ot">&lt;-</span></span>
+<span id="annotated-cell-15-2"><a href="#annotated-cell-15-2" aria-hidden="true" tabindex="-1"></a>  pbp <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="1">1</button><span id="annotated-cell-15-3" class="code-annotation-target"><a href="#annotated-cell-15-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">anti_join</span>(<span class="at">y =</span> multi_qtr_drives, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"game_id"</span>, <span class="st">"fixed_drive"</span>)) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="2">2</button><span id="annotated-cell-15-4" class="code-annotation-target"><a href="#annotated-cell-15-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(season_type <span class="sc">==</span> <span class="st">"REG"</span> <span class="sc">&amp;</span> game_half <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Half1"</span>, <span class="st">"Half2"</span>)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-15-5"><a href="#annotated-cell-15-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(game_id, game_half, fixed_drive) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="3">3</button><span id="annotated-cell-15-6" class="code-annotation-target"><a href="#annotated-cell-15-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(game_seconds_remaining)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-15-7"><a href="#annotated-cell-15-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="annotated-cell-15-8"><a href="#annotated-cell-15-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">next_yardline_100 =</span> dplyr<span class="sc">::</span><span class="fu">lead</span>(yardline_100),</span>
+<span id="annotated-cell-15-9"><a href="#annotated-cell-15-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">next_down =</span> dplyr<span class="sc">::</span><span class="fu">lead</span>(down),</span>
+<span id="annotated-cell-15-10"><a href="#annotated-cell-15-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">next_ydstogo =</span> dplyr<span class="sc">::</span><span class="fu">lead</span>(ydstogo),</span>
+<span id="annotated-cell-15-11"><a href="#annotated-cell-15-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">next_half_seconds_remaining =</span> dplyr<span class="sc">::</span><span class="fu">lead</span>(half_seconds_remaining)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-15-12"><a href="#annotated-cell-15-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-15-13"><a href="#annotated-cell-15-13" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(game_id, dplyr<span class="sc">::</span><span class="fu">desc</span>(game_seconds_remaining))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-15" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-15" data-code-lines="3" data-code-annotation="1">Removes all rows from drives spanning multiple quarters</span>
+</dd>
+<dt data-target-cell="annotated-cell-15" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-15" data-code-lines="4" data-code-annotation="2">Restricts attention to drives in the first or second half of regular season games</span>
+</dd>
+<dt data-target-cell="annotated-cell-15" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-15" data-code-lines="6" data-code-annotation="3">Sort plays within a drive in chronological order</span>
+</dd>
+</dl>
+</div>
+</div>
+<p>Now, each row of <code>raw_plays</code> contains the starting and ending context for each play. So, in our simulation code, as soon as we sample a play based on its starting context, we can immediately determine the starting context for the next play using the newly constructed variables <code>next_yardline_100</code>, <code>next_down</code>, <code>next_ydstogo</code>, and <code>next_half_seconds</code>. However, because we only need to simulate the second possession (and not subsequent possessions), we need to stop the simulation if a sampled play ends with a touchdown or turnover. One way to do this is to set the ending context variables to <code>NA</code> for such plays and then include some conditional logic in our simulation code to draw the next play only when the ending context variables are not <code>NA</code>.</p>
+<p>Unfortunately, as shown during lecture, the code block above does not correctly set <code>next_yardline</code> immediately after touchdowns. In the code block below, we manually set the ending contextual variables to <code>NA</code> following a touchdown, interception, or turnover.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-16"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-16-1"><a href="#annotated-cell-16-1" aria-hidden="true" tabindex="-1"></a>raw_plays <span class="ot">&lt;-</span></span>
+<span id="annotated-cell-16-2"><a href="#annotated-cell-16-2" aria-hidden="true" tabindex="-1"></a>  pbp <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="1">1</button><span id="annotated-cell-16-3" class="code-annotation-target"><a href="#annotated-cell-16-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">anti_join</span>(<span class="at">y =</span> multi_qtr_drives, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"game_id"</span>, <span class="st">"fixed_drive"</span>)) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="2">2</button><span id="annotated-cell-16-4" class="code-annotation-target"><a href="#annotated-cell-16-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(season_type <span class="sc">==</span> <span class="st">"REG"</span> <span class="sc">&amp;</span> game_half <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Half1"</span>, <span class="st">"Half2"</span>)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-16-5"><a href="#annotated-cell-16-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(game_id, game_half, fixed_drive) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="3">3</button><span id="annotated-cell-16-6" class="code-annotation-target"><a href="#annotated-cell-16-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(game_seconds_remaining)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-16-7"><a href="#annotated-cell-16-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="annotated-cell-16-8"><a href="#annotated-cell-16-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">next_yardline_100 =</span> dplyr<span class="sc">::</span><span class="fu">lead</span>(yardline_100),</span>
+<span id="annotated-cell-16-9"><a href="#annotated-cell-16-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">next_down =</span> dplyr<span class="sc">::</span><span class="fu">lead</span>(down),</span>
+<span id="annotated-cell-16-10"><a href="#annotated-cell-16-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">next_ydstogo =</span> dplyr<span class="sc">::</span><span class="fu">lead</span>(ydstogo)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-16-11"><a href="#annotated-cell-16-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="annotated-cell-16-12"><a href="#annotated-cell-16-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">next_yardline_100 =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="annotated-cell-16-13"><a href="#annotated-cell-16-13" aria-hidden="true" tabindex="-1"></a>      touchdown <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="annotated-cell-16-14"><a href="#annotated-cell-16-14" aria-hidden="true" tabindex="-1"></a>      fumble_lost <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> interception <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="cn">NA</span>,</span>
+<span id="annotated-cell-16-15"><a href="#annotated-cell-16-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">.default =</span> next_yardline_100),</span>
+<span id="annotated-cell-16-16"><a href="#annotated-cell-16-16" aria-hidden="true" tabindex="-1"></a>   <span class="at">next_down =</span> <span class="fu">ifelse</span>(touchdown <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> fumble_lost <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> interception <span class="sc">==</span> <span class="dv">1</span>, <span class="cn">NA</span>, next_down),</span>
+<span id="annotated-cell-16-17"><a href="#annotated-cell-16-17" aria-hidden="true" tabindex="-1"></a>   <span class="at">next_ydstogo =</span> <span class="fu">ifelse</span>(touchdown <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> fumble_lost <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> interception <span class="sc">==</span> <span class="dv">1</span>, <span class="cn">NA</span>, next_ydstogo)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-16-18"><a href="#annotated-cell-16-18" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-16-19"><a href="#annotated-cell-16-19" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">next_half_seconds_remaining =</span> dplyr<span class="sc">::</span><span class="fu">lead</span>(half_seconds_remaining)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-16-20"><a href="#annotated-cell-16-20" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(game_id, dplyr<span class="sc">::</span><span class="fu">desc</span>(game_seconds_remaining)) </span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-16" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-16" data-code-lines="3" data-code-annotation="1">Arrange plays within each drive in chronological order</span>
+</dd>
+<dt data-target-cell="annotated-cell-16" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-16" data-code-lines="4" data-code-annotation="2">Look up the next value of each contextual variable</span>
+</dd>
+<dt data-target-cell="annotated-cell-16" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-16" data-code-lines="6,16,17" data-code-annotation="3">Sort plays within a drive in chronological order</span>
+</dd>
+</dl>
+</div>
+</div>
+</section>
+<section id="putting-it-all-together" class="level3">
+<h3 class="anchored" data-anchor-id="putting-it-all-together">Putting it All Together</h3>
+<p>We’re now in a position to build our pool of representative plays. In doing so, we need to restrict attention to those drives where the possessing team trails by 6, 7, or 8 points. Because the second team will <strong>never</strong> line up in a field goal or punt formation under the proposed overtime rules, we will also remove fake field goal and punts.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-17"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="1">1</button><span id="annotated-cell-17-1" class="code-annotation-target"><a href="#annotated-cell-17-1" aria-hidden="true" tabindex="-1"></a>start_context <span class="ot">&lt;-</span></span>
+<span id="annotated-cell-17-2"><a href="#annotated-cell-17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">"half_seconds_remaining"</span>, <span class="st">"yardline_100"</span>, <span class="st">"down"</span>, <span class="st">"ydstogo"</span>)</span>
+<span id="annotated-cell-17-3"><a href="#annotated-cell-17-3" aria-hidden="true" tabindex="-1"></a>end_context <span class="ot">&lt;-</span></span>
+<span id="annotated-cell-17-4"><a href="#annotated-cell-17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">"next_half_seconds_remaining"</span>, <span class="st">"next_yardline_100"</span>, <span class="st">"next_down"</span>,</span>
+<span id="annotated-cell-17-5"><a href="#annotated-cell-17-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"next_ydstogo"</span>)</span>
+<span id="annotated-cell-17-6"><a href="#annotated-cell-17-6" aria-hidden="true" tabindex="-1"></a>outcomes <span class="ot">&lt;-</span></span>
+<span id="annotated-cell-17-7"><a href="#annotated-cell-17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">"touchdown"</span>, <span class="st">"first_down"</span>, <span class="st">"penalty"</span>, <span class="st">"fumble"</span>, <span class="st">"fumble_lost"</span>,</span>
+<span id="annotated-cell-17-8"><a href="#annotated-cell-17-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"interception"</span>, <span class="st">"sack"</span>)</span>
+<span id="annotated-cell-17-9"><a href="#annotated-cell-17-9" aria-hidden="true" tabindex="-1"></a>play_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"play_type"</span>, <span class="st">"pass_attempt"</span>, <span class="st">"complete_pass"</span>,</span>
+<span id="annotated-cell-17-10"><a href="#annotated-cell-17-10" aria-hidden="true" tabindex="-1"></a>               <span class="st">"rush_attempt"</span>,</span>
+<span id="annotated-cell-17-11"><a href="#annotated-cell-17-11" aria-hidden="true" tabindex="-1"></a>               <span class="st">"game_id"</span>, start_context,</span>
+<span id="annotated-cell-17-12"><a href="#annotated-cell-17-12" aria-hidden="true" tabindex="-1"></a>               end_context, outcomes, <span class="st">"desc"</span>, <span class="st">"yards"</span>, <span class="st">"time_elapsed"</span>)</span>
+<span id="annotated-cell-17-13"><a href="#annotated-cell-17-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-17-14"><a href="#annotated-cell-17-14" aria-hidden="true" tabindex="-1"></a>plays <span class="ot">&lt;-</span></span>
+<span id="annotated-cell-17-15"><a href="#annotated-cell-17-15" aria-hidden="true" tabindex="-1"></a>  raw_plays <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="2">2</button><span id="annotated-cell-17-16" class="code-annotation-target"><a href="#annotated-cell-17-16" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(half_seconds_remaining <span class="sc">&gt;</span> <span class="dv">120</span>) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="3">3</button><span id="annotated-cell-17-17" class="code-annotation-target"><a href="#annotated-cell-17-17" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(score_differential <span class="sc">%in%</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">6</span>, <span class="sc">-</span><span class="dv">7</span>, <span class="sc">-</span><span class="dv">8</span>)) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="4">4</button><span id="annotated-cell-17-18" class="code-annotation-target"><a href="#annotated-cell-17-18" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(two_point_attempt <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="5">5</button><span id="annotated-cell-17-19" class="code-annotation-target"><a href="#annotated-cell-17-19" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(play_type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"run"</span>, <span class="st">"pass"</span>, <span class="st">"no_play"</span>)) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="6">6</button><span id="annotated-cell-17-20" class="code-annotation-target"><a href="#annotated-cell-17-20" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"Punt formation"</span>, desc) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"Field goal formation"</span>, desc)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-17-21"><a href="#annotated-cell-17-21" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"punt"</span>, desc) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">grepl</span>(<span class="st">"kick"</span>, desc)) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="7">7</button><span id="annotated-cell-17-22" class="code-annotation-target"><a href="#annotated-cell-17-22" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">yards =</span> yardline_100 <span class="sc">-</span> next_yardline_100,</span>
+<span id="annotated-cell-17-23"><a href="#annotated-cell-17-23" aria-hidden="true" tabindex="-1"></a>                <span class="at">time_elapsed =</span> half_seconds_remaining <span class="sc">-</span> next_half_seconds_remaining) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-17" data-target-annotation="8">8</button><span id="annotated-cell-17-24" class="code-annotation-target"><a href="#annotated-cell-17-24" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(tidyr<span class="sc">::</span><span class="fu">all_of</span>(play_vars))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-17" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-17" data-code-lines="1,2,3,4,5,6,7,8,9,10,11,12" data-code-annotation="1">Define the variables needed for our simulation</span>
+</dd>
+<dt data-target-cell="annotated-cell-17" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-17" data-code-lines="16" data-code-annotation="2">We will only use plays that happen before the final 2 minutes of a half</span>
+</dd>
+<dt data-target-cell="annotated-cell-17" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-17" data-code-lines="17" data-code-annotation="3">We restrict attention to those plays in which possessing team trails by 6, 7, or 8 points</span>
+</dd>
+<dt data-target-cell="annotated-cell-17" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-17" data-code-lines="18" data-code-annotation="4">Remove plays corresponding to two-point conversion attempts</span>
+</dd>
+<dt data-target-cell="annotated-cell-17" data-target-annotation="5">5</dt>
+<dd>
+<span data-code-cell="annotated-cell-17" data-code-lines="19" data-code-annotation="5">When there is a pre-snap penalty, <code>play_type == "no play"</code></span>
+</dd>
+<dt data-target-cell="annotated-cell-17" data-target-annotation="6">6</dt>
+<dd>
+<span data-code-cell="annotated-cell-17" data-code-lines="20,21" data-code-annotation="6">Remove plays where (i) the offense lines up in punt or field goal formation or (ii) otherwise punts or kicks the ball</span>
+</dd>
+<dt data-target-cell="annotated-cell-17" data-target-annotation="7">7</dt>
+<dd>
+<span data-code-cell="annotated-cell-17" data-code-lines="22,23" data-code-annotation="7"><code>yards</code> records the total number of yards gained in the play while <code>time_elapsed</code> records time between the snap of the ball on this play and the next play</span>
+</dd>
+<dt data-target-cell="annotated-cell-17" data-target-annotation="8">8</dt>
+<dd>
+<span data-code-cell="annotated-cell-17" data-code-lines="24" data-code-annotation="8">Extract only the variables needed for our simulation</span>
+</dd>
+</dl>
+</div>
+</div>
+<p>Note that hte variable <code>time_elapsed</code> includes both the time from the snap to the end of the of the current play <strong>and</strong> the time from the end of the current play to the snap of the next play. In other words, it includes the time it takes for the ball to be spotted, huddles and substitutions to occur, and for teams to get lined up again. Although <strong>nflfastR</strong> does not record the amount of time elapsed during a play, it does record how many seconds remain on the play clock<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a> when the ball is snapped (<code>play_clock</code>) and the game time at the end of each play (<code>end_clock_time</code>). Using these variables, one could decompose our <code>time_elapsed</code> variable into its two constituent parts[^exercise]</p>
+</section>
+<section id="starting-position" class="level3">
+<h3 class="anchored" data-anchor-id="starting-position">Starting Position</h3>
+<p>Our simulation will work by randomly selecting the outcome of actual plays with similar starting context as the current simulated play. We have so far built a pool of representative plays from which to sample the outcomes conditionally given the starting context. The very last required ingredients are <em>randomly sampling</em> the starting field position and the amount of time remaining for the second possession.</p>
+<p>To determine the <em>distribution</em> of potential starting positions and the amount of time remaining in the overtime period, we can first identify all regular season games featuring a touchdown in the first drive. Then, we can get the starting context for the first play of the <em>second</em> possession in each of those games Because the proposed overtime period is only 10 minutes long, we need to exclude those games in which the first team scored an opening drive touchdown in more than 10 minutes.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-18"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-18-1"><a href="#annotated-cell-18-1" aria-hidden="true" tabindex="-1"></a>opening_score_games <span class="ot">&lt;-</span></span>
+<span id="annotated-cell-18-2"><a href="#annotated-cell-18-2" aria-hidden="true" tabindex="-1"></a>  pbp <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-18-3"><a href="#annotated-cell-18-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(fixed_drive <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> fixed_drive_result <span class="sc">==</span> <span class="st">"Touchdown"</span>) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-18-4"><a href="#annotated-cell-18-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(game_id) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-18-5"><a href="#annotated-cell-18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>()</span>
+<span id="annotated-cell-18-6"><a href="#annotated-cell-18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-18-7"><a href="#annotated-cell-18-7" aria-hidden="true" tabindex="-1"></a>drive2 <span class="ot">&lt;-</span></span>
+<span id="annotated-cell-18-8"><a href="#annotated-cell-18-8" aria-hidden="true" tabindex="-1"></a>  pbp <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-18-9"><a href="#annotated-cell-18-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(game_id <span class="sc">%in%</span> opening_score_games <span class="sc">&amp;</span> fixed_drive <span class="sc">==</span> <span class="dv">2</span>) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-18-10"><a href="#annotated-cell-18-10" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(score_differential <span class="sc">%in%</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">6</span>, <span class="sc">-</span><span class="dv">7</span>, <span class="sc">-</span><span class="dv">8</span>)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-18-11"><a href="#annotated-cell-18-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(game_id, dplyr<span class="sc">::</span><span class="fu">desc</span>(game_seconds_remaining))</span>
+<span id="annotated-cell-18-12"><a href="#annotated-cell-18-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-18-13"><a href="#annotated-cell-18-13" aria-hidden="true" tabindex="-1"></a>drive2_start <span class="ot">&lt;-</span></span>
+<span id="annotated-cell-18-14"><a href="#annotated-cell-18-14" aria-hidden="true" tabindex="-1"></a>  drive2 <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-18-15"><a href="#annotated-cell-18-15" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(game_id) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-18-16"><a href="#annotated-cell-18-16" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(play_type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"run"</span>, <span class="st">"pass"</span>, <span class="st">"no_play"</span>) <span class="sc">&amp;</span> kickoff_attempt <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-18-17"><a href="#annotated-cell-18-17" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_head</span>(<span class="at">n=</span><span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-18-18"><a href="#annotated-cell-18-18" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-18-19"><a href="#annotated-cell-18-19" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(yardline_100, quarter_seconds_remaining) <span class="sc">|&gt;</span></span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-18" data-target-annotation="1">1</button><span id="annotated-cell-18-20" class="code-annotation-target"><a href="#annotated-cell-18-20" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(quarter_seconds_remaining <span class="sc">&gt;</span> <span class="dv">300</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-hidden code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-18" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-18" data-code-lines="20" data-code-annotation="1">Regulation quarters are 15 minutes long. So, if at least 300 seconds remain in the quarter at the start of the <em>second</em> possession, the first drive took less than 10 minutes.</span>
+</dd>
+</dl>
+</div>
+</div>
+<p>We will save <code>plays</code> and <code>drive2_start</code> so that we can load them back into our R session during <a href="lecture18.qmd">Lecture 18</a>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(plays, drive2_start, <span class="at">file =</span> <span class="st">"nfl_drive_simulation_data.RData"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+
+
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Read more about the specific details in <a href="https://www.kansascity.com/sports/spt-columns-blogs/for-petes-sake/article257657753.html">this</a> article from the <em>Kansas City Star</em>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>The rules were eventually adopted in 2022, after a particularly thrilling game playoff game between <a href="https://www.espn.com/nfl/recap/_/gameId/401326633">Kansas City and the Buffalo</a>, in which the lead changed three times in the last two minutes of regulation.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Doing so would <strong>guarantee</strong> that the team loses the game.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>In regulation games, teams trailing by fewer than 7 points near the ends of halfs often eschew punting or kicking — the so-called “four down territory.” But decision making in those situations is often affected by things like time left or numbers of timeouts that are less materially important in the proposed overtime.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>So, positive (resp. negative) values of <code>result</code> correspond to home (resp. away) team wins.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>These variables are almost certainly derived from the narrative description (<code>desc</code>) of each play, which for some early games only records the time at the start of each drive.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>Beginning the 2017-18, the NFL shortened the overtime period from 15 minutes to 10 minutes. As an exercise, try computing the proportion using only games between 2010-11 and 2016-17.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>I.e., interceptions or fumbles returned by the defense for a touch down<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>Distance from the line of scrimmage to the end zone. The closer (resp. further) the offense is to scoring, the smaller (resp. larger) the value of <code>yardline_100</code>.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>Remember, <code>fixed_drive</code> uniquely determines drives <em>within a game</em> but not across games.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>Teams have 40 seconds following the end of the previous play to snap the ball.<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+        for (let i=0; i<annoteTargets.length; i++) {
+          const annoteTarget = annoteTargets[i];
+          const targetCell = annoteTarget.getAttribute("data-target-cell");
+          const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+          const contentFn = () => {
+            const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+            if (content) {
+              const tipContent = content.cloneNode(true);
+              tipContent.classList.add("code-annotation-tip-content");
+              return tipContent.outerHTML;
+            }
+          }
+          const config = {
+            allowHTML: true,
+            content: contentFn,
+            onShow: (instance) => {
+              selectCodeLines(instance.reference);
+              instance.reference.classList.add('code-annotation-active');
+              window.tippy.hideAll();
+            },
+            onHide: (instance) => {
+              unselectCodeLines();
+              instance.reference.classList.remove('code-annotation-active');
+            },
+            maxWidth: 300,
+            delay: [50, 0],
+            duration: [200, 0],
+            offset: [5, 10],
+            arrow: true,
+            appendTo: function(el) {
+              return el.parentElement.parentElement.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'quarto',
+            placement: 'right',
+            popperOptions: {
+              modifiers: [
+              {
+                name: 'flip',
+                options: {
+                  flipVariations: false, // true by default
+                  allowedAutoPlacements: ['right'],
+                  fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
+                },
+              },
+              {
+                name: 'preventOverflow',
+                options: {
+                  mainAxis: false,
+                  altAxis: false
+                }
+              }
+              ]        
+            }      
+          };
+          window.tippy(annoteTarget, config); 
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

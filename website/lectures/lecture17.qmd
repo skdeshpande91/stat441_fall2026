@@ -1,0 +1,341 @@
+---
+title: "Lecture 17: NFL Drive Simulation II"
+format: html
+execute: 
+  cache: true
+---
+
+
+## Recap {#sec-recap}
+
+In [Lecture 16](lecutre16.qmd#sec-first-possession), we used play-by-play data from the NFL to quantify the advantage of having first possession in overtime under the league's original sudden death overtime rules (which were in place from 1974 to 2010) and the modified sudden death overtime rules (which were adopted in the 2010-11 season).
+In 2019, the Kansas City Chiefs proposed a further modification that would allow both teams to possess the ball, even if the first team scored a touchdown on their opening drive.
+A key consideration in deciding whether to adopt the rule was computing the probability that the second team scores a touchdown given that the first team scored a touchdown on their opening drive.
+If that probability is very low, then there is arguably little point to adopting the proposed rule.
+
+As discussed in [Lecture 16](lecture16.qmd#sec-setup), we cannot estimate this probability by simply counting the number of times a team scores a touchdown after giving up a touchdown at the beginning of the first or third quarter in a tie game. 
+This is because the dynamics of the proposed overtime period are quite a bit different than during regulation.
+To wit, under the proposed rules, if they are trailing by 6, 7, or 8 points, the second team 
+
+  1. Will *never* punt or kick a field goal on fourth down
+  2. Must score a touchdown to extend the game
+  3. Are relatively unconcerned about the clock
+
+
+So, in order to estimate the probability, we will perform a Monte Carlo simulation study in which we repeatedly simulate the second drive.
+In each simulation replication, we will
+
+  1. Randomly sample the starting field position for the second team
+  2. Iteratively sample the outcome of each play in the drive from a pool of actually observed plays with similar starting contexts (i.e., yardline, down, and distance to the first down marker) until the drive ends
+
+At the end of [Lecture 16](lecture16.qmd), we compiled a large pool of plays from regular season drives meeting the following criteria:
+
+  1. The possessing team trailed by 6, 7, or 8 points
+  2. The plays were from a drive that did not span multiple quarters
+  3. The plays took place before the last two minutes of the half
+
+We also computed the distribution of starting field position and time remaining for the second possession immediately following an opening drive touchdown.
+```{r}
+#| label: load-data
+#| eval: true
+#| echo: true
+load("nfl_drive_simulation_data.RData")
+```
+
+## Illustration {#sec-illustration}
+
+To illustrate the logic of our simulation, suppose the second team is facing 1nd and 10 from their own 30 yard line (i.e., `yardline_100 = 80`) in one simulated drive.
+We fill find all plays with exactly the same starting context and then look to see how many yards were gained on each of those plays. 
+```{r}
+#| label: illustration-pool
+#| eval: true
+#| echo: true
+tmp_pool <-
+  plays |>
+  dplyr::filter(down == 1 & ydstogo == 10 & yardline_100 == 80)
+table(tmp_pool$yards)
+```
+In total, there are `{r} nrow(tmp_pool)` 1st and 10 from the 30 yard line plays in our dataset.
+Out of those, `{r} sum(tmp_pool$yards == 0)` netted zero yards and about `{r} paste0(round(100 * mean( tmp_pool$yards > 0 & tmp_pool$yards <= 5), digits = 1), "%")` netted between 1 and 5 yards (inclusive).
+
+We can sample a single play and look up how many yards were gained and how much time the play took.
+```{r}
+#| label: illustration-end-context
+#| eval: true
+#| echo: true
+set.seed(214) #<1>
+sampled_play <- 
+  tmp_pool |>
+  dplyr::slice_sample(n = 1) #<2>
+sampled_play |> dplyr::select(yards, time_elapsed, desc)
+```
+1. I set randomized seed here so that the lecture notes can be exactly reproduced.
+2. Randomly selects a single row (i.e., play) out of the temporary pool `tmp_df`
+
+Recall that the starting context of the play was `down = 1`, `yardline_100 = 80` and `ydstogo = 10`.
+Since the sampled play netted 2 yards, the starting context for the *next* play in our simulation would be `down = 2`, `yardline_100 = 78`, and `ydstogo = 8`. 
+We can repeat the above steps to simulate the outcome of the second play of the drive:
+
+```{r}
+#| label: illustration-second-play
+#| eval: true
+#| echo: true
+tmp_pool <-
+  plays |>
+  dplyr::filter(down == 2 & ydstogo == 8 & yardline_100 == 78)
+cat("Found", nrow(tmp_pool), "plays matching starting context\n")
+sampled_play <- 
+  tmp_pool |>
+  dplyr::slice_sample(n = 1)
+sampled_play |> dplyr::select(yards, time_elapsed, desc)
+```
+
+The second simulated play was a successful pass that netted 14 yards.
+So, the starting context of the next play in our drive is a 1st and 10 from the offense's 36 yardline (i.e., `yardline_100 = 64`).
+```{r}
+#| label: illustration-third-play
+#| eval: true
+#| echo: true
+tmp_pool <-
+  plays |>
+  dplyr::filter(down == 1 & ydstogo == 10 & yardline_100 == 64)
+cat("Found", nrow(tmp_pool), "plays matching starting context\n")
+sampled_play <- 
+  tmp_pool |>
+  dplyr::slice_sample(n = 1)
+sampled_play |> dplyr::select(yards, time_elapsed, desc)
+```
+
+## Sampling Plays with Similar Contexts {#sec-similar-context}
+
+We could continue iterating the above steps until the drive finishes.
+Before doing so, notice that the numbers of plays in the temporary pool `tmp_pool` differed based on the starting contexts.
+While some starting contexts are very well represented in `plays`, others are much more rare[^exercise]
+When running our simulation, we need to be careful when simulating a play with a rare starting context.
+Specifically, rather than sampling the outcome from plays with *exactly* the same starting context as our simulated play, we will instead sample the outcome from a pool of plays with *similar* starting contexts.
+
+[^exercise]: As an exercise, determine the total number of possible starting contexts and count how many of each actually occurred in the game. Then, count the number of occurrences for each observed starting context. You may find the function `dplyr::group_by()` particularly helpful for these tabulations.
+
+Intuitively, we might expect that the outcome of a 1st and 5 from your own 25 yard line is very similar to the outcome of a 1st and 5 run from 27 yard line.
+Similarly, we might expect that the distribution of outcomes for a 2nd and 14 play is not substantively different than the distribution of outcomes of a 2nd and 12.
+The following code block defines a function that takes starting context as an argument and randomly samples a play from the pool of observed plays with similar starting contexts.
+
+In this function, we take the inputted `down`, `ydstogo` and `yardline_100` values and create ranges `tmp_down`, `tmp_ydstogo`, and `tmp_yardline_100` containing similar values.
+We then filter `plays` to identify a temporary pool of plays whose starting down, distance, and yardline fall within these ranges.
+We finally randomly sample a play out of the pool and save several features like the number of yards gained, whether it resulted in a touchdown or interception, and the time elapsed.
+
+```{r}
+#| label: simulate-outcome-fn
+#| eval: true
+#| echo: true
+
+sample_play <- function(down, ydstogo,  yardline_100){
+  if(down %in% c(1,2,3)){ #<1>
+    tmp_down <- c(down) #<1>
+  } else{ #<1>
+    tmp_down <- c(3,4) #<1>
+  } #<1>
+  if(ydstogo == 10 | ydstogo == 1){ #<2>
+    tmp_ytg <- ydstogo #<2>
+  } else if(ydstogo %in% 2:3){ #<2>
+    tmp_ytg <- 2:3 #<2>
+  } else if(ydstogo %in% 4:5){ #<2>
+    tmp_ytg <- 4:5 #<2>
+  } else if(ydstogo %in% 6:9){ #<2>
+    tmp_ytg <- 6:9 #<2>
+  } else if(ydstogo %in% 11:15){ #<2>
+    tmp_ytg <- 11:15 #<2>
+  } else if(ydstogo %in% 16:20){ #<2>
+    tmp_ytg <- 16:20 #<2>
+  } else{ #<2>
+    tmp_ytg <- 20:99 #<2>
+  }
+  
+  if(yardline_100 >= 90){ #<3>
+    # plays starting within 10 yards of your own end zone #<3>
+    tmp_yardline <- 90:99 #<3>
+  } else if(yardline_100 > 60 & yardline_100 <= 90){ #<3>
+    # b/w your own 10 and 40: sample plays starting within 3 yards #<3>
+    tmp_yardline <- yardline_100 + seq(from = -3, to = 3, by = 1) #<3>
+  } else if(yardline_100 > 40 & yardline_100 <= 60){ #<3>
+    # b/w the 40's: sample plays starting within 2 yards #<3>
+    tmp_yardline <- yardline_100 + seq(from = -2,to = 2, by = 1) #<3>
+  } else if(yardline_100 > 3 & yardline_100 <= 40){ #<3>
+    # b/w opponent 40 and 3, add only 1 yard #<3>
+    tmp_yardline <- yardline_100 + seq(from = -1, to = 1, by=1) #<3>
+  } else{ #<3>
+    # b/w opponent 3 and goal, try to sample exactly #<3>
+    tmp_yardline <- yardline_100 #<3>
+  } #<3>
+  
+  tmp_pool <- #<4>
+    plays |> #<4>
+    dplyr::filter( #<4>
+      down %in% tmp_down &  #<4>
+        ydstogo %in% tmp_ytg & #<4>
+        yardline_100 %in% tmp_yardline) #<4>
+  
+  next_play <- tmp_pool |> dplyr::sample_n(size = 1) #<5>
+  
+  
+  output <- list()
+  output[["game_id"]] <- next_play$game_id #<6>
+  output[["down"]] <- next_play$down #<6>
+  output[["ydstogo"]] <- next_play$ydstogo #<6>
+  output[["yardline_100"]] <- next_play$yardline_100 #<6>
+  output[["play_type"]] <- next_play$play_type #<6>
+  output[["complete_pass"]] <- next_play$complete_pass #<6>
+  output[["penalty"]] <- next_play$penalty #<6>
+  output[["pass"]] <- next_play$pass_attempt #<6>
+  output[["rush"]] <- next_play$rush_attempt #<6>
+  output[["touchdown"]] <- next_play$touchdown #<6>
+  output[["interception"]] <- next_play$interception #<6>
+  output[["fumble_lost"]] <- next_play$fumble_lost #<6>
+  output[["yards"]] <- next_play$yards #<6>
+  output[["time_elapsed"]] <- next_play$time_elapsed #<6>
+  output[["desc"]] <- next_play$desc #<6>
+  return(output)
+}
+```
+1. When simulating the outcome for 4th down plays, we will sample from the pool of plays actually run on 3rd and 4th downs.
+2. Manually set the range `tmp_ytg` to allow us to draws on plays run with similar distances to the first down marker.
+3. Manually set the range `tmp_yardline` to allow us to draw on plays run from similar starting locations
+4. Create temporary pool of plays with similar starting contexts
+5. Randomly sample play from the temporary pool
+6. Extracts information about the simulated play and its outcome that are relevant for the next iteration of the simulation
+
+
+
+## Drive Simulation {#sec-drive-simulation}
+
+The following code block defines a function to simulate an entire drive under the simulated overtime rules.
+In the inner loop of the function, we call `sample_play()` to draw the outcome of the simulated play.
+Then, the function works through lots of logic to determine the starting context of the next play. 
+
+```{r}
+#| label: simulate-drive-fn
+#| eval: true
+#| echo: true
+simulate_drive <- function(){
+  
+  # First get starting position
+  down <- 1
+  ydstogo <- 10
+  tmp_yd_time <- drive2_start |> dplyr::slice_sample(n = 1)
+  yardline_100 <- tmp_yd_time$yardline_100
+  time <- tmp_yd_time$quarter_seconds_remaining - 300 #<1>
+  
+  play_counter <- 1 #<2>
+  continue_drive <- TRUE #<3>
+  result <- NA #<4>
+  
+  play_info <- list() #<5>
+  sampled_plays <- list() #<5>
+  
+  while(continue_drive){
+    output <- sample_play(down = down, ydstogo = ydstogo, yardline_100 = yardline_100) #<6>
+    
+    sampled_plays[[play_counter]] <- output #<6>
+    
+    play_info[[play_counter]] <- #<6>
+      data.frame(down = down, ydstogo = ydstogo, yardline_100 = yardline_100,
+                 time = time, #<6>
+                 play_type = output$play_type, #<6>
+                 complete_pass = output$complete_pass, #<6>
+                 penalty = output$penalty, #<6>
+                 yards = output$yards, #<6>
+                 time_elapsed = output$time_elapsed) #<6>
+    if(is.na(output$yards)){
+      if(output$interception == 1){
+        continue_drive <- FALSE #<7>
+        result <- "Interception" #<7>
+      } else if(output$fumble_lost == 1){
+        continue_drive <- FALSE #<7>
+        result <- "Fumble Lost" #<7>
+      } else if(output$touchdown == 1){
+        continue_drive <- FALSE #<7>
+        result <- "Touchdown" #<7>
+        play_info[[play_counter]][["yards"]] <- output$yardline_100 # <8>
+      } else{
+        continue_drive <- FALSE #<7>
+      }
+    } else{
+      if(output$time_elapsed >= time & output$yards <= yardline_100){
+        continue_drive <- FALSE #<9>
+        result <- "Clock Expired"
+      }
+      if(output$yards >= yardline_100){
+        continue_drive <- FALSE #<10>
+        result <- "Touchdown"
+      } else if(yardline_100 - output$yards > 99){
+        continue_drive <- FALSE
+        result <- "Safety" #<11>
+      } else if(output$interception == 1 | output$fumble_lost == 1){
+        continue_drive <- FALSE 
+        result <- "Turnover"
+      } else if(down == 4 & output$yards < ydstogo){
+        continue_drive <- FALSE
+        result <- "Downs"
+      } else{
+        # drive doesn't end: check whether the play results in a first down
+        time <- time - output$time_elapsed
+        if(output$yards >= ydstogo){
+          down <- 1 #<12> 
+          yardline_100 <- yardline_100 - output$yards
+          if(yardline_100 < 1) stop("something went wrong: yardline_100 < 1!")
+          ydstogo <- min(c(yardline_100, 10)) #<13>
+        } else{
+          # team did not get a first down
+          down <- down + 1
+          if(down > 4) stop("something went wrong: down > 4!")
+          yardline_100 <- yardline_100 - output$yards
+          if(yardline_100 < 1 | yardline_100 > 99) stop("something went wrong: play resulted in TD or safety but wasn't flagged earlier")
+          ydstogo <- ydstogo - output$yards
+        }
+      } # closes else checking whether drive ends
+    } # closes if/else checking whether yards is NA
+    play_counter <- play_counter + 1 #<14>
+  }
+  
+  return(
+    list(result = result,
+         play_info = play_info,
+         sampled_plays = sampled_plays))
+}
+```
+1. Adjust the amount of time remaining in the overtime period at the start of the second possession. Adjustment is needed since regulation quarters are 5 minutes longer than the overtime period.
+2. Counts the number of plays in the simulated drive
+3. Logical flag that indicates whether we should simulate another play (`TRUE`) or end the simulation (`FALSE`)
+4. Final result of the second drive
+5. Containers to save the individual sampled plays and their results. We will use these to illustrate sampled drives
+6. Sample the next play in the drive based on the starting context and save it into containers that we will use to illustrate sampled drives
+7. The sampled play will have an `NA` value of `yards` if it ends with an interception, fumble, or touchdown. 
+8. It will be helpful later, when illustrating the drives, to overwrite the value of `yards` in the `play_info` object on touchdowns
+9. If the time elapsed for the sampled play is greater than time remaining and the play did not end in the endzone, we know that the clock expired and we should not continue the simulation
+10. If `output$yards > yardline_100`,$ we know that the play ends in the end zone, resulting in a touchdown. 
+11. The next play should start at  `yardline_100 - output$yards`. If this is negative, it means the play ended up in the offense's end zone, resulting in a safety. 
+12. If `output$yards > ydstogo`, the possessing team got a first down
+13. If there are more than 10 yards to go to the endzone, we can set `ydstogo = 10`. Otherwise, `ydstogo` is just the distance to the endzone.
+14. Increment play counter
+
+In the following code, we run the simulation 10,000 times and tabulate the different drive results.
+
+```{r}
+#| label: drive-simulation
+#| eval: true
+#| echo: true
+set.seed(441)
+n_sim <- 10000
+results <- rep(NA, times = n_sim)
+for(r in 1:n_sim){
+  set.seed(441+r)
+  drive <- simulate_drive()
+  results[r] <- drive$result
+}
+table(results)/n_sim #<1>
+```
+1. `table(results)` will output the count of each unique value in `results`. Dividing by `n_sim` lets us compute the probablity distribution of each drive output. 
+
+Just about 15% of simulated drives resulted in a turnover (`Fumble Lost` or `Interception`); 40% ended with a failed fourth down attempt; 15% ended with the clock expiring before the second team's drive ended; and 16% ended with a touchdown.
+Comparing these probabilities to those obtained by the [NFL League Office](https://statsbylopez.netlify.app/post/resampling-nfl-drives/), we see quite a big disparity in the probability of a touchdown.
+As an exercise, think about why that might be!
