@@ -7,7 +7,7 @@
 website/syllabus/*.log
 website/syllabus/*.out
 website/syllabus/*.aux
-website/syllabus/*.synctex.tez
+website/syllabus/*.synctex.gz
 
 *.rdb
 *.rdx
