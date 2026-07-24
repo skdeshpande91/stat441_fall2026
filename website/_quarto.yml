@@ -4,10 +4,8 @@ project:
   render:
    - "index.qmd"
    - "syllabus.qmd"
-   #- "project1.qmd"
-   #- "project2.qmd"
-   #- "project3.qmd"
    - "lectures/*.qmd"
+   - "exercises.qmd"
    - "projects/*.qmd"
    #- "slides/*.qmd"
    #- "slides/raw_slides/*.qmd"
@@ -30,12 +28,8 @@ website:
       - sidebar:lectures
       #- sidebar:slides
       - sidebar:projects
-      #- text: "Project 1 Information"
-      #  href: project1.qmd
-      #- text: "Project 2 Information"
-      #  href: project2.qmd
-      #- text: "Project 3 Information"
-      #  href: project3.qmd
+      - text: "Exercises"
+        href: exercises.qmd
       
   sidebar:
     - id: lectures

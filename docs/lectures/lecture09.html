@@ -285,6 +285,10 @@ window.Quarto = {
   </li>  
     </ul>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../exercises.html"> 
+<span class="menu-text">Exercises</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -439,7 +443,6 @@ window.Quarto = {
   </ul></li>
   <li><a href="#sec-covariates" id="toc-sec-covariates" class="nav-link" data-scroll-target="#sec-covariates">Adjusting For Additional Covariates</a></li>
   <li><a href="#sec-next-time" id="toc-sec-next-time" class="nav-link" data-scroll-target="#sec-next-time">Looking Ahead</a></li>
-  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises">Exercises</a></li>
   </ul>
 </nav>
     </div>
@@ -1314,12 +1317,6 @@ Figure&nbsp;3: Even after adjusting for covariate effects, players with fewer pa
 <h2 class="anchored" data-anchor-id="sec-next-time">Looking Ahead</h2>
 <p>Using Expected Points Added (EPA), we can assess individual plays based on how the probability of different scoring outcomes changed over the course of the play. Armed with EPA, it is very tempting to rank passers in terms of the average EPA on their passing plays. But, as we have seen many times in the course, doing so can lead to extreme conclusions. Multilevel models offer a way to overcome these issues while also accounting for the inherent grouping structure.</p>
 <p>Using a multilevel model, we estimated the average EP per pass each passer provides over and above what could be explained by covariates like <code>air_yards</code> and the formation from which the pass was thrown. In <a href="../lectures/lecture10.html">Lecture 10</a>, we will fit a series of multilevel models to divide the EPA on a play between the different offensive players. We will use the model estimates to compute a version of wins above replacement for offensive players in the NFL.</p>
-</section>
-<section id="exercises" class="level2">
-<h2 class="anchored" data-anchor-id="exercises">Exercises</h2>
-<ol type="1">
-<li>Arguably, a better measure of a play success than EPA is whether a play increased the offensive team’s chances of winning the game. <strong>nflfastR</strong> provides estimates of the win probability and win probability added. Repeat the modeling but with WPA instead of EPA. What is the relationship between per-pass WPA and per-pass EPA after adjusting for the same fixed effects from our full model?</li>
-</ol>
 
 
 

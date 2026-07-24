@@ -285,6 +285,10 @@ window.Quarto = {
   </li>  
     </ul>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../exercises.html"> 
+<span class="menu-text">Exercises</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -433,10 +437,9 @@ window.Quarto = {
   <li><a href="#sec-apm-lm" id="toc-sec-apm-lm" class="nav-link" data-scroll-target="#sec-apm-lm">APM As A Linear Model</a></li>
   <li><a href="#sec-baseline" id="toc-sec-baseline" class="nav-link" data-scroll-target="#sec-baseline">Value Relative to Baseline</a></li>
   <li><a href="#sec-apm-beta" id="toc-sec-apm-beta" class="nav-link" data-scroll-target="#sec-apm-beta">A Re-parametrized Model</a></li>
-  <li><a href="#weighted-adjusted-plusminus" id="toc-weighted-adjusted-plusminus" class="nav-link" data-scroll-target="#weighted-adjusted-plusminus">Weighted adjusted plus/minus</a></li>
+  <li><a href="#sec-wapm" id="toc-sec-wapm" class="nav-link" data-scroll-target="#sec-wapm">Weighted adjusted plus/minus</a></li>
   </ul></li>
   <li><a href="#sec-looking-ahead" id="toc-sec-looking-ahead" class="nav-link" data-scroll-target="#sec-looking-ahead">Looking Ahead</a></li>
-  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises">Exercises</a></li>
   </ul>
 </nav>
     </div>
@@ -935,8 +938,8 @@ Y_{i} = \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha} + \epsilon_{i}.
 </div>
 </div>
 </section>
-<section id="weighted-adjusted-plusminus" class="level3">
-<h3 class="anchored" data-anchor-id="weighted-adjusted-plusminus">Weighted adjusted plus/minus</h3>
+<section id="sec-wapm" class="level3">
+<h3 class="anchored" data-anchor-id="sec-wapm">Weighted adjusted plus/minus</h3>
 <p>Although APM takes into account the quality of the teammates and opponents with whom each player plays, it fails to account fully for the <em>context</em> in which players play. Quoting <span class="citation" data-cites="DeshpandeJensen2016">Deshpande and Jensen (<a href="#ref-DeshpandeJensen2016" role="doc-biblioref">2016</a>)</span>, as a result, metrics like APM &gt; “can artificially can artificially inflate the importance of performance in low-leverage situations, when the outcome of the game is essentially decided, while simultaneously deflating the importance of high-leverage performance, when the final outcome is still in question. For instance, point diﬀerential-based metrics model the home team’s lead dropping from 5 points to 0 points in the last minute of the first half in exactly the same way that they model the home team’s lead dropping from 30 points to 25 points in the last minute of the second half”.</p>
 <p>To overcome this limitation, we might try to down-weight low-leverage stints and up-weight high-leverage stints. For instance, we might assign a weight <span class="math inline">\(w_{i}\)</span> to stint <span class="math inline">\(i\)</span> where</p>
 <ul>
@@ -1036,16 +1039,6 @@ Y_{i} = \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha} + \epsilon_{i}.
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> apm_df<span class="sc">$</span>margin</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(X_full, Y, rapm_data, <span class="at">file =</span> <span class="st">"nba_rapm_data.RData"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</section>
-<section id="exercises" class="level2">
-<h2 class="anchored" data-anchor-id="exercises">Exercises</h2>
-<ol type="1">
-<li>Explore the sensitivity of APM and our weighted APM to different choices of the minutes cut-off used to define the baseline player. How much do the top- and bottom-10 player rankings change?</li>
-<li>We weighted stints using only on the lead at the start of the stint. One can reasonably argue that our weights should also account for the time left in the game. Propose your own weighting scheme and see how the player rankings change.</li>
-<li>We estimated APM using data from a single season. Many analysts prefer to use data from multiple season when fitting APM models. Scrape data from the 2022-23 and 2023-24 regular seasons and fit APM models using (i) data from 2023-24 and 2024-25 and (iii) data from 2022-23, 2023-34, and 2024-25.</li>
-<li>One can credibly argue that data from seasons further in the past should be weighted less than data from more recent seasons. Propose a weighting scheme that down-weights historical data and fit weighted versions of the models in Exercise 4.3. How do the relative player rankings change?</li>
-<li>Estimate the out-of-sample predictive mean square error of our basic APM model using 100 training/testing splits. That is, for each training and testing split, fit the APM model using the training data and then compute the average of the squared difference between the actual <span class="math inline">\(Y\)</span>’s and the model predictions in the testing split. Is APM a good predictive model? Why or why not?</li>
-</ol>
 
 
 

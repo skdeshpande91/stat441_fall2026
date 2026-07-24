@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>STAT 441: Advanced Sports Analytics – STAT441</title>
+<title>Exercises – STAT441</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,41 +22,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -84,9 +49,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="site_libs/bootstrap/bootstrap-dark-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
 <link href="site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
-<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
-<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -114,6 +76,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -136,7 +127,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
@@ -238,7 +229,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </ul>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="./exercises.html"> 
+    <a class="nav-link active" href="./exercises.html" aria-current="page"> 
 <span class="menu-text">Exercises</span></a>
   </li>  
 </ul>
@@ -257,15 +248,59 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#sec-course-logistics" id="toc-sec-course-logistics" class="nav-link active" data-scroll-target="#sec-course-logistics">Course Logistics</a>
+  <li><a href="#instructions" id="toc-instructions" class="nav-link active" data-scroll-target="#instructions">Instructions</a></li>
+  <li><a href="#sec-ex-lec1" id="toc-sec-ex-lec1" class="nav-link" data-scroll-target="#sec-ex-lec1">Lecture 1</a>
   <ul class="collapse">
-  <li><a href="#sec-course-lectures" id="toc-sec-course-lectures" class="nav-link" data-scroll-target="#sec-course-lectures">Lectures</a></li>
-  <li><a href="#sec-course-staff" id="toc-sec-course-staff" class="nav-link" data-scroll-target="#sec-course-staff">Course Staff &amp; Office Hours</a></li>
+  <li><a href="#sec-ex-lec1-wnba" id="toc-sec-ex-lec1-wnba" class="nav-link" data-scroll-target="#sec-ex-lec1-wnba">Best Shooting Performances in the WNBA</a></li>
+  <li><a href="#sec-ex-lec2-four-factors" id="toc-sec-ex-lec2-four-factors" class="nav-link" data-scroll-target="#sec-ex-lec2-four-factors">Four Factors</a></li>
+  <li><a href="#sec-ex-lec1-offensive-efficiency" id="toc-sec-ex-lec1-offensive-efficiency" class="nav-link" data-scroll-target="#sec-ex-lec1-offensive-efficiency">Offensive Efficiency</a></li>
   </ul></li>
-  <li><a href="#sec-R-setup" id="toc-sec-R-setup" class="nav-link" data-scroll-target="#sec-R-setup">System Setup</a>
+  <li><a href="#sec-ex-lec2" id="toc-sec-ex-lec2" class="nav-link" data-scroll-target="#sec-ex-lec2">Lecture 2</a>
   <ul class="collapse">
-  <li><a href="#sec-install-R" id="toc-sec-install-R" class="nav-link" data-scroll-target="#sec-install-R">Installing R &amp; RStudio</a></li>
-  <li><a href="#sec-required-packages" id="toc-sec-required-packages" class="nav-link" data-scroll-target="#sec-required-packages">Required Packages</a></li>
+  <li><a href="#sec-ex-lec2-over-under-xg" id="toc-sec-ex-lec2-over-under-xg" class="nav-link" data-scroll-target="#sec-ex-lec2-over-under-xg">Over- and Under-performing XG</a></li>
+  <li><a href="#sec-ex-lec2-euro2025" id="toc-sec-ex-lec2-euro2025" class="nav-link" data-scroll-target="#sec-ex-lec2-euro2025">EURO 2025 Performance</a></li>
+  <li><a href="#sec-ex-lec2-league" id="toc-sec-ex-lec2-league" class="nav-link" data-scroll-target="#sec-ex-lec2-league">League Performance</a></li>
+  </ul></li>
+  <li><a href="#lecture-3-sec-ex-lec3" id="toc-lecture-3-sec-ex-lec3" class="nav-link" data-scroll-target="#lecture-3-sec-ex-lec3">Lecture 3 {sec-ex-lec3}</a>
+  <ul class="collapse">
+  <li><a href="#sec-ex-lec3-cone-features" id="toc-sec-ex-lec3-cone-features" class="nav-link" data-scroll-target="#sec-ex-lec3-cone-features"><span class="math inline">\(\textrm{XG}\)</span> and the Shot Cone</a></li>
+  <li><a href="#sec-ex-lec3-cone-pred1" id="toc-sec-ex-lec3-cone-pred1" class="nav-link" data-scroll-target="#sec-ex-lec3-cone-pred1">Predictive Utility of <code>ConeAngle</code> and <code>ConeArea</code> I</a></li>
+  <li><a href="#sec-ex-lec3-more-data" id="toc-sec-ex-lec3-more-data" class="nav-link" data-scroll-target="#sec-ex-lec3-more-data">Estimating XG Using More Data</a></li>
+  </ul></li>
+  <li><a href="#sec-ex-lec4" id="toc-sec-ex-lec4" class="nav-link" data-scroll-target="#sec-ex-lec4">Lecture 4</a>
+  <ul class="collapse">
+  <li><a href="#sec-ex-lec4-baseline" id="toc-sec-ex-lec4-baseline" class="nav-link" data-scroll-target="#sec-ex-lec4-baseline">Sensitivity of (weighted) APM</a></li>
+  <li><a href="#sec-ex-lec4-weight" id="toc-sec-ex-lec4-weight" class="nav-link" data-scroll-target="#sec-ex-lec4-weight">Re-thinking Sting Weights</a></li>
+  <li><a href="#sec-ex-lec4-multiseason-apm" id="toc-sec-ex-lec4-multiseason-apm" class="nav-link" data-scroll-target="#sec-ex-lec4-multiseason-apm">Multi-Season APM</a></li>
+  <li><a href="#sec-ex-lec4-multiseason-wapm" id="toc-sec-ex-lec4-multiseason-wapm" class="nav-link" data-scroll-target="#sec-ex-lec4-multiseason-wapm">Multi-Season Weighted APM</a></li>
+  <li><a href="#sec-ex-lec4-apm-pred" id="toc-sec-ex-lec4-apm-pred" class="nav-link" data-scroll-target="#sec-ex-lec4-apm-pred">Predictive Quality of APM Models</a></li>
+  </ul></li>
+  <li><a href="#sec-ex-lec5" id="toc-sec-ex-lec5" class="nav-link" data-scroll-target="#sec-ex-lec5">Lecture 5</a>
+  <ul class="collapse">
+  <li><a href="#sec-ex-lec5-bootstrap-player" id="toc-sec-ex-lec5-bootstrap-player" class="nav-link" data-scroll-target="#sec-ex-lec5-bootstrap-player">Additional Player Comparisons</a></li>
+  <li><a href="#sec-ex-lec5-rapm-pred" id="toc-sec-ex-lec5-rapm-pred" class="nav-link" data-scroll-target="#sec-ex-lec5-rapm-pred">Predictive Quality of RAPM</a></li>
+  <li><a href="#sec-ex-lec5-multiseason-rapm" id="toc-sec-ex-lec5-multiseason-rapm" class="nav-link" data-scroll-target="#sec-ex-lec5-multiseason-rapm">Multiseason (weighted) RAPM</a></li>
+  <li><a href="#sec-ex-lec5-multiseason-wrapm" id="toc-sec-ex-lec5-multiseason-wrapm" class="nav-link" data-scroll-target="#sec-ex-lec5-multiseason-wrapm">Multiseason weighted RAPM</a></li>
+  </ul></li>
+  <li><a href="#sec-ex-lec6" id="toc-sec-ex-lec6" class="nav-link" data-scroll-target="#sec-ex-lec6">Lecture 6</a>
+  <ul class="collapse">
+  <li><a href="#sec-ex-lec6-runValue-time" id="toc-sec-ex-lec6-runValue-time" class="nav-link" data-scroll-target="#sec-ex-lec6-runValue-time">Run Value Created Over Time</a></li>
+  <li><a href="#sec-ex-lec6-expectedRuns" id="toc-sec-ex-lec6-expectedRuns" class="nav-link" data-scroll-target="#sec-ex-lec6-expectedRuns">More Granualr Expected Runs</a></li>
+  </ul></li>
+  <li><a href="#sec-ex-lec7-lec8" id="toc-sec-ex-lec7-lec8" class="nav-link" data-scroll-target="#sec-ex-lec7-lec8">Lectures 7 &amp; 8</a>
+  <ul class="collapse">
+  <li><a href="#sec-ex-lec7-lec8-season" id="toc-sec-ex-lec7-lec8-season" class="nav-link" data-scroll-target="#sec-ex-lec7-lec8-season">More Granular Out Modeling</a></li>
+  <li><a href="#sec-ex-lec7-lec8-replicate" id="toc-sec-ex-lec7-lec8-replicate" class="nav-link" data-scroll-target="#sec-ex-lec7-lec8-replicate">Replicate opeWAR Analysis</a></li>
+  </ul></li>
+  <li><a href="#sec-ex-lec9" id="toc-sec-ex-lec9" class="nav-link" data-scroll-target="#sec-ex-lec9">Lecture 9</a>
+  <ul class="collapse">
+  <li><a href="#sec-ex-lec9-wpa" id="toc-sec-ex-lec9-wpa" class="nav-link" data-scroll-target="#sec-ex-lec9-wpa">Per-Pass Win Probability Added</a></li>
+  <li><a href="#sec-ex-lec9-replicate" id="toc-sec-ex-lec9-replicate" class="nav-link" data-scroll-target="#sec-ex-lec9-replicate">Replicate Per-Pass EPA Analysis</a></li>
+  </ul></li>
+  <li><a href="#sec-ex-lec10" id="toc-sec-ex-lec10" class="nav-link" data-scroll-target="#sec-ex-lec10">Lecture 10</a>
+  <ul class="collapse">
+  <li><a href="#sec-ex-lec10-wpa-war" id="toc-sec-ex-lec10-wpa-war" class="nav-link" data-scroll-target="#sec-ex-lec10-wpa-war">Win Probability-Based WAR</a></li>
+  <li><a href="#sec-ex-lec10-replicate" id="toc-sec-ex-lec10-replicate" class="nav-link" data-scroll-target="#sec-ex-lec10-replicate">Replicate nflWAR Analysis</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -275,7 +310,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">STAT 441: Advanced Sports Analytics</h1>
+<h1 class="title">Exercises</h1>
 </div>
 
 
@@ -292,107 +327,185 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Welcome to STAT 441 (Adv. Sports Analytics)!</p>
-<p>All course material including lecture slides, code to reproduce the analyses discussed in lecture, and information about the projects will be posted on this website. So, please bookmark this page and check it regularly throughout the course.</p>
-<p>Here is a <a href="syllabus/stat441_f26_syllabus.pdf">PDF version</a> and here is an <a href="./syllabus.html">HTML version</a> of the syllabus. Below, you will find <a href="./index.html#sec-course-logistics">more details about course logistics</a> and important <a href="./index.html#sec-R-setup">information about setting up R</a>.</p>
-<section id="sec-course-logistics" class="level2">
-<h2 class="anchored" data-anchor-id="sec-course-logistics">Course Logistics</h2>
-<section id="sec-course-lectures" class="level3">
-<h3 class="anchored" data-anchor-id="sec-course-lectures">Lectures</h3>
-<p>Lectures will be held in-person Tuesdays and Thursdays from 8:00am to 9:15pm in Morgridge Hall 1524. Slides and code for each lecture will be posted on this website. Lectures will not be recorded. You are not permitted to record the lectures either.</p>
+<section id="instructions" class="level2">
+<h2 class="anchored" data-anchor-id="instructions">Instructions</h2>
 </section>
-<section id="sec-course-staff" class="level3">
-<h3 class="anchored" data-anchor-id="sec-course-staff">Course Staff &amp; Office Hours</h3>
-<p><strong>Instructor</strong>: <a href="https://skdeshpande91.github.io">Sameer Deshpande</a> (sameer.deshpande@wisc.edu). Instructor office hours will take place on:</p>
-<ul>
-<li>Tuesdays from 9:30am to 11:00am in Morgridge Hall 5586.</li>
-<li>Wednesdays from 2:00pm to 4:00pm in Morgridge Hall 5586</li>
-<li>Thursdays from 4:00pm to 6:00pm in Morgridge Hall 5586</li>
-</ul>
-<!--
-Office hours on Mondays and Wednesdays are designed for one-on-one meetings with the instructor.
-While the main purpose of Monday and Wednesday office hours is to discuss your specific experience and learning in the course, feel free to stop by to chat about your educational and career goals and/or any personal sports analytic projects you might be pursuing.
-
-Friday office hours are intended for collaborative and small group work.
-During Friday office hours, small groups can step through analyses from lecture, work on the exercises, and on their team projects with the instructor and other students. 
-Friday office hours are also a great way to brainstorm project ideas with and to get feedback from other teams. 
--->
-<p>If you have specific questions about the course content (e.g., parsing a particular bit of syntax or understanding a step in an analysis), I encourage you to ask the question on Piazza and to attend Friday office hours. If you cannot make the Monday or Wednesday office hours, please email me and suggest some times at which you are free.</p>
-<p><strong>Teaching Assistant</strong>: TBA.</p>
-</section>
-</section>
-<section id="sec-R-setup" class="level2">
-<h2 class="anchored" data-anchor-id="sec-R-setup">System Setup</h2>
-<p>As noted in the <a href="./syllabus.html#sec-course-requisites">syllabus</a>, this course will make <em>extensive</em> use of R. Even if you have prior experience, I <strong>strongly</strong> recommend installing the latest version of both R and RStudio at the beginning of the course. As of the time of this writing, that is R version 4.6 and RStudio version 2026.01.</p>
-<section id="sec-install-R" class="level3">
-<h3 class="anchored" data-anchor-id="sec-install-R">Installing R &amp; RStudio</h3>
-<p>You can download a version of R specific to your operating system from <a href="https://cloud.r-project.org">this website</a>. After installing R, you should download and re-install RStudio from <a href="https://posit.co/download/rstudio-desktop/">this website</a>.</p>
-<div class="callout callout-style-default callout-tip callout-titled">
+<section id="sec-ex-lec1" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ex-lec1">Lecture 1</h2>
+<section id="sec-ex-lec1-wnba" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec1-wnba">Best Shooting Performances in the WNBA</h3>
+<p>The package <a href="https://wehoop.sportsdataverse.org/index.html"><strong>wehoop</strong></a> provides functions for scraping play-by-play and box score data for women’s college and professional basketball. Using that package, replicate the analysis from lecture to identify the best shooting performances in the WNBA between 2022 and now. To load in box score data, you will need to use the functions <code>wehoop::load_wnba_player_box()</code> and <code>wehoop::most_recent_wnba_season()</code> to load the raw box score data.</p>
+<div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+<span class="screen-reader-only">Important</span>Differences between the NBA and WNBA
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Whenever you update your version of R, you need to re-install the packages; this is a perennial source of <a href="https://bsky.app/profile/benbushong.com/post/3lbqnkbazgh2e">frustration</a> for many R users and <a href="https://bsky.app/profile/hadley.nz/post/3lnlrbqv7qs2i">some good-natured humor</a> from others<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<p>The NBA and WNBA have different All-Star dates and the WNBA dataset may have slightly different column names than the NBA dataset. So, you will need to modify some parts of the code from <a href="./lectures/lecture01.html">Lecture 1</a> to run this analysis!</p>
 </div>
 </div>
 </section>
-<section id="sec-required-packages" class="level3">
-<h3 class="anchored" data-anchor-id="sec-required-packages">Required Packages</h3>
-<p>Throughout the course, we will make extensive use of several <strong>tidyverse</strong> packages, primarily for data loading, pre-processing, and manipulation. We will also make extensive use of the packages <strong>glmnet</strong>, <strong>lme4</strong>, <strong>mgcv</strong>, and <strong>ranger</strong> for model fitting. As the course progresses, we will introduce and install new package as required. For the most part, these packages will be specific to a particular sport. Every package that we will use in this class is available through either (i) the Comprehensive R Archive Network (CRAN) or (ii) a public GitHub repository maintained by the packager developer. We typically install CRAN packages using the <code>install.packages()</code> command. To install packages hosted on GitHub, we will use the <a href="https://devtools.r-lib.org/reference/remote-reexports.html"><code>install_github()</code></a> function in the <a href="https://devtools.r-lib.org/index.html"><strong>devtools</strong></a> package, which is itself available on CRAN.</p>
-<p>For visualizations, we will try to use colorblind-friendly palettes<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> as much as possible. The package <a href="https://cran.r-project.org/web/packages/colorBlindness/vignettes/colorBlindness.html"><strong>colorBlindness</strong></a> contains several palettes for diverging and qualitative data. We will use the <code>Blue2DarkRed18Steps</code> palette from <strong>colorBlindness</strong> for making heatmaps (e.g., <a href="./lectures/lecture08.html#fig-out-gam">this one</a>)</p>
-<p>Prior to <a href="./lectures/lecture02.html">Lecture 2</a>, please make sure you install the required packages.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"devtools"</span>, <span class="st">"tidyverse"</span>, <span class="st">"glmnet"</span>, <span class="st">"lme4"</span>, <span class="st">"mgcv"</span>, <span class="st">"ranger"</span>, <span class="st">"colorBlindness"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="sec-ex-lec2-four-factors" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec2-four-factors">Four Factors</h3>
+<p><a href="https://en.wikipedia.org/wiki/Dean_Oliver_(statistician)">Dean Oliver</a>, pioneer of basketball analytics, introduced <a href="https://www.basketball-reference.com/about/factors.html">Four Factors</a> to describe how teams win. The Four Factors are computed from box score data <em>at the team level</em> and attempt to summarize a team’s performance in terms of shooting, rebounding, turnovers, and free throws. Using data from either the NBA or WNBA, compute the four factors for each team in every season since 2002. Which teams’ were the best in terms of each of these four factors?</p>
+</section>
+<section id="sec-ex-lec1-offensive-efficiency" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec1-offensive-efficiency">Offensive Efficiency</h3>
+<p>Dean Oliver introduced an offensive efficiency metrics that tracks how many points are produced by an individual player over the course of 100 possessions. While it’s possible to compute offensive efficiency exactly using play-by-play or player-tracking data, these data were not always publicly available at the time that Oliver was writing. Oliver developed a formula for approximating offensive efficiency using only information contained in the box score; <a href="https://www.basketball-reference.com/about/ratings.html">the offensive rating page on Basketball Reference</a> has the full derivation.</p>
+<p>Using either NBA or WNBA, identify the player-seasons with the highest and lowest offensive ratings.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
-<p>I am also personally partial to the palette developed by <a href="https://jfly.uni-koeln.de/color/">Okabe &amp; Ito</a>, which is available using the <code>palette.colors()</code> function. We will often use this palette to annotate scatter plots (e.g., <a href="./lectures/lecture09.html#fig-full-alphas">this one in Lecture 9</a>). <a href="#fig-oi-colors" class="quarto-xref">Figure&nbsp;1</a> shows the 9 colors contained in the Okabe-Ito palette.</p>
-<div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-2"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a>oi_colors <span class="ot">&lt;-</span> </span>
-<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">palette.colors</span>(<span class="at">palette =</span> <span class="st">"Okabe-Ito"</span>)</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1">1</button><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">1</span>), <span class="at">mgp =</span> <span class="fu">c</span>(<span class="fl">1.8</span>, <span class="fl">0.5</span>, <span class="dv">0</span>))</span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2">2</button><span id="annotated-cell-2-4" class="code-annotation-target"><a href="#annotated-cell-2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="dv">4</span>, <span class="at">col =</span> oi_colors)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-annotation">
-<dl class="code-annotation-container-hidden code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="3" data-code-annotation="1">The <code>mar</code> argument reserves 3 margin lines for the bottom and left sides of the plot, 2 for the top, and 1 for the right. The <code>mgp</code> argument specifies how the axis title, label, and lines are placed.</span>
-</dd>
-<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
-<dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="4" data-code-annotation="2">Plots large, filled circles with the palette colors</span>
-</dd>
-</dl>
-</div>
-<div class="cell-output-display">
-<div id="fig-oi-colors" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Scatterplot with nine points, each of which is colored with a different element of the color-blind friendly Okabe-Ito palette." data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-oi-colors-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="index_files/figure-html/fig-oi-colors-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: The 9 colors in the Okabe-Ito colorblind-friendly palette."><img src="index_files/figure-html/fig-oi-colors-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Scatterplot with nine points, each of which is colored with a different element of the color-blind friendly Okabe-Ito palette." width="480"></a>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-oi-colors-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: The 9 colors in the Okabe-Ito colorblind-friendly palette.
-</figcaption>
-</figure>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Intermediate Variables
 </div>
 </div>
+<div class="callout-body-container callout-body">
+<p>To compute offensive rating formula, you will need to compute several intermediate variables that summarize both team and individual performance. Performing this analysis will require some clever grouping operations!</p>
 </div>
+</div>
+</section>
+</section>
+<section id="sec-ex-lec2" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ex-lec2">Lecture 2</h2>
+<section id="sec-ex-lec2-over-under-xg" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec2-over-under-xg">Over- and Under-performing XG</h3>
+<p>For each team in EURO 2022, sum their <span class="math inline">\(\textrm{XG}_{i}\)</span> values and sum the residuals <span class="math inline">\(Y_{i} - \textrm{XG}_{i}.\)</span> Which teams most over- or under-performed expectations? What relationship, if any, do you observe between teams’ cumulative XG and their performance relative to the StatsBomb XG model’s expectations?</p>
+</section>
+<section id="sec-ex-lec2-euro2025" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec2-euro2025">EURO 2025 Performance</h3>
+<p>During <a href="./lectures/lecture02.html">Lecture 2</a>, we worked with data from EURO 2022 tournament. Hudl has released similar data from the EURO 2025 tournament (which was also won by the Three Lionesses). Repeat the analyses from <a href="./lectures/lecture02.html#sec-goe">Lecture 2</a> to identify the EURO 2025 players with the most extreme goals over expected values in that tournament. Similarly, repeat the exercise in <a href="#sec-ex-lec2-over-under-xg" class="quarto-xref">Section&nbsp;3.1</a> to identify teams that most over- or under-performed expectations (in terms of goal scoring) during EURO 2025.</p>
+</section>
+<section id="sec-ex-lec2-league" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec2-league">League Performance</h3>
+<p>Hudl’s free data includes full seasons from several top professional leagues. Using the data from all complete league seasons explore the relationships between (i) the cumulative <span class="math inline">\(\textrm{XG}\)</span> the team generates on offense; (ii) the cumulative <span class="math inline">\(\textrm{XG}\)</span> the team gives up on defense; and (iii) their overall win-loss record. Do these relationships vary across leagues?</p>
+</section>
+</section>
+<section id="lecture-3-sec-ex-lec3" class="level2">
+<h2 class="anchored" data-anchor-id="lecture-3-sec-ex-lec3">Lecture 3 {sec-ex-lec3}</h2>
+<section id="sec-ex-lec3-cone-features" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec3-cone-features"><span class="math inline">\(\textrm{XG}\)</span> and the Shot Cone</h3>
+<p>For every shot attempt, we can form a triangular region by connecting the shot location to the goal posts (whose coordinates are <code>(120, 36)</code> and <code>(120, 44)</code>) and connecting the two goal posts. We will refer to this region as the “shot cone”. Add two new feature to the data frame <code>wi_shots</code> that we created in <a href="./lectures/lecture03.html">Lecture 3</a>: <code>ConeAngle</code>, which measures the angle between the lines connecting the shot location to the goal posts and <code>ConeArea</code>, which is the area of the shot cone.</p>
+<p>Intuitively, what sorts of relationships would you expect between <code>ConeAngle</code> and <code>ConeArea</code> and XG?</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You do not necessarily need to fit any model to answer this question!</p>
+</div>
+</div>
+</section>
+<section id="sec-ex-lec3-cone-pred1" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec3-cone-pred1">Predictive Utility of <code>ConeAngle</code> and <code>ConeArea</code> I</h3>
+<p>Using 100 random training/testing splits, how much predictive accuracy is gained (if any) by including <code>ConeAngle</code>, <code>ConeArea</code>, and both <code>ConeAngle</code> and <code>ConeArea</code> as additional features in the <a href="./lectures/lecture03.html#sec-rf">random forests model we built in Lecture 3</a>?</p>
+</section>
+<section id="sec-ex-lec3-more-data" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec3-more-data">Estimating XG Using More Data</h3>
+<p>In <a href="./lectures/lecture03.html">Lecture 3</a>, we trained our XG models using only data from women’s international competitions. Train an XG model using data from at least 5 different full competitions contained in the public StatsBomb data. How similar are the XG predictions of your new model to the proprietary XG values provided by StatsBomb?</p>
+</section>
+</section>
+<section id="sec-ex-lec4" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ex-lec4">Lecture 4</h2>
+<section id="sec-ex-lec4-baseline" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec4-baseline">Sensitivity of (weighted) APM</h3>
+<p>In <a href="./lectures/lecture04.html#sec-apm-beta">Lecture 4</a>, we set a 250 minute threshold and collapsed all players below that threshold into a single baseline player. Re-fit the APM and weighted APM models using different choices of minutes cut-offs (e.g., 100 or 300). How much do the top- and bottom-10 player rankings change?</p>
+</section>
+<section id="sec-ex-lec4-weight" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec4-weight">Re-thinking Sting Weights</h3>
+<p>In <a href="#sec-ex-lec4">Lecture 4</a>(lectures/lecture04.qmd#sec-wapm}, we weighted stints using only the lead at the start of the stint. One could reasonably argue that weights should also account for the time left in the game. Propose your own weighting scheme and see how the player rankings change.</p>
+</section>
+<section id="sec-ex-lec4-multiseason-apm" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec4-multiseason-apm">Multi-Season APM</h3>
+<p>We estimated APM using data from a single season. Many analysts prefer to use data from multiple season when fitting APM models. Scrape data from the 2022-23 and 2023-24 regular seasons and fit APM models using (i) data from 2023-24 and 2024-25 and (iii) data from 2022-23, 2023-34, and 2024-25.</p>
+</section>
+<section id="sec-ex-lec4-multiseason-wapm" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec4-multiseason-wapm">Multi-Season Weighted APM</h3>
+<p>One can credibly argue that data from seasons further in the past should be weighted less than data from more recent seasons. Propose a weighting scheme that down-weights historical data and fit weighted versions of the models fit in <a href="#sec-ex-lec4-multiseason-apm" class="quarto-xref">Section&nbsp;5.3</a>. How do the relative player rankings change based on different weighting schemes?</p>
+</section>
+<section id="sec-ex-lec4-apm-pred" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec4-apm-pred">Predictive Quality of APM Models</h3>
+<p>Estimate the out-of-sample predictive mean square error of the basic APM model using 100 training/testing splits built in <a href="./lectures/lecture04.html">Lecture 4</a>. That is, for each training and testing split, fit each model using the training data and then compute the average of the squared difference between the actual <span class="math inline">\(Y\)</span>’s and the model predictions in the testing split. Is the basic APM model a good predictive model? Why or why not?</p>
+</section>
+</section>
+<section id="sec-ex-lec5" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ex-lec5">Lecture 5</h2>
+<section id="sec-ex-lec5-bootstrap-player" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec5-bootstrap-player">Additional Player Comparisons</h3>
+<p>During <a href="./lectures/lecture05.html#sec-bootstrap">Lecture 5</a>, we used the bootstrap to quantify our uncertainty about the difference between Luka Dončić’s and Anthony Davis’ regularized APM estimates. Pick 10 players and compare the bootstrap distributions of the pairwise differences in their RAPM estimates.</p>
+</section>
+<section id="sec-ex-lec5-rapm-pred" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec5-rapm-pred">Predictive Quality of RAPM</h3>
+<p>Using the same 100 training/testing splits constructed in <a href="#sec-ex-lec4-apm-pred" class="quarto-xref">Section&nbsp;5.5</a>, estimate the out-of-sample mean square error for our RAPM model based on the 2024-25 data. Instead of computing an optimal <span class="math inline">\(\lambda\)</span> for each training split, you may use the optimal <span class="math inline">\(\lambda\)</span> value computed for the whole datset. Is RAPM a better predictive model than APM?</p>
+</section>
+<section id="sec-ex-lec5-multiseason-rapm" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec5-multiseason-rapm">Multiseason (weighted) RAPM</h3>
+<p>Fit RAPM models to data from (i) the 2023-24 and 2024-25 regular seasons and (ii) the 2022-23, 2023-24, and 2024-25 regular seasons. Use the bootstrap to quantify how uncertainty about difference in play RAPM values and overall rankings change as you include data from more seasons.</p>
+</section>
+<section id="sec-ex-lec5-multiseason-wrapm" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec5-multiseason-wrapm">Multiseason weighted RAPM</h3>
+<p>Just like <code>lm</code>, the functions <code>cv.glmnet()</code> and <code>glmnet()</code> accept a <code>weights</code> argument. Using the weighting schemes you considered in Exercise 4.2, fit regularized <em>weighted</em> adjusted plus/minus models.</p>
+</section>
+</section>
+<section id="sec-ex-lec6" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ex-lec6">Lecture 6</h2>
+<section id="sec-ex-lec6-runValue-time" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec6-runValue-time">Run Value Created Over Time</h3>
+<p>Scrape data from the 2022, 2023, 2024, 2025, and 2026 regular seasons and re-run the analyses from <a href="./lectures/lecture06.html">Lecture 6</a>. In particular, compute the final run value metric (i.e.&nbsp;<code>RE24</code>) for each batter-season. How predictive is <code>RE24</code> across seasons? Is it more or less predictive than batting average?</p>
+</section>
+<section id="sec-ex-lec6-expectedRuns" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec6-expectedRuns">More Granualr Expected Runs</h3>
+<p>In <a href="./lectures/lecture06.html#sec-expected-runs">Lecture 6</a>, we computed the expected runs conditional on the number of outs and baserunner configuration. Compute a new, more granular version of the expected run matrix by conditioning on the number of outs, baserunner configuration, and ballpark. Using this new version of expected runs, re-compute run value and <code>RE24</code> and determine which batters create the most run value for their team. Does ballpark appear to make much difference?</p>
+</section>
+</section>
+<section id="sec-ex-lec7-lec8" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ex-lec7-lec8">Lectures 7 &amp; 8</h2>
+<section id="sec-ex-lec7-lec8-season" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec7-lec8-season">More Granular Out Modeling</h3>
+<p>In <a href="./lectures/lecture08.html#sec-gam">Lecture 8</a>, we modeled the probability of a batted ball resulting in out using just the batted ball location. Try adjusting for additional factors about the pitch and swing in our GAM. How do the out probabilities and our downstream analysis change when you account for these factors?</p>
+</section>
+<section id="sec-ex-lec7-lec8-replicate" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec7-lec8-replicate">Replicate opeWAR Analysis</h3>
+<p>Replicate the full analytic pipeline from Lectures 7 and 8 to estimate WAR using data from the 2025 and 2026 regular seasons. How correlated are individual player’s WAR values and their constituent <code>RAA_b</code>, <code>RAA_br</code>, <code>RAA_f</code>, and <code>RAA_p</code> values across seasons? What are the implications if the season-to-season correlation is low?</p>
+</section>
+</section>
+<section id="sec-ex-lec9" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ex-lec9">Lecture 9</h2>
+<section id="sec-ex-lec9-wpa" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec9-wpa">Per-Pass Win Probability Added</h3>
+<p>Arguably, a better measure of a play success than EPA is whether a play increased the offensive team’s chances of winning the game. <strong>nflfastR</strong> provides estimates of the win probability and win probability added. Repeat the modeling but with WPA instead of EPA. What is the relationship between per-pass WPA and per-pass EPA after adjusting for the same fixed effects from our full model?</p>
+</section>
+<section id="sec-ex-lec9-replicate" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec9-replicate">Replicate Per-Pass EPA Analysis</h3>
+<p>Replicate the multilevel modeling of per-pass EPA using data from the 2022-23, 2023-24, and 2025-26 regular seasons. To what extent is a quarterback’s per-pass EPA in one season predictive of their per-pass EPA in the next season?</p>
+</section>
+</section>
+<section id="sec-ex-lec10" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ex-lec10">Lecture 10</h2>
+<section id="sec-ex-lec10-wpa-war" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec10-wpa-war">Win Probability-Based WAR</h3>
+<p>Repeat the analysis from <a href="./lectures/lecture10.html">Lecture 10</a> using win probability added instead of expected points added. Note,you do not need to convert from the points to win scale in this re-analysis. Which players appear to contribute the most to their team’s overall win probability?</p>
+</section>
+<section id="sec-ex-lec10-replicate" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec10-replicate">Replicate nflWAR Analysis</h3>
+<p>Replicate the full NFL WAR analysis using data from 2022-23, 2023-24, and 2025-26 regular seasons. To what extent are individual players’ IPAR, IPAA, and WAR values stable across seasons?</p>
 
 
 </section>
 </section>
 
-
-<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
-
-<ol>
-<li id="fn1"><p>Even Hadley Wickham, who leads the tidyverse team at Posit, <a href="https://bsky.app/profile/hadley.nz/post/3lnmafh3ljs2y">manually re-installs</a> packages after every update<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>See <a href="https://sronpersonalpages.nl/~pault/">these notes by Paul Tol</a> for a lot of useful information about colorblindness and how different palettes are perceived by different people.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</section></div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -833,38 +946,6 @@ Figure&nbsp;1: The 9 colors in the Okabe-Ito colorblind-friendly palette.
   });
   </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
-(function() {
-  let previousOnload = window.onload;
-  window.onload = () => {
-    if (previousOnload) {
-      previousOnload();
-    }
-    lightboxQuarto.on('slide_before_load', (data) => {
-      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-      const href = trigger.getAttribute('href');
-      if (href !== null) {
-        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
-        if (imgEl !== null) {
-          const srcAttr = imgEl.getAttribute("src");
-          if (srcAttr && srcAttr.startsWith("data:")) {
-            slideConfig.href = srcAttr;
-          }
-        }
-      } 
-    });
-  
-    lightboxQuarto.on('slide_after_load', (data) => {
-      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(slideNode);
-      }
-    });
-  
-  };
-  
-})();
-          </script>
 
 
 

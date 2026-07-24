@@ -659,7 +659,7 @@ We fit each position-specific GAM using batted balls hit within 150 ft of this t
 
 :::{.callout-important}
 ## Warning
-This code takes between several minutes to run
+This code takes several minutes to run
 :::
 
 ```{r}
@@ -1135,8 +1135,5 @@ pitch_war |>
   dplyr::slice_head(n = 10)
 ```
 
-## Exercises
-
-1. We modeled the probability of a batted ball resulting in out using just the batted ball location. Try adjusting for additional factors about the pitch and swing in our GAM. How do the out probabilities and our downstream analysis change when you account for these factors?
 
 

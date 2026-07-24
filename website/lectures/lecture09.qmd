@@ -655,7 +655,3 @@ Multilevel models offer a way to overcome these issues while also accounting for
 Using a multilevel model, we estimated the average EP per pass each passer provides over and above what could be explained by covariates like `air_yards` and the formation from which the pass was thrown.
 In [Lecture 10](lecture10.qmd), we will fit a series of multilevel models to divide the EPA on a play between the different offensive players.
 We will use the model estimates to compute a version of wins above replacement for offensive players in the NFL.
-
-## Exercises
-
-1. Arguably, a better measure of a play success than EPA is whether a play increased the offensive team's chances of winning the game. **nflfastR** provides estimates of the win probability and win probability added. Repeat the modeling but with WPA instead of EPA. What is the relationship between per-pass WPA and per-pass EPA after adjusting for the same fixed effects from our full model?

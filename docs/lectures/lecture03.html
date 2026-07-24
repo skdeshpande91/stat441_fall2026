@@ -285,6 +285,10 @@ window.Quarto = {
   </li>  
     </ul>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../exercises.html"> 
+<span class="menu-text">Exercises</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -442,7 +446,6 @@ window.Quarto = {
   <li><a href="#sec-fit-rf" id="toc-sec-fit-rf" class="nav-link" data-scroll-target="#sec-fit-rf">Fitting Random Forests Models</a></li>
   <li><a href="#sec-comparison" id="toc-sec-comparison" class="nav-link" data-scroll-target="#sec-comparison">Comparison to StatsBomb’s XG Model</a></li>
   </ul></li>
-  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises">Exercises</a></li>
   </ul>
 </nav>
     </div>
@@ -673,7 +676,7 @@ StatsBomb LogLoss: 0.264 </code></pre>
 <span id="annotated-cell-11-6"><a href="#annotated-cell-11-6" aria-hidden="true" tabindex="-1"></a>  wi_shots <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="2">2</button><span id="annotated-cell-11-7" class="code-annotation-target"><a href="#annotated-cell-11-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span>n)</span>
 <span id="annotated-cell-11-8"><a href="#annotated-cell-11-8" aria-hidden="true" tabindex="-1"></a></span>
-<button class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="3">3</button><span id="annotated-cell-11-9" class="code-annotation-target"><a href="#annotated-cell-11-9" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">479</span>)</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="3">3</button><span id="annotated-cell-11-9" class="code-annotation-target"><a href="#annotated-cell-11-9" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">441</span>)</span>
 <span id="annotated-cell-11-10"><a href="#annotated-cell-11-10" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-11-11"><a href="#annotated-cell-11-11" aria-hidden="true" tabindex="-1"></a>  wi_shots <span class="sc">|&gt;</span></span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-11" data-target-annotation="4">4</button><span id="annotated-cell-11-12" class="code-annotation-target"><a href="#annotated-cell-11-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_sample</span>(<span class="at">n =</span> n_train)</span>
@@ -884,7 +887,7 @@ XG2 test logloss: 0.358 </code></pre>
 <h3 class="anchored" data-anchor-id="sec-simple-logistic">Logistic Regression with One Feature</h3>
 <p>We begin by fitting a model that only conditions on distance to the goal using the function <code>glm()</code>. This function works a lot like <code>lm</code> in that we specify the model using R’s formula interface. Whereas <code>lm()</code> is used only to fit linear models via the method least squares, <code>glm()</code> can be used to fit a much wider range of models<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. So, we use the <code>family</code> argument to tell <code>glm()</code> exactly what model we want to fit.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-18"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-18-1"><a href="#annotated-cell-18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">479</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-18"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-18-1"><a href="#annotated-cell-18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">441</span>)</span>
 <span id="annotated-cell-18-2"><a href="#annotated-cell-18-2" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span></span>
 <span id="annotated-cell-18-3"><a href="#annotated-cell-18-3" aria-hidden="true" tabindex="-1"></a>  wi_shots <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-18-4"><a href="#annotated-cell-18-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_sample</span>(<span class="at">n =</span> n_train)</span>
@@ -1036,7 +1039,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
 <span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">shot.body_part.name =</span> <span class="fu">factor</span>(shot.body_part.name))</span>
 <span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">479</span>)</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">441</span>)</span>
 <span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span></span>
 <span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>  wi_shots <span class="sc">|&gt;</span></span>
 <span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_sample</span>(<span class="at">n =</span> n_train)</span>
@@ -1057,18 +1060,18 @@ glm(formula = Y ~ DistToGoal + shot.body_part.name, family = binomial("logit"),
 
 Coefficients:
                               Estimate Std. Error z value Pr(&gt;|z|)    
-(Intercept)                    -0.5209     0.1463  -3.560 0.000371 ***
-DistToGoal                     -0.1570     0.0104 -15.094  &lt; 2e-16 ***
-shot.body_part.nameLeft Foot    0.9795     0.1670   5.866 4.47e-09 ***
-shot.body_part.nameRight Foot   1.0660     0.1509   7.064 1.61e-12 ***
+(Intercept)                   -0.56998    0.15131  -3.767 0.000165 ***
+DistToGoal                    -0.16307    0.01057 -15.423  &lt; 2e-16 ***
+shot.body_part.nameLeft Foot   1.15772    0.17005   6.808 9.88e-12 ***
+shot.body_part.nameRight Foot  1.18624    0.15448   7.679 1.61e-14 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 (Dispersion parameter for binomial family taken to be 1)
 
-    Null deviance: 2533.1  on 3568  degrees of freedom
-Residual deviance: 2229.1  on 3565  degrees of freedom
-AIC: 2237.1
+    Null deviance: 2508.4  on 3568  degrees of freedom
+Residual deviance: 2186.4  on 3565  degrees of freedom
+AIC: 2194.4
 
 Number of Fisher Scoring iterations: 6</code></pre>
 </div>
@@ -1131,7 +1134,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <p>Our most accurate model so far accounts for both shot distance and the body part used to attempt the shot. Taking a closer look at the assumed log-odds of a goal, however, reveals a potentially important limitation: the effect of distance is assumed to be the same for all shot-types. That is, the model assume that moving one yard further away decreases the log-odds of a goal of a right-footed shot by exactly the same amount as it would a header.</p>
 <p>Interactions between features in a regression model allow the effect of one factor to vary based on the value of another features. Using R’s formula interface, we can introduce interactions between two variables using <code>*</code>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">479</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">441</span>)</span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span></span>
 <span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  wi_shots <span class="sc">|&gt;</span></span>
 <span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_sample</span>(<span class="at">n =</span> n_train)</span>
@@ -1151,17 +1154,17 @@ glm(formula = Y ~ DistToGoal * shot.body_part.name, family = binomial("logit"),
 
 Coefficients:
                                          Estimate Std. Error z value Pr(&gt;|z|)
-(Intercept)                               1.04251    0.40865   2.551  0.01074
-DistToGoal                               -0.34945    0.05053  -6.916 4.64e-12
-shot.body_part.nameLeft Foot             -0.32763    0.50278  -0.652  0.51463
-shot.body_part.nameRight Foot            -0.81455    0.45234  -1.801  0.07174
-DistToGoal:shot.body_part.nameLeft Foot   0.17382    0.05435   3.198  0.00138
-DistToGoal:shot.body_part.nameRight Foot  0.21448    0.05197   4.127 3.67e-05
+(Intercept)                               0.83275    0.41757   1.994 0.046120
+DistToGoal                               -0.33452    0.05111  -6.546 5.93e-11
+shot.body_part.nameLeft Foot             -0.12001    0.50594  -0.237 0.812498
+shot.body_part.nameRight Foot            -0.46014    0.46184  -0.996 0.319098
+DistToGoal:shot.body_part.nameLeft Foot   0.16230    0.05469   2.967 0.003003
+DistToGoal:shot.body_part.nameRight Foot  0.18863    0.05264   3.583 0.000339
                                             
 (Intercept)                              *  
 DistToGoal                               ***
 shot.body_part.nameLeft Foot                
-shot.body_part.nameRight Foot            .  
+shot.body_part.nameRight Foot               
 DistToGoal:shot.body_part.nameLeft Foot  ** 
 DistToGoal:shot.body_part.nameRight Foot ***
 ---
@@ -1169,9 +1172,9 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 (Dispersion parameter for binomial family taken to be 1)
 
-    Null deviance: 2533.1  on 3568  degrees of freedom
-Residual deviance: 2208.5  on 3563  degrees of freedom
-AIC: 2220.5
+    Null deviance: 2508.4  on 3568  degrees of freedom
+Residual deviance: 2171.8  on 3563  degrees of freedom
+AIC: 2183.8
 
 Number of Fisher Scoring iterations: 6</code></pre>
 </div>
@@ -1264,7 +1267,7 @@ Number of Fisher Scoring iterations: 6</code></pre>
 <span id="cb51-17"><a href="#cb51-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">shot.body_part.name =</span> <span class="fu">factor</span>(shot.body_part.name),</span>
 <span id="cb51-18"><a href="#cb51-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">shot.technique.name =</span> <span class="fu">factor</span>(shot.technique.name))</span>
 <span id="cb51-19"><a href="#cb51-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-20"><a href="#cb51-20" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">479</span>)</span>
+<span id="cb51-20"><a href="#cb51-20" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">441</span>)</span>
 <span id="cb51-21"><a href="#cb51-21" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span></span>
 <span id="cb51-22"><a href="#cb51-22" aria-hidden="true" tabindex="-1"></a>  wi_shots <span class="sc">|&gt;</span></span>
 <span id="cb51-23"><a href="#cb51-23" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_sample</span>(<span class="at">n =</span> n_train) <span class="sc">|&gt;</span></span>
@@ -1475,7 +1478,7 @@ Figure&nbsp;4: Complex trees can be represented as sums of simpler trees
 <span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>),</span>
 <span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"StatsBomb's XG"</span>, <span class="at">ylab =</span> <span class="st">"Our XG"</span>, <span class="at">main =</span> <span class="st">'Comparison of XG estimates'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="fig-compare-statsbomb" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" width="384">
+<div id="fig-compare-statsbomb" class="quarto-float quarto-figure quarto-figure-center anchored" width="384" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-compare-statsbomb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture03_files/figure-html/fig-compare-statsbomb-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;5: "><img src="lecture03_files/figure-html/fig-compare-statsbomb-1.png" id="fig-compare-statsbomb" class="img-fluid quarto-figure quarto-figure-center anchored figure-img" width="384"></a>
@@ -1490,19 +1493,10 @@ Figure&nbsp;5
 <p>If our model perfectly reproduced StatsBomb’s, we would expect to see all the points in the figure line up on the 45-degree diagonal. In fact, we observe some fairly substantial deviations from StatsBomb’s estimates. In particular, there are some shots for which StatsBomb’s model returns an XG of about 0.8. Our random forests model, on the other hand, returns a range of XG values for those shots. We also see that there are some shots for which StatsBomb’s model returns very small XG;s but our model returns XG’s closer to 0.5</p>
 <p>Ultimately, the fact that our model estimates do not match StatsBomb’s is not especially concerning. For one thing, we trained our model using only about 3800 shots from women’s international matches contained in the public data. StatsBomb, on the other hand, trained their model using their full corpus of match data.</p>
 <p>More substantively, StatsBomb’s model also conditions on many more features than ours. If our model estimates exactly matched StatsBomb’s, that would indicate that these extra features offered no additional predictive value. Considering that StatsBomb’s XG models condition on the height of the ball when the shot was attempted, the differences seem less surprising.</p>
+
+
+
 </section>
-</section>
-<section id="exercises" class="level2">
-<h2 class="anchored" data-anchor-id="exercises">Exercises</h2>
-<ol type="1">
-<li>Create a new feature <code>ConeAngle</code> that measures the angle formed by connecting the shot location to the goal posts (whose coordinates are <code>(120,36)</code> and <code>c(120,44)</code>). What sort of relationship would you expect between <code>ConeAngle</code> and XG?</li>
-<li>Create a new feature <code>ConeArea</code> that measures the area of the triangle formed by connecting the shot location to the goal posts. What sort of relationship would you expect between <code>ConeArea</code> and XG?</li>
-<li>Using 100 random training/testing splits, how much more predictive accuracy is gained (if any) by including <code>ConeAngle</code>, <code>ConeArea</code>, and both <code>ConeAngle</code> &amp; <code>ConeArea</code> in our random forests model.</li>
-<li>In lecture, we trained our XG models using data only from women’s international competitions. Train an XG model using data from at least 5 different competitions/seasons and assess how similar its predications are to the ones provided by StatsBomb</li>
-</ol>
-
-
-
 </section>
 
 

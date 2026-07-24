@@ -285,6 +285,10 @@ window.Quarto = {
   </li>  
     </ul>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../exercises.html"> 
+<span class="menu-text">Exercises</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -445,7 +449,6 @@ window.Quarto = {
   <li><a href="#sec-compute-run-values" id="toc-sec-compute-run-values" class="nav-link" data-scroll-target="#sec-compute-run-values">Computing Run Values</a></li>
   </ul></li>
   <li><a href="#sec-batter-prod" id="toc-sec-batter-prod" class="nav-link" data-scroll-target="#sec-batter-prod">Assessing Batter Production</a></li>
-  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises">Exercises</a></li>
   </ul>
 </nav>
     </div>
@@ -826,7 +829,7 @@ post_bat_score     5     5     5     5</code></pre>
 </div>
 </div>
 <p>Cross-referencing the table above with the <a href="https://www.espn.com/mlb/playbyplay/_/gameId/401568469">play-by-play data</a>, we see that the Dodgers score their second run after the 14th pitch of the half-inning (on a Enrique Hernández sacrifice fly); their third run on the very next pitch (Gavin Lux grounding into a fielder’s choice); and their fourth and fifth runs on consecutive pitches (on singles by Mookie Betts and Shohei Ohtani).</p>
-<div id="fig-dodgers-pbp" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Screenshot of play-by-play data" data-fig-align="center">
+<div id="fig-dodgers-pbp" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Screenshot of play-by-play data">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-dodgers-pbp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="figures/lecture06/dodgers_pbp.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;1: Play-by-Play from the March 20, 2024 Dodgers-Padres game"><img src="figures/lecture06/dodgers_pbp.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Screenshot of play-by-play data"></a>
@@ -1292,13 +1295,6 @@ Figure&nbsp;1: Play-by-Play from the March 20, 2024 Dodgers-Padres game
 </div>
 </div>
 <p>When we compare our top-10 to <a href="https://www.fangraphs.com/leaders/major-league?pos=all&amp;type=3&amp;sortcol=5&amp;sortdir=default&amp;qual=30&amp;team=0&amp;startdate=&amp;enddate=&amp;month=0&amp;season1=2024&amp;season=2024">FanGraph’s leaderboard for RE24</a>, we see a lot of overlap. But there are some differences, especially with regards to the number of plate appearances and actual RE24 values. For the latter, FanGraph likely used a different expected run matrix.</p>
-</section>
-<section id="exercises" class="level2">
-<h2 class="anchored" data-anchor-id="exercises">Exercises</h2>
-<ol type="1">
-<li>Scrape data from the 2023 and 2024 regular seasons and determine which batters created the most run value.</li>
-<li>Compute a new version of expected runs that conditions on the number of outs, baserunner configuration, and ballpark. Using this new version of expected runs, determine which batters create the most run value for their team. Does ballpark appear to make much difference? –&gt;</li>
-</ol>
 
 
 

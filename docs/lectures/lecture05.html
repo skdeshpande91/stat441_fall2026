@@ -266,6 +266,10 @@ window.Quarto = {
   </li>  
     </ul>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../exercises.html"> 
+<span class="menu-text">Exercises</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -414,7 +418,6 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#sec-bootstrap-rank" id="toc-sec-bootstrap-rank" class="nav-link" data-scroll-target="#sec-bootstrap-rank">Bootstrap Intervals for Ranks</a></li>
   </ul></li>
-  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises">Exercises</a></li>
   </ul>
 </nav>
     </div>
@@ -526,7 +529,7 @@ Y_{i} = \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha} + \epsilon_{i}.
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">1</span>), <span class="at">mgp =</span> <span class="fu">c</span>(<span class="fl">1.8</span>, <span class="fl">0.5</span>, <span class="dv">0</span>))</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cv_fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="fig-plot-cv" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Plot of out-of-sample error plotted against regularizaiton parameter">
+<div id="fig-plot-cv" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Plot of out-of-sample error plotted against regularizaiton parameter" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-plot-cv-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture05_files/figure-html/fig-plot-cv-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Out-of-sample error plotted against regularization parameter (lambda)"><img src="lecture05_files/figure-html/fig-plot-cv-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Plot of out-of-sample error plotted against regularizaiton parameter" width="576"></a>
@@ -721,7 +724,7 @@ Important
 </dl>
 </div>
 <div class="cell-output-display">
-<div id="fig-bootstrap-diff" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Histogram of bootstrap samples of difference between Doncic &amp; Davis">
+<div id="fig-bootstrap-diff" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Histogram of bootstrap samples of difference between Doncic &amp; Davis" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-bootstrap-diff-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture05_files/figure-html/fig-bootstrap-diff-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Bootstrap distribution of difference between Doncic &amp; Davis"><img src="lecture05_files/figure-html/fig-bootstrap-diff-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Histogram of bootstrap samples of difference between Doncic &amp; Davis" width="576"></a>
@@ -813,18 +816,9 @@ Figure&nbsp;2: Bootstrap distribution of difference between Doncic &amp; Davis
 </div>
 </div>
 <p>Our analysis reveals quite a bit of uncertainty about SGA’s overall rank in terms of RAPM!</p>
-</section>
-</section>
-<section id="exercises" class="level2">
-<h2 class="anchored" data-anchor-id="exercises">Exercises</h2>
-<ol type="1">
-<li>Pick several players and compare the bootstrap distribution of the difference in their RAPM estimates.</li>
-<li>Using the same 100 training/testing splits constructed in Exercise 4.5, estimate the out-of-sample mean square error for RAPM based on the 2024-25 data. Instead of computing an optimal <span class="math inline">\(\lambda\)</span> for each training split, you may use the optimal <span class="math inline">\(\lambda\)</span> value computed on the whole dataset. Is RAPM a better predictive model than APM?</li>
-<li>Fit RAPM models to data from (i) the 2023-24 and 2024-25 regular seasons and (ii) the 2022-23, 2023-24, and 2024-25 regular season. Use the bootstrap to quantify how uncertainty about the difference in player RAPM values and the overall rankings changes as you include data from more seasons.</li>
-<li>Just like <code>lm</code>, the functions <code>cv.glmnet()</code> and <code>glmnet()</code> accept a <code>weights</code> argument. Using the weighting schemes you considered in Exercise 4.2, fit regularized <em>weighted</em> adjusted plus/minus models.</li>
-</ol>
 
 
+</section>
 </section>
 
 
