@@ -785,7 +785,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="annotated-cell-16-13"><a href="#annotated-cell-16-13" aria-hidden="true" tabindex="-1"></a>      touchdown <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
 <span id="annotated-cell-16-14"><a href="#annotated-cell-16-14" aria-hidden="true" tabindex="-1"></a>      fumble_lost <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> interception <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="cn">NA</span>,</span>
 <span id="annotated-cell-16-15"><a href="#annotated-cell-16-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">.default =</span> next_yardline_100),</span>
-<span id="annotated-cell-16-16"><a href="#annotated-cell-16-16" aria-hidden="true" tabindex="-1"></a>   <span class="at">next_down =</span> <span class="fu">ifelse</span>(touchdown <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> fumble_lost <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> interception <span class="sc">==</span> <span class="dv">1</span>, <span class="cn">NA</span>, next_down),</span>
+<button class="code-annotation-anchor" data-target-cell="annotated-cell-16" data-target-annotation="4">4</button><span id="annotated-cell-16-16" class="code-annotation-target"><a href="#annotated-cell-16-16" aria-hidden="true" tabindex="-1"></a>   <span class="at">next_down =</span> <span class="fu">ifelse</span>(touchdown <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> fumble_lost <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> interception <span class="sc">==</span> <span class="dv">1</span>, <span class="cn">NA</span>, next_down),</span>
 <span id="annotated-cell-16-17"><a href="#annotated-cell-16-17" aria-hidden="true" tabindex="-1"></a>   <span class="at">next_ydstogo =</span> <span class="fu">ifelse</span>(touchdown <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> fumble_lost <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> interception <span class="sc">==</span> <span class="dv">1</span>, <span class="cn">NA</span>, next_ydstogo)) <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-16-18"><a href="#annotated-cell-16-18" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
 <span id="annotated-cell-16-19"><a href="#annotated-cell-16-19" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">next_half_seconds_remaining =</span> dplyr<span class="sc">::</span><span class="fu">lead</span>(half_seconds_remaining)) <span class="sc">|&gt;</span></span>
@@ -802,7 +802,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </dd>
 <dt data-target-cell="annotated-cell-16" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-cell="annotated-cell-16" data-code-lines="6,16,17" data-code-annotation="3">Sort plays within a drive in chronological order</span>
+<span data-code-cell="annotated-cell-16" data-code-lines="6" data-code-annotation="3">Sort plays within a drive in chronological order</span>
+</dd>
+<dt data-target-cell="annotated-cell-16" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-16" data-code-lines="16,17" data-code-annotation="4">Manually set ending context to <code>NA</code> for drive-ending plays</span>
 </dd>
 </dl>
 </div>

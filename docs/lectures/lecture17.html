@@ -400,8 +400,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="sec-recap" class="level2">
 <h2 class="anchored" data-anchor-id="sec-recap">Recap</h2>
-<p>In <a href="lectures/lecutre16.qmd#sec-first-possession">Lecture 16</a>, we used play-by-play data from the NFL to quantify the advantage of having first possession in overtime under the league’s original sudden death overtime rules (which were in place from 1974 to 2010) and the modified sudden death overtime rules (which were adopted in the 2010-11 season). In 2019, the Kansas City Chiefs proposed a further modification that would allow both teams to possess the ball, even if the first team scored a touchdown on their opening drive. A key consideration in deciding whether to adopt the rule was computing the probability that the second team scores a touchdown given that the first team scored a touchdown on their opening drive. If that probability is very low, then there is arguably little point to adopting the proposed rule.</p>
-<p>As discussed in <a href="lectures/lecture16.qmd#sec-setup">Lecture 16</a>, we cannot estimate this probability by simply counting the number of times a team scores a touchdown after giving up a touchdown at the beginning of the first or third quarter in a tie game. This is because the dynamics of the proposed overtime period are quite a bit different than during regulation. To wit, under the proposed rules, if they are trailing by 6, 7, or 8 points, the second team</p>
+<p>In <a href="../lectures/lecture16.html#sec-first-possession">Lecture 16</a>, we used play-by-play data from the NFL to quantify the advantage of having first possession in overtime under the league’s original sudden death overtime rules (which were in place from 1974 to 2010) and the modified sudden death overtime rules (which were adopted in the 2010-11 season). In 2019, the Kansas City Chiefs proposed a further modification that would allow both teams to possess the ball, even if the first team scored a touchdown on their opening drive. A key consideration in deciding whether to adopt the rule was computing the probability that the second team scores a touchdown given that the first team scored a touchdown on their opening drive. If that probability is very low, then there is arguably little point to adopting the proposed rule.</p>
+<p>As discussed in <a href="../lectures/lecture16.html#sec-setup">Lecture 16</a>, we cannot estimate this probability by simply counting the number of times a team scores a touchdown after giving up a touchdown at the beginning of the first or third quarter in a tie game. This is because the dynamics of the proposed overtime period are quite a bit different than during regulation. To wit, under the proposed rules, if they are trailing by 6, 7, or 8 points, the second team</p>
 <ol type="1">
 <li>Will <em>never</em> punt or kick a field goal on fourth down</li>
 <li>Must score a touchdown to extend the game</li>
@@ -412,7 +412,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Randomly sample the starting field position for the second team</li>
 <li>Iteratively sample the outcome of each play in the drive from a pool of actually observed plays with similar starting contexts (i.e., yardline, down, and distance to the first down marker) until the drive ends</li>
 </ol>
-<p>At the end of <a href="lectures/lecture16.qmd">Lecture 16</a>, we compiled a large pool of plays from regular season drives meeting the following criteria:</p>
+<p>At the end of <a href="../lectures/lecture16.html">Lecture 16</a>, we compiled a large pool of plays from regular season drives meeting the following criteria:</p>
 <ol type="1">
 <li>The possessing team trailed by 6, 7, or 8 points</li>
 <li>The plays were from a drive that did not span multiple quarters</li>
@@ -790,7 +790,7 @@ Clock Expired         Downs   Fumble Lost  Interception        Safety
        0.2130        0.0071 </code></pre>
 </div>
 </div>
-<p>Just about 15% of simulated drives resulted in a turnover (<code>Fumble Lost</code> or <code>Interception</code>); 40% ended with a failed fourth down attempt; 15% ended with the clock expiring before the second team’s drive ended; and 16% ended with a touchdown. Comparing these probabilities to those obtained by the <a href="https://statsbylopez.netlify.app/post/resampling-nfl-drives/">NFL League Office</a>, we see quite a big disparity in the probability of a touchdown. As an exercise, think about why that might be!</p>
+<p>Just about 15% simulated drives resulted in a turnover (<code>Fumble Lost</code> or <code>Interception</code>); 46% ended with a failed fourth down attempt; 2% ended with the clock expiring before the second team’s drive ended; and 21% ended with a touchdown. Comparing these probabilities to those obtained by the <a href="https://statsbylopez.netlify.app/post/resampling-nfl-drives/">NFL League Office</a>, we see quite a big disparity in the probability of a touchdown. As an exercise, think about why that might be!</p>
 
 
 </section>
