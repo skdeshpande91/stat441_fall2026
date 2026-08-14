@@ -84,7 +84,7 @@ If you pursue this option, you should StatsBomb data from at least 3 competition
 
 ### Expected Goals in Hockey
 
-The package [**hockeyR**](https://hockeyr.netlify.app) provides functions for scraping play-by-play data from the National Hockey League.
+The package [**nhflscrapr**](https://rentosaijo.github.io/nhlscraper/) provides functions for scraping play-by-play data from the National Hockey League (including the puck and player tracking sprites for all events).
 Among many other things, these data include shot distance, shot angle, and the coordinates of each shot.
 Using ideas from [Lecture 3](../lectures/lecture03.qmd), develop an XG model for hockey.
 If you puruse this option, you should build at least 3 different XG models, compare them both quantaitively and qualitatively, and use the "best" model to make conclusions about player or team performance.
