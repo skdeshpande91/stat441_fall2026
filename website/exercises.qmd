@@ -6,6 +6,15 @@ format: html
 
 ## Instructions
 
+Over the course of the semester, you are required to submit written solutions to **two** of the following exercises.
+You should prepare your solution in a Quarto file (i.e., a .qmd) that contains all code needed to reproduce your analysis.
+Your solution should be structured similarly to the lecture notes, with code tightly integrated with exposition.
+
+Once you submit your solutions, you should respond to the corresponding post on Piazza with an overview of your analysis and the main results.
+In that post, you should also reflect on your analysis, commenting on matters including, but not limited to, limitations and potential extensions.
+If there are parts of your analysis about which you are unsure, you can raise those questions in your Piazza post! 
+You will be required to respond to feedback and suggestions made by your fellow students about your solution. You must also provide constructive feedback to your peers' solutions to exercises you have not submitted.
+
 
 
 ## Lecture 1 {#sec-ex-lec1}
@@ -57,7 +66,7 @@ During [Lecture 2](lectures/lecture02.qmd), we worked with data from EURO 2022 t
 
 Hudl's free data includes full seasons from several top professional leagues. Using the data from all complete league seasons explore the relationships between (i) the cumulative $\textrm{XG}$ the team generates on offense; (ii) the cumulative $\textrm{XG}$ the team gives up on defense; and (iii) their overall win-loss record. Do these relationships vary across leagues? 
 
-## Lecture 3 {sec-ex-lec3}
+## Lecture 3 {#sec-ex-lec3}
 
 ### 3.1: $\textrm{XG}$ and the Shot Cone {#sec-ex-lec3-cone-features}
 
