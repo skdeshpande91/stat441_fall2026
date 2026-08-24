@@ -64,6 +64,7 @@ StatsBomb graciously provided data for all the matches in the tournament.
 Here is a table of matches from the 2022 EURO Competition; StatsBomb graciously provided data for all matches from the tournament, which can be obtained using the code below.
 ```{r}
 #| label: get-euro2022-matches
+#| output: false
 #| message: false
 #| warning: false
 StatsBombR::FreeCompetitions() |>
@@ -255,7 +256,7 @@ xg_model2 <-
 
 mead_shots <-
   mead_shots |>
-  dplyr::inner_join(
+  dplyr::left_join(
     y = xg_model2 |> dplyr::select(-n), 
     by = c("shot.body_part.name", "shot.technique.name"))
 

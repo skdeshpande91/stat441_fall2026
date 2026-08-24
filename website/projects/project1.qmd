@@ -30,9 +30,14 @@ Code listings and output (e.g., figures, tables, charts, and numerical summaries
 Here is a [good example of such integration](https://github.com/danmorse314/hockeyR-models).
 Pay particular attention to the way the author complements the numerical results with detailed examples of individual performances. 
 
+::: {.callout-tip}
+## Quarto
+I **highly** recommend using Quarto to prepare your written report.
+:::
+
 ### Presentation
 
-Each team will also record an 8--10 minute presentation (e.g., using Zoom) that provides an overview of their analysis.
+Each team will also record an 8--10 minute presentation that provides an overview of their analysis.
 Each presentation should include the following elements
 
   * Background (2--4 slides): clearly motivate and state the main problem being studied. Explain why it is interesting and important. Present just enough background to motivate the problem, while taking care not to overwhelm the audience with extraneous details. If appropriate, comment on the limitations of existing solutions to the problem or closely-related problems
@@ -43,6 +48,40 @@ Each presentation should include the following elements
 
 **Every group member must speak during the presentation**.
 I encourage you practice a few times to ensure smooth transitions between speakers.
+
+
+
+
+
+## Preparing Your Submission
+
+::: {.callout-tip}
+## Quarto & Zoom
+I **highly** recommend using Quarto to prepare your written report and recording your presentation using Zoom.
+For your report, you can either render the document directly as a PDF. Or, you can first render it as an HTML file and save that as a PDF.
+For your presentation, please try to ensure that the speaker's face is visible along with the slide contents.
+:::
+
+
+Each team will submit a PDF document containing their written report; an .mp4 file of their presentation recording; and a compressed archive (i.e., a `.zip` or `.tar.gz` file) containing the reproducibility materials (i.e., the Quarto document used to produce the written report and any external data used).
+Note, if you downloaded data directly into your R session (e.g., by using functions or data provided by an existing package or by reading in publicly-hosted file), you do not need to include those data in your reproducibility materials.
+
+Each team will be assigned a two-digit team number (`teamID`) that should appear in the file name of all submitted files.
+Please name your report as `teamID_report.pdf`, your presentation as `teamID_presentation.mp4`, and your reproducibility material as `teamID_code.zip` or `teamID_code.tar.gz`.
+So, if your team number is `00`, you should save your report as `00_report.pdf`, your presentation as `00_presentation.mp4`, and your reproducibility archive as `00_code.zip` or `00_code.tar.gz`. 
+
+Each team has been assigned a two-digit team number and should include the team number in the filenames of 
+
+You will upload the files separately using the following links 
+
+  * [Submission link for written reports](https://uwmadison.app.box.com/f/2f99f0322b1144e3a12b7e6d6cf55717)
+  * [Submission link for presentation recordings](https://uwmadison.app.box.com/f/7b96448768c540c1915b3ccf0c6ec961)
+  * [Submission link for reproducibility materials](https://uwmadison.app.box.com/f/9916c3b053914fecbfa4461abdf7a45e)
+
+:::{#callout-important}
+## NetID Credentials
+You must sign into Box using your Wisconsin NetID credentials before you can upload your submission
+:::
 
 
 ## Potential Topics
@@ -90,19 +129,17 @@ Using ideas from [Lecture 3](../lectures/lecture03.qmd), develop an XG model for
 If you puruse this option, you should build at least 3 different XG models, compare them both quantaitively and qualitatively, and use the "best" model to make conclusions about player or team performance.
 You can also compare your model predictions to those provided by the package itself.
 
-<!--
+
 ### NBA Heatmaps & Expected Points
 
-In [Lecture 4](../lectures/lecture04.qmd) and [Lecture 5](../lectures/lecture05.qmd), we worked with NBA play-by-play data scraped using the [**hoopR**](https://hoopr.sportsdataverse.org).
-Using that package, you can scrape shot location data.
-This package also includes shot location data.
+The [**hoopR**](https://hoopr.sportsdataverse.org) includes functionality to scrape basketball shot location data.
 Using these data (and possibly other contextual information about the game state and player), build a model to predict the probability that a player makes a shot.
 Once built, use the model to compare player performance.
 For instance, you can convert these probabilities to expected points and explore how closely a player's total expected points tracks the actual points score.
 Or you could identify players who score substantially more or less points than what a league-average or replacement-level player might be expected to score given the same shot selection.
 
-If you puruse this option, you should build and compare at least 3 different models of shot selection. You should then select the "best" model using both qualitative and quantitative considerations.
--->
+If you pursue this option, you should build and compare at least 3 different models of shot selection. You should then select the "best" model using both qualitative and quantitative considerations.
+
 
 ### WAR For College Football and Volleyball
 
