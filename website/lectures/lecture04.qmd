@@ -508,6 +508,7 @@ apm |>
   dplyr::arrange(dplyr::desc(apm)) |>
   dplyr::slice_head(n = 10) |>
   dplyr::select(Name, apm)
+
 ```
 
 
@@ -515,7 +516,7 @@ apm |>
 
 Although APM takes into account the quality of the teammates and opponents with whom each player plays, it fails to account fully for the *context* in which players play.
 Quoting @DeshpandeJensen2016, as a result, metrics like APM
-> "can artificially can artificially inflate the importance of performance in low-leverage situations, when the outcome of the game is essentially decided, while simultaneously deflating the importance of high-leverage performance, when the final outcome is still in question. For instance, point diﬀerential-based metrics model the home team’s lead dropping from 5 points to 0 points in the last minute of the first half in exactly the same way that they model the home team’s lead dropping from 30 points to 25 points in the last minute of the second half". 
+> "can artificially inflate the importance of performance in low-leverage situations, when the outcome of the game is essentially decided, while simultaneously deflating the importance of high-leverage performance, when the final outcome is still in question. For instance, point diﬀerential-based metrics model the home team’s lead dropping from 5 points to 0 points in the last minute of the first half in exactly the same way that they model the home team’s lead dropping from 30 points to 25 points in the last minute of the second half". 
 
 To overcome this limitation, we might try to down-weight low-leverage stints and up-weight high-leverage stints.
 For instance, we might assign a weight $w_{i}$ to stint $i$ where
