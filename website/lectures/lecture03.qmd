@@ -47,6 +47,8 @@ We will also re-construct the two simple XG models, one that conditions only on 
 We then create a data table with columns containing the body part, technique, and outcome of the shot as well as the XG predictions from both models.
 ```{r}
 #| label: orig-xg-models
+#| eval: true
+#| echo: true
 xg_model1 <- 
   wi_shots |>
   dplyr::group_by(shot.body_part.name) |>
@@ -217,7 +219,7 @@ wi_shots <-
   wi_shots |>
   dplyr::mutate(id = 1:n) # <2>
 
-set.seed(479) # <3>
+set.seed(441) # <3>
 train_data <-
   wi_shots |>
   dplyr::slice_sample(n = n_train) # <4>
@@ -409,7 +411,9 @@ So, we use the `family` argument to tell `glm()` exactly what model we want to f
 
 ```{r}
 #| label: dist2goal-fit
-set.seed(479)
+#| eval: true
+#| echo: true
+set.seed(441)
 train_data <-
   wi_shots |>
   dplyr::slice_sample(n = n_train)
@@ -526,7 +530,7 @@ wi_shots <-
   dplyr::mutate(
     shot.body_part.name = factor(shot.body_part.name))
 
-set.seed(479)
+set.seed(441)
 train_data <-
   wi_shots |>
   dplyr::slice_sample(n = n_train)
@@ -604,7 +608,7 @@ Interactions between features in a regression model allow the effect of one fact
 Using R's formula interface, we can introduce interactions between two variables using `*`.
 ```{r}
 #| label: model4-interaction
-set.seed(479)
+set.seed(441)
 train_data <-
   wi_shots |>
   dplyr::slice_sample(n = n_train)
@@ -706,7 +710,7 @@ wi_shots <-
     shot.body_part.name = factor(shot.body_part.name),
     shot.technique.name = factor(shot.technique.name))
 
-set.seed(479)
+set.seed(441)
 train_data <-
   wi_shots |>
   dplyr::slice_sample(n = n_train) |>
@@ -916,9 +920,3 @@ More substantively, StatsBomb's model also conditions on many more features than
 If our model estimates exactly matched StatsBomb's, that would indicate that these extra features offered no additional predictive value.
 Considering that StatsBomb's XG models condition on the height of the ball when the shot was attempted, the differences seem less surprising. 
 
-## Exercises
-
-  1. Create a new feature `ConeAngle` that measures the angle formed by connecting the shot location to the goal posts (whose coordinates are `(120,36)` and `c(120,44)`). What sort of relationship would you expect between `ConeAngle` and XG? 
-  2. Create a new feature `ConeArea` that measures the area of the triangle formed by connecting the shot location to the goal posts. What sort of relationship would you expect between `ConeArea` and XG?
-  3. Using 100 random training/testing splits, how much more predictive accuracy is gained (if any) by including `ConeAngle`, `ConeArea`, and both `ConeAngle` & `ConeArea` in our random forests model.
-  4. In lecture, we trained our XG models using data only from women's international competitions. Train an XG model using data from at least 5 different competitions/seasons and assess how similar its predications are to the ones provided by StatsBomb

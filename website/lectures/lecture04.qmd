@@ -512,7 +512,7 @@ apm |>
 ```
 
 
-### Weighted adjusted plus/minus
+### Weighted adjusted plus/minus {#sec-wapm}
 
 Although APM takes into account the quality of the teammates and opponents with whom each player plays, it fails to account fully for the *context* in which players play.
 Quoting @DeshpandeJensen2016, as a result, metrics like APM
@@ -604,10 +604,3 @@ Y <- apm_df$margin
 save(X_full, Y, rapm_data, file = "nba_rapm_data.RData")
 ```
 
-## Exercises
-
-  1. Explore the sensitivity of APM and our weighted APM to different choices of the minutes cut-off used to define the baseline player. How much do the top- and bottom-10 player rankings change?
-  2. We weighted stints using only on the lead at the start of the stint. One can reasonably argue that our weights should also account for the time left in the game. Propose your own weighting scheme and see how the player rankings change.
-  3. We estimated APM using data from a single season. Many analysts prefer to use data from multiple season when fitting APM models. Scrape data from the 2022-23 and 2023-24 regular seasons and fit APM models using (i) data from 2023-24 and 2024-25 and (iii) data from 2022-23, 2023-34, and 2024-25. 
-  4. One can credibly argue that data from seasons further in the past should be weighted less than data from more recent seasons. Propose a weighting scheme that down-weights historical data and fit weighted versions of the models in Exercise 4.3. How do the relative player rankings change? 
-  5. Estimate the out-of-sample predictive mean square error of our basic APM model using 100 training/testing splits. That is, for each training and testing split, fit the APM model using the training data and then compute the average of the squared difference between the actual $Y$'s and the model predictions in the testing split. Is APM a good predictive model? Why or why not?

@@ -64,6 +64,7 @@ StatsBomb graciously provided data for all the matches in the tournament.
 Here is a table of matches from the 2022 EURO Competition; StatsBomb graciously provided data for all matches from the tournament, which can be obtained using the code below.
 ```{r}
 #| label: get-euro2022-matches
+#| output: false
 #| message: false
 #| warning: false
 StatsBombR::FreeCompetitions() |>
@@ -255,7 +256,7 @@ xg_model2 <-
 
 mead_shots <-
   mead_shots |>
-  dplyr::inner_join(
+  dplyr::left_join(
     y = xg_model2 |> dplyr::select(-n), 
     by = c("shot.body_part.name", "shot.technique.name"))
 
@@ -346,9 +347,3 @@ It turns out that Alexandra Popp, the German captain, outperformed StatsBomb's X
 Like Mead, Popp scored 6 goals during the tournament off a similar number of shots (16 for Popp and 15 for Mead).
 Interestingly, Mead won the Golden Boot because she had one more assist... 
 
-## Exercises{#sec-exercises}
-
-  1. For each team in EURO 2022, sum the $\textrm{XG}_{i}$ values and sum the residuals $Y_{i} - \textrm{XG}_{i}.$ Which teams most over- or under-performed expectations? What relationship, if any, do you observe between teams' cumulative XG and their performance relative to the StatsBomb XG model's expectations?
-  2. Hudl recently released data from EURO 2025. Repeat the analysis from @sec-goe to identify the players with the most extreme goals over expected values from the tournament.
-  3. Repeat Exercise 2.1 using data from EURO 2025
-  4. Hudl also release several full seasons worth of data from professional leagues. Pick one such season and explore the relationships between (i) the cumulative XG the team generates on offense; (ii) the cumulative XG the team gives up on defense; and (iii) the win-loss record across the season.

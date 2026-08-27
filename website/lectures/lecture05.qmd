@@ -370,10 +370,4 @@ quantile(sga_ranks, probs = c(0.025, 0.975))
 ```
 Our analysis reveals quite a bit of uncertainty about SGA's overall rank in terms of RAPM!
 
-## Exercises
-
-  1. Pick several players and compare the bootstrap distribution of the difference in their RAPM estimates. 
-  2. Using the same 100 training/testing splits constructed in Exercise 4.5, estimate the out-of-sample mean square error for RAPM based on the 2024-25 data. Instead of computing an optimal $\lambda$ for each training split, you may use the optimal $\lambda$ value computed on the whole dataset. Is RAPM a better predictive model than APM? 
-  3. Fit RAPM models to data from (i) the 2023-24 and 2024-25 regular seasons and (ii) the 2022-23, 2023-24, and 2024-25 regular season. Use the bootstrap to quantify how uncertainty about the difference in player RAPM values and the overall rankings changes as you include data from more seasons.
-  4. Just like `lm`, the functions `cv.glmnet()` and `glmnet()` accept a `weights` argument. Using the weighting schemes you considered in Exercise 4.2, fit regularized *weighted* adjusted plus/minus models.
 

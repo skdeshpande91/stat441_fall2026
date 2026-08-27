@@ -721,8 +721,3 @@ When we compare our top-10 to [FanGraph's leaderboard for RE24](https://www.fang
 But there are some differences, especially with regards to the number of plate appearances and actual RE24 values.
 For the latter, FanGraph likely used a different expected run matrix.
 
-## Exercises
-
-  1. Scrape data from the 2023 and 2024 regular seasons and determine which batters created the most run value.
-  2. Compute a new version of expected runs that conditions on the number of outs, baserunner configuration, and ballpark. Using this new version of expected runs, determine which batters create the most run value for their team. Does ballpark appear to make much difference?
--->

@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Exercises – STAT441</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/quarto-axe/axe-check.js" type="module"></script>
+<script id="quarto-axe-checker-options" type="text/plain">eyJvdXRwdXQiOiJkb2N1bWVudCJ9</script>
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "Search",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">STAT441</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-lecture-notes" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Lecture Notes</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-lecture-notes">    
+        <li>
+    <a class="dropdown-item" href="./lectures/lecture01.html">
+ <span class="dropdown-text">Lecture 1: Boxscore Metrics</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./lectures/lecture02.html">
+ <span class="dropdown-text">Lecture 2: Expected Goals</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./lectures/lecture03.html">
+ <span class="dropdown-text">Lecture 3: Estimating XG</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./lectures/lecture04.html">
+ <span class="dropdown-text">Lecture 4: Adjusted Plus/Minus</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./lectures/lecture05.html">
+ <span class="dropdown-text">Lecture 5: Regularized Adjusted Plus/Minus</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./lectures/lecture06.html">
+ <span class="dropdown-text">Lecture 6: Run Expectancy</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./lectures/lecture07.html">
+ <span class="dropdown-text">Lecture 7: Offensive Credit Allocation in Baseball</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./lectures/lecture08.html">
+ <span class="dropdown-text">Lecture 8: Defensive Credit Allocation in Baseball</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./lectures/lecture09.html">
+ <span class="dropdown-text">Lecture 9: Multilevel Modeling</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./lectures/lecture10.html">
+ <span class="dropdown-text">Lecture 10: NFL WAR</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./lectures/lecture11.html">
+ <span class="dropdown-text">Lecture 11: Pitch Framing</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./lectures/lecture12.html">
+ <span class="dropdown-text">Lecture 12: Bradley-Terry Models</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./lectures/lecture13.html">
+ <span class="dropdown-text">Lecture 13: Tournament Simulation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./lectures/lecture14.html">
+ <span class="dropdown-text">Lecture 14: Plackett-Luce Models</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./lectures/lecture15.html">
+ <span class="dropdown-text">Lecture 15: Markov Chains</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./lectures/lecture16.html">
+ <span class="dropdown-text">Lecture 16: NFL Drive Simulation I</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./lectures/lecture17.html">
+ <span class="dropdown-text">Lecture 17: NFL Drive Simulation II</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-projects" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Projects</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-projects">    
+        <li>
+    <a class="dropdown-item" href="./projects/project1.html">
+ <span class="dropdown-text">Project 1 Information</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./projects/project2.html">
+ <span class="dropdown-text">Project 2 Information</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./projects/project3.html">
+ <span class="dropdown-text">Project 3 Information</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="./exercises.html" aria-current="page"> 
+<span class="menu-text">Exercises</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#instructions" id="toc-instructions" class="nav-link active" data-scroll-target="#instructions">Instructions</a></li>
+  <li><a href="#sec-ex-lec1" id="toc-sec-ex-lec1" class="nav-link" data-scroll-target="#sec-ex-lec1">Lecture 1</a>
+  <ul class="collapse">
+  <li><a href="#sec-ex-lec1-wnba" id="toc-sec-ex-lec1-wnba" class="nav-link" data-scroll-target="#sec-ex-lec1-wnba">1.1: Best Shooting Performances in the WNBA</a></li>
+  <li><a href="#sec-ex-lec2-four-factors" id="toc-sec-ex-lec2-four-factors" class="nav-link" data-scroll-target="#sec-ex-lec2-four-factors">1.2: Four Factors</a></li>
+  <li><a href="#sec-ex-lec1-offensive-efficiency" id="toc-sec-ex-lec1-offensive-efficiency" class="nav-link" data-scroll-target="#sec-ex-lec1-offensive-efficiency">1.3: Offensive Efficiency</a></li>
+  </ul></li>
+  <li><a href="#sec-ex-lec2" id="toc-sec-ex-lec2" class="nav-link" data-scroll-target="#sec-ex-lec2">Lecture 2</a>
+  <ul class="collapse">
+  <li><a href="#sec-ex-lec2-over-under-xg" id="toc-sec-ex-lec2-over-under-xg" class="nav-link" data-scroll-target="#sec-ex-lec2-over-under-xg">2.1: Over- and Under-performing XG</a></li>
+  <li><a href="#sec-ex-lec2-euro2025" id="toc-sec-ex-lec2-euro2025" class="nav-link" data-scroll-target="#sec-ex-lec2-euro2025">2.2: EURO 2025 Performance</a></li>
+  <li><a href="#sec-ex-lec2-league" id="toc-sec-ex-lec2-league" class="nav-link" data-scroll-target="#sec-ex-lec2-league">2.3: League Performance</a></li>
+  </ul></li>
+  <li><a href="#sec-ex-lec3" id="toc-sec-ex-lec3" class="nav-link" data-scroll-target="#sec-ex-lec3">Lecture 3</a>
+  <ul class="collapse">
+  <li><a href="#sec-ex-lec3-cone-features" id="toc-sec-ex-lec3-cone-features" class="nav-link" data-scroll-target="#sec-ex-lec3-cone-features">3.1: <span class="math inline">\(\textrm{XG}\)</span> and the Shot Cone</a></li>
+  <li><a href="#sec-ex-lec3-cone-pred1" id="toc-sec-ex-lec3-cone-pred1" class="nav-link" data-scroll-target="#sec-ex-lec3-cone-pred1">3.2: Predictive Utility of <code>ConeAngle</code> and <code>ConeArea</code> I</a></li>
+  <li><a href="#sec-ex-lec3-more-data" id="toc-sec-ex-lec3-more-data" class="nav-link" data-scroll-target="#sec-ex-lec3-more-data">3.3: Estimating XG Using More Data</a></li>
+  </ul></li>
+  <li><a href="#sec-ex-lec4" id="toc-sec-ex-lec4" class="nav-link" data-scroll-target="#sec-ex-lec4">Lecture 4</a>
+  <ul class="collapse">
+  <li><a href="#sec-ex-lec4-baseline" id="toc-sec-ex-lec4-baseline" class="nav-link" data-scroll-target="#sec-ex-lec4-baseline">4.1: Sensitivity of (Weighted) APM</a></li>
+  <li><a href="#sec-ex-lec4-weight" id="toc-sec-ex-lec4-weight" class="nav-link" data-scroll-target="#sec-ex-lec4-weight">4.2: Re-thinking Stint Weights</a></li>
+  <li><a href="#sec-ex-lec4-apm-pred" id="toc-sec-ex-lec4-apm-pred" class="nav-link" data-scroll-target="#sec-ex-lec4-apm-pred">4.3: Predictive Quality of APM Models</a></li>
+  </ul></li>
+  <li><a href="#sec-ex-lec5" id="toc-sec-ex-lec5" class="nav-link" data-scroll-target="#sec-ex-lec5">Lecture 5</a>
+  <ul class="collapse">
+  <li><a href="#sec-ex-lec5-bootstrap-player" id="toc-sec-ex-lec5-bootstrap-player" class="nav-link" data-scroll-target="#sec-ex-lec5-bootstrap-player">5.1: Additional Player Comparisons</a></li>
+  <li><a href="#sec-ex-lec5-rapm-pred" id="toc-sec-ex-lec5-rapm-pred" class="nav-link" data-scroll-target="#sec-ex-lec5-rapm-pred">5.2: Predictive Quality of RAPM Models</a></li>
+  </ul></li>
+  <li><a href="#sec-ex-lec6" id="toc-sec-ex-lec6" class="nav-link" data-scroll-target="#sec-ex-lec6">Lecture 6</a>
+  <ul class="collapse">
+  <li><a href="#sec-ex-lec6-runValue-time" id="toc-sec-ex-lec6-runValue-time" class="nav-link" data-scroll-target="#sec-ex-lec6-runValue-time">6.1: Run Value Created Over Time</a></li>
+  <li><a href="#sec-ex-lec6-expectedRuns" id="toc-sec-ex-lec6-expectedRuns" class="nav-link" data-scroll-target="#sec-ex-lec6-expectedRuns">6.2: More Granular Expected Runs</a></li>
+  </ul></li>
+  <li><a href="#sec-ex-lec7-lec8" id="toc-sec-ex-lec7-lec8" class="nav-link" data-scroll-target="#sec-ex-lec7-lec8">Lecture 8</a>
+  <ul class="collapse">
+  <li><a href="#sec-ex-lec7-lec8-season" id="toc-sec-ex-lec7-lec8-season" class="nav-link" data-scroll-target="#sec-ex-lec7-lec8-season">8.1: More Granular Out Modeling</a></li>
+  <li><a href="#sec-ex-lec7-lec8-replicate" id="toc-sec-ex-lec7-lec8-replicate" class="nav-link" data-scroll-target="#sec-ex-lec7-lec8-replicate">8.2: Replicate opeWAR Analysis</a></li>
+  </ul></li>
+  <li><a href="#sec-ex-lec9" id="toc-sec-ex-lec9" class="nav-link" data-scroll-target="#sec-ex-lec9">Lecture 9</a>
+  <ul class="collapse">
+  <li><a href="#sec-ex-lec9-wpa" id="toc-sec-ex-lec9-wpa" class="nav-link" data-scroll-target="#sec-ex-lec9-wpa">9.1: Per-Pass Win Probability Added</a></li>
+  <li><a href="#sec-ex-lec9-replicate" id="toc-sec-ex-lec9-replicate" class="nav-link" data-scroll-target="#sec-ex-lec9-replicate">9.2: Replicate Per-Pass EPA Analysis</a></li>
+  </ul></li>
+  <li><a href="#sec-ex-lec10" id="toc-sec-ex-lec10" class="nav-link" data-scroll-target="#sec-ex-lec10">Lecture 10</a>
+  <ul class="collapse">
+  <li><a href="#sec-ex-lec10-wpa-war" id="toc-sec-ex-lec10-wpa-war" class="nav-link" data-scroll-target="#sec-ex-lec10-wpa-war">10.1: Win Probability-Based WAR</a></li>
+  <li><a href="#sec-ex-lec10-replicate" id="toc-sec-ex-lec10-replicate" class="nav-link" data-scroll-target="#sec-ex-lec10-replicate">10.2: Replicate nflWAR Analysis</a></li>
+  </ul></li>
+  <li><a href="#sec-ex-lec11" id="toc-sec-ex-lec11" class="nav-link" data-scroll-target="#sec-ex-lec11">Lecture 11</a>
+  <ul class="collapse">
+  <li><a href="#sec-ex-lec11-replicate" id="toc-sec-ex-lec11-replicate" class="nav-link" data-scroll-target="#sec-ex-lec11-replicate">11.1: Replicate RSAR Analysis</a></li>
+  <li><a href="#sec-ex-lec11-pitcher" id="toc-sec-ex-lec11-pitcher" class="nav-link" data-scroll-target="#sec-ex-lec11-pitcher">11.2: Pitcher Framing Metric</a></li>
+  <li><a href="#sec-ex-lec11-quality" id="toc-sec-ex-lec11-quality" class="nav-link" data-scroll-target="#sec-ex-lec11-quality">11.3: Adjusting for Batter and Pitcher Quality</a></li>
+  </ul></li>
+  <li><a href="#sec-ex-lec12" id="toc-sec-ex-lec12" class="nav-link" data-scroll-target="#sec-ex-lec12">Lecture 12</a>
+  <ul class="collapse">
+  <li><a href="#sec-ex-lec12-mens" id="toc-sec-ex-lec12-mens" class="nav-link" data-scroll-target="#sec-ex-lec12-mens">12.1: Ranking for Men’s D1 Hockey</a></li>
+  </ul></li>
+  <li><a href="#sec-ex-lec13" id="toc-sec-ex-lec13" class="nav-link" data-scroll-target="#sec-ex-lec13">Lecture 13</a>
+  <ul class="collapse">
+  <li><a href="#sec-ex-lec13-bootstrap" id="toc-sec-ex-lec13-bootstrap" class="nav-link" data-scroll-target="#sec-ex-lec13-bootstrap">13.1: Uncertainty about Team Rankings</a></li>
+  <li><a href="#sec-ex-lec13-tournament" id="toc-sec-ex-lec13-tournament" class="nav-link" data-scroll-target="#sec-ex-lec13-tournament">13.2: Full Tournament Simulation</a></li>
+  <li><a href="#sec-ex-lec13-mens" id="toc-sec-ex-lec13-mens" class="nav-link" data-scroll-target="#sec-ex-lec13-mens">13.3: Replicate Analysis for D1 Men’s Hockey</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Exercises</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="instructions" class="level2">
+<h2 class="anchored" data-anchor-id="instructions">Instructions</h2>
+<p>Over the course of the semester, you are required to submit written solutions to <strong>two</strong> of the following exercises. You should prepare your solution in a Quarto file (i.e., a .qmd) that contains all code needed to reproduce your analysis. Your solution should be structured similarly to the lecture notes, with code tightly integrated with exposition.</p>
+<p>Once you submit your solutions, you should respond to the corresponding post on Piazza with an overview of your analysis and the main results. In that post, you should also reflect on your analysis, commenting on matters including, but not limited to, limitations and potential extensions. If there are parts of your analysis about which you are unsure, you can raise those questions in your Piazza post! You will be required to respond to feedback and suggestions made by your fellow students about your solution. You must also provide constructive feedback to your peers’ solutions to exercises you have not submitted.</p>
+</section>
+<section id="sec-ex-lec1" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ex-lec1">Lecture 1</h2>
+<section id="sec-ex-lec1-wnba" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec1-wnba">1.1: Best Shooting Performances in the WNBA</h3>
+<p>The package <a href="https://wehoop.sportsdataverse.org/index.html"><strong>wehoop</strong></a> provides functions for scraping play-by-play and box score data for women’s college and professional basketball. Using that package, replicate the analysis from lecture to identify the best shooting performances in the WNBA between 2022 and now. To load in box score data, you will need to use the functions <code>wehoop::load_wnba_player_box()</code> and <code>wehoop::most_recent_wnba_season()</code> to load the raw box score data.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Differences between the NBA and WNBA
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The NBA and WNBA have different All-Star dates and the WNBA dataset may have slightly different column names than the NBA dataset. So, you will need to modify some parts of the code from <a href="./lectures/lecture01.html">Lecture 1</a> to run this analysis!</p>
+</div>
+</div>
+</section>
+<section id="sec-ex-lec2-four-factors" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec2-four-factors">1.2: Four Factors</h3>
+<p><a href="https://en.wikipedia.org/wiki/Dean_Oliver_(statistician)">Dean Oliver</a>, pioneer of basketball analytics, introduced <a href="https://www.basketball-reference.com/about/factors.html">Four Factors</a> to describe how teams win. The Four Factors are computed from box score data <em>at the team level</em> and attempt to summarize a team’s performance in terms of shooting, rebounding, turnovers, and free throws. Using data from either the NBA or WNBA, compute the four factors for each team in every season since 2002. Which teams’ were the best in terms of each of these four factors?</p>
+</section>
+<section id="sec-ex-lec1-offensive-efficiency" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec1-offensive-efficiency">1.3: Offensive Efficiency</h3>
+<p>Dean Oliver introduced an offensive efficiency metrics that tracks how many points are produced by an individual player over the course of 100 possessions. While it’s possible to compute offensive efficiency exactly using play-by-play or player-tracking data, these data were not always publicly available at the time that Oliver was writing. Oliver developed a formula for approximating offensive efficiency using only information contained in the box score; <a href="https://www.basketball-reference.com/about/ratings.html">the offensive rating page on Basketball Reference</a> has the full derivation.</p>
+<p>Using either NBA or WNBA, identify the player-seasons with the highest and lowest offensive ratings.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Intermediate Variables
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To compute offensive rating formula, you will need to compute several intermediate variables that summarize both team and individual performance. Performing this analysis will require some clever grouping operations!</p>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-ex-lec2" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ex-lec2">Lecture 2</h2>
+<section id="sec-ex-lec2-over-under-xg" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec2-over-under-xg">2.1: Over- and Under-performing XG</h3>
+<p>For each team in EURO 2022, sum their <span class="math inline">\(\textrm{XG}_{i}\)</span> values and sum the residuals <span class="math inline">\(Y_{i} - \textrm{XG}_{i}.\)</span> Which teams most over- or under-performed expectations? What relationship, if any, do you observe between teams’ cumulative XG and their performance relative to the StatsBomb XG model’s expectations?</p>
+</section>
+<section id="sec-ex-lec2-euro2025" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec2-euro2025">2.2: EURO 2025 Performance</h3>
+<p>During <a href="./lectures/lecture02.html">Lecture 2</a>, we worked with data from EURO 2022 tournament. Hudl has released similar data from the EURO 2025 tournament (which was also won by the Three Lionesses). Repeat the analyses from <a href="./lectures/lecture02.html#sec-goe">Lecture 2</a> to identify the EURO 2025 players with the most extreme goals over expected values in that tournament. Similarly, repeat the exercise in <a href="#sec-ex-lec2-over-under-xg" class="quarto-xref">Section&nbsp;3.1</a> to identify teams that most over- or under-performed expectations (in terms of goal scoring) during EURO 2025.</p>
+</section>
+<section id="sec-ex-lec2-league" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec2-league">2.3: League Performance</h3>
+<p>Hudl’s free data includes full seasons from several top professional leagues. Using the data from all complete league seasons explore the relationships between (i) the cumulative <span class="math inline">\(\textrm{XG}\)</span> the team generates on offense; (ii) the cumulative <span class="math inline">\(\textrm{XG}\)</span> the team gives up on defense; and (iii) their overall win-loss record. Do these relationships vary across leagues?</p>
+</section>
+</section>
+<section id="sec-ex-lec3" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ex-lec3">Lecture 3</h2>
+<section id="sec-ex-lec3-cone-features" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec3-cone-features">3.1: <span class="math inline">\(\textrm{XG}\)</span> and the Shot Cone</h3>
+<p>For every shot attempt, we can form a triangular region by connecting the shot location to the goal posts (whose coordinates are <code>(120, 36)</code> and <code>(120, 44)</code>) and connecting the two goal posts. We will refer to this region as the “shot cone”. Add two new feature to the data frame <code>wi_shots</code> that we created in <a href="./lectures/lecture03.html">Lecture 3</a>: <code>ConeAngle</code>, which measures the angle between the lines connecting the shot location to the goal posts and <code>ConeArea</code>, which is the area of the shot cone.</p>
+<p>Intuitively, what sorts of relationships would you expect between <code>ConeAngle</code> and <code>ConeArea</code> and XG?</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You do not necessarily need to fit any model to answer this question!</p>
+</div>
+</div>
+</section>
+<section id="sec-ex-lec3-cone-pred1" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec3-cone-pred1">3.2: Predictive Utility of <code>ConeAngle</code> and <code>ConeArea</code> I</h3>
+<p>Using 100 random training/testing splits, how much predictive accuracy is gained (if any) by including <code>ConeAngle</code>, <code>ConeArea</code>, and both <code>ConeAngle</code> and <code>ConeArea</code> as additional features in the <a href="./lectures/lecture03.html#sec-rf">random forests model we built in Lecture 3</a>?</p>
+</section>
+<section id="sec-ex-lec3-more-data" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec3-more-data">3.3: Estimating XG Using More Data</h3>
+<p>In <a href="./lectures/lecture03.html">Lecture 3</a>, we trained our XG models using only data from women’s international competitions. Train an XG model using data from at least 5 different full competitions contained in the public StatsBomb data. How similar are the XG predictions of your new model to the proprietary XG values provided by StatsBomb?</p>
+</section>
+</section>
+<section id="sec-ex-lec4" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ex-lec4">Lecture 4</h2>
+<section id="sec-ex-lec4-baseline" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec4-baseline">4.1: Sensitivity of (Weighted) APM</h3>
+<p>In <a href="./lectures/lecture04.html#sec-apm-beta">Lecture 4</a>, we set a 250 minute threshold and collapsed all players below that threshold into a single baseline player. Re-fit the APM and weighted APM models using different choices of minutes cut-offs (e.g., 100 or 300). How much do the top- and bottom-10 player rankings change?</p>
+</section>
+<section id="sec-ex-lec4-weight" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec4-weight">4.2: Re-thinking Stint Weights</h3>
+<p>In <a href="#sec-ex-lec4">Lecture 4</a>(lectures/lecture04.qmd#sec-wapm}, we weighted stints using only the lead at the start of the stint. One could reasonably argue that weights should also account for the time left in the game. Propose your own weighting scheme and see how the player rankings change.</p>
+<!--
+### 4.3: Multi-Season APM {#sec-ex-lec4-multiseason-apm}
+
+We estimated APM using data from a single season. 
+Many analysts prefer to use data from multiple season when fitting APM models. 
+Scrape data from the 2022-23 and 2023-24 regular seasons and fit APM models using (i) data from 2023-24 and 2024-25 and (iii) data from 2022-23, 2023-34, and 2024-25. 
+
+### 4.4: Multi-Season Weighted APM {#sec-ex-lec4-multiseason-wapm}
+One can credibly argue that data from seasons further in the past should be weighted less than data from more recent seasons. 
+Propose a weighting scheme that down-weights historical data and fit weighted versions of the models fit in @sec-ex-lec4-multiseason-apm. 
+How do the relative player rankings change based on different weighting schemes?
+-->
+</section>
+<section id="sec-ex-lec4-apm-pred" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec4-apm-pred">4.3: Predictive Quality of APM Models</h3>
+<p>Estimate the out-of-sample predictive mean square error of the basic APM model using 100 training/testing splits built in <a href="./lectures/lecture04.html">Lecture 4</a>. That is, for each training and testing split, fit each model using the training data and then compute the average of the squared difference between the actual <span class="math inline">\(Y\)</span>’s and the model predictions in the testing split. Is the basic APM model a good predictive model? Why or why not?</p>
+</section>
+</section>
+<section id="sec-ex-lec5" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ex-lec5">Lecture 5</h2>
+<section id="sec-ex-lec5-bootstrap-player" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec5-bootstrap-player">5.1: Additional Player Comparisons</h3>
+<p>During <a href="./lectures/lecture05.html#sec-bootstrap">Lecture 5</a>, we used the bootstrap to quantify our uncertainty about the difference between Luka Dončić’s and Anthony Davis’ regularized APM estimates. Pick 10 players and compare the bootstrap distributions of the pairwise differences in their RAPM estimates.</p>
+</section>
+<section id="sec-ex-lec5-rapm-pred" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec5-rapm-pred">5.2: Predictive Quality of RAPM Models</h3>
+<p>Using the same 100 training/testing splits constructed in <a href="#sec-ex-lec4-apm-pred" class="quarto-xref">Section&nbsp;5.3</a>, estimate the out-of-sample mean square error for our RAPM model based on the 2024-25 data. Instead of computing an optimal <span class="math inline">\(\lambda\)</span> for each training split, you may use the optimal <span class="math inline">\(\lambda\)</span> value computed for the whole datset. Is RAPM a better predictive model than APM?</p>
+<!--
+### Multiseason (weighted) RAPM {#sec-ex-lec5-multiseason-rapm}
+
+Fit RAPM models to data from (i) the 2023-24 and 2024-25 regular seasons and (ii) the 2022-23, 2023-24, and 2024-25 regular seasons. 
+Use the bootstrap to quantify how uncertainty about difference in play RAPM values and overall rankings change as you include data from more seasons.
+
+### Multiseason weighted RAPM {#sec-ex-lec5-multiseason-wrapm}
+
+Just like `lm`, the functions `cv.glmnet()` and `glmnet()` accept a `weights` argument. Using the weighting schemes you considered in Exercise 4.2, fit regularized *weighted* adjusted plus/minus models.
+-->
+</section>
+</section>
+<section id="sec-ex-lec6" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ex-lec6">Lecture 6</h2>
+<section id="sec-ex-lec6-runValue-time" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec6-runValue-time">6.1: Run Value Created Over Time</h3>
+<p>Scrape data from the 2022, 2023, 2024, 2025, and 2026 regular seasons and re-run the analyses from <a href="./lectures/lecture06.html">Lecture 6</a>. In particular, compute the final run value metric (i.e.&nbsp;<code>RE24</code>) for each batter-season. How predictive is <code>RE24</code> across seasons? Is it more or less predictive than batting average?</p>
+</section>
+<section id="sec-ex-lec6-expectedRuns" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec6-expectedRuns">6.2: More Granular Expected Runs</h3>
+<p>In <a href="./lectures/lecture06.html#sec-expected-runs">Lecture 6</a>, we computed the expected runs conditional on the number of outs and baserunner configuration. Compute a new, more granular version of the expected run matrix by conditioning on the number of outs, baserunner configuration, and ballpark. Using this new version of expected runs, re-compute run value and <code>RE24</code> and determine which batters create the most run value for their team. Does ballpark appear to make much difference?</p>
+</section>
+</section>
+<section id="sec-ex-lec7-lec8" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ex-lec7-lec8">Lecture 8</h2>
+<section id="sec-ex-lec7-lec8-season" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec7-lec8-season">8.1: More Granular Out Modeling</h3>
+<p>In <a href="./lectures/lecture08.html#sec-gam">Lecture 8</a>, we modeled the probability of a batted ball resulting in out using just the batted ball location. Try adjusting for additional factors about the pitch and swing in our GAM. How do the out probabilities and our downstream analysis change when you account for these factors?</p>
+</section>
+<section id="sec-ex-lec7-lec8-replicate" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec7-lec8-replicate">8.2: Replicate opeWAR Analysis</h3>
+<p>Replicate the full analytic pipeline from Lectures 7 and 8 to estimate WAR using data from the 2025 and 2026 regular seasons. How correlated are individual player’s WAR values and their constituent <code>RAA_b</code>, <code>RAA_br</code>, <code>RAA_f</code>, and <code>RAA_p</code> values across seasons? What are the implications if the season-to-season correlation is low?</p>
+</section>
+</section>
+<section id="sec-ex-lec9" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ex-lec9">Lecture 9</h2>
+<section id="sec-ex-lec9-wpa" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec9-wpa">9.1: Per-Pass Win Probability Added</h3>
+<p>Arguably, a better measure of a play success than EPA is whether a play increased the offensive team’s chances of winning the game. <strong>nflfastR</strong> provides estimates of the win probability and win probability added. Repeat the modeling but with WPA instead of EPA. What is the relationship between per-pass WPA and per-pass EPA after adjusting for the same fixed effects from our full model?</p>
+</section>
+<section id="sec-ex-lec9-replicate" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec9-replicate">9.2: Replicate Per-Pass EPA Analysis</h3>
+<p>Replicate the multilevel modeling of per-pass EPA using data from the 2022-23, 2023-24, and 2025-26 regular seasons. To what extent is a quarterback’s per-pass EPA in one season predictive of their per-pass EPA in the next season?</p>
+</section>
+</section>
+<section id="sec-ex-lec10" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ex-lec10">Lecture 10</h2>
+<section id="sec-ex-lec10-wpa-war" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec10-wpa-war">10.1: Win Probability-Based WAR</h3>
+<p>Repeat the analysis from <a href="./lectures/lecture10.html">Lecture 10</a> using win probability added instead of expected points added. Note,you do not need to convert from the points to win scale in this re-analysis. Which players appear to contribute the most to their team’s overall win probability?</p>
+</section>
+<section id="sec-ex-lec10-replicate" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec10-replicate">10.2: Replicate nflWAR Analysis</h3>
+<p>Replicate the full NFL WAR analysis using data from 2022-23, 2023-24, and 2025-26 regular seasons. To what extent are individual players’ IPAR, IPAA, and WAR values stable across seasons?</p>
+</section>
+</section>
+<section id="sec-ex-lec11" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ex-lec11">Lecture 11</h2>
+<section id="sec-ex-lec11-replicate" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec11-replicate">11.1: Replicate RSAR Analysis</h3>
+<p>Replicate the full Runs Saved Above Replacement analysis for the 2023 and 2024 regular seasons. To what extend do catchers’ RSAR values vary season-to-season? What are potential implications of such variability to roster building?</p>
+</section>
+<section id="sec-ex-lec11-pitcher" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec11-pitcher">11.2: Pitcher Framing Metric</h3>
+<p>We used the catcher random effects from a <a href="./lectures/lecture11.html#sec-fit-multilevel">multilevel model</a> to estimate how much more each catcher contributed to the probability of a called strike than a replacement-level catcher. Those estimated contributions formed the basis of the catcher metric RSAR.</p>
+<p>One could argue, however, that pitchers are responsible for at least some of the value created by pitch framing; after all, for a catcher to frame a pitch successfully, the pitcher must throw a frameable pitch! Using the <a href="./lectures/lecture11.html#sec-fit-multilevel">multilevel model from Lecture 11</a>, create and compute an analog of RSAR for pitchers.</p>
+</section>
+<section id="sec-ex-lec11-quality" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec11-quality">11.3: Adjusting for Batter and Pitcher Quality</h3>
+<p>The historical GAM model we built in <a href="./lectures/lecture11.html#sec-hgam">Lecture 11</a> only accounted for pitch location. That model and the multilevel model we fit to estimate catcher effects did not adjust for the <em>quality</em> of the batter or pitcher. It is at least conceivable that umpire’s may call the strike zone for an elite, veteran batter differently than they would for a batter who has just been called up. Re-fit the historical GAM to adjust for the batter’s <a href="https://library.fangraphs.com/offense/woba/">wOBA</a> and pitcher’s <a href="https://library.fangraphs.com/pitching/era/">ERA</a>, both computed at the end of the 2024 regular season, in addition to the pitch location. Similarly, re-fit the multilevel model to adjust for batter’s wOBA and pitcher’s ERA computed at the end of the 2025 as fixed effects. How do the resulting RSAR estimates and catcher rankings change after we adjust for batter and pitcher quality in both component models.</p>
+</section>
+</section>
+<section id="sec-ex-lec12" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ex-lec12">Lecture 12</h2>
+<section id="sec-ex-lec12-mens" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec12-mens">12.1: Ranking for Men’s D1 Hockey</h3>
+<p><a href="https://www.collegehockeyinc.com/men/compnatfull26.php">College Hockey Inc.</a> presents a tabular view of the results of all Division 1 men’s hockey games from the 2025-26 season. Create a CSV file, similar to the one we worked with in <a href="./lectures/lecture12.html">Lecture 12</a> for the results of women’s hockey, and fit a Bradley-Terry model to estimate the latent strengths of all D1 men’s hockey teams.</p>
+</section>
+</section>
+<section id="sec-ex-lec13" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ex-lec13">Lecture 13</h2>
+<section id="sec-ex-lec13-bootstrap" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec13-bootstrap">13.1: Uncertainty about Team Rankings</h3>
+<p>Use the bootstrap to quantify the uncertainty in relative rankings of each team. To do this, you will need to re-sample individual games, re-compute the numbers of home &amp; away team wins for every combination of teams and neutral, and fit a Bradley-Terry model. Report the number of bootstrap simulations in which Wisconsin was ranked 1st and also report a 95% bootstrap confidence interval for Wisconsin’s overall rank.</p>
+</section>
+<section id="sec-ex-lec13-tournament" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec13-tournament">13.2: Full Tournament Simulation</h3>
+<p>Build a simulation for the entire NCAA Tournament based on the estimating probabilities from our Bradley-Terry model that accounts for home advantage. In <a href="https://en.wikipedia.org/wiki/2026_NCAA_Division_I_women%27s_ice_hockey_tournament">this tournament</a>, the first round and quarterfinals were held on the campuses of the top-4 seeded teams (Ohio State, Wisconsin, Penn State, and Minnesota). Subsequent games were played at Penn’s State’s home arena. Your simulation should involve only the 11 teams who actually played in the tournament</p>
+</section>
+<section id="sec-ex-lec13-mens" class="level3">
+<h3 class="anchored" data-anchor-id="sec-ex-lec13-mens">13.3: Replicate Analysis for D1 Men’s Hockey</h3>
+<p>Replicate the analyses from <a href="./lectures/lecture13.html">Lecture 13</a> for Division 1 Men’s Hockey. You will need to use the data introduced in <a href="#sec-ex-lec12-mens">Exercise 12.1</a></p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+        for (let i=0; i<annoteTargets.length; i++) {
+          const annoteTarget = annoteTargets[i];
+          const targetCell = annoteTarget.getAttribute("data-target-cell");
+          const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
+          const contentFn = () => {
+            const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+            if (content) {
+              const tipContent = content.cloneNode(true);
+              tipContent.classList.add("code-annotation-tip-content");
+              return tipContent.outerHTML;
+            }
+          }
+          const config = {
+            allowHTML: true,
+            content: contentFn,
+            onShow: (instance) => {
+              selectCodeLines(instance.reference);
+              instance.reference.classList.add('code-annotation-active');
+              window.tippy.hideAll();
+            },
+            onHide: (instance) => {
+              unselectCodeLines();
+              instance.reference.classList.remove('code-annotation-active');
+            },
+            maxWidth: 300,
+            delay: [50, 0],
+            duration: [200, 0],
+            offset: [5, 10],
+            arrow: true,
+            appendTo: function(el) {
+              return el.parentElement.parentElement.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'quarto',
+            placement: 'right',
+            popperOptions: {
+              modifiers: [
+              {
+                name: 'flip',
+                options: {
+                  flipVariations: false, // true by default
+                  allowedAutoPlacements: ['right'],
+                  fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
+                },
+              },
+              {
+                name: 'preventOverflow',
+                options: {
+                  mainAxis: false,
+                  altAxis: false
+                }
+              }
+              ]        
+            }      
+          };
+          window.tippy(annoteTarget, config); 
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
