@@ -15,11 +15,15 @@ In that post, you should also reflect on your analysis, commenting on matters in
 If there are parts of your analysis about which you are unsure, you can raise those questions in your Piazza post! 
 You will be required to respond to feedback and suggestions made by your fellow students about your solution. You must also provide constructive feedback to your peers' solutions to exercises you have not submitted.
 
+You should upload your Quarto markdown file (i.e., a .qmd) at this [submission link](https://uwmadison.app.box.com/f/bf55ec031afb4b81a30c846d6e90607d).
+If you use external data (i.e., data that cannot be directly loaded into R), then you should submit a compressed archive (i.e., a `.zip` or a `.tar.gz` file) that contains the data and your Quarto markdown file. 
+Be sure to include your name and the exercise number (e.g., 01-1 for Lecture 01, Exercise 1) in your submission's filename.
 
 
-## Lecture 1 {#sec-ex-lec1}
 
-### 1.1: Best Shooting Performances in the WNBA {#sec-ex-lec1-wnba}
+## Lecture 01 {#sec-ex-lec1}
+
+### 01-1: Best Shooting Performances in the WNBA {#sec-ex-lec1-wnba}
 
 The package [**wehoop**](https://wehoop.sportsdataverse.org/index.html) provides functions for scraping play-by-play and box score data for women's college and professional basketball. 
 Using that package, replicate the analysis from lecture to identify the best shooting performances in the WNBA between 2022 and now. 
@@ -31,11 +35,11 @@ The NBA and WNBA have different All-Star dates and the WNBA dataset may have sli
 So, you will need to modify some parts of the code from [Lecture 1](lectures/lecture01.qmd) to run this analysis!
 :::
 
-### 1.2: Four Factors{#sec-ex-lec2-four-factors}
+### 01-2: Four Factors{#sec-ex-lec2-four-factors}
 
 [Dean Oliver](https://en.wikipedia.org/wiki/Dean_Oliver_(statistician)),  pioneer of basketball analytics, introduced [Four Factors](https://www.basketball-reference.com/about/factors.html) to describe how teams win. The Four Factors are computed from box score data *at the team level* and attempt to summarize a team's performance in terms of shooting, rebounding, turnovers, and free throws. Using data from either the NBA or WNBA, compute the four factors for each team in every season since 2002. Which teams' were the best in terms of each of these four factors?
 
-### 1.3: Offensive Efficiency{#sec-ex-lec1-offensive-efficiency}
+### 01-3: Offensive Efficiency{#sec-ex-lec1-offensive-efficiency}
 
 Dean Oliver introduced an offensive efficiency metrics that tracks how many points are produced by an individual player over the course of 100 possessions.
 While it's possible to compute offensive efficiency exactly using play-by-play or player-tracking data, these data were not always publicly available at the time that Oliver was writing.
@@ -54,21 +58,21 @@ Performing this analysis will require some clever grouping operations!
 
 ## Lecture 2{#sec-ex-lec2}
 
-### 2.1: Over- and Under-performing XG {#sec-ex-lec2-over-under-xg}
+### 02-1: Over- and Under-performing XG {#sec-ex-lec2-over-under-xg}
 
 For each team in EURO 2022, sum their $\textrm{XG}_{i}$ values and sum the residuals $Y_{i} - \textrm{XG}_{i}.$ Which teams most over- or under-performed expectations? What relationship, if any, do you observe between teams' cumulative XG and their performance relative to the StatsBomb XG model's expectations?
 
-### 2.2: EURO 2025 Performance {#sec-ex-lec2-euro2025}
+### 02-2: EURO 2025 Performance {#sec-ex-lec2-euro2025}
 
 During [Lecture 2](lectures/lecture02.qmd), we worked with data from EURO 2022 tournament. Hudl has released similar data from the EURO 2025 tournament (which was also won by the Three Lionesses). Repeat the analyses from [Lecture 2](lectures/lecture02.qmd#sec-goe) to identify the EURO 2025 players with the most extreme goals over expected values in that tournament. Similarly, repeat the exercise in @sec-ex-lec2-over-under-xg to identify teams that most over- or under-performed expectations (in terms of goal scoring) during EURO 2025.
 
-### 2.3: League Performance {#sec-ex-lec2-league}
+### 02-3: League Performance {#sec-ex-lec2-league}
 
 Hudl's free data includes full seasons from several top professional leagues. Using the data from all complete league seasons explore the relationships between (i) the cumulative $\textrm{XG}$ the team generates on offense; (ii) the cumulative $\textrm{XG}$ the team gives up on defense; and (iii) their overall win-loss record. Do these relationships vary across leagues? 
 
 ## Lecture 3 {#sec-ex-lec3}
 
-### 3.1: $\textrm{XG}$ and the Shot Cone {#sec-ex-lec3-cone-features}
+### 03-1: $\textrm{XG}$ and the Shot Cone {#sec-ex-lec3-cone-features}
 
 For every shot attempt, we can form a triangular region by connecting the shot location to the goal posts (whose coordinates are `(120, 36)` and `(120, 44)`) and connecting the two goal posts.
 We will refer to this region as the "shot cone".
@@ -81,22 +85,22 @@ Intuitively, what sorts of relationships would you expect between `ConeAngle` an
 You do not necessarily need to fit any model to answer this question!
 :::
 
-### 3.2: Predictive Utility of `ConeAngle` and `ConeArea` I {#sec-ex-lec3-cone-pred1}
+### 03-2: Predictive Utility of `ConeAngle` and `ConeArea` I {#sec-ex-lec3-cone-pred1}
 
 Using 100 random training/testing splits, how much predictive accuracy is gained (if any) by including `ConeAngle`, `ConeArea`, and both `ConeAngle` and `ConeArea` as additional features in the [random forests model we built in Lecture 3](lectures/lecture03.qmd#sec-rf)?
 
-### 3.3: Estimating XG Using More Data {#sec-ex-lec3-more-data}
+### 03-3: Estimating XG Using More Data {#sec-ex-lec3-more-data}
 
 In [Lecture 3](lectures/lecture03.qmd), we trained our XG models using only data from women's international competitions. Train an XG model using data from at least 5 different full competitions contained in the public StatsBomb data. 
 How similar are the XG predictions of your new model to the proprietary XG values provided by StatsBomb? 
 
 ## Lecture 4 {#sec-ex-lec4}
 
-### 4.1: Sensitivity of (Weighted) APM {#sec-ex-lec4-baseline}
+### 04-1: Sensitivity of (Weighted) APM {#sec-ex-lec4-baseline}
 
 In [Lecture 4](lectures/lecture04.qmd#sec-apm-beta), we set a 250 minute threshold and collapsed all players below that threshold into a single baseline player. Re-fit the APM and weighted APM models using different choices of minutes cut-offs (e.g., 100 or 300). How much do the top- and bottom-10 player rankings change?
 
-### 4.2: Re-thinking Stint Weights {#sec-ex-lec4-weight}
+### 04-2: Re-thinking Stint Weights {#sec-ex-lec4-weight}
 
 In [Lecture 4](lectures/lecture04.qmd#sec-wapm}, we weighted stints using only the lead at the start of the stint. 
 One could reasonably argue that weights should also account for the time left in the game. 
@@ -115,7 +119,7 @@ Propose a weighting scheme that down-weights historical data and fit weighted ve
 How do the relative player rankings change based on different weighting schemes?
 -->
 
-### 4.3: Predictive Quality of APM Models {#sec-ex-lec4-apm-pred}
+### 04-3: Predictive Quality of APM Models {#sec-ex-lec4-apm-pred}
 
 Estimate the out-of-sample predictive mean square error of the basic APM model using 100 training/testing splits built in [Lecture 4](lectures/lecture04.qmd). 
 That is, for each training and testing split, fit each model using the training data and then compute the average of the squared difference between the actual $Y$'s and the model predictions in the testing split. Is the basic APM model a good predictive model? Why or why not?
@@ -123,12 +127,12 @@ That is, for each training and testing split, fit each model using the training 
 
 ## Lecture 5 {#sec-ex-lec5}
 
-### 5.1: Additional Player Comparisons {#sec-ex-lec5-bootstrap-player}
+### 05-1: Additional Player Comparisons {#sec-ex-lec5-bootstrap-player}
 
 During [Lecture 5](lectures/lecture05.qmd#sec-bootstrap), we used the bootstrap to quantify our uncertainty about the difference between Luka Dončić's and Anthony Davis' regularized APM estimates. 
 Pick 10 players and compare the bootstrap distributions of the pairwise differences in their RAPM estimates.
 
-### 5.2: Predictive Quality of RAPM Models {#sec-ex-lec5-rapm-pred}
+### 05-2: Predictive Quality of RAPM Models {#sec-ex-lec5-rapm-pred}
 
 Using the same 100 training/testing splits constructed in @sec-ex-lec4-apm-pred, estimate the out-of-sample mean square error for our RAPM model based on the 2024-25 data. Instead of computing an optimal $\lambda$ for each training split, you may use the optimal $\lambda$ value computed for the whole datset. Is RAPM a better predictive model than APM?
 
@@ -145,27 +149,27 @@ Just like `lm`, the functions `cv.glmnet()` and `glmnet()` accept a `weights` ar
 
 ## Lecture 6 {#sec-ex-lec6}
 
-### 6.1: Run Value Created Over Time {#sec-ex-lec6-runValue-time}
+### 06-1: Run Value Created Over Time {#sec-ex-lec6-runValue-time}
 
 Scrape data from the 2022, 2023, 2024, 2025, and 2026 regular seasons and re-run the analyses from [Lecture 6](lectures/lecture06.qmd).
 In particular, compute the final run value metric (i.e. `RE24`) for each batter-season.
 How predictive is `RE24` across seasons? Is it more or less predictive than batting average?
 
-### 6.2: More Granular Expected Runs {#sec-ex-lec6-expectedRuns}
+### 06-2: More Granular Expected Runs {#sec-ex-lec6-expectedRuns}
 
 In [Lecture 6](lectures/lecture06.qmd#sec-expected-runs), we computed the expected runs conditional on the number of outs and baserunner configuration.
 Compute a new, more granular version of the expected run matrix by conditioning on the number of outs, baserunner configuration, and ballpark. Using this new version of expected runs, re-compute run value and `RE24` and determine which batters create the most run value for their team. Does ballpark appear to make much difference?
 
 ## Lecture 8 {#sec-ex-lec7-lec8}
 
-### 8.1: More Granular Out Modeling {#sec-ex-lec7-lec8-season}
+### 08-1: More Granular Out Modeling {#sec-ex-lec7-lec8-season}
 
 In [Lecture 8](lectures/lecture08.qmd#sec-gam), we modeled the probability of a batted ball resulting in out using just the batted ball location. 
 Try adjusting for additional factors about the pitch and swing in our GAM. 
 How do the out probabilities and our downstream analysis change when you account for these factors?
 
 
-### 8.2: Replicate opeWAR Analysis {#sec-ex-lec7-lec8-replicate}
+### 08-2: Replicate opeWAR Analysis {#sec-ex-lec7-lec8-replicate}
 
 Replicate the full analytic pipeline from Lectures 7 and 8 to estimate WAR using data from the 2025 and 2026 regular seasons.
 How correlated are individual player's WAR values and their constituent `RAA_b`, `RAA_br`, `RAA_f`, and `RAA_p` values across seasons?
@@ -173,38 +177,38 @@ What are the implications if the season-to-season correlation is low?
 
 ## Lecture 9 {#sec-ex-lec9}
 
-### 9.1: Per-Pass Win Probability Added  {#sec-ex-lec9-wpa}
+### 09-1: Per-Pass Win Probability Added  {#sec-ex-lec9-wpa}
 
 Arguably, a better measure of a play success than EPA is whether a play increased the offensive team's chances of winning the game. 
 **nflfastR** provides estimates of the win probability and win probability added. 
 Repeat the modeling but with WPA instead of EPA. 
 What is the relationship between per-pass WPA and per-pass EPA after adjusting for the same fixed effects from our full model?
 
-### 9.2: Replicate Per-Pass EPA Analysis {#sec-ex-lec9-replicate}
+### 09-2: Replicate Per-Pass EPA Analysis {#sec-ex-lec9-replicate}
 
 Replicate the multilevel modeling of per-pass EPA using data from the 2022-23, 2023-24, and 2025-26 regular seasons.
 To what extent is a quarterback's per-pass EPA in one season predictive of their per-pass EPA in the next season?
 
 ## Lecture 10 {#sec-ex-lec10}
 
-### 10.1: Win Probability-Based WAR {#sec-ex-lec10-wpa-war}
+### 10-1: Win Probability-Based WAR {#sec-ex-lec10-wpa-war}
 
 Repeat the analysis from [Lecture 10](lectures/lecture10.qmd) using win probability added instead of expected points added. 
 Note,you do not need to convert from the points to win scale in this re-analysis. 
 Which players appear to contribute the most to their team's overall win probability?
 
-### 10.2: Replicate nflWAR Analysis {#sec-ex-lec10-replicate}
+### 10-2: Replicate nflWAR Analysis {#sec-ex-lec10-replicate}
 
 Replicate the full NFL WAR analysis using data from 2022-23, 2023-24, and 2025-26 regular seasons.
 To what extent are individual players' IPAR, IPAA, and WAR values stable across seasons?
 
 ## Lecture 11 {#sec-ex-lec11}
 
-### 11.1: Replicate RSAR Analysis {#sec-ex-lec11-replicate}
+### 11-1: Replicate RSAR Analysis {#sec-ex-lec11-replicate}
 
 Replicate the full Runs Saved Above Replacement analysis for the 2023 and 2024 regular seasons. To what extend do catchers' RSAR values vary season-to-season? What are potential implications of such variability to roster building?
 
-### 11.2: Pitcher Framing Metric {#sec-ex-lec11-pitcher}
+### 11-2: Pitcher Framing Metric {#sec-ex-lec11-pitcher}
 
 We used the catcher random effects from a [multilevel model](lectures/lecture11.qmd#sec-fit-multilevel) to estimate how much more each catcher contributed to the probability of a called strike than a replacement-level catcher.
 Those estimated contributions formed the basis of the catcher metric RSAR.
@@ -212,7 +216,7 @@ Those estimated contributions formed the basis of the catcher metric RSAR.
 One could argue, however, that pitchers are responsible for at least some of the value created by pitch framing; after all, for a catcher to frame a pitch successfully, the pitcher must throw a frameable pitch! 
 Using the [multilevel model from Lecture 11](lectures/lecture11.qmd#sec-fit-multilevel), create and compute an analog of RSAR for pitchers. 
 
-### 11.3: Adjusting for Batter and Pitcher Quality {#sec-ex-lec11-quality}
+### 11-3: Adjusting for Batter and Pitcher Quality {#sec-ex-lec11-quality}
 
 The historical GAM model we built in [Lecture 11](lectures/lecture11.qmd#sec-hgam) only accounted for pitch location.
 That model and the multilevel model we fit to estimate catcher effects did not adjust for the *quality* of the batter or pitcher.
@@ -223,21 +227,21 @@ How do the resulting RSAR estimates and catcher rankings change after we adjust 
 
 ## Lecture 12 {#sec-ex-lec12}
 
-### 12.1: Ranking for Men's D1 Hockey {#sec-ex-lec12-mens}
+### 12-1: Ranking for Men's D1 Hockey {#sec-ex-lec12-mens}
 
 [College Hockey Inc.](https://www.collegehockeyinc.com/men/compnatfull26.php) presents a tabular view of the results of all Division 1 men's hockey games from the 2025-26 season. Create a CSV file, similar to the one we worked with in [Lecture 12](lectures/lecture12.qmd) for the results of women's hockey, and fit a Bradley-Terry model to estimate the latent strengths of all D1 men's hockey teams.
 
 ## Lecture 13 {#sec-ex-lec13}
 
-### 13.1: Uncertainty about Team Rankings {#sec-ex-lec13-bootstrap}
+### 13-1: Uncertainty about Team Rankings {#sec-ex-lec13-bootstrap}
 
 Use the bootstrap to quantify the uncertainty in relative rankings of each team. 
 To do this, you will need to re-sample individual games, re-compute the numbers of home & away team wins for every combination of teams and neutral, and fit a Bradley-Terry model. Report the number of bootstrap simulations in which Wisconsin was ranked 1st and also report a 95% bootstrap confidence interval for Wisconsin’s overall rank.
 
-### 13.2: Full Tournament Simulation {#sec-ex-lec13-tournament}
+### 13-2: Full Tournament Simulation {#sec-ex-lec13-tournament}
 
 Build a simulation for the entire NCAA Tournament based on the estimating probabilities from our Bradley-Terry model that accounts for home advantage. In [this tournament](https://en.wikipedia.org/wiki/2026_NCAA_Division_I_women%27s_ice_hockey_tournament), the first round and quarterfinals were held on the campuses of the top-4 seeded teams (Ohio State, Wisconsin, Penn State, and Minnesota). Subsequent games were played at Penn’s State’s home arena. Your simulation should involve only the 11 teams who actually played in the tournament
 
-### 13.3: Replicate Analysis for D1 Men's Hockey {#sec-ex-lec13-mens}
+### 13-3: Replicate Analysis for D1 Men's Hockey {#sec-ex-lec13-mens}
 
 Replicate the analyses from [Lecture 13](lectures/lecture13.qmd) for Division 1 Men's Hockey. You will need to use the data introduced in [Exercise 12.1](#sec-ex-lec12-mens)
