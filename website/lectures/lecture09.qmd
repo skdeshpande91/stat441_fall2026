@@ -19,11 +19,11 @@ Then, using a multilevel model (@sec-multilevel-model), we will identify the pla
 
 ## Play-By-Play Football Data {#sec-nflfastr-intro}
 
-We will use play-by-play data from the NFL available from the [**nflfastR**](https://www.nflfastr.com) package, which can be installed using the code:
+We will use play-by-play data from the NFL available from the [**nflfastR**](https://www.nflfastr.com) and [**nflreadr**](https://nflreadr.nflverse.com/index.html) packages, which can be installed using the code:
 ```{r}
 #| label: install-nflfastR
 #| eval: false
-install.packages("nflfastR")
+install.packages(c("nflfastR", "nflreadr"))
 ```
 
 The package contains several functions for efficiently scraping NFL data and for pre-processing the play-by-play data.
@@ -63,13 +63,13 @@ It finally contains a large number of columns that record exactly what happened 
 You can find a full listing of the variables[here](https://www.nflfastr.com/articles/field_descriptions.html).
 
 **nflfastR** identifies players using a unique 9-digit identifier provided by [Game Statistics and Information Systems (GSIS)](https://www.nflgsis.com/Help/About.html). 
-We can load a table containing roster information, including player identifier, name, position, and team using the function [`nflfastR::load_roster()`](https://nflreadr.nflverse.com/reference/load_rosters.html)
+We can load a table containing roster information, including player identifier, name, position, and team using the function [`nflreadr::load_rosters()`](https://nflreadr.nflverse.com/reference/load_rosters.html)
 ```{r}
 #| label: load-roster
 #| warning: false
 #| message: true
 roster2024 <-
-  nflfastR::load_roster(seasons = 2024)
+  nflreadr::load_rosters(seasons = 2024)
 ```
 
 ## Expected Points {#sec-ep}

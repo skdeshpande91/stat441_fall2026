@@ -44,7 +44,6 @@ We will also fit two separate multilevel models of EPA on rushing plays, one for
 
 We will restrict our analysis to plays from the 2024-25 regular season and exclude all post-season/play-off games.
 Later, in @sec-skill-replacement, we will define replacement-level players on a position-by-position basis.
-So that we can look up player positions, we will re-load the roster information using `nflfastR::fast_scraper_roster()`.
 ```{r}
 #| label: load-pbp-roster
 #| warning: false
@@ -54,7 +53,7 @@ pbp2024 <-
   nflfastR::load_pbp(season = 2024) |>
   dplyr::filter(season_type == "REG") 
 roster2024 <-
-  nflfastR::load_rosters(seasons = 2024) |>
+  nflreadr::load_rosters(seasons = 2024) |>
   dplyr::filter(!is.na(gsis_id))
 ```
 

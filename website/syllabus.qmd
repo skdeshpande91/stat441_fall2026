@@ -92,7 +92,7 @@ The rest of written report should
 
 The technical section of the report should contain enough detail and code that another data scientist could replicate your analysis verify its soundness.
 Code listings and output (e.g., figures, tables, charts, and numerical summaries) should be tightly integrated with the written exposition.
-**The use of Quarto or RMarkdown is highly recommended for preparing the written report.**
+**The use of Quarto is highly recommended for preparing the written report.**
 
 #### Presentation {#sec-presentation}
 

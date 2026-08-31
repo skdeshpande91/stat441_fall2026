@@ -37,13 +37,13 @@ Friday office hours are also a great way to brainstorm project ideas with and to
 If you have specific questions about the course content (e.g., parsing a particular bit of syntax or understanding a step in an analysis), I encourage you to ask the question on Piazza and to attend Friday office hours. 
 If you cannot make the Tuesday or Thursday office hours, please email me and suggest some times at which you are free. 
 
-**Teaching Assistant**: TBA. 
+**Teaching Assistant**: Zhexuan Liu. 
 
 ## System Setup {#sec-R-setup}
 
 As noted in the [syllabus](syllabus.qmd#sec-course-requisites), this course will make *extensive* use of R.
 Even if you have prior experience, I **strongly** recommend installing the latest version of both R and RStudio at the beginning of the course.
-As of the time of this writing, that is R version 4.6 and RStudio version 2026.01.
+As of the time of this writing, that is R version 4.6 and RStudio version 2026.08.
 
 ### Installing R & RStudio {#sec-install-R}
 You can download a version of R specific to your operating system from [this website](https://cloud.r-project.org).

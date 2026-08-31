@@ -30,11 +30,6 @@ Code listings and output (e.g., figures, tables, charts, and numerical summaries
 Here is a [good example of such integration](https://github.com/danmorse314/hockeyR-models).
 Pay particular attention to the way the author complements the numerical results with detailed examples of individual performances. 
 
-::: {.callout-tip}
-## Quarto
-I **highly** recommend using Quarto to prepare your written report.
-:::
-
 ### Presentation
 
 Each team will also record an 8--10 minute presentation that provides an overview of their analysis.
@@ -50,16 +45,13 @@ Each presentation should include the following elements
 I encourage you practice a few times to ensure smooth transitions between speakers.
 
 
-
-
-
-## Preparing Your Submission
+## Preparing Your Submissions
 
 ::: {.callout-tip}
 ## Quarto & Zoom
-I **highly** recommend using Quarto to prepare your written report and recording your presentation using Zoom.
+I **highly** recommend using Quarto to prepare your written report and recording your presentation with Zoom.
 For your report, you can either render the document directly as a PDF. Or, you can first render it as an HTML file and save that as a PDF.
-For your presentation, please try to ensure that the speaker's face is visible along with the slide contents.
+For your presentation, please ensure that the speaker's face is visible along with the slide contents.
 :::
 
 
@@ -70,7 +62,6 @@ Each team will be assigned a two-digit team number (`teamID`) that should appear
 Please name your report as `teamID_report.pdf`, your presentation as `teamID_presentation.mp4`, and your reproducibility material as `teamID_code.zip` or `teamID_code.tar.gz`.
 So, if your team number is `00`, you should save your report as `00_report.pdf`, your presentation as `00_presentation.mp4`, and your reproducibility archive as `00_code.zip` or `00_code.tar.gz`. 
 
-Each team has been assigned a two-digit team number and should include the team number in the filenames of 
 
 You will upload the files separately using the following links 
 
@@ -83,6 +74,12 @@ You will upload the files separately using the following links
 You must sign into Box using your Wisconsin NetID credentials before you can upload your submission
 :::
 
+## Peer Reviews
+
+You will be assigned three projects to review. Assignments will be announced at noon on the day the project is due.
+Your reviews are due 1 week after the project deadline (i.e., Friday October 16 at 12:00pm).
+For each assigned project, please complete the peer review survey at [this Qualtrics link](https://uwmadison.co1.qualtrics.com/jfe/form/SV_2h37bruTLPm8phA).
+You will need to fill out the survey three separate times, one for each project.
 
 ## Potential Topics
 

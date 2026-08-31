@@ -96,13 +96,11 @@ div.csl-indent {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../site_libs/quarto-axe/axe-check.js" type="module"></script>
-<script id="quarto-axe-checker-options" type="text/plain">eyJvdXRwdXQiOiJkb2N1bWVudCJ9</script>
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-778237891967b0e2a235639bc74a01fe.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-778237891967b0e2a235639bc74a01fe.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-778237891967b0e2a235639bc74a01fe.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -756,7 +754,7 @@ window.Quarto = {
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Plus-Minus vs Possessions"</span>)</span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">col =</span> oi_colors[<span class="dv">8</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="fig-pm-poss" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Scatterplot of plus/minus and number of possessions played." data-fig-align="center">
+<div id="fig-pm-poss" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Scatterplot of plus/minus and number of possessions played.">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-pm-poss-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <a href="lecture04_files/figure-html/fig-pm-poss-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;1: Relationship between Plus/Minus and number of possessions played"><img src="lecture04_files/figure-html/fig-pm-poss-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Scatterplot of plus/minus and number of possessions played." width="576"></a>
@@ -940,7 +938,7 @@ Y_{i} = \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha} + \epsilon_{i}.
 </section>
 <section id="sec-wapm" class="level3">
 <h3 class="anchored" data-anchor-id="sec-wapm">Weighted adjusted plus/minus</h3>
-<p>Although APM takes into account the quality of the teammates and opponents with whom each player plays, it fails to account fully for the <em>context</em> in which players play. Quoting <span class="citation" data-cites="DeshpandeJensen2016">Deshpande and Jensen (<a href="#ref-DeshpandeJensen2016" role="doc-biblioref">2016</a>)</span>, as a result, metrics like APM &gt; “can artificially can artificially inflate the importance of performance in low-leverage situations, when the outcome of the game is essentially decided, while simultaneously deflating the importance of high-leverage performance, when the final outcome is still in question. For instance, point diﬀerential-based metrics model the home team’s lead dropping from 5 points to 0 points in the last minute of the first half in exactly the same way that they model the home team’s lead dropping from 30 points to 25 points in the last minute of the second half”.</p>
+<p>Although APM takes into account the quality of the teammates and opponents with whom each player plays, it fails to account fully for the <em>context</em> in which players play. Quoting <span class="citation" data-cites="DeshpandeJensen2016">Deshpande and Jensen (<a href="#ref-DeshpandeJensen2016" role="doc-biblioref">2016</a>)</span>, as a result, metrics like APM &gt; “can artificially inflate the importance of performance in low-leverage situations, when the outcome of the game is essentially decided, while simultaneously deflating the importance of high-leverage performance, when the final outcome is still in question. For instance, point diﬀerential-based metrics model the home team’s lead dropping from 5 points to 0 points in the last minute of the first half in exactly the same way that they model the home team’s lead dropping from 30 points to 25 points in the last minute of the second half”.</p>
 <p>To overcome this limitation, we might try to down-weight low-leverage stints and up-weight high-leverage stints. For instance, we might assign a weight <span class="math inline">\(w_{i}\)</span> to stint <span class="math inline">\(i\)</span> where</p>
 <ul>
 <li><span class="math inline">\(w_{i} = 1\)</span> if, at the start of stint <span class="math inline">\(i,\)</span> the teams are within 10 points of each other</li>

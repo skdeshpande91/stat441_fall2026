@@ -96,13 +96,11 @@ div.csl-indent {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../site_libs/quarto-axe/axe-check.js" type="module"></script>
-<script id="quarto-axe-checker-options" type="text/plain">eyJvdXRwdXQiOiJkb2N1bWVudCJ9</script>
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-27eb745322528fd80a58f652f305e4c5.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-778237891967b0e2a235639bc74a01fe.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-778237891967b0e2a235639bc74a01fe.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-778237891967b0e2a235639bc74a01fe.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -479,9 +477,9 @@ window.Quarto = {
 </section>
 <section id="sec-nflfastr-intro" class="level2">
 <h2 class="anchored" data-anchor-id="sec-nflfastr-intro">Play-By-Play Football Data</h2>
-<p>We will use play-by-play data from the NFL available from the <a href="https://www.nflfastr.com"><strong>nflfastR</strong></a> package, which can be installed using the code:</p>
+<p>We will use play-by-play data from the NFL available from the <a href="https://www.nflfastr.com"><strong>nflfastR</strong></a> and <a href="https://nflreadr.nflverse.com/index.html"><strong>nflreadr</strong></a> packages, which can be installed using the code:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"nflfastR"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"nflfastR"</span>, <span class="st">"nflreadr"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The package contains several functions for efficiently scraping NFL data and for pre-processing the play-by-play data. In this lecture and in <a href="../lectures/lecture10.html">Lecture 10</a>, we will work with pre-processed play-by-play data, which we can load into our R session using the function <a href="https://www.nflfastr.com/reference/load_pbp.html"><code>nflfastR::load_pbp()</code></a>.</p>
 <div class="cell">
@@ -509,10 +507,10 @@ window.Quarto = {
 <li>several self-explanatory indicators of what happened (e.g., <code>fumble</code>, <code>complete_pass</code>, and <code>passing_yards</code>).</li>
 </ul>
 <p>You can find a full listing of the variables<a href="https://www.nflfastr.com/articles/field_descriptions.html">here</a>.</p>
-<p><strong>nflfastR</strong> identifies players using a unique 9-digit identifier provided by <a href="https://www.nflgsis.com/Help/About.html">Game Statistics and Information Systems (GSIS)</a>. We can load a table containing roster information, including player identifier, name, position, and team using the function <a href="https://www.nflfastr.com/reference/fast_scraper_roster.html?q=fast_scraper_ros#ref-usage"><code>nflfastR::fast_scraper_roster()</code></a></p>
+<p><strong>nflfastR</strong> identifies players using a unique 9-digit identifier provided by <a href="https://www.nflgsis.com/Help/About.html">Game Statistics and Information Systems (GSIS)</a>. We can load a table containing roster information, including player identifier, name, position, and team using the function <a href="https://nflreadr.nflverse.com/reference/load_rosters.html"><code>nflreadr::load_rosters()</code></a></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>roster2024 <span class="ot">&lt;-</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  nflfastR<span class="sc">::</span><span class="fu">fast_scraper_roster</span>(<span class="at">seasons =</span> <span class="dv">2024</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  nflreadr<span class="sc">::</span><span class="fu">load_rosters</span>(<span class="at">seasons =</span> <span class="dv">2024</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="sec-ep" class="level2">
@@ -793,7 +791,7 @@ passer_player_id00-0027973
 </div>
 <p>We will repeat this calculation for each of the 101 unique passers in our data set and build a table <code>alphas</code> with columns containing the player’s identifier, name, and average EPA on passing plays. In the following code, we strip out the string “passer_player_id” from the names of <code>ols_beta</code>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-15"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="1">1</button><span id="annotated-cell-15-1" class="code-annotation-target"><a href="#annotated-cell-15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(ols_betas)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"passser_player_id"</span>, rodgers_id)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-15"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="1">1</button><span id="annotated-cell-15-1" class="code-annotation-target"><a href="#annotated-cell-15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(ols_betas)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"passer_player_id"</span>, rodgers_id)</span>
 <span id="annotated-cell-15-2"><a href="#annotated-cell-15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(ols_betas) <span class="ot">&lt;-</span> </span>
 <button class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="2">2</button><span id="annotated-cell-15-3" class="code-annotation-target"><a href="#annotated-cell-15-3" aria-hidden="true" tabindex="-1"></a>  stringr<span class="sc">::</span><span class="fu">str_remove</span>(<span class="at">string =</span> <span class="fu">names</span>(ols_betas), <span class="at">pattern =</span> <span class="st">"passer_player_id"</span>)</span>
 <span id="annotated-cell-15-4"><a href="#annotated-cell-15-4" aria-hidden="true" tabindex="-1"></a>alphas <span class="ot">&lt;-</span> </span>
