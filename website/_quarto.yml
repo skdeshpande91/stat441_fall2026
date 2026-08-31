@@ -7,8 +7,8 @@ project:
    - "lectures/*.qmd"
    - "exercises.qmd"
    - "projects/*.qmd"
-   #- "slides/*.qmd"
-   #- "slides/raw_slides/*.qmd"
+   - "slides/*.qmd"
+   - "slides/raw_slides/*.qmd"
 
 language: 
   search-text-placeholder: Search
@@ -26,7 +26,7 @@ website:
       - text: "Syllabus"
         href: syllabus.qmd        
       - sidebar:lectures
-      #- sidebar:slides
+      - sidebar:slides
       - sidebar:projects
       - text: "Exercises"
         href: exercises.qmd
@@ -45,12 +45,12 @@ website:
       background: light
       collapse-level: 2
       contents: "projects/*.qmd"
-   # - id: slides
-   #   title: "Lecture Slides"
-   #   style: "docked"
-   #   background: light
-   #   collapse-level: 2
-   #   contents: "slides/*.qmd"
+    - id: slides
+      title: "Lecture Slides"
+      style: "docked"
+      background: light
+      collapse-level: 2
+      contents: "slides/*.qmd"
    
     
 format:

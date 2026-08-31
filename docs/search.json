@@ -1,5 +1,187 @@
 [
   {
+    "objectID": "slides/raw_slides/slides_01.html#lectures-office-hours",
+    "href": "slides/raw_slides/slides_01.html#lectures-office-hours",
+    "title": "STAT 441 Lecture 1",
+    "section": "Lectures & Office Hours",
+    "text": "Lectures & Office Hours\n\nLectures: Tuesdays & Thursday 8:00am-9:15pm (1524 Morgridge Hall)\nInstructor: Sameer Deshpande\n\nTuesdays: 9:30am - 10:45am (5586 Morgridge Hall)\nThursdays: 4:00pm - 5:15pm (5586 Morgridge Hall)\nFridays: 3:00pm - 4:30pm (5631 Morgridge Hall)\n\nTA: Zhexuan Liu"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#what-this-course-is-not",
+    "href": "slides/raw_slides/slides_01.html#what-this-course-is-not",
+    "title": "STAT 441 Lecture 1",
+    "section": "What This Course is NOT",
+    "text": "What This Course is NOT\n\nNOT a statistical methods course w/ sports applications\nMethods introduced as needed\n\nBut will not cover all technical details\nI’ll point to relevant resources & classes where relevant\nMain goal: answering substantive sports questions\n\n\n\n\nNOT a course on sports betting or fantasy sports\n\nSome material may be relevant …\n… but we won’t explicitly discuss these topics\n\n\n\n\n\nNOT a way to discuss last night’s game for credit\n\nThis is a serious statistics & data science course\n\nGoal: practice skills needed to work w/ sports data (e.g. for a team)\n\nCourse design reflects input from leaders in the industry"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#course-learning-outcomes",
+    "href": "slides/raw_slides/slides_01.html#course-learning-outcomes",
+    "title": "STAT 441 Lecture 1",
+    "section": "Course Learning Outcomes",
+    "text": "Course Learning Outcomes\n\n\nImplement appropriate statistical methods to assess player and team performance\nWork with play-by-play and high-resolution tracking data\nProvide constructive and actionable feedback on your peers’ analytic reports\nBuild a personal portfolio of sports data analyses\n\n\n\n\nAsking and answering substantive sports questions w/ data\n\nWe’ll go well beyond “who’s the best at…”"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#statistics-vs-analytics",
+    "href": "slides/raw_slides/slides_01.html#statistics-vs-analytics",
+    "title": "STAT 441 Lecture 1",
+    "section": "Statistics vs Analytics",
+    "text": "Statistics vs Analytics\n\nSports statistics refer to counts and rates that summarize performance:\n\nNumber of rebounds, wins, games played\nFree throw percentage, batting average\n\n\n\n\nAnalytics refers to the use of statistical modeling to help gain competitive advantage\nAnalytics makes use of basic statistics & creates new ones\nAnalytics uses data to answer substantive sports questions\nMany questions can framed in terms of prediction"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#best-nba-shooting-performances",
+    "href": "slides/raw_slides/slides_01.html#best-nba-shooting-performances",
+    "title": "STAT 441 Lecture 1",
+    "section": "“Best” NBA Shooting Performances",
+    "text": "“Best” NBA Shooting Performances\n\nWho is the best shooter in NBA history?\n\nWhat do we mean by “best”?\nIt’s not clear that this can be answered w/ data\n\n\n\n\nA more precise question: which player made the most shots in a single season?\n\nCan be answered by data\nWe’ll assess whether “best” = “made most shots” is satisfactory later\n\n\n\n\n\nData: box scores from each game since 2002-03\nAvailable from the hoopR package"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#accounting-for-efficiency",
+    "href": "slides/raw_slides/slides_01.html#accounting-for-efficiency",
+    "title": "STAT 441 Lecture 1",
+    "section": "Accounting for Efficiency",
+    "text": "Accounting for Efficiency\n\nKobe made 868 shots in 2003-04\nSGA made 868 shots in 2025-26\nKobe took 300 more shots than SGA\n\n\n\nLet’s redefine “best” in terms of field goal percentage\n\n\\(\\textrm{FGP} = \\textrm{FGM}/\\textrm{FGA}\\)"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#effective-field-goal-percentage",
+    "href": "slides/raw_slides/slides_01.html#effective-field-goal-percentage",
+    "title": "STAT 441 Lecture 1",
+    "section": "Effective Field Goal Percentage",
+    "text": "Effective Field Goal Percentage\n\nFGP is arguably a better measure of skill than FGM but\n\nExtreme values for players w/ few attempts\nDoesn’t distinguish 2- and 3-point shots\n\n\n\n\n\\(\\textrm{eFGP} = (\\textrm{FGM} + 0.5 \\times \\textrm{TPM})/\\textrm{FGA}\\)"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#reflection",
+    "href": "slides/raw_slides/slides_01.html#reflection",
+    "title": "STAT 441 Lecture 1",
+    "section": "Reflection",
+    "text": "Reflection\n\neFGP is arguably better than FGP and FGM\nBut it is still highly variable\n\n\n\nRefined question: instead of “who’s the best”, we can ask\n\n“what is the probability that a player makes a shot”\n\nLater: methods to estimate these probs. that\n\nAccount for contextual factors (e.g., shot location)\nProduce stable estimates even w/ small sample sizes\nAvoid imposing arbitrary cut-offs (e.g., \\(\\textrm{FGA} &gt; 400\\))\nCalibrate performance against transparent baselines (e.g., “above replacement”)\n\nAnalytics involves motivating and justifying choices"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#requisites",
+    "href": "slides/raw_slides/slides_01.html#requisites",
+    "title": "STAT 441 Lecture 1",
+    "section": "Requisites",
+    "text": "Requisites\n\nSTAT 333 or 340\n\nRandom variables, expectations, probability\nFitting linear models & interpreting outputs\n\n\n\n\nPrior experience with R\n\nAssignment, scripting, loops, control flow\nSaving objects, installing & loading packages.\nData manipulation with dplyr and other tidyverse packages.\nCreating visualizations"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#course-website",
+    "href": "slides/raw_slides/slides_01.html#course-website",
+    "title": "STAT 441 Lecture 1",
+    "section": "Course Website",
+    "text": "Course Website\n\n\n\n\n\nAlso Piazza"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#assignments-grading",
+    "href": "slides/raw_slides/slides_01.html#assignments-grading",
+    "title": "STAT 441 Lecture 1",
+    "section": "Assignments & Grading",
+    "text": "Assignments & Grading\n\n3 Group Projects (900 pts): Due on 10/9, 11/6, and 12/4\n\nWritten Report (100 pts) & Presentation (100 pts)\nPeer Reviews (3 x 20 pts)\nTeam Accountability Survey (20 pts)\n\n\n\n\nExercises (2 x 50 pts):\n\nSubmit solutions to 2 homework exercises (due 1 week after lecture)\nLead & participate in discussion on Piazza\n\nParticipation (60 pts): Assessed holistically\n\nRegularly attend lectures & office hours\nContribute to Piazza discussions\n\n\n\n\n\nFinal grade based on how many of the 1000 points earned"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#projects",
+    "href": "slides/raw_slides/slides_01.html#projects",
+    "title": "STAT 441 Lecture 1",
+    "section": "Projects",
+    "text": "Projects\n\nWork in groups of up to 4\n\nSame groups for Projects 1 & 2; can change for Project 3\nForm groups by Friday September 11\nUse Piazza to find teammates & sign up in spreadsheet\n\nCourse projects can\n\nModify or extend analysis from lecture (e.g., to new sport)\nAnswer a new question not covered in lecture\n…\n\nIdeally jump-start a portfolio that you can show teams"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#project-report",
+    "href": "slides/raw_slides/slides_01.html#project-report",
+    "title": "STAT 441 Lecture 1",
+    "section": "Project Report",
+    "text": "Project Report\n\nExecutive Summary:\n\nNon-technical overview of goals, methods, and results\nAudience: front office executive, coach, or player\n\nTechnical Report:\n\nInclude all code needed to reproduce findings\nTightly integrate code & output w/ written exposition\nAudience: fellow data scientists\n\n\n\nI highly recommend using Quarto"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#project-presentation",
+    "href": "slides/raw_slides/slides_01.html#project-presentation",
+    "title": "STAT 441 Lecture 1",
+    "section": "Project Presentation",
+    "text": "Project Presentation\n\nRecord & upload a 8–10 minute presentation\nEvery group member must speak\n\n\n\nI’ll select 5-6 groups to present in-class on the last day (12/8)\n\nDetails to be announced\nPresenting on the last day unrelated to course grades"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#project-peer-review",
+    "href": "slides/raw_slides/slides_01.html#project-peer-review",
+    "title": "STAT 441 Lecture 1",
+    "section": "Project Peer Review",
+    "text": "Project Peer Review\n\nProvide feedback on 3 presentations & reports\n\nRubrics will be available\nFill out rubric + leave constructive comments\n\nDue 1 weeks after projects: 10/16, 11/13, and 12/11"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#team-accountability-survey",
+    "href": "slides/raw_slides/slides_01.html#team-accountability-survey",
+    "title": "STAT 441 Lecture 1",
+    "section": "Team Accountability Survey",
+    "text": "Team Accountability Survey\n\nAssign score from 0 (least) to 10 (most) for\n\nParticipation, Preparation, and Respectfulness\n\nRate every group member (including yourself)\nRatings and comments will be kept anonymous\nCourse staff may give warnings for low peer score"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#unit-1-quantifying-performances",
+    "href": "slides/raw_slides/slides_01.html#unit-1-quantifying-performances",
+    "title": "STAT 441 Lecture 1",
+    "section": "Unit 1: Quantifying Performances",
+    "text": "Unit 1: Quantifying Performances\n\nExpected vs actual performance\nValue of a game state\nPerformance above “replacement” level\nCase Studies:\n\nExpected goals in soccer (Lectures 2 & 3)\nAdjusted plus/minus in the NBA (Lectures 4 & 5)\nRun expectancy & WAR in baseball (Lectures 6–8)\nWAR for the NFL (Lectures 9 & 10)\nPitch Framing in baseball (Lecture 11)"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#project-1",
+    "href": "slides/raw_slides/slides_01.html#project-1",
+    "title": "STAT 441 Lecture 1",
+    "section": "Project 1",
+    "text": "Project 1\n\nUse box-score or play-by-play data\nIntroduce a new metric & show it has favorable properties\n\nSeason-to-season stability\nAbility to predict match- or season-level outcomes\nReveal new insight about player valuation\n\nEvaluate individual or team performance in a new sport\n\nWAR for volleyball or college football?\nExpected goals in hockey?\n\nExtend case study from lecture\n\nConstruct analogs for another sport\nExamine season-to-season variability\n\n…"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#unit-2-rankings-simulation",
+    "href": "slides/raw_slides/slides_01.html#unit-2-rankings-simulation",
+    "title": "STAT 441 Lecture 1",
+    "section": "Unit 2: Rankings & Simulation",
+    "text": "Unit 2: Rankings & Simulation\n\nUse models to simulate games, tournaments, drafts, etc.\nCase Studies:\n\nNCAA Volleyball & Hockey Tournaments (Lectures 12 & 13)\nMarkov chain simulations (Lecture 14)\nBuilding a consensus mock draft (Lecture 15)\nEstimating impact of a rule change (Lecture 16 & 7)"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#project-2",
+    "href": "slides/raw_slides/slides_01.html#project-2",
+    "title": "STAT 441 Lecture 1",
+    "section": "Project 2",
+    "text": "Project 2\n\nFit a model to estimate latent team- or player- strength\nUse model estimates to simulate plays, games, tournaments, drafts, etc.\nCompute probabilities based on simulation\n\nProb. of winning tournament or making it past 1st round\nProb. football drive ends in a touchdown\nProb. of winning a cricket test\nChance player available in 2nd round of draft"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#unit-3-tracking-data",
+    "href": "slides/raw_slides/slides_01.html#unit-3-tracking-data",
+    "title": "STAT 441 Lecture 1",
+    "section": "Unit 3: Tracking Data",
+    "text": "Unit 3: Tracking Data\n\nCurrently the hottest area of sports analytics\n\nTrackman + Statcast in baseball\nNFL: player positions 10 times per second\nHawkeye for tennis, Hudl for soccer, …\n\nTracking data opens up many possibilities\n\nIncorporating spatial info. into prediction models\nCreating new metrics using tracking data\nSpace ownership & predicting trajectories"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#project-3",
+    "href": "slides/raw_slides/slides_01.html#project-3",
+    "title": "STAT 441 Lecture 1",
+    "section": "Project 3",
+    "text": "Project 3\n\nAnalyze tracking data\nNFL’s Big Data Bowl is a great opportunity\n\nBest way into the field (even for non-football sports)\nCash prizes & chance to present at Combine\n\nI highly encourage turning Project 3 into a BDB submission\n\nMore info will be posted on Piazza\nI’ll provide additional feedback/input for teams that do submit"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#course-expectations",
+    "href": "slides/raw_slides/slides_01.html#course-expectations",
+    "title": "STAT 441 Lecture 1",
+    "section": "Course Expectations",
+    "text": "Course Expectations\n\nRespect diverse backgrounds\n\nNot everyone may know as much about a sport/method as You\nYou may not know as much about a sport/method as someone else\n\nDon’t hesitate to ask for and to provide help!\nTake care of yourself & each other"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#generative-ai-expectations-1",
+    "href": "slides/raw_slides/slides_01.html#generative-ai-expectations-1",
+    "title": "STAT 441 Lecture 1",
+    "section": "Generative AI Expectations 1",
+    "text": "Generative AI Expectations 1\n\nYou have the right to the full benefit of my expertise and engagement in this course.\nI will therefore never use AI to\n\nTo provide feedback on assignments\nTo prepare any course content (e.g., slides, code, assignment flavor-text, etc.)\nTo mediate or assist any communications with you\n\nEverything you see in the course was created by me without the aid of generative AI"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#generative-ai-expectations-2",
+    "href": "slides/raw_slides/slides_01.html#generative-ai-expectations-2",
+    "title": "STAT 441 Lecture 1",
+    "section": "Generative AI Expectations 2",
+    "text": "Generative AI Expectations 2\n\nA core theme of this class is practice\n\nIt is OK to make mistakes or not know an answer\nProcess is more important than results\n\nGenerative AI short-circuits the intended learning process\nIts use is expressly prohibited\n\n\n\n\n\n\n\nPeer Review\n\n\nRespect your classmates enough to review their projects yourself. Uploading someone else’s project report or presentation to a generative AI tool (e.g., for creating summaries) is forbidden and will result in a failing grade."
+  },
+  {
+    "objectID": "slides/raw_slides/slides_01.html#looking-ahead",
+    "href": "slides/raw_slides/slides_01.html#looking-ahead",
+    "title": "STAT 441 Lecture 1",
+    "section": "Looking Ahead",
+    "text": "Looking Ahead\n\nLectures 2 & 3: Expected Goals in Soccer\nWill use public data provided by Hudl\nBe sure to install the StatsBombR & ranger packages\n\n\ndevtools::install_github(\"statsbomb/StatsBombR\")\ninstall.packages(\"ranger\")"
+  },
+  {
     "objectID": "projects/project3.html",
     "href": "projects/project3.html",
     "title": "Project 3 Information",
@@ -844,7 +1026,7 @@
     "href": "syllabus.html#sec-assignments",
     "title": "Syllabus",
     "section": "Assignments & Grading",
-    "text": "Assignments & Grading\nYour final grade will be based on your performance on three group projects, completion of two exercises, and your overall participation. For each project, groups will prepare a written report and record a 8–10 minute presentation, each worth 100 points. After each project, every student will peer review three reports and three presentations and complete a team accountability survey. You can earn a total of 20 points for each peer review by (i) completing the provided rubric and (ii) leaving a constructive comment that identities strengths and areas for potential improvement.\nStudents will earn up to 20 points per group participation survey: 10 for completing the survey and 10 based on the feedback from their teammates and their own self-assessment.\nFinally, students will earn up to 100 points for completing two exercises.\n\nGroup Projects\nThere will be three group projects. Each project consists of two parts, a written report and a group presentation. The project due dates are October 9, November 6, and December 4.\n\nWritten Report\nThe written report consists of a non-technical executive summary and a technical report. The executive summary, which should not exceed 500 words, should describe the overall goals, analytic approach, and main conclusions in non-technical language. The executive summary should be free from jargon, code listings, figures, tables, and charts. It should be written to be read and understood by a front office executive, coach, player, or fan with little data science experience. The rest of written report should\n\nClearly state the problem being studied and provide sufficient background details and to motivate why the problem is important and interesting.\nDescribe the data and major steps of the analysis\nPresents the main results within the context of the relevant sport(s) and supports the results with figures, tables, charts, and other statistical software output as appropriate.\nDiscusses the limitations of the analysis and outlines concrete steps for further development.\n\nThe technical section of the report should contain enough detail and code that another data scientist could replicate your analysis verify its soundness. Code listings and output (e.g., figures, tables, charts, and numerical summaries) should be tightly integrated with the written exposition. The use of Quarto is highly recommended for preparing the written report.\n\n\nPresentation\nEach team will also record an 8–10 minute presentation (e.g., using Zoom) that provides an overview of their analysis. Each presentation should include the following elements\n\nBackground (2–4 slides): clearly motivate and state the main problem being studied. Explain why it is interesting and important. Present just enough background to motivate the problem, while taking care not to overwhelm the audience with extraneous details. If appropriate, comment on the limitations of existing solutions to the problem or closely-related problems\nAnalysis overview (2–4 slides): present only the main steps of your analysis. Be sure to explain why each step was necessary and how these steps contribute to the overall solution. Focus more on the high-level ideas and motivation for each step rather than the specific implementation or software syntax\nMain results (2–3 slides): distill your results into a few key points. Use figures, tables, charts, and other statistical software output to support your findings.\nConclusion (1 slide): briefly summarize your analysis and findings and outline between 1 and 3 specific directions for future development, improvement or refinement.\n\n\n\n\nPeer Reviews\nAfter every group project, every student is expected to peer-review the written report and presentations of 3 other teams. The primary purpose of this peer review is to practice providing constructive feedback on both technical and non-technical writing to your fellow data scientists. Peer reviews will be completed using Qualtrics and a structured evaluation rubric will be provided for each assignment. The peer review process will be single-blinded so teams will not know the identities of their reviewers. Students can earn a total of 20 points for each peer review by (i) completing the provided rubric and (ii) leaving a constructive comment that identities strengths and areas for potential improvement. Peer reviews are due one week after the project assignment due dates; that is, they are due on October 16, November 13, and December 11. A penalty will be assessed for submitting late reviews.\n\n\nTeam Accountability Survey\nAfter each project submission, you will fill out a team accountability survey. You can earn up to 40 points per project submission: 10 for completing the survey and 10 based on the feedback from their teammates and their own self-assessment. In total, students can earn up to 120 points based on their level of participation in their project groups.\n\n\nExercises\nThe Exercises page of the course website contains a list of exercises for each lecture. These exercises provide an opportunity for you to replicate and extend the analyses presented in lecture. They are meant, in other words, to give you even more practice doing sports analytics. On that view, you are encouraged to do as many as you can over the course of the semester.\nHowever, for the purposes of assessment, you are required to submit written solutions (with all code necessary to reproduce the results included) to two exercises based on different sports. You must also post an overview of your solution to Piazza, respond to feedback from your peers about your analysis, and provide feedback to your peers’ solutions to other exercises. Your solution to exercises from a given lecture will be due one weeks after the schedule lecture. Exercise solutions will be graded essentially on completion: so long as you submit a reproducible analysis, you will earn full marks for that part. Similarly, so long as you participate constructively on Piazza, you will earn full marks for that part.\n\n\nParticipation\nAn additional 60 points will be awarded based on participation during class, office hours, and online discussions on Piazza.\n\n\nFinal Grades\nYour final grade will be based on how many of the 1000 total points you earn during the semester. Over 950 points is at least an A, over 875 points is at least an AB, over 800 points is at least a B, over 700 is at least a BC, over 600 points is at least a C, and over 500 point is at least a D. Final grade boundaries will be announced no later than December 7, 2026."
+    "text": "Assignments & Grading\nYour final grade will be based on your performance on three group projects, completion of two exercises, and your overall participation. For each project, groups will prepare a written report and record a 8–10 minute presentation, each worth 100 points. After each project, every student will peer review three reports and three presentations and complete a team accountability survey. You can earn a total of 20 points for each peer review by (i) completing the provided rubric and (ii) leaving a constructive comment that identities strengths and areas for potential improvement.\nStudents will earn up to 20 points per group participation survey: 10 for completing the survey and 10 based on the feedback from their teammates and their own self-assessment.\nFinally, students will earn up to 100 points for completing two exercises.\n\nGroup Projects\nThere will be three group projects. Each project consists of two parts, a written report and a group presentation. The project due dates are October 9, November 6, and December 4.\n\nWritten Report\nThe written report consists of a non-technical executive summary and a technical report. The executive summary, which should not exceed 500 words, should describe the overall goals, analytic approach, and main conclusions in non-technical language. The executive summary should be free from jargon, code listings, figures, tables, and charts. It should be written to be read and understood by a front office executive, coach, player, or fan with little data science experience. The rest of written report should\n\nClearly state the problem being studied and provide sufficient background details and to motivate why the problem is important and interesting.\nDescribe the data and major steps of the analysis\nPresents the main results within the context of the relevant sport(s) and supports the results with figures, tables, charts, and other statistical software output as appropriate.\nDiscusses the limitations of the analysis and outlines concrete steps for further development.\n\nThe technical section of the report should contain enough detail and code that another data scientist could replicate your analysis verify its soundness. Code listings and output (e.g., figures, tables, charts, and numerical summaries) should be tightly integrated with the written exposition. The use of Quarto is highly recommended for preparing the written report.\n\n\nPresentation\nEach team will also record an 8–10 minute presentation (e.g., using Zoom) that provides an overview of their analysis. Each presentation should include the following elements\n\nBackground (2–4 slides): clearly motivate and state the main problem being studied. Explain why it is interesting and important. Present just enough background to motivate the problem, while taking care not to overwhelm the audience with extraneous details. If appropriate, comment on the limitations of existing solutions to the problem or closely-related problems\nAnalysis overview (2–4 slides): present only the main steps of your analysis. Be sure to explain why each step was necessary and how these steps contribute to the overall solution. Focus more on the high-level ideas and motivation for each step rather than the specific implementation or software syntax\nMain results (2–3 slides): distill your results into a few key points. Use figures, tables, charts, and other statistical software output to support your findings.\nConclusion (1 slide): briefly summarize your analysis and findings and outline between 1 and 3 specific directions for future development, improvement or refinement.\n\n\n\n\nPeer Reviews\nAfter every group project, every student is expected to peer-review the written report and presentations of 3 other teams. The primary purpose of this peer review is to practice providing constructive feedback on both technical and non-technical writing to your fellow data scientists. Peer reviews will be completed using Qualtrics and a structured evaluation rubric will be provided for each assignment. The peer review process will be single-blinded so teams will not know the identities of their reviewers. Students can earn a total of 20 points for each peer review by (i) completing the provided rubric and (ii) leaving a constructive comment that identities strengths and areas for potential improvement. Peer reviews are due one week after the project assignment due dates; that is, they are due on October 16, November 13, and December 11. A penalty will be assessed for submitting late reviews.\n\n\nTeam Accountability Survey\nAfter each project submission, you will fill out a team accountability survey. You can earn up to 20 points per project submission: 10 for completing the survey and 10 based on the feedback from their teammates and their own self-assessment. In total, students can earn up to 60 points based on their level of participation in their project groups.\n\n\nExercises\nThe Exercises page of the course website contains a list of exercises for each lecture. These exercises provide an opportunity for you to replicate and extend the analyses presented in lecture. They are meant, in other words, to give you even more practice doing sports analytics. On that view, you are encouraged to do as many as you can over the course of the semester.\nHowever, for the purposes of assessment, you are required to submit written solutions (with all code necessary to reproduce the results included) to two exercises based on different sports. You must also post an overview of your solution to Piazza, respond to feedback from your peers about your analysis, and provide feedback to your peers’ solutions to other exercises. Your solution to exercises from a given lecture will be due one weeks after the schedule lecture. Exercise solutions will be graded essentially on completion: so long as you submit a reproducible analysis, you will earn full marks for that part. Similarly, so long as you participate constructively on Piazza, you will earn full marks for that part.\n\n\nParticipation\nAn additional 60 points will be awarded based on participation during class, office hours, and online discussions on Piazza.\n\n\nFinal Grades\nYour final grade will be based on how many of the 1000 total points you earn during the semester. Over 950 points is at least an A, over 875 points is at least an AB, over 800 points is at least a B, over 700 is at least a BC, over 600 points is at least a C, and over 500 point is at least a D. Final grade boundaries will be announced no later than December 7, 2026."
   },
   {
     "objectID": "syllabus.html#sec-course-sites",
@@ -1637,6 +1819,16 @@
     "text": "Footnotes\n\n\nIf you choose to pursue this option, you may need to use tracking data from previous year’s Big Data Bowl competitions to extract specific match-up information.↩︎",
     "crumbs": [
       "Project 2 Information"
+    ]
+  },
+  {
+    "objectID": "slides/lecture01.html",
+    "href": "slides/lecture01.html",
+    "title": "Lecture 1",
+    "section": "",
+    "text": "You can view the presentation in a full screen window here. Code for the lecture is available at this link",
+    "crumbs": [
+      "Lecture 1"
     ]
   }
 ]
