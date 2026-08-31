@@ -63,13 +63,13 @@ It finally contains a large number of columns that record exactly what happened 
 You can find a full listing of the variables[here](https://www.nflfastr.com/articles/field_descriptions.html).
 
 **nflfastR** identifies players using a unique 9-digit identifier provided by [Game Statistics and Information Systems (GSIS)](https://www.nflgsis.com/Help/About.html). 
-We can load a table containing roster information, including player identifier, name, position, and team using the function [`nflfastR::fast_scraper_roster()`](https://www.nflfastr.com/reference/fast_scraper_roster.html?q=fast_scraper_ros#ref-usage)
+We can load a table containing roster information, including player identifier, name, position, and team using the function [`nflfastR::load_roster()`](https://nflreadr.nflverse.com/reference/load_rosters.html)
 ```{r}
 #| label: load-roster
 #| warning: false
 #| message: true
 roster2024 <-
-  nflfastR::fast_scraper_roster(seasons = 2024)
+  nflfastR::load_roster(seasons = 2024)
 ```
 
 ## Expected Points {#sec-ep}
@@ -274,7 +274,7 @@ In the following code, we strip out the string "passer_player_id" from the names
 
 ```{r}
 #| label: build-alpha
-names(ols_betas)[1] <- paste0("passser_player_id", rodgers_id) #<1>
+names(ols_betas)[1] <- paste0("passer_player_id", rodgers_id) #<1>
 names(ols_betas) <- 
   stringr::str_remove(string = names(ols_betas), pattern = "passer_player_id") #<2>
 alphas <- 

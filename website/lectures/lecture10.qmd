@@ -54,7 +54,7 @@ pbp2024 <-
   nflfastR::load_pbp(season = 2024) |>
   dplyr::filter(season_type == "REG") 
 roster2024 <-
-  nflfastR::fast_scraper_roster(seasons = 2024) |>
+  nflfastR::load_rosters(seasons = 2024) |>
   dplyr::filter(!is.na(gsis_id))
 ```
 
@@ -447,7 +447,7 @@ yac_model <-
        data = completions)
 ```
 
-<!--
+
 While fitting the model, `lmer` printed a message saying that the fit was singular.
 The manual page for `isSingular`, which the message instructs us to visit, contains lots of information about singular models.
 Briefly, when fitting complicated multilevel models with lots of random effects, it can sometimes be the case that some of the "between" group variances are estimated to be exactly zero.
@@ -479,7 +479,7 @@ To avoid this extra step, we'll continue to use our current model[^homework].
 [^homework]: But you should check whether our downstream results change if we estimate the YAC IPA values for receivers using a reduced model that excludes the passer random intercept!
 
 [^bayes]: Personally, I disagree with the statement. A very natural way around this issue is to use a Bayesian hierarchical model. In fact, I'd go further and say that multilevel models of the type fitted by `lmer()` are just impoverished versions of Bayesian hierarchical models. But Bayesian models are regrettably outside the scope of the course and non-Bayesian multilevel models are very widely used so you have to learn a little about them. 
--->
+
 
 ```{r}
 #| label: yac-ipa
@@ -646,7 +646,7 @@ receiver_ipaa |>
 ```
 It is particularly interesting to note that there are several receivers whose contributions while the ball in the air are worse than league average but who are better than league average once they catch the ball. 
 
-We repeat this calculation for the IPA values arising from yards after the catch and for both types of running play.
+We repeat this calculation for the IPA values arising for both types of running play.
 ```{r}
 #| label: ipaa-run
 
