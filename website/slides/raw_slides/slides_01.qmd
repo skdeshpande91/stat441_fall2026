@@ -148,13 +148,13 @@ $\textrm{FGP} = \textrm{FGM}/\textrm{FGA}$
 
 ## Course Website
 
-![](stat441_f26_website_qr.png){fig-align="center"}
+![](figures/stat441_f26_website_qr.png){fig-align="center"}
 
 Also [Piazza](https://piazza.com/class/mpx66b7xrng5pt/)
 
 ## Assignments & Grading
 
-- 3 Group Projects (900 pts): Due on 10/9, 11/6, and 12/4
+- 3 Group Projects (3 x 300 pts): Due on 10/9, 11/6, and 12/4
   - Written Report (100 pts) & Presentation (100 pts)
   - Peer Reviews (3 x 20 pts)
   - Team Accountability Survey (20 pts)
@@ -345,9 +345,3 @@ Uploading someone else's project report or presentation to a generative AI tool 
 - Will use public data provided by Hudl
 - Be sure to install the **StatsBombR** & **ranger** packages
 
-```{r}
-#| eval: false
-#| echo: true
-devtools::install_github("statsbomb/StatsBombR")
-install.packages("ranger")
-```

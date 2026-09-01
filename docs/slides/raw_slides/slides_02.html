@@ -12,7 +12,7 @@
 <link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.7.32">
 
-  <title>STAT441 – STAT 441 Lecture 1</title>
+  <title>STAT441 – STAT 441 Lecture 2</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -30,6 +30,72 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-9a1a2c3d5c7ea7f04258c8f180195b78.css">
   <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -129,489 +195,260 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">STAT 441 Lecture 1</h1>
-  <p class="subtitle">Course Overview</p>
+  <h1 class="title">STAT 441 Lecture 2</h1>
+  <p class="subtitle">Expected Goals</p>
 
 <div class="quarto-title-authors">
 </div>
 
 </section>
 <section>
-<section id="logistics" class="title-slide slide level1 center">
-<h1>Logistics</h1>
+<section id="motivation-outline" class="title-slide slide level1 center">
+<h1>Motivation &amp; Outline</h1>
 
 </section>
-<section id="lectures-office-hours" class="slide level2 smaller">
-<h2>Lectures &amp; Office Hours</h2>
+<section id="motivation-beth-mead-in-euro-2022" class="slide level2 smaller">
+<h2>Motivation: Beth Mead in EURO 2022</h2>
 <ul>
-<li>Lectures: Tuesdays &amp; Thursday 8:00am-9:15pm (1524 Morgridge Hall)</li>
-<li>Instructor: Sameer Deshpande
+<li>Beth Mead scored 6 goals in EURO 2022. Which was more impressive?
 <ul>
-<li>Tuesdays: 9:30am - 10:45am (5586 Morgridge Hall)</li>
-<li>Thursdays: 4:00pm - 5:15pm (5586 Morgridge Hall)</li>
-<li>Fridays: 3:00pm - 4:30pm (5631 Morgridge Hall)</li>
-</ul></li>
-<li>TA: Zhexuan Liu</li>
-</ul>
-</section>
-<section id="what-this-course-is-not" class="slide level2 smaller">
-<h2>What This Course is NOT</h2>
-<ul>
-<li><strong>NOT</strong> a statistical methods course w/ sports applications</li>
-<li>Methods introduced <em>as needed</em>
-<ul>
-<li>But will not cover all technical details</li>
-<li>I’ll point to relevant resources &amp; classes where relevant</li>
-<li>Main goal: answering substantive sports questions</li>
+<li>Goal in 15th minute against Austria <a href="https://youtube.com/clip/UgkxnOKsnw4W3h-BqV5kyh-tOVnnTgBEc9u5?si=zpQB7OF43gt3yiwK">link</a></li>
+<li>Goal in 37th minute against Norway <a href="https://youtube.com/clip/UgkxqZ03bRBGCr4vS0M4yTMtHMOHsA6kkTHw?si=2IlC7AVi2CQotunG">link</a></li>
+<li>Goal in 33rd minute against Sweden <a href="https://youtube.com/clip/UgkxwW9N1bXUv4G9HoSHVvYy_rk_aSjkrgwO?si=O90nkbgNd2FTv3e_">link</a></li>
 </ul></li>
 </ul>
 <div class="fragment">
 <ul>
-<li><strong>NOT</strong> a course on sports betting or fantasy sports
+<li>We can argue endlessly about <em>qualitative</em> differences
 <ul>
-<li>Some material may be relevant …</li>
-<li>… but we won’t explicitly discuss these topics</li>
+<li>One-on-one vs in-traffic; left or right foot;</li>
+<li>Type of shot; time; score; …</li>
 </ul></li>
 </ul>
 </div>
 <div class="fragment">
 <ul>
-<li><strong>NOT</strong> a way to discuss last night’s game for credit
-<ul>
-<li>This is a serious statistics &amp; data science course</li>
-</ul></li>
-<li>Goal: <strong>practice</strong> skills needed to work w/ sports data (e.g.&nbsp;for a team)
-<ul>
-<li>Course design reflects input from leaders in the industry</li>
-</ul></li>
+<li>Goal: <strong>quantitative</strong> comparison</li>
 </ul>
 </div>
 </section>
-<section id="course-learning-outcomes" class="slide level2">
-<h2>Course Learning Outcomes</h2>
-<div class="fragment">
-<ol type="1">
-<li>Implement appropriate statistical methods to assess player and team performance</li>
-<li>Work with play-by-play and high-resolution tracking data</li>
-<li>Provide constructive and actionable feedback on your peers’ analytic reports</li>
-<li>Build a personal portfolio of sports data analyses</li>
-</ol>
-</div>
-<div class="fragment">
+<section id="a-thought-experiment" class="slide level2">
+<h2>A Thought Experiment</h2>
 <ul>
-<li>Asking and answering <strong>substantive</strong> sports questions w/ data
-<ul>
-<li>We’ll go well beyond “who’s the best at…”</li>
-</ul></li>
+<li>What if we could replay each shot over and over again?</li>
+<li>How often would she score?</li>
 </ul>
-</div>
-</section></section>
-<section>
-<section id="what-is-sports-analytics" class="title-slide slide level1 center">
-<h1>What is Sports Analytics?</h1>
-
-</section>
-<section id="statistics-vs-analytics" class="slide level2 smaller">
-<h2>Statistics vs Analytics</h2>
-<ul>
-<li>Sports statistics refer to counts and rates that <em>summarize</em> performance:
-<ul>
-<li>Number of rebounds, wins, games played</li>
-<li>Free throw percentage, batting average</li>
-</ul></li>
-</ul>
-<div class="fragment">
-<ul>
-<li>Analytics refers to the use of statistical <em>modeling</em> to help gain competitive advantage</li>
-<li>Analytics makes use of basic statistics &amp; creates new ones</li>
-<li>Analytics uses data to answer <strong>substantive sports questions</strong></li>
-<li>Many questions can framed in terms of prediction</li>
-</ul>
-</div>
-</section>
-<section id="best-nba-shooting-performances" class="slide level2 smaller">
-<h2>“Best” NBA Shooting Performances</h2>
-<ul>
-<li>Who is the best shooter in NBA history?
-<ul>
-<li>What do we mean by “best”?</li>
-<li>It’s not clear that this can be answered w/ data</li>
-</ul></li>
-</ul>
-<div class="fragment">
-<ul>
-<li>A more precise question: which player made the most shots in a single season?
-<ul>
-<li>Can be answered by data</li>
-<li>We’ll assess whether “best” = “made most shots” is satisfactory later</li>
-</ul></li>
-</ul>
-</div>
-<div class="fragment">
-<ul>
-<li>Data: box scores from each game since 2002-03</li>
-<li>Available from the <strong>hoopR</strong> package</li>
-</ul>
-</div>
-</section>
-<section id="accounting-for-efficiency" class="slide level2">
-<h2>Accounting for Efficiency</h2>
-<ul>
-<li>Kobe made 868 shots in 2003-04</li>
-<li>SGA made 868 shots in 2025-26</li>
-<li>Kobe took 300 more shots than SGA</li>
-</ul>
-<div class="fragment">
-<ul>
-<li>Let’s redefine “best” in terms of field goal percentage</li>
-</ul>
-<p><span class="math inline">\(\textrm{FGP} = \textrm{FGM}/\textrm{FGA}\)</span></p>
-</div>
-</section>
-<section id="effective-field-goal-percentage" class="slide level2 smaller">
-<h2>Effective Field Goal Percentage</h2>
-<ul>
-<li>FGP is arguably a better measure of skill than FGM <strong>but</strong>
-<ul>
-<li>Extreme values for players w/ few attempts</li>
-<li>Doesn’t distinguish 2- and 3-point shots</li>
-</ul></li>
-</ul>
-<div class="fragment">
-<ul>
-<li><span class="math inline">\(\textrm{eFGP} = (\textrm{FGM} + 0.5 \times \textrm{TPM})/\textrm{FGA}\)</span></li>
-</ul>
-</div>
-</section>
-<section id="reflection" class="slide level2 smaller">
-<h2>Reflection</h2>
-<ul>
-<li>eFGP is arguably better than FGP and FGM</li>
-<li>But it is still highly variable</li>
-</ul>
-<div class="fragment">
-<ul>
-<li>Refined question: instead of “who’s the best”, we can ask</li>
-</ul>
-<p>“what is the probability that a player makes a shot”</p>
-<ul>
-<li>Later: methods to estimate these probs. that
-<ul>
-<li>Account for contextual factors (e.g., shot location)</li>
-<li>Produce stable estimates even w/ small sample sizes</li>
-<li>Avoid imposing arbitrary cut-offs (e.g., <span class="math inline">\(\textrm{FGA} &gt; 400\)</span>)</li>
-<li>Calibrate performance against transparent baselines (e.g., “above replacement”)</li>
-</ul></li>
-<li>Analytics involves <strong>motivating</strong> and <strong>justifying</strong> choices</li>
-</ul>
-</div>
-</section></section>
-<section>
-<section id="more-course-logistics" class="title-slide slide level1 center">
-<h1>More Course Logistics</h1>
-
-</section>
-<section id="requisites" class="slide level2">
-<h2>Requisites</h2>
-<ul>
-<li>STAT 333 or 340
-<ul>
-<li>Random variables, expectations, probability</li>
-<li>Fitting linear models &amp; interpreting outputs</li>
-</ul></li>
-</ul>
-<div class="fragment">
-<ul>
-<li>Prior experience with R
-<ul>
-<li>Assignment, scripting, loops, control flow</li>
-<li>Saving objects, installing &amp; loading packages.</li>
-<li>Data manipulation with <strong>dplyr</strong> and other <strong>tidyverse</strong> packages.</li>
-<li>Creating visualizations</li>
-</ul></li>
-</ul>
-</div>
-</section>
-<section id="course-website" class="slide level2">
-<h2>Course Website</h2>
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><a href="figures/stat441_f26_website_qr.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="figures/stat441_f26_website_qr.png" class="quarto-figure quarto-figure-center"></a></p>
+<p><a href="figures/mead_sweden.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="figures/mead_sweden.png" class="quarto-figure quarto-figure-center" style="width:60.0%"></a></p>
 </figure>
 </div>
-<p>Also <a href="https://piazza.com/class/mpx66b7xrng5pt/">Piazza</a></p>
-</section>
-<section id="assignments-grading" class="slide level2">
-<h2>Assignments &amp; Grading</h2>
 <ul>
-<li>3 Group Projects (3 x 300 pts): Due on 10/9, 11/6, and 12/4
-<ul>
-<li>Written Report (100 pts) &amp; Presentation (100 pts)</li>
-<li>Peer Reviews (3 x 20 pts)</li>
-<li>Team Accountability Survey (20 pts)</li>
-</ul></li>
-</ul>
-<div class="fragment">
-<ul>
-<li>Exercises (2 x 50 pts):
-<ul>
-<li>Submit solutions to 2 homework exercises (due 1 week after lecture)</li>
-<li>Lead &amp; participate in discussion on Piazza</li>
-</ul></li>
-<li>Participation (60 pts): Assessed holistically
-<ul>
-<li>Regularly attend lectures &amp; office hours</li>
-<li>Contribute to Piazza discussions</li>
-</ul></li>
-</ul>
-</div>
-<div class="fragment">
-<ul>
-<li>Final grade based on how many of the 1000 points earned</li>
-</ul>
-</div>
-</section>
-<section id="projects" class="slide level2 smaller">
-<h2>Projects</h2>
-<ul>
-<li>Work in groups of up to 4
-<ul>
-<li>Same groups for Projects 1 &amp; 2; can change for Project 3</li>
-<li>Form groups by <strong>Friday September 11</strong></li>
-<li>Use Piazza to find teammates &amp; sign up in spreadsheet</li>
-</ul></li>
-<li>Course projects can
-<ul>
-<li>Modify or extend analysis from lecture (e.g., to new sport)</li>
-<li>Answer a new question not covered in lecture</li>
-<li>…</li>
-</ul></li>
-<li>Ideally jump-start a portfolio that you can show teams</li>
-</ul>
-</section>
-<section id="project-report" class="slide level2">
-<h2>Project Report</h2>
-<ul>
-<li>Executive Summary:
-<ul>
-<li><strong>Non-technical</strong> overview of goals, methods, and results</li>
-<li>Audience: front office executive, coach, or player</li>
-</ul></li>
-<li>Technical Report:
-<ul>
-<li>Include <em>all</em> code needed to reproduce findings</li>
-<li>Tightly integrate code &amp; output w/ written exposition</li>
-<li>Audience: fellow data scientists</li>
-</ul></li>
-</ul>
-<div class="fragment">
-<p>I <strong>highly</strong> recommend using Quarto</p>
-</div>
-</section>
-<section id="project-presentation" class="slide level2">
-<h2>Project Presentation</h2>
-<ul>
-<li>Record &amp; upload a 8–10 minute presentation</li>
-<li>Every group member must speak</li>
-</ul>
-<div class="fragment">
-<ul>
-<li>I’ll select 5-6 groups to present in-class on the last day (12/8)
-<ul>
-<li>Details to be announced</li>
-<li>Presenting on the last day unrelated to course grades</li>
-</ul></li>
-</ul>
-</div>
-</section>
-<section id="project-peer-review" class="slide level2">
-<h2>Project Peer Review</h2>
-<ul>
-<li>Provide feedback on 3 presentations &amp; reports
-<ul>
-<li>Rubrics will be available</li>
-<li>Fill out rubric + leave <em>constructive</em> comments</li>
-</ul></li>
-<li>Due 1 weeks after projects: 10/16, 11/13, and 12/11</li>
-</ul>
-</section>
-<section id="team-accountability-survey" class="slide level2">
-<h2>Team Accountability Survey</h2>
-<ul>
-<li>Assign score from 0 (least) to 10 (most) for
-<ul>
-<li>Participation, Preparation, and Respectfulness</li>
-</ul></li>
-<li>Rate every group member (including yourself)</li>
-<li>Ratings and comments will be kept anonymous</li>
-<li>Course staff may give warnings for low peer score</li>
+<li>This long-run frequency is Expected Goals (XG)</li>
 </ul>
 </section></section>
 <section>
-<section id="topic-list" class="title-slide slide level1 center">
-<h1>Topic List</h1>
+<section id="soccer-event-data" class="title-slide slide level1 center">
+<h1>Soccer Event Data</h1>
 
 </section>
-<section id="unit-1-quantifying-performances" class="slide level2 smaller">
-<h2>Unit 1: Quantifying Performances</h2>
+<section id="statsbomb-hudl" class="slide level2">
+<h2>StatsBomb &amp; Hudl</h2>
 <ul>
-<li>Expected vs actual performance</li>
-<li>Value of a game state</li>
-<li>Performance above “replacement” level</li>
-<li>Case Studies:
+<li>Player location data for all events
 <ul>
-<li>Expected goals in soccer (Lectures 2 &amp; 3)</li>
-<li>Adjusted plus/minus in the NBA (Lectures 4 &amp; 5)</li>
-<li>Run expectancy &amp; WAR in baseball (Lectures 6–8)</li>
-<li>WAR for the NFL (Lectures 9 &amp; 10)</li>
-<li>Pitch Framing in baseball (Lecture 11)</li>
+<li>Computer vision + input from 5 human annotators</li>
+<li>Humans log events (shots, tackles, passes, etc.)</li>
+<li>Computer vision to extra location information</li>
 </ul></li>
+<li>Locations mapped to fixed coordinate system</li>
+<li><strong>StatsBombR</strong> package: available via GitHub</li>
 </ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"statsbomb/StatsBombR"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
-<section id="project-1" class="slide level2 smaller">
-<h2>Project 1</h2>
+<section id="statsbomb-coordinates" class="slide level2">
+<h2>StatsBomb Coordinates</h2>
 <ul>
-<li>Use box-score or play-by-play data</li>
-<li>Introduce a new metric &amp; show it has favorable properties
-<ul>
-<li>Season-to-season stability</li>
-<li>Ability to predict match- or season-level outcomes</li>
-<li>Reveal new insight about player valuation</li>
-</ul></li>
-<li>Evaluate individual or team performance in a new sport
-<ul>
-<li>WAR for volleyball or college football?</li>
-<li>Expected goals in hockey?</li>
-</ul></li>
-<li>Extend case study from lecture
-<ul>
-<li>Construct analogs for another sport</li>
-<li>Examine season-to-season variability</li>
-</ul></li>
-<li>…</li>
+<li>Offensive action moves left-to-right</li>
+<li>Vertical coordinate increases as you move top-to-bottom</li>
 </ul>
-</section>
-<section id="unit-2-rankings-simulation" class="slide level2">
-<h2>Unit 2: Rankings &amp; Simulation</h2>
-<ul>
-<li>Use models to <em>simulate</em> games, tournaments, drafts, etc.</li>
-<li>Case Studies:
-<ul>
-<li>NCAA Volleyball &amp; Hockey Tournaments (Lectures 12 &amp; 13)</li>
-<li>Markov chain simulations (Lecture 14)</li>
-<li>Building a consensus mock draft (Lecture 15)</li>
-<li>Estimating impact of a rule change (Lecture 16 &amp; 7)</li>
-</ul></li>
-</ul>
-</section>
-<section id="project-2" class="slide level2 smaller">
-<h2>Project 2</h2>
-<ul>
-<li>Fit a model to estimate latent team- or player- strength</li>
-<li>Use model estimates to simulate plays, games, tournaments, drafts, etc.</li>
-<li>Compute probabilities based on simulation
-<ul>
-<li>Prob. of winning tournament or making it past 1st round</li>
-<li>Prob. football drive ends in a touchdown</li>
-<li>Prob. of winning a cricket test</li>
-<li>Chance player available in 2nd round of draft</li>
-</ul></li>
-</ul>
-</section>
-<section id="unit-3-tracking-data" class="slide level2">
-<h2>Unit 3: Tracking Data</h2>
-<ul>
-<li>Currently the hottest area of sports analytics
-<ul>
-<li>Trackman + Statcast in baseball</li>
-<li>NFL: player positions 10 times per second</li>
-<li>Hawkeye for tennis, Hudl for soccer, …</li>
-</ul></li>
-<li>Tracking data opens up many possibilities
-<ul>
-<li>Incorporating spatial info. into prediction models</li>
-<li>Creating new metrics using tracking data</li>
-<li>Space ownership &amp; predicting trajectories</li>
-</ul></li>
-</ul>
-</section>
-<section id="project-3" class="slide level2 smaller">
-<h2>Project 3</h2>
-<ul>
-<li><p>Analyze tracking data</p></li>
-<li><p>NFL’s Big Data Bowl is a great opportunity</p>
-<ul>
-<li><strong>Best</strong> way into the field (even for non-football sports)</li>
-<li>Cash prizes &amp; chance to present at Combine</li>
-</ul></li>
-<li><p>I highly encourage turning Project 3 into a BDB submission</p>
-<ul>
-<li>More info will be posted on Piazza</li>
-<li>I’ll provide additional feedback/input for teams that do submit</li>
-</ul></li>
-</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="figures/statsbomb_coordinates.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="StatsBomb Coordinates"><img data-src="figures/statsbomb_coordinates.png" style="width:60.0%" data-fig-asp="0.75," alt="StatsBomb Coordinates"></a></p>
+<figcaption>StatsBomb Coordinates</figcaption>
+</figure>
+</div>
 </section></section>
 <section>
-<section id="final-reminders" class="title-slide slide level1 center">
-<h1>Final Reminders</h1>
+<section id="conditional-expectations" class="title-slide slide level1 center">
+<h1>Conditional Expectations</h1>
 
 </section>
-<section id="course-expectations" class="slide level2">
-<h2>Course Expectations</h2>
+<section id="thought-experiment-repeating-shots" class="slide level2">
+<h2>Thought Experiment: Repeating Shots</h2>
 <ul>
-<li><p>Respect diverse backgrounds</p>
-<ul>
-<li>Not everyone may know as much about a sport/method as You</li>
-<li>You may not know as much about a sport/method as someone else</li>
-</ul></li>
-<li><p>Don’t hesitate to ask for and to provide help!</p></li>
-<li><p>Take care of yourself &amp; each other</p></li>
+<li>What proportion of repetitions result in goals?</li>
+<li>Across all repetitions, conditions kept the same</li>
 </ul>
-</section>
-<section id="generative-ai-expectations-1" class="slide level2 smaller">
-<h2>Generative AI Expectations 1</h2>
-<ul>
-<li>You have the right to the full benefit of my expertise and engagement in this course.</li>
-<li>I will therefore <strong>never</strong> use AI to
-<ul>
-<li>To provide feedback on assignments</li>
-<li>To prepare any course content (e.g., slides, code, assignment flavor-text, etc.)</li>
-<li>To mediate or assist any communications with you</li>
-</ul></li>
-<li>Everything you see in the course was created by me without the aid of generative AI</li>
-</ul>
-</section>
-<section id="generative-ai-expectations-2" class="slide level2 smaller">
-<h2>Generative AI Expectations 2</h2>
-<ul>
-<li>A core theme of this class is <em>practice</em>
-<ul>
-<li>It is OK to make mistakes or not know an answer</li>
-<li><em>Process</em> is more important than results</li>
-</ul></li>
-<li>Generative AI short-circuits the intended learning process</li>
-<li>Its use is expressly prohibited</li>
-</ul>
-<div class="callout callout-important callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Peer Review</strong></p>
-</div>
-<div class="callout-content">
-<p>Respect your classmates enough to review their projects yourself. Uploading someone else’s project report or presentation to a generative AI tool (e.g., for creating summaries) is forbidden and <strong>will result in a failing grade.</strong></p>
-</div>
-</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="figures/mead_sweden.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="figures/mead_sweden.png" class="quarto-figure quarto-figure-center" style="width:60.0%"></a></p>
+</figure>
 </div>
 </section>
-<section id="looking-ahead" class="slide level2">
+<section id="setup-notation" class="slide level2">
+<h2>Setup &amp; Notation</h2>
+<ul>
+<li>Suppose our data set contains <span class="math inline">\(n\)</span> shots</li>
+<li>For shot <span class="math inline">\(i = 1, \ldots, n,\)</span> we observe
+<ul>
+<li><span class="math inline">\(Y_{i}\)</span>: indicator shot resutled in goal (<span class="math inline">\(Y = 1\)</span>) or not (<span class="math inline">\(Y = 0\)</span>)</li>
+<li><span class="math inline">\(\boldsymbol{\mathbf{X}}_{i}\)</span>: vector of <span class="math inline">\(p\)</span> features about the shot</li>
+</ul></li>
+<li>Features could include things like
+<ul>
+<li>Body part used &amp; shot technique</li>
+<li>Dist. to nearest defenders</li>
+</ul></li>
+</ul>
+</section>
+<section id="conditional-probability" class="slide level2">
+<h2>Conditional Probability</h2>
+<ul>
+<li>Assumption: data are a representative sample from an infinite <em>super-population</em> of shots</li>
+<li>Each shot in super-population characterized by pair <span class="math inline">\((\boldsymbol{\mathbf{X}}, Y)\)</span></li>
+<li>Repeating shot with features <span class="math inline">\(\boldsymbol{\mathbf{x}}\)</span> equivalent to sampling from <em>slice</em> of super-population with <span class="math inline">\(\boldsymbol{\mathbf{X}} = \boldsymbol{\mathbf{x}}.\)</span></li>
+</ul>
+<div class="fragment">
+<p><span class="math display">\[
+\textrm{XG}(\boldsymbol{\mathbf{x}}) = \mathbb{E}[Y \vert \boldsymbol{\mathbf{X}} = \boldsymbol{\mathbf{x}}] = \mathbb{P}(Y = 1 \vert \boldsymbol{\mathbf{X}} = \boldsymbol{\mathbf{x}})
+\]</span></p>
+</div>
+</section></section>
+<section>
+<section id="two-basic-xg-models" class="title-slide slide level1 center">
+<h1>Two Basic XG Models</h1>
+
+</section>
+<section id="defining-the-super-population" class="slide level2">
+<h2>Defining The Super-population</h2>
+<ul>
+<li>Ultimate goal is to assess Mead’s performance in EURO 2022
+<ul>
+<li>Focus on women’s internationals</li>
+<li>Focus on shots attempted w/ foot or head</li>
+</ul></li>
+<li>If we could access infinite super-population, compute <span class="math inline">\(\textrm{XG}(\text{right-footed shot})\)</span> by
+<ul>
+<li>Forming subgroup containing only right-footed shots</li>
+<li>Calculating proportion of goals score</li>
+</ul></li>
+</ul>
+</section>
+<section id="practical-calculation" class="slide level2">
+<h2>Practical Calculation</h2>
+<ul>
+<li>Since we cannot access infinite super-population, we must <strong>estimate</strong> XG from data</li>
+<li>We do so by mimicking idealized calculation
+<ol type="1">
+<li>Divide data into subgroups based on <code>shot.body_part.name</code></li>
+<li>Compute proportion of goals within subgroups</li>
+</ol></li>
+<li>Rely on <strong>dplyr</strong>’s <code>group_by()</code> functionality to do this</li>
+</ul>
+</section>
+<section id="accounting-for-shot-technique" class="slide level2">
+<h2>Accounting For Shot Technique</h2>
+<ul>
+<li>Each goal was scored off a different type of shot</li>
+<li>What if we condition body part &amp; shot technique?</li>
+</ul>
+</section>
+<section id="accounting-for-more-features" class="slide level2 smaller">
+<h2>Accounting for more features</h2>
+<ul>
+<li>Our 2-feature model is still too coarse
+<ul>
+<li>Doesn’t account for distance of shot</li>
+<li>Doesn’t account for defenders and keeper</li>
+</ul></li>
+<li>StatsBomb records many more features about shots</li>
+<li>How can we adjust for these in our XG model?</li>
+</ul>
+</section>
+<section id="idealized-computation" class="slide level2">
+<h2>Idealized Computation</h2>
+<ul>
+<li>If we could access super-population, easy to condition on more features
+<ul>
+<li>Slice population along <span class="math inline">\(\mathbf{\boldsymbol{x}}\)</span></li>
+<li>Compute proportion of goals among the slice with <span class="math inline">\(\mathbf{\boldsymbol{X}} = \mathbf{\boldsymbol{x}}\)</span></li>
+</ul></li>
+</ul>
+<div class="fragment">
+<ul>
+<li>Can we mimic this with our observed data?</li>
+</ul>
+</div>
+</section>
+<section id="model-based-xg" class="slide level2 smaller">
+<h2>Model-based XG</h2>
+<ul>
+<li>“Binning-and-averaging” not viable w/ many features due to small sample sizes</li>
+<li><em>Statistical models</em> overcome these challenges by “borrowing strength”</li>
+<li><span class="math inline">\(\textrm{XG}(\boldsymbol{\mathbf{x}})\)</span> informed by shots with <span class="math inline">\(\boldsymbol{\mathbf{X}} = \boldsymbol{\mathbf{x}}\)</span> and <span class="math inline">\(\boldsymbol{\mathbf{X}} \approx \boldsymbol{\mathbf{x}}\)</span></li>
+<li>How a model “borrows strength” depends on its underlying assumptions</li>
+</ul>
+<div class="fragment">
+<ul>
+<li>Several challenges:
+<ul>
+<li><span class="math inline">\(\mathbf{\boldsymbol{X}}\)</span> may be high-dimensional</li>
+<li><span class="math inline">\(\textrm{XG}\)</span> likely depends on many interactions</li>
+<li><span class="math inline">\(\textrm{XG}\)</span> likely highly non-linear</li>
+</ul></li>
+<li>StatsBomb has a proprietary model (<code>shots.statsbomb_xg</code>)</li>
+</ul>
+</div>
+</section></section>
+<section>
+<section id="goals-over-expected" class="title-slide slide level1 center">
+<h1>Goals Over Expected</h1>
+
+</section>
+<section id="did-mead-outperform-expectations" class="slide level2">
+<h2>Did Mead Outperform Expectations?</h2>
+<ul>
+<li>How to interpret the difference <span class="math inline">\(Y_{i} - \textrm{XG}_{i}\)</span> when it is
+<ul>
+<li>Large &amp; positive</li>
+<li>Large &amp; negative</li>
+<li>Close to 0</li>
+</ul></li>
+</ul>
+</section>
+<section id="looking-ahead" class="slide level2 smaller">
 <h2>Looking Ahead</h2>
 <ul>
-<li>Lectures 2 &amp; 3: Expected Goals in Soccer</li>
-<li>Will use public data provided by Hudl</li>
-<li>Be sure to install the <strong>StatsBombR</strong> &amp; <strong>ranger</strong> packages</li>
+<li>I <strong>strongly</strong> recommend you work through code yourself
+<ul>
+<li>Full code available <a href="../../lectures/lecture02.html">here</a></li>
+<li>Try more binning-and-averaging XG estimates w/ other features</li>
+<li>Try to replicate goals over expected with EURO 2025 data</li>
+</ul></li>
+<li>Will post code for plotting all players during a shot
+<ul>
+<li><code>shot.freeze_frame</code> contains data frame with other players &amp; their positions</li>
+</ul></li>
+</ul>
+</section>
+<section id="project-groups" class="slide level2">
+<h2>Project Groups</h2>
+<ul>
+<li>Form groups by <strong>Friday September 11</strong></li>
+<li>Use Piazza to find group members</li>
 </ul>
 
 
@@ -831,6 +668,44 @@
         ]
       });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")

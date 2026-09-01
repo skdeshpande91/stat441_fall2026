@@ -12,7 +12,7 @@
 <link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.7.32">
 
-  <title>STAT441 – STAT 441 Lecture 1</title>
+  <title>STAT441 – STAT 479: Lecture 3</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -129,489 +129,375 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">STAT 441 Lecture 1</h1>
-  <p class="subtitle">Course Overview</p>
+  <h1 class="title">STAT 479: Lecture 3</h1>
+  <p class="subtitle">Fitting More Complex XG Models</p>
 
 <div class="quarto-title-authors">
 </div>
 
 </section>
+<section id="recap" class="slide level2">
+<h2>Recap</h2>
+<ul>
+<li>In <a href="../../lectures/lecture02.html">Lecture 2</a>, fit two XG models
+<ul>
+<li>Model 1 accounted for body part</li>
+<li>Model 2 accounted for body part + technique</li>
+</ul></li>
+<li>Which model is better?
+<ul>
+<li>Which fits the observed data best?</li>
+<li>Which will predict new data best?</li>
+</ul></li>
+</ul>
+</section>
+<section id="qualitative-comparisons" class="slide level2">
+<h2>Qualitative Comparisons</h2>
+<ul>
+<li>Consider two shots:
+<ul>
+<li><a href="https://youtu.be/lVGiGZN2gdw?t=148">Right-footed half-volley</a> by Beth Mead against Sweden</li>
+<li><a href="https://youtu.be/rsuLFOJCCUA?t=7">Right-footed backheel</a> by Alessia Russo</li>
+</ul></li>
+</ul>
+<div class="fragment">
+<ul>
+<li>Model 2 accounts for more factors</li>
+<li>Intuitively expect it is more accurate</li>
+</ul>
+</div>
+</section>
+<section id="setup-notation" class="slide level2">
+<h2>Setup &amp; Notation</h2>
+<ul>
+<li>Data: <span class="math inline">\(n\)</span> shots represented by pairs <span class="math inline">\((\boldsymbol{\mathbf{x}}_{1}, y_{1}), \ldots, (\boldsymbol{\mathbf{x}}_{n}, y_{n})\)</span>
+<ul>
+<li>Outcomes: <span class="math inline">\(y_{i} = 1\)</span> if shot <span class="math inline">\(i\)</span> results in a goal &amp; 0 otherwise</li>
+<li>Feature vector: <span class="math inline">\(\boldsymbol{\mathbf{x}}_{i}\)</span></li>
+</ul></li>
+<li>Assumption: Data is a representative sample from an infinite super-population of shots <span class="math display">\[
+\textrm{XG}(\boldsymbol{\mathbf{x}}) = \mathbb{E}[Y \vert \boldsymbol{\mathbf{X}} = \boldsymbol{\mathbf{x}}]
+\]</span></li>
+</ul>
+<div class="fragment">
+<ul>
+<li><span class="math inline">\(\hat{p}_{i}\)</span>: predicted <span class="math inline">\(\textrm{XG}\)</span> for shot <span class="math inline">\(i\)</span> from fitted model</li>
+<li>How close is <span class="math inline">\(\hat{p}_{i}\)</span> to <span class="math inline">\(y_{i}\)</span>?</li>
+</ul>
+</div>
+</section>
+<section id="misclassification-rate-definition" class="slide level2 smaller">
+<h2>Misclassification Rate (Definition)</h2>
+<ul>
+<li><span class="math inline">\(\hat{p}_{i} &gt; 0.5:\)</span> model predicts <span class="math inline">\(y_{i} = 1\)</span> more likely than <span class="math inline">\(y_{i} = 0\)</span></li>
+<li>Ideal: <span class="math inline">\(\hat{p}_{i} &gt; 0.5\)</span> when <span class="math inline">\(y_{i} = 1\)</span> and <span class="math inline">\(\hat{p}_{i} &lt; 0.5\)</span> when <span class="math inline">\(y_{i} = 0\)</span></li>
+<li>If too many <span class="math inline">\(\hat{p}_{i}\)</span>’s on wrong-side of 50%, model is badly calibrated.</li>
+</ul>
+<div class="fragment">
+<p><span class="math display">\[
+\textrm{MISS} = n^{-1}\sum_{i = 1}^{n}{\mathbb{I}(y_{i} \neq \mathbb{I}(\hat{p}_{i} \geq 0.5))},
+\]</span></p>
+</div>
+</section>
+<section id="brier-score-definition" class="slide level2 smaller">
+<h2>Brier Score (Definition)</h2>
+<ul>
+<li>MISS only cares whether <span class="math inline">\(\hat{p}_{i}\)</span> is on the wrong-side of 50%
+<ul>
+<li>Forecasting <span class="math inline">\(\hat{p} = 0.501\)</span> and <span class="math inline">\(\hat{p} = 0.999\)</span> have same loss when <span class="math inline">\(y = 0\)</span></li>
+<li>Doesn’t penalize how <strong>far</strong> <span class="math inline">\(\hat{p}\)</span> is from <span class="math inline">\(Y\)</span></li>
+</ul></li>
+</ul>
+<div class="fragment">
+<ul>
+<li>Brier Score penalizes distance b/w forecast <span class="math inline">\(\hat{p}\)</span> &amp; <span class="math inline">\(Y\)</span> <span class="math display">\[
+\text{Brier} = n^{-1}\sum_{i = 1}^{n}{(y_{i} - \hat{p}_{i})^2}.
+\]</span></li>
+<li>Just Mean Square Error applied to binary outcomes</li>
+</ul>
+</div>
+</section>
+<section id="log-loss-definition" class="slide level2">
+<h2>Log-Loss (Definition)</h2>
+<ul>
+<li>Like Brier but penalizes extreme mistakes more severely</li>
+</ul>
+<p><span class="math display">\[
+\textrm{LogLoss} = -1 \times \sum_{i = 1}^{n}{\left[ y_{i} \times \log(\hat{p}_{i}) + (1 - y_{i})\times\log(1-\hat{p}_{i})\right]}.
+\]</span></p>
+<div class="fragment">
+<ul>
+<li>Theoretically, can be infinite (when <span class="math inline">\(\hat{p} = 1-y\)</span>)</li>
+<li>In practice, truncate <span class="math inline">\(\hat{p}\)</span> to <span class="math inline">\([\epsilon,1-\epsilon]\)</span> to avoid <span class="math inline">\(\log(0)\)</span></li>
+<li>Also known as cross-entropy loss in ML literature</li>
+</ul>
+</div>
+</section>
 <section>
-<section id="logistics" class="title-slide slide level1 center">
-<h1>Logistics</h1>
+<section id="estimating-out-of-sample-error" class="title-slide slide level1 center">
+<h1>Estimating Out-of-Sample Error</h1>
 
 </section>
-<section id="lectures-office-hours" class="slide level2 smaller">
-<h2>Lectures &amp; Office Hours</h2>
+<section id="in-sample-error" class="slide level2">
+<h2>In-sample Error</h2>
 <ul>
-<li>Lectures: Tuesdays &amp; Thursday 8:00am-9:15pm (1524 Morgridge Hall)</li>
-<li>Instructor: Sameer Deshpande
+<li>Recall our setup:
 <ul>
-<li>Tuesdays: 9:30am - 10:45am (5586 Morgridge Hall)</li>
-<li>Thursdays: 4:00pm - 5:15pm (5586 Morgridge Hall)</li>
-<li>Fridays: 3:00pm - 4:30pm (5631 Morgridge Hall)</li>
+<li>Data is a sample from super-population <span class="math inline">\(\mathcal{P}\)</span></li>
+<li>Fit model to <em>estimate</em> <span class="math inline">\(\mathbb{E}[Y \vert \boldsymbol{\mathbf{X}} = \boldsymbol{\mathbf{x}}]\)</span></li>
+<li>Fitted model returns predictions <span class="math inline">\(\hat{p}(\boldsymbol{\mathbf{x}})\)</span></li>
 </ul></li>
-<li>TA: Zhexuan Liu</li>
-</ul>
-</section>
-<section id="what-this-course-is-not" class="slide level2 smaller">
-<h2>What This Course is NOT</h2>
-<ul>
-<li><strong>NOT</strong> a statistical methods course w/ sports applications</li>
-<li>Methods introduced <em>as needed</em>
-<ul>
-<li>But will not cover all technical details</li>
-<li>I’ll point to relevant resources &amp; classes where relevant</li>
-<li>Main goal: answering substantive sports questions</li>
-</ul></li>
+<li>Computed <span class="math inline">\(\textrm{MISS}, \textrm{Brier},\)</span> and <span class="math inline">\(\textrm{LogLoss}\)</span> w/ same data used to fit model</li>
+<li>This only checks whether model fits <strong>observed</strong> data well</li>
 </ul>
 <div class="fragment">
 <ul>
-<li><strong>NOT</strong> a course on sports betting or fantasy sports
-<ul>
-<li>Some material may be relevant …</li>
-<li>… but we won’t explicitly discuss these topics</li>
-</ul></li>
+<li>How well does model predict <em>new</em>, previously unseen data?</li>
 </ul>
 </div>
+</section>
+<section id="out-of-sample-error" class="slide level2">
+<h2>Out-of-Sample Error</h2>
+<ul>
+<li>Say we had a second dataset <span class="math inline">\((\boldsymbol{\mathbf{x}}_{1}^{\star}, y_{1}^{\star}), \ldots, (\boldsymbol{\mathbf{x}}_{m}^{\star}, y_{M}^{\star})\)</span> from <span class="math inline">\(\mathcal{P}\)</span></li>
+<li>Compute predictions <span class="math inline">\(\hat{p}^{\star}_{m}:= \hat{p}(\boldsymbol{\mathbf{x}}_{m}^{\star})\)</span>
+<ul>
+<li>Important: <span class="math inline">\((\boldsymbol{\mathbf{x}}_{m}^{\star}, y_{m}^{\star})\)</span>’s not used to fit the model</li>
+</ul></li>
+</ul>
 <div class="fragment">
 <ul>
-<li><strong>NOT</strong> a way to discuss last night’s game for credit
+<li>Assess how close <span class="math inline">\(\hat{p}^{\star}_{m}\)</span>’s are to <span class="math inline">\(y^{\star}_{m}\)</span>’s
 <ul>
-<li>This is a serious statistics &amp; data science course</li>
-</ul></li>
-<li>Goal: <strong>practice</strong> skills needed to work w/ sports data (e.g.&nbsp;for a team)
-<ul>
-<li>Course design reflects input from leaders in the industry</li>
+<li>Could use misclassification rate, Brier score, or log-loss</li>
+<li>Result is the out-of-sample loss</li>
 </ul></li>
 </ul>
 </div>
 </section>
-<section id="course-learning-outcomes" class="slide level2">
-<h2>Course Learning Outcomes</h2>
-<div class="fragment">
-<ol type="1">
-<li>Implement appropriate statistical methods to assess player and team performance</li>
-<li>Work with play-by-play and high-resolution tracking data</li>
-<li>Provide constructive and actionable feedback on your peers’ analytic reports</li>
-<li>Build a personal portfolio of sports data analyses</li>
-</ol>
-</div>
+<section id="cross-validation" class="slide level2">
+<h2>Cross-Validation</h2>
+<ul>
+<li>Problem: we don’t have access to a second dataset</li>
+</ul>
 <div class="fragment">
 <ul>
-<li>Asking and answering <strong>substantive</strong> sports questions w/ data
+<li>Solution: create <em>random</em> training/testing split
 <ul>
-<li>We’ll go well beyond “who’s the best at…”</li>
+<li>Train on a random subset containing 75% of the data</li>
+<li>Evaluate using the remaining held-out portion</li>
 </ul></li>
 </ul>
 </div>
+</section>
+<section id="multiple-splits" class="slide level2 smaller">
+<h2>Multiple Splits</h2>
+<ul>
+<li>Recommend averaging over many train/test splits (e.g., 100)</li>
+<li>See <a href="../../lectures/lecture03.html">lecture notes</a> for full code</li>
+<li>Each iteration in a <code>for()</code> loop:
+<ul>
+<li>Sets new seed &amp; form new train/test split</li>
+<li>Re-trains both XG models and computes train &amp; test error</li>
+<li>Save errors in an array</li>
+</ul></li>
+</ul>
 </section></section>
 <section>
-<section id="what-is-sports-analytics" class="title-slide slide level1 center">
-<h1>What is Sports Analytics?</h1>
+<section id="logistic-regression" class="title-slide slide level1 center">
+<h1>Logistic Regression</h1>
 
 </section>
-<section id="statistics-vs-analytics" class="slide level2 smaller">
-<h2>Statistics vs Analytics</h2>
+<section id="motivation-accounting-for-distance" class="slide level2">
+<h2>Motivation: Accounting for Distance</h2>
 <ul>
-<li>Sports statistics refer to counts and rates that <em>summarize</em> performance:
+<li>Model 1 gives same prediction for
 <ul>
-<li>Number of rebounds, wins, games played</li>
-<li>Free throw percentage, batting average</li>
+<li>A header from 1m away</li>
+<li>A header from 15m away</li>
 </ul></li>
+<li>How to account for continuous feature like <code>DistToGoal</code>?</li>
 </ul>
 <div class="fragment">
 <ul>
-<li>Analytics refers to the use of statistical <em>modeling</em> to help gain competitive advantage</li>
-<li>Analytics makes use of basic statistics &amp; creates new ones</li>
-<li>Analytics uses data to answer <strong>substantive sports questions</strong></li>
-<li>Many questions can framed in terms of prediction</li>
-</ul>
-</div>
-</section>
-<section id="best-nba-shooting-performances" class="slide level2 smaller">
-<h2>“Best” NBA Shooting Performances</h2>
+<li>Idea: Divide into discrete bins and then average within bins
 <ul>
-<li>Who is the best shooter in NBA history?
-<ul>
-<li>What do we mean by “best”?</li>
-<li>It’s not clear that this can be answered w/ data</li>
-</ul></li>
-</ul>
-<div class="fragment">
-<ul>
-<li>A more precise question: which player made the most shots in a single season?
-<ul>
-<li>Can be answered by data</li>
-<li>We’ll assess whether “best” = “made most shots” is satisfactory later</li>
-</ul></li>
-</ul>
-</div>
-<div class="fragment">
-<ul>
-<li>Data: box scores from each game since 2002-03</li>
-<li>Available from the <strong>hoopR</strong> package</li>
-</ul>
-</div>
-</section>
-<section id="accounting-for-efficiency" class="slide level2">
-<h2>Accounting for Efficiency</h2>
-<ul>
-<li>Kobe made 868 shots in 2003-04</li>
-<li>SGA made 868 shots in 2025-26</li>
-<li>Kobe took 300 more shots than SGA</li>
-</ul>
-<div class="fragment">
-<ul>
-<li>Let’s redefine “best” in terms of field goal percentage</li>
-</ul>
-<p><span class="math inline">\(\textrm{FGP} = \textrm{FGM}/\textrm{FGA}\)</span></p>
-</div>
-</section>
-<section id="effective-field-goal-percentage" class="slide level2 smaller">
-<h2>Effective Field Goal Percentage</h2>
-<ul>
-<li>FGP is arguably a better measure of skill than FGM <strong>but</strong>
-<ul>
-<li>Extreme values for players w/ few attempts</li>
-<li>Doesn’t distinguish 2- and 3-point shots</li>
-</ul></li>
-</ul>
-<div class="fragment">
-<ul>
-<li><span class="math inline">\(\textrm{eFGP} = (\textrm{FGM} + 0.5 \times \textrm{TPM})/\textrm{FGA}\)</span></li>
-</ul>
-</div>
-</section>
-<section id="reflection" class="slide level2 smaller">
-<h2>Reflection</h2>
-<ul>
-<li>eFGP is arguably better than FGP and FGM</li>
-<li>But it is still highly variable</li>
-</ul>
-<div class="fragment">
-<ul>
-<li>Refined question: instead of “who’s the best”, we can ask</li>
-</ul>
-<p>“what is the probability that a player makes a shot”</p>
-<ul>
-<li>Later: methods to estimate these probs. that
-<ul>
-<li>Account for contextual factors (e.g., shot location)</li>
-<li>Produce stable estimates even w/ small sample sizes</li>
-<li>Avoid imposing arbitrary cut-offs (e.g., <span class="math inline">\(\textrm{FGA} &gt; 400\)</span>)</li>
-<li>Calibrate performance against transparent baselines (e.g., “above replacement”)</li>
-</ul></li>
-<li>Analytics involves <strong>motivating</strong> and <strong>justifying</strong> choices</li>
-</ul>
-</div>
-</section></section>
-<section>
-<section id="more-course-logistics" class="title-slide slide level1 center">
-<h1>More Course Logistics</h1>
-
-</section>
-<section id="requisites" class="slide level2">
-<h2>Requisites</h2>
-<ul>
-<li>STAT 333 or 340
-<ul>
-<li>Random variables, expectations, probability</li>
-<li>Fitting linear models &amp; interpreting outputs</li>
-</ul></li>
-</ul>
-<div class="fragment">
-<ul>
-<li>Prior experience with R
-<ul>
-<li>Assignment, scripting, loops, control flow</li>
-<li>Saving objects, installing &amp; loading packages.</li>
-<li>Data manipulation with <strong>dplyr</strong> and other <strong>tidyverse</strong> packages.</li>
-<li>Creating visualizations</li>
+<li>Problem: sensitivity to bin sizes (1m , 3m, 10m)</li>
+<li>Problem: potential small sample issues</li>
 </ul></li>
 </ul>
 </div>
 </section>
-<section id="course-website" class="slide level2">
-<h2>Course Website</h2>
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><a href="figures/stat441_f26_website_qr.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="figures/stat441_f26_website_qr.png" class="quarto-figure quarto-figure-center"></a></p>
+<section id="logistic-regression-1" class="slide level2 smaller">
+<h2>Logistic Regression</h2>
+<ul>
+<li><p>Binary outcome <span class="math inline">\(Y\)</span> and numerical predictors <span class="math inline">\(X_{1}, \ldots, X_{p}\)</span>: <span class="math display">\[
+\log\left(\frac{\mathbb{P}(Y= 1 \vert \boldsymbol{\mathbf{X}})}{\mathbb{P}(Y = 0 \vert \boldsymbol{\mathbf{X}})}\right) = \beta_{0} + \beta_{1}X_{1} + \cdots + \beta_{p}X_{p}.
+\]</span></p></li>
+<li><p>Keeping all other predictors constant, a one unit change in <span class="math inline">\(X_{j}\)</span> associated with a <span class="math inline">\(\beta_{j}\)</span> change in the log-odds</p></li>
+<li><p>Say <span class="math inline">\(\beta_{j} = 1\)</span>. Increasing <span class="math inline">\(X_{j}\)</span> by 1 unit moves <span class="math inline">\(\mathbb{P}(Y = 1)\)</span></p>
+<ul>
+<li>From 4.7% to 11.2% (log-odds from -3 to -2)</li>
+<li>From 37.8% to 62.2% (log-odds from -0.5 to 0.5)</li>
+<li>From 73.1% to 88.1% (log-odds from 1 to 2)</li>
+</ul></li>
+</ul>
+</section>
+<section id="logistic-inverse-logistic-functions" class="slide level2">
+<h2>Logistic &amp; Inverse Logistic Functions</h2>
+<ul>
+<li>Logistic function: <span class="math inline">\(f(t) = [1 + e^{-t}]^{-1}\)</span></li>
+<li>Inverse logistic: <span class="math inline">\(f^{-1}(p) = \log{p/(1-p)}\)</span></li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-logistic" class="quarto-float quarto-figure quarto-figure-center" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-logistic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="slides_03_files/figure-revealjs/fig-logistic-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Logistic and inverse logistic functions"><img data-src="slides_03_files/figure-revealjs/fig-logistic-1.png" class="quarto-figure quarto-figure-center" width="576"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-logistic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Logistic and inverse logistic functions
+</figcaption>
 </figure>
 </div>
-<p>Also <a href="https://piazza.com/class/mpx66b7xrng5pt/">Piazza</a></p>
+</div>
+</div>
 </section>
-<section id="assignments-grading" class="slide level2">
-<h2>Assignments &amp; Grading</h2>
+<section id="including-multiple-predictors" class="slide level2 smaller">
+<h2>Including Multiple Predictors</h2>
 <ul>
-<li>3 Group Projects (3 x 300 pts): Due on 10/9, 11/6, and 12/4
-<ul>
-<li>Written Report (100 pts) &amp; Presentation (100 pts)</li>
-<li>Peer Reviews (3 x 20 pts)</li>
-<li>Team Accountability Survey (20 pts)</li>
-</ul></li>
+<li>Distance-based model is more accurate than body-part based model</li>
+<li>What if we account for body part and distance?</li>
 </ul>
 <div class="fragment">
 <ul>
-<li>Exercises (2 x 50 pts):
-<ul>
-<li>Submit solutions to 2 homework exercises (due 1 week after lecture)</li>
-<li>Lead &amp; participate in discussion on Piazza</li>
-</ul></li>
-<li>Participation (60 pts): Assessed holistically
-<ul>
-<li>Regularly attend lectures &amp; office hours</li>
-<li>Contribute to Piazza discussions</li>
-</ul></li>
-</ul>
-</div>
-<div class="fragment">
-<ul>
-<li>Final grade based on how many of the 1000 points earned</li>
+<li><p>Body part is a categorical predictor</p></li>
+<li><p>Convert to <code>factor</code> type and one-hot encode</p></li>
 </ul>
 </div>
 </section>
-<section id="projects" class="slide level2 smaller">
-<h2>Projects</h2>
+<section id="model-specification" class="slide level2 smaller">
+<h2>Model Specification</h2>
+<p><span class="math display">\[
+\beta_{0} + \beta_{1}\times \textrm{DistToGoal} + \\ \beta_{\textrm{LeftFoot}}\times \mathbb{I}(\textrm{LeftFoot}) + \beta_{\textrm{RightFoot}} \times \mathbb{I}(\textrm{RightFoot})
+\]</span></p>
 <ul>
-<li>Work in groups of up to 4
+<li><p>Different predictions based on the body part used to attempt the shot</p></li>
+<li><p>For a shot taken at distance <span class="math inline">\(d\)</span>:</p>
 <ul>
-<li>Same groups for Projects 1 &amp; 2; can change for Project 3</li>
-<li>Form groups by <strong>Friday September 11</strong></li>
-<li>Use Piazza to find teammates &amp; sign up in spreadsheet</li>
+<li>Header: log-odds: <span class="math inline">\(\beta_{0} + \beta_{1}d\)</span></li>
+<li>Left-footed shot: <span class="math inline">\(\beta_{0} + \beta_{1}d + \beta_{\textrm{LeftFoot}}\)</span></li>
+<li>Right-footed shot: <span class="math inline">\(\beta_{0} + \beta_{1}d + \beta_{\textrm{RightFoot}}\)</span></li>
 </ul></li>
-<li>Course projects can
-<ul>
-<li>Modify or extend analysis from lecture (e.g., to new sport)</li>
-<li>Answer a new question not covered in lecture</li>
-<li>…</li>
-</ul></li>
-<li>Ideally jump-start a portfolio that you can show teams</li>
 </ul>
 </section>
-<section id="project-report" class="slide level2">
-<h2>Project Report</h2>
+<section id="interactions" class="slide level2 smaller">
+<h2>Interactions</h2>
 <ul>
-<li>Executive Summary:
-<ul>
-<li><strong>Non-technical</strong> overview of goals, methods, and results</li>
-<li>Audience: front office executive, coach, or player</li>
-</ul></li>
-<li>Technical Report:
-<ul>
-<li>Include <em>all</em> code needed to reproduce findings</li>
-<li>Tightly integrate code &amp; output w/ written exposition</li>
-<li>Audience: fellow data scientists</li>
-</ul></li>
-</ul>
-<div class="fragment">
-<p>I <strong>highly</strong> recommend using Quarto</p>
-</div>
-</section>
-<section id="project-presentation" class="slide level2">
-<h2>Project Presentation</h2>
-<ul>
-<li>Record &amp; upload a 8–10 minute presentation</li>
-<li>Every group member must speak</li>
-</ul>
-<div class="fragment">
-<ul>
-<li>I’ll select 5-6 groups to present in-class on the last day (12/8)
-<ul>
-<li>Details to be announced</li>
-<li>Presenting on the last day unrelated to course grades</li>
-</ul></li>
-</ul>
-</div>
-</section>
-<section id="project-peer-review" class="slide level2">
-<h2>Project Peer Review</h2>
-<ul>
-<li>Provide feedback on 3 presentations &amp; reports
-<ul>
-<li>Rubrics will be available</li>
-<li>Fill out rubric + leave <em>constructive</em> comments</li>
-</ul></li>
-<li>Due 1 weeks after projects: 10/16, 11/13, and 12/11</li>
-</ul>
-</section>
-<section id="team-accountability-survey" class="slide level2">
-<h2>Team Accountability Survey</h2>
-<ul>
-<li>Assign score from 0 (least) to 10 (most) for
-<ul>
-<li>Participation, Preparation, and Respectfulness</li>
-</ul></li>
-<li>Rate every group member (including yourself)</li>
-<li>Ratings and comments will be kept anonymous</li>
-<li>Course staff may give warnings for low peer score</li>
+<li>Model assumes effect of distance is the same regardless of body part</li>
+<li>Interactions allow the effect of one factor to vary based on the value of another. <span class="math display">\[
+\begin{align}
+&amp;\beta_{0} + \beta_{\textrm{LeftFoot}} \times \mathbb{I}(\textrm{LeftFoot}) + \beta_{\textrm{RightFoot}} * \mathbb{I}(\textrm{RightFoot}) +  \\
+&amp;+[\beta_{\textrm{Dist}} + \beta_{\textrm{Dist:LeftFoot}}*\mathbb{I}(\textrm{LeftFoot}) + \beta_{\textrm{Dist:RightFoot}}\mathbb{I}(\textrm{RightFoot})] \times \textrm{Dist}   
+\end{align}
+\]</span></li>
 </ul>
 </section></section>
 <section>
-<section id="topic-list" class="title-slide slide level1 center">
-<h1>Topic List</h1>
+<section id="random-forests" class="title-slide slide level1 center">
+<h1>Random Forests</h1>
 
 </section>
-<section id="unit-1-quantifying-performances" class="slide level2 smaller">
-<h2>Unit 1: Quantifying Performances</h2>
+<section id="including-even-more-features" class="slide level2">
+<h2>Including Even More Features</h2>
 <ul>
-<li>Expected vs actual performance</li>
-<li>Value of a game state</li>
-<li>Performance above “replacement” level</li>
-<li>Case Studies:
-<ul>
-<li>Expected goals in soccer (Lectures 2 &amp; 3)</li>
-<li>Adjusted plus/minus in the NBA (Lectures 4 &amp; 5)</li>
-<li>Run expectancy &amp; WAR in baseball (Lectures 6–8)</li>
-<li>WAR for the NFL (Lectures 9 &amp; 10)</li>
-<li>Pitch Framing in baseball (Lecture 11)</li>
-</ul></li>
+<li>StatsBomb records many potentially important features</li>
 </ul>
-</section>
-<section id="project-1" class="slide level2 smaller">
-<h2>Project 1</h2>
-<ul>
-<li>Use box-score or play-by-play data</li>
-<li>Introduce a new metric &amp; show it has favorable properties
-<ul>
-<li>Season-to-season stability</li>
-<li>Ability to predict match- or season-level outcomes</li>
-<li>Reveal new insight about player valuation</li>
-</ul></li>
-<li>Evaluate individual or team performance in a new sport
-<ul>
-<li>WAR for volleyball or college football?</li>
-<li>Expected goals in hockey?</li>
-</ul></li>
-<li>Extend case study from lecture
-<ul>
-<li>Construct analogs for another sport</li>
-<li>Examine season-to-season variability</li>
-</ul></li>
-<li>…</li>
-</ul>
-</section>
-<section id="unit-2-rankings-simulation" class="slide level2">
-<h2>Unit 2: Rankings &amp; Simulation</h2>
-<ul>
-<li>Use models to <em>simulate</em> games, tournaments, drafts, etc.</li>
-<li>Case Studies:
-<ul>
-<li>NCAA Volleyball &amp; Hockey Tournaments (Lectures 12 &amp; 13)</li>
-<li>Markov chain simulations (Lecture 14)</li>
-<li>Building a consensus mock draft (Lecture 15)</li>
-<li>Estimating impact of a rule change (Lecture 16 &amp; 7)</li>
-</ul></li>
-</ul>
-</section>
-<section id="project-2" class="slide level2 smaller">
-<h2>Project 2</h2>
-<ul>
-<li>Fit a model to estimate latent team- or player- strength</li>
-<li>Use model estimates to simulate plays, games, tournaments, drafts, etc.</li>
-<li>Compute probabilities based on simulation
-<ul>
-<li>Prob. of winning tournament or making it past 1st round</li>
-<li>Prob. football drive ends in a touchdown</li>
-<li>Prob. of winning a cricket test</li>
-<li>Chance player available in 2nd round of draft</li>
-</ul></li>
-</ul>
-</section>
-<section id="unit-3-tracking-data" class="slide level2">
-<h2>Unit 3: Tracking Data</h2>
-<ul>
-<li>Currently the hottest area of sports analytics
-<ul>
-<li>Trackman + Statcast in baseball</li>
-<li>NFL: player positions 10 times per second</li>
-<li>Hawkeye for tennis, Hudl for soccer, …</li>
-</ul></li>
-<li>Tracking data opens up many possibilities
-<ul>
-<li>Incorporating spatial info. into prediction models</li>
-<li>Creating new metrics using tracking data</li>
-<li>Space ownership &amp; predicting trajectories</li>
-</ul></li>
-</ul>
-</section>
-<section id="project-3" class="slide level2 smaller">
-<h2>Project 3</h2>
-<ul>
-<li><p>Analyze tracking data</p></li>
-<li><p>NFL’s Big Data Bowl is a great opportunity</p>
-<ul>
-<li><strong>Best</strong> way into the field (even for non-football sports)</li>
-<li>Cash prizes &amp; chance to present at Combine</li>
-</ul></li>
-<li><p>I highly encourage turning Project 3 into a BDB submission</p>
-<ul>
-<li>More info will be posted on Piazza</li>
-<li>I’ll provide additional feedback/input for teams that do submit</li>
-</ul></li>
-</ul>
-</section></section>
-<section>
-<section id="final-reminders" class="title-slide slide level1 center">
-<h1>Final Reminders</h1>
-
-</section>
-<section id="course-expectations" class="slide level2">
-<h2>Course Expectations</h2>
-<ul>
-<li><p>Respect diverse backgrounds</p>
-<ul>
-<li>Not everyone may know as much about a sport/method as You</li>
-<li>You may not know as much about a sport/method as someone else</li>
-</ul></li>
-<li><p>Don’t hesitate to ask for and to provide help!</p></li>
-<li><p>Take care of yourself &amp; each other</p></li>
-</ul>
-</section>
-<section id="generative-ai-expectations-1" class="slide level2 smaller">
-<h2>Generative AI Expectations 1</h2>
-<ul>
-<li>You have the right to the full benefit of my expertise and engagement in this course.</li>
-<li>I will therefore <strong>never</strong> use AI to
-<ul>
-<li>To provide feedback on assignments</li>
-<li>To prepare any course content (e.g., slides, code, assignment flavor-text, etc.)</li>
-<li>To mediate or assist any communications with you</li>
-</ul></li>
-<li>Everything you see in the course was created by me without the aid of generative AI</li>
-</ul>
-</section>
-<section id="generative-ai-expectations-2" class="slide level2 smaller">
-<h2>Generative AI Expectations 2</h2>
-<ul>
-<li>A core theme of this class is <em>practice</em>
-<ul>
-<li>It is OK to make mistakes or not know an answer</li>
-<li><em>Process</em> is more important than results</li>
-</ul></li>
-<li>Generative AI short-circuits the intended learning process</li>
-<li>Its use is expressly prohibited</li>
-</ul>
-<div class="callout callout-important callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Peer Review</strong></p>
-</div>
-<div class="callout-content">
-<p>Respect your classmates enough to review their projects yourself. Uploading someone else’s project report or presentation to a generative AI tool (e.g., for creating summaries) is forbidden and <strong>will result in a failing grade.</strong></p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "shot.type.name"      "shot.technique.name" "shot.body_part.name"
+ [4] "DistToGoal"          "DistToKeeper"        "AngleToGoal"        
+ [7] "AngleToKeeper"       "AngleDeviation"      "avevelocity"        
+[10] "density"             "density.incone"      "distance.ToD1"      
+[13] "distance.ToD2"       "AttackersBehindBall" "DefendersBehindBall"
+[16] "DefendersInCone"     "InCone.GK"           "DefArea"            </code></pre>
 </div>
 </div>
+<ul>
+<li>How much more predictive accuracy can we gain by accounting for these?</li>
+<li>Challenge: hard to specify nonlinearities &amp; interactions correctly in <code>glm()</code></li>
+</ul>
+</section>
+<section id="regression-trees-i" class="slide level2 smaller">
+<h2>Regression Trees I</h2>
+<div class="columns">
+<div class="column" style="width:48%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="figures/regression_tree.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="figures/regression_tree.png" class="quarto-figure quarto-figure-center"></a></p>
+</figure>
+</div>
+</div><div class="column" style="width:48%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="figures/partition.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="figures/partition.png" class="quarto-figure quarto-figure-center"></a></p>
+</figure>
+</div>
+</div></div>
+<ul>
+<li>Regression trees can elegantly model interactions and non-linearities</li>
+<li>Regression trees are just step-functions</li>
+</ul>
+</section>
+<section id="regression-trees-ii" class="slide level2">
+<h2>Regression Trees II</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="figures/treeapprx_cart.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Left: True function (pink) and a step function approximation (green). Right: representation of the step function as a regression tree"><img data-src="figures/treeapprx_cart.png" style="width:80.0%" alt="Left: True function (pink) and a step function approximation (green). Right: representation of the step function as a regression tree"></a></p>
+<figcaption>Left: True function (pink) and a step function approximation (green). Right: representation of the step function as a regression tree</figcaption>
+</figure>
 </div>
 </section>
-<section id="looking-ahead" class="slide level2">
+<section id="regression-trees-iii" class="slide level2">
+<h2>Regression Trees III</h2>
+<p><a href="figures/tree_appx_wide.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img data-src="figures/tree_appx_wide.png"></a></p>
+<ul>
+<li>Regression trees can approximate functions arbitrarily well</li>
+<li>But often need very deep and complicated trees</li>
+</ul>
+</section>
+<section id="tree-ensembles" class="slide level2">
+<h2>Tree Ensembles</h2>
+<p><a href="figures/sum_of_trees.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img data-src="figures/sum_of_trees.png"></a></p>
+<ul>
+<li>Complicated trees can be written as sums of shallow trees!</li>
+</ul>
+</section>
+<section id="random-forests-1" class="slide level2">
+<h2>Random Forests</h2>
+<ul>
+<li>Approximate <span class="math inline">\(\mathbb{E}[Y \vert \boldsymbol{\mathbf{X}} = \boldsymbol{\mathbf{x}}]\)</span> w/ tree ensemble</li>
+<li>No need to pre-specify functional form or interactions</li>
+<li>Scales nicely even if <span class="math inline">\(\boldsymbol{\mathbf{X}}\)</span> is high-dimensional</li>
+<li>We will use implementation in <strong>ranger</strong> package</li>
+</ul>
+</section>
+<section id="looking-ahead" class="slide level2 smaller">
 <h2>Looking Ahead</h2>
 <ul>
-<li>Lectures 2 &amp; 3: Expected Goals in Soccer</li>
-<li>Will use public data provided by Hudl</li>
-<li>Be sure to install the <strong>StatsBombR</strong> &amp; <strong>ranger</strong> packages</li>
+<li>Next week: model-based assessment of NBA player performance
+<ul>
+<li>Good idea to read <a href="../../lectures/lecture04.html">notes</a> &amp; install <strong>hoopR</strong></li>
+<li>Review notes on linear regression from prev. course (e.g., STAT 333 or 340)</li>
+<li><a href="https://bookdown.org/roback/bookdown-BeyondMLR/ch-MLRreview.html#multreg">Chapter 1.6</a> of <em>Beyond Multiple Linear Regression</em> is a great resource as well</li>
+</ul></li>
+<li>Form projects groups by tomorrow
+<ul>
+<li>Email me if you’re running into issues</li>
+<li>Piazza can help find teammates</li>
+</ul></li>
+<li>Project check-in by 9/25</li>
 </ul>
 
 
@@ -831,6 +717,44 @@
         ]
       });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
