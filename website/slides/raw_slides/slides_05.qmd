@@ -1,0 +1,192 @@
+---
+title: "STAT 479: Lecture 5"
+subtitle: Regularized Adjusted Plus/Minus
+format: revealjs
+execute:
+  cache: true
+---
+
+# Recap: Adjusted Plus/Minus
+
+## Motivation{.smaller}
+
+- How do NBA players help their teams win?
+- How do we quantify contributions?
+
+. . .
+
+- Plus/Minus: Easy to compute
+  - Hard to separate skill from opportunities
+  - Doesn't adjust for teammate quality
+
+. . .
+
+- Adjusted Plus/Minus:
+  - Regress point differential per 100 possession on signed on-court indicators
+  - Introduces fairly arbitrary baseline
+  - Assumes all baseline players have same underlying skill
+
+
+## The Original Model{.smaller}
+
+- $n$: total number of stints
+- $p$: total number of players
+- $Y_{i}$: point differential per 100 possessions in stint $i$
+
+$$
+\begin{align}
+Y_{i} &= \alpha_{0} + \alpha_{h_{1}(i)} + \alpha_{h_{2}(i)} + \alpha_{h_{3}(i)} + \alpha_{h_{4}(i)} + \alpha_{h_{5}(i)} \\
+~&~~~~~~~~~~- \alpha_{a_{1}(i)} - \alpha_{a_{2}(i)} - \alpha_{a_{3}(i)} - \alpha_{a_{4}(i)} - \alpha_{a_{5}(i)} + \epsilon_{i},
+\end{align}
+$$
+
+
+## Matrix Notation{.smaller}
+- For each stint $i$ and player $j$, signed indicator $x_{ij}$:
+  - $x_{ij} = 1$ if player $j$ on-court at home in stint $i$
+  - $x_{ij} = -1$ if player $j$ on-court and away in stint $i$
+  - $x_{ij} = 0$ if player $j$ off-court in stint $i$
+  
+. . .
+
+- $\boldsymbol{\mathbf{X}}$: $n \times p$ matrix of signed indicators
+  - Rows correspond to stints:
+  - Columns correspond to players
+- $\boldsymbol{\mathbf{Z}}$: $n \times (p+1)$ matrix
+  - First column is all ones; remaining are $\boldsymbol{\mathbf{X}}$
+  - $i$-th row is $\boldsymbol{\mathbf{x}}_{i}$
+
+- $Y_{i} = \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha} + \epsilon_{i}$
+
+
+## Problems w/ Original Model{.smaller}
+- Individual $\alpha_{j}$'s are not statistically identifiable
+  - E.g. $\alpha_{j} \rightarrow \alpha_{j}+5$ yields same fit to data
+  
+- $\boldsymbol{\mathbf{Z}}$ is not of full-rank
+  - Can't invert $\boldsymbol{\mathbf{Z}}^{\top}\boldsymbol{\mathbf{Z}}$
+  
+- Can't estimate $\boldsymbol{\alpha}$ with least squares! 
+
+## A Re-parametrized Model{.smaller}
+- Assume $\alpha_{j} = \mu$ for all *baseline players* $j$
+- For all non-baseline players, $\beta_{j} = \alpha_{j} - \mu$
+- $\tilde{\boldsymbol{\mathbf{Z}}}$: drop baseline columns from $\boldsymbol{\mathbf{Z}}$
+- $Y_{i} = \tilde{\boldsymbol{\mathbf{z}}}_{i}^{\top}\boldsymbol{\beta} + \epsilon_{i}$
+- Can estimate $\boldsymbol{\beta}$ with least squares
+
+
+## Problems w/ Re-Parametrized Model
+- 250 minute cut-off for baseline is very arbitrary
+- Restrictive to assume baseline players have same skill
+
+. . .
+
+- Baseline assumption needed to use least squares
+- ... but what if we don't use least squares
+
+# Regularized Regression
+
+## Ridge Regression{.smaller}
+
+- Original APM problem: minimize $\sum_{i = 1}^{n}{\left(Y_{i} - \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha}\right)^{2}}
+$
+
+. . .
+
+- Instead for a fixed $\lambda > 0$ let's minimize $\sum_{i = 1}^{n}{(Y_{i} - \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha})^{2}} + \lambda \times \sum_{j = 0}^{p}{\alpha_{j}^{2}},$
+
+. . .
+
+- First term: minimized when all $Y_{i} \approx \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha}$
+- Second term: *shrinkage penalty* tries to keep all $\alpha_{j}$'s near 0
+- $\lambda$: trades-off these two terms
+
+## Analytic Solution
+- For all $\lambda$, minimizer is 
+$\hat{\boldsymbol{\alpha}}(\lambda) = \left(\boldsymbol{\mathbf{Z}}^{\top}\boldsymbol{\mathbf{Z}} + \lambda I \right)^{-1}\boldsymbol{\mathbf{Z}}^{\top}\boldsymbol{\mathbf{Y}}.$
+
+- This is *almost* the OLS solution
+  - Slightly perturb $\boldsymbol{\mathbf{Z}}^{\top}\boldsymbol{\mathbf{Z}}$ so it becomes invertible
+  - E.g., by adding $\lambda$ to its diagonal
+
+
+## Cross-Validation for $\lambda${.smaller}
+
+- Idea: select $\lambda$ yielding smallest out-of-sample prediction error
+- Problem: don't have a separate validation dataset to compute out-of-sample error
+
+. . .
+
+- Solution: cross-validation to estimate out-of-sample error
+  - Create a grid of $\lambda$ values & several train/test splits
+    - For each $\lambda$ and train/test split:
+      - Compute $\hat{\boldsymbol{\alpha}}(\lambda)$ w/ training data
+      - Evaluate prediction error using testing data
+  - For each $\lambda,$ average testing prediction error across splits
+  - Identify $\hat{\lambda}$ w/ smallest average testing error
+
+. . .
+
+- Compute $\hat{\boldsymbol{\alpha}}(\hat{\lambda})$ w/ all data
+
+
+
+
+
+
+## Other Penalties {.smaller}
+- For some $a \in [0,1]$ `glmnet()` and `cv.glmnet()` actually minimize 
+$$
+\sum_{i = 1}^{n}{(Y_{i} - \boldsymbol{\mathbf{z}}_{i}^{\top}\boldsymbol{\alpha})^{2}} + \lambda \times  \sum_{j = 0}^{p}{\left[a \times \lvert\alpha_{j}\rvert + (1-a) \times \alpha_{j}^{2}\right]},
+$$
+- Value of $a$ specified with `alpha` argument.
+
+- `alpha = 0`: penalty is $\sum_{j}{\alpha_{j}^{2}}$
+  - Penalty encourage small (but non-zero) $\alpha_{j}$ values
+  - Ridge regression; $\ell_{2}$ or Tikohonov regularization
+- `alpha = 1`: penalty is $\sum_{j}{\lvert \alpha_{j} \rvert}$
+  - Penalty encourages *sparsity* (i.e., sets many $\alpha_{j} = 0$)
+  - Least Absolute Shrinkage and Selection Operator (LASSO); $\ell_{1}$ regularization
+- $0 <$`alpha`$<1$: Elastic Net regression
+
+
+# Uncertainty Quantification
+
+## The Bootstrap (High-Level Idea) {.smaller}
+
+- Say we compute some statistic $T(\boldsymbol{y})$ using observed data $\boldsymbol{y}$
+  - E.g., RAPM estimate $\hat{\alpha}_{j}$ for a single player $j$
+  - Estimated difference $\hat{\alpha}_{j} - \hat{\alpha}_{j'}$ b/w players $j$ and $j'$
+  - Something more exotic: e.g. $\max_{j}\hat{\alpha}_{j} - \min_{j}\hat{\alpha_{j}}$
+- These are *estimates* and there is always estimation uncertainty
+
+. . .
+
+- Repeatedly re-sample data and re-compute statistic
+  - Re-sampled datasets: $\boldsymbol{y}^{(1)}, \ldots, \boldsymbol{y}^{(B)}$
+  - Corresponding statistics: $T(\boldsymbol{y}^{(1)}), \ldots, T(\boldsymbol{y}^{(B)})$
+- Boostrapped statistics gives a sense of estimate's variability
+
+## Bootstrapping RAPM (plan)
+
+- Compute $\hat{\boldsymbol{\alpha}}(\hat{\lambda})$ using original dataset
+
+- Draw $B$ re-samples of size $n$
+  - Sample observed stints **with replacement**
+
+- For each re-sampled dataset, compute $\hat{\boldsymbol{\alpha}}(\hat{\lambda})$
+  - No need to re-run cross-validation to compute optimal $\lambda$
+  - Use the optimal $\lambda$ from original dataset
+  
+- Save the $B$ bootstrap estimates of $\boldsymbol{\alpha}$ in an array
+
+
+## Looking Ahead{.smaller}
+
+- Lectures 6--8: Building up to wins above replacement in baseball
+- Project Check-in: by **Friday 25 September** email me a short overview of your project
+  - Precise problem statement & overview of data and analysis plan
+  - Happy to help brainstorm & narrow down analysis in Office Hours (or by appt.)
+  - Inspiration: exercises in lecture notes & [project information](../../projects/project1.qmd) page
+
