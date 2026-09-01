@@ -1,113 +1,260 @@
 [
   {
+    "objectID": "slides/raw_slides/slides_10.html#recap-epa-in-football",
+    "href": "slides/raw_slides/slides_10.html#recap-epa-in-football",
+    "title": "STAT 479 Lecture 10",
+    "section": "Recap: EPA in Football",
+    "text": "Recap: EPA in Football\n\n86-yard touchdown by Ladd McConckey on a pass from Justin Herbert (video link)\n\nThrown on a 3rd and 26 from Chargers’ 14 yard line. EP = -1.54\nChargers generated 7 - (-1.54) = 8.54 points of EP\n\n64-yard touch down by Kavontae Turpin on a pass from Cooper Rush (video link)\n\nThrown on 3rd and 10 from Cowboys’ 36 yard line. EP = 0.77\nCowboys generated 7 - 0.77 = 6.23 points of EP\n\n\n\n\nHow should we divide credit between QB and receiver?\nWhat about running?"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_10.html#plan",
+    "href": "slides/raw_slides/slides_10.html#plan",
+    "title": "STAT 479 Lecture 10",
+    "section": "Plan",
+    "text": "Plan\n\nEstimate EPA per-play for each passer, receiver, & rusher\nSeparately model three phases:\n\nPassing I: EPA due to actions while ball is in the air\nPassing II: EPA due to yards after catch\nRushing\n\nMulti-level modeling:\n\nRandom intercepts for passers, receivers, rushers\nMust adjust for important fixed effects\n\n\n\n\nW/ per-play EPA can compare actual production to replacement “shadow”\nThese contrasts will lead to a version of WAR"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_10.html#overview",
+    "href": "slides/raw_slides/slides_10.html#overview",
+    "title": "STAT 479 Lecture 10",
+    "section": "Overview",
+    "text": "Overview\n\nFocus on 2024-25 regular season\nNeed roster data to define position-specific replacement level"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_10.html#passing-data",
+    "href": "slides/raw_slides/slides_10.html#passing-data",
+    "title": "STAT 479 Lecture 10",
+    "section": "Passing Data",
+    "text": "Passing Data\n\nExtract all passing plays (play_type == \"pass\")\nFor each pass, record\n\nposteam, defteam, posteamtype\npasser_player_id, receiver_player_id\nshotgun, no_huddle, qb_hit, pass_location\nair_yards, yards_after_catch, completed_pass"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_10.html#air-vs-yac-epa",
+    "href": "slides/raw_slides/slides_10.html#air-vs-yac-epa",
+    "title": "STAT 479 Lecture 10",
+    "section": "Air vs YAC EPA",
+    "text": "Air vs YAC EPA\n\nTeams generate EPA on completed passes while\n\nThe ball is in the air\nOn the ground, after the catch\n\nnflfastR decomposes epa into air_epa and yac_epa\nCompleted passes: imagine pausing game as soon as catch completed\n\nEP at the intermediate state used to compute air_epa and yac_epa\n\nSacks: no good definition for air_epa & yac_epa\n\nWe will treat sacks as rushing plays"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_10.html#rushing-data",
+    "href": "slides/raw_slides/slides_10.html#rushing-data",
+    "title": "STAT 479 Lecture 10",
+    "section": "Rushing Data",
+    "text": "Rushing Data\n\nInclude columns for\n\npasser_player_id & rusher_player_id\nshotgun & no_huddle\nrun_location & run_gap\n\nMust manually specify rusher_player_id on sacks"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_10.html#run-context-i",
+    "href": "slides/raw_slides/slides_10.html#run-context-i",
+    "title": "STAT 479 Lecture 10",
+    "section": "Run Context I",
+    "text": "Run Context I\n\nrun_location indicates direction\n\n\n\nrun_gap:\n\n\"guard\": runs through B gap (b/w guard & tackles)\n\"tackle\": run through C gap (outside tackle or b/w tackle & end)\n\"end\": run through D gap (outside TE)\nNA: run through A gap (b/w center & guard)"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_10.html#run-context-ii",
+    "href": "slides/raw_slides/slides_10.html#run-context-ii",
+    "title": "STAT 479 Lecture 10",
+    "section": "Run Context II",
+    "text": "Run Context II\n\nWe will create a new variable run_context\nConcatenate run_location & run_gap when both not NA\nFor “A” gap runs, run_context = \"middle\"\nFor sacks & fumbles, set run_context = \"other\"\nAdditionally add posteam: proxy for offensive linemen & blockers"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_10.html#team-strengths",
+    "href": "slides/raw_slides/slides_10.html#team-strengths",
+    "title": "STAT 479 Lecture 10",
+    "section": "Team Strengths",
+    "text": "Team Strengths\n\nImportant to account for teammates & opponent quality (recall Lecture 4)\n\nDon’t overly reward players on good teams\nDon’t overly penalize players on bad teams\n\nMeasure passing & rushing strength with mean EPA\nAdd columns to pass2024 and rush2024"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_10.html#composite-outcomes",
+    "href": "slides/raw_slides/slides_10.html#composite-outcomes",
+    "title": "STAT 479 Lecture 10",
+    "section": "Composite Outcomes",
+    "text": "Composite Outcomes\n\n\\(\\Delta\\): observed EPA on a passing play\n\\(\\delta_{\\textrm{air}}\\) and \\(\\delta_{\\textrm{yac}}\\): air_epa and yac_epa given by nflfastR\nDecompose \\(\\Delta = \\Delta_{\\textrm{air}} + \\Delta_{\\textrm{yac}}\\) where \\[\n\\Delta_{\\textrm{air}} =\n\\begin{cases}\n\\delta_{\\textrm{air}} & \\textrm{if the pass is caught} \\\\\n\\Delta & \\textrm{if the pass is incomplete,}\n\\end{cases}\n\\] and \\[\n\\Delta_{\\textrm{yac}} =\n\\begin{cases}\n\\delta_{\\textrm{yac}} & \\textrm{if the pass is caught} \\\\\n0 & \\textrm{if the pass is incomplete.}\n\\end{cases}\n\\]"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_10.html#modeling-delta_textrmair",
+    "href": "slides/raw_slides/slides_10.html#modeling-delta_textrmair",
+    "title": "STAT 479 Lecture 10",
+    "section": "Modeling \\(\\Delta_{\\textrm{air}}\\)",
+    "text": "Modeling \\(\\Delta_{\\textrm{air}}\\)\n\\[\n\\begin{align}\n\\Delta_{i, \\textrm{air}} &= Q_{q[i]} + C_{c[i]} + D_{d[i]} + \\boldsymbol{\\mathbf{x}}_{i}^{\\top}\\boldsymbol{\\beta} + \\epsilon_{i}\\\\\nQ_{q} &\\sim N(\\mu_{Q}, \\sigma^{2}_{Q})\\\\\nC_{c} &\\sim N(\\mu_{C}, \\sigma^{2}_{C})\\\\\nD_{d} &\\sim N(\\mu_{D}, \\sigma^{2}_{D}).\n\\end{align}\n\\]\n\nFixed effects include:\n\nair_yards, shotgun, qb_hit, no_huddle\npostteam_type (i.e. Home/Away), pass_location\nreceiver_position & rush_strength\n\nRandom intercepts for Quarterback, reCeiver, and Defense"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_10.html#model-interpretation",
+    "href": "slides/raw_slides/slides_10.html#model-interpretation",
+    "title": "STAT 479 Lecture 10",
+    "section": "Model Interpretation",
+    "text": "Model Interpretation\n\n\\(Q_{q}\\) : Per-pass EP added through air by passer \\(q\\) after adjusting for fixed effects\n\\(C_{c}\\): per-pass EP added when ball in air by receiver \\(c\\) after adjusting for fixed effects\n\\(D_{d}\\): per-pass EP added by offensive team when ball in air while facing defense \\(d\\)\n\nNegative \\(D_{d}\\) are good for the defense!\n\nModel: \\(Q_{q}, C_{c}\\) and \\(D_{d}\\) noisy deviations from league-wide averages \\(\\mu_{Q}, \\mu_{C},\\) and \\(\\mu_{D}.\\)\n\n\n\nCannot estimate the individual \\(Q_{q}\\)’s, \\(C_{c}\\)’s, or \\(D_{d}\\)’s\nCannot estimate the global averages \\(\\mu_{Q}, \\mu_{C},\\) or \\(\\mu_{D}\\)\nThese parameters are not identifiable with the data alone\nLuckily: we can estimate deviations (e.g., \\(Q_{q} - \\mu_{Q}\\))"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_10.html#individual-points-added-over-average",
+    "href": "slides/raw_slides/slides_10.html#individual-points-added-over-average",
+    "title": "STAT 479 Lecture 10",
+    "section": "Individual Points Added over Average",
+    "text": "Individual Points Added over Average\n\nFor passer \\(q\\), let \\(\\textrm{IPA}^{(Q)}_{\\textrm{air}, q} = Q_{q} - \\mu_{Q}\\)\nHow much more EP does \\(q\\) add per play than league-average\nSimilarly \\(\\textrm{IPA}^{(C)}_{\\textrm{air}, c}\\) and \\(\\textrm{IPA}^{(D)}_{\\textrm{air}, d}.\\)"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_10.html#modeling-delta_textrmyac",
+    "href": "slides/raw_slides/slides_10.html#modeling-delta_textrmyac",
+    "title": "STAT 479 Lecture 10",
+    "section": "Modeling \\(\\Delta_{\\textrm{yac}}\\)",
+    "text": "Modeling \\(\\Delta_{\\textrm{yac}}\\)\n\nFit a nearly-identical multilevel model using only completed passes\n\n\n\nlmer threw warning about singularity\n\nEstimated no passer-to-passer variation\nIntuition: once catch is made, passer doesn’t make a difference in terms of EPA."
+  },
+  {
+    "objectID": "slides/raw_slides/slides_10.html#handling-qb-runs",
+    "href": "slides/raw_slides/slides_10.html#handling-qb-runs",
+    "title": "STAT 479 Lecture 10",
+    "section": "Handling QB Runs",
+    "text": "Handling QB Runs\n\nPlay-by-play data doesn’t distinguish between\n\nDesigned QB runs\nScrambles on broken plays\n\nWe will fit two separate models for EPA on rushing plays"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_10.html#multilevel-models",
+    "href": "slides/raw_slides/slides_10.html#multilevel-models",
+    "title": "STAT 479 Lecture 10",
+    "section": "Multilevel Models",
+    "text": "Multilevel Models\n\nQB Run Model:\n\nFixed effects: shotgun, no_huddle, posteam_type, pass_strength\nRandom intercepts: rusher_player_id & defteam\n\nNon-QB Model\n\nFixed effects: same as QB-model + rusher_position & run_context\nRandom intercepts: same as QB-model\n\nUse ranef() to extract \\(\\textrm{IPA}^{(R)}_{r}\\) for Runner r"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_10.html#total-individual-points-added-above-average",
+    "href": "slides/raw_slides/slides_10.html#total-individual-points-added-above-average",
+    "title": "STAT 479 Lecture 10",
+    "section": "Total Individual Points Added Above Average",
+    "text": "Total Individual Points Added Above Average\n\nFor every offensive player, estimate how more EP they add per-play than league-average\n\nThrough the air (\\(\\textrm{IPA}^{(Q)}_{\\textrm{air}, q}\\), \\(\\textrm{IPA}^{(C)}_{\\textrm{air}, c}\\))\nAfter the catch (\\(\\textrm{IPA}^{(Q)}_{\\textrm{yac}, q}\\), \\(\\textrm{IPA}^{(C)}_{\\textrm{yac}, c}\\))\nRushing (\\(\\textrm{IPA}^{(R)}_{r}\\))\n\nMultiplying \\(\\textrm{IPA}\\) by number of attempts yields \\(\\textrm{IPAA}\\): total points added above average"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_10.html#replacement-level",
+    "href": "slides/raw_slides/slides_10.html#replacement-level",
+    "title": "STAT 479 Lecture 10",
+    "section": "Replacement Level",
+    "text": "Replacement Level\n\nMultilevel models involved global-averages \\(\\mu_{Q}, \\mu_{C}, \\mu_{R}\\)\n\nRepresent the average latent intercept across theoretical super-population\nAssumption: observed players are randomly sampled from this super-population\n\nNot strictly correct to say IPA measures contribution above “league-average”\n\n\n\nWill define roster-based thresholds for “replacement level”\nConstruct a replacement-level “shadow”\n\nCompute average \\(\\textrm{IPA}\\) for replacement-level players\nShadow IPAA: multiply avg. replacement-level IPA by attempts\nCompare observed IPAA to shadow IPAA"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_10.html#defining-replacement-level",
+    "href": "slides/raw_slides/slides_10.html#defining-replacement-level",
+    "title": "STAT 479 Lecture 10",
+    "section": "Defining Replacement Level",
+    "text": "Defining Replacement Level\n\nMost rosters: 3 running backs, 4 wide receivers, 2 tight ends\nCreate separate thresholds for position & type of play\nFor passing plays:\n\nTop \\(32 \\times 4\\) WRs sorted by n_rec\nTop \\(32 \\times 2\\) TEs sorted by n_rec\nTop \\(32 \\times 3\\) RB\n\nFor running plays\n\nTop \\(32 \\times 3\\) RBs sorted by n_runs\nTop \\(32 \\times 1\\) WR & TEs sorted by n_runs"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_10.html#replacement-level-qb",
+    "href": "slides/raw_slides/slides_10.html#replacement-level-qb",
+    "title": "STAT 479 Lecture 10",
+    "section": "Replacement-level QB",
+    "text": "Replacement-level QB\n\nEvery offensive play runs through the QB\nIdea 1: designate one QB per team as non-replacement\n\nE.g., QB w/ most rushing & passing attempts\nProblem: assumes every NFL team has at least one non-replacement QB\n\nIdea 2: sort QBs by total number of passes & rushes & take top-32"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_10.html#converting-points-to-wins",
+    "href": "slides/raw_slides/slides_10.html#converting-points-to-wins",
+    "title": "STAT 479 Lecture 10",
+    "section": "Converting Points to Wins",
+    "text": "Converting Points to Wins\n\nIPAR are on point-differential scale\nFind \\(\\alpha\\) & \\(\\beta\\) s.t. \\(\\textrm{Wins} \\approx \\alpha + \\beta \\times \\textrm{PtsDiff}\\)\nThen multiply IPAR values by \\(\\beta\\)\n\n\n\n\n\n\n\n\n\nFigure 1: Scoring differential is positively associated with wins"
+  },
+  {
     "objectID": "slides/raw_slides/slides_08.html#offensive-credit-allocation",
     "href": "slides/raw_slides/slides_08.html#offensive-credit-allocation",
-    "title": "STAT 479: Lecture 8",
+    "title": "STAT 441: Lecture 8",
     "section": "Offensive Credit Allocation",
     "text": "Offensive Credit Allocation\n\nDuring at-bat \\(i\\), batting team generates \\(\\delta_{i}\\) run value\nLecture 7: divide \\(\\delta_{i}\\) b/w batter and baserunners\nConservation of run value: if batting team gains \\(\\delta\\), fielding team gains \\(-\\delta\\)\nToday: divide \\(-\\delta_{i}\\) b/w pitcher and fielders"
   },
   {
     "objectID": "slides/raw_slides/slides_08.html#two-possibilities",
     "href": "slides/raw_slides/slides_08.html#two-possibilities",
-    "title": "STAT 479: Lecture 8",
+    "title": "STAT 441: Lecture 8",
     "section": "Two Possibilities",
     "text": "Two Possibilities\n\nBall is not put in play during at-bat\n\nAt-bat ends w/ homerun, strikeout, walk\nPitcher deserves all credit (or blame)\n\n\n\n\nBall is put in play (e.g., flyout, groundout, single, double, triple, etc.)\n\n\\(\\hat{p}\\): probability of making an out (based on location)\nGive \\(\\delta^{(p)} = -\\delta \\times (1-\\hat{p})\\) to the pitcher\nDivide \\(\\delta^{(f)} = -\\delta \\times \\hat{p}\\) among other fielders"
   },
   {
     "objectID": "slides/raw_slides/slides_08.html#transformed-coordinates",
     "href": "slides/raw_slides/slides_08.html#transformed-coordinates",
-    "title": "STAT 479: Lecture 8",
+    "title": "STAT 441: Lecture 8",
     "section": "Transformed Coordinates",
     "text": "Transformed Coordinates\n\nTransform: x = 2.5 * (hc_x - 125.42) & y = 2.5 * (198.27 - hc_y)\nDefine new coordinate system where\n\nHome plate at bottom of plot at (0,0)\nUnits are in feet\nFirst base on the right around (90/sqrt(2), 90/sqrt(2))"
   },
   {
     "objectID": "slides/raw_slides/slides_08.html#more-data-preparation",
     "href": "slides/raw_slides/slides_08.html#more-data-preparation",
-    "title": "STAT 479: Lecture 8",
+    "title": "STAT 441: Lecture 8",
     "section": "More Data Preparation",
     "text": "More Data Preparation\n\ndef_atbat2024: at-bat level data table containing\n\nPitcher & fielder identities\nBatted ball locations & fielder position\nEnding values of type and events: i.e. end_type and end_events\n\nUseful for determining at-bat level outcomes\n\nNarrative descriptions: des\n\nSee lecture notes for full code"
   },
   {
     "objectID": "slides/raw_slides/slides_08.html#generalized-additive-model",
     "href": "slides/raw_slides/slides_08.html#generalized-additive-model",
-    "title": "STAT 479: Lecture 8",
+    "title": "STAT 441: Lecture 8",
     "section": "Generalized Additive Model",
     "text": "Generalized Additive Model\n\\[\n\\log\\left(\\frac{\\mathbb{P}(\\textrm{out})}{1 - \\mathbb{P}(\\textrm{out})} \\right) = s(x,y),\n\\]\n\n\\(s(x,y)\\) is a smooth function in both \\(x\\) and \\(y\\)\n\nTechnically: \\(s(x,y) = \\sum_{d=1}^{D}{\\beta_{d}\\phi_{d}(x,y)}\\)\n\\(\\phi_{1}, \\ldots, \\phi_{D}\\): fixed set of spline functions\n\\(\\phi_{d}\\) piecewise polynomial localized to small spatial region\n\nCan be fit using the mgcv package"
   },
   {
     "objectID": "slides/raw_slides/slides_08.html#defining-deltap-and-deltaf",
     "href": "slides/raw_slides/slides_08.html#defining-deltap-and-deltaf",
-    "title": "STAT 479: Lecture 8",
+    "title": "STAT 441: Lecture 8",
     "section": "Defining \\(\\delta^{(p)}\\) and \\(\\delta^{(f)}\\)",
     "text": "Defining \\(\\delta^{(p)}\\) and \\(\\delta^{(f)}\\)\n\nDivide run value \\(\\delta\\) into\n\n\\(\\delta^{(f)} = -1 \\times \\hat{p} \\times \\delta\\)\n\\(\\delta^{(p)} = -1 \\times (1 - \\hat{p}) \\times \\delta\\)\n\n\n\n\n\\(\\delta_{i}^{(p)} = -1 \\times (1 - \\hat{p}_{i}) \\times \\delta_{i}\\)\n\nRun value created by pitcher in at-bat \\(i\\)\nPositive values indicate good performance\n\n\\(\\textrm{RAA}^{(p)}\\): sum \\(\\delta_{i}^{(p)}\\)’s across each pitchers at-bats"
   },
   {
     "objectID": "slides/raw_slides/slides_08.html#fielding-responsibility",
     "href": "slides/raw_slides/slides_08.html#fielding-responsibility",
-    "title": "STAT 479: Lecture 8",
+    "title": "STAT 441: Lecture 8",
     "section": "Fielding Responsibility",
     "text": "Fielding Responsibility\n\nSay ball hit towards gap b/w 1st base and right field\n\nBatting team creates large positive \\(\\delta\\)\n\\(\\hat{p} \\approx 0\\)\n\\(\\delta^{(f)}\\) is large and negative\n\nHow much blame should third baseman receive?"
   },
   {
     "objectID": "slides/raw_slides/slides_08.html#fielder-out-probabilities",
     "href": "slides/raw_slides/slides_08.html#fielder-out-probabilities",
-    "title": "STAT 479: Lecture 8",
+    "title": "STAT 441: Lecture 8",
     "section": "Fielder Out Probabilities",
     "text": "Fielder Out Probabilities\n\n1B Out Prob3B Out ProbRF Out Prob\n\n\n\n\n\n\n\n\n\n\nFigure 1\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 2"
   },
   {
     "objectID": "slides/raw_slides/slides_08.html#position-weights",
     "href": "slides/raw_slides/slides_08.html#position-weights",
-    "title": "STAT 479: Lecture 8",
+    "title": "STAT 441: Lecture 8",
     "section": "Position Weights",
     "text": "Position Weights\n\nIdea: assign \\(w_{\\ell} \\delta^{(f)}\\) to fielder at position \\(\\ell\\) \\[\nw_{\\ell} = \\frac{\\hat{p}_{\\ell}}{\\hat{p}_{1} + \\cdots + \\hat{p}_{9}}\n\\]\n\\(\\hat{p}_{\\ell}\\): prob. that fielder position \\(\\ell\\) makes out based on location\nCan estimate \\(\\hat{p}_{\\ell}\\) with fielder-specific GAMs\n\nSee lecture notes for code\nTakes ~10-15 minutes to run\n\nNumerical stability: restrict to balls w/in 150ft of typical fielder location\n\nI.e., balls hit to deep left field likely irrelevant for first baseman model"
   },
   {
     "objectID": "slides/raw_slides/slides_08.html#position-weights-examples",
     "href": "slides/raw_slides/slides_08.html#position-weights-examples",
-    "title": "STAT 479: Lecture 8",
+    "title": "STAT 441: Lecture 8",
     "section": "Position Weights Examples",
     "text": "Position Weights Examples\n\n1B Weight3B WeightRF Weight\n\n\n\n\n\n\n\n\n\n\nFigure 3\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 4\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 5"
   },
   {
     "objectID": "slides/raw_slides/slides_08.html#run-value-by-fielding-position",
     "href": "slides/raw_slides/slides_08.html#run-value-by-fielding-position",
-    "title": "STAT 479: Lecture 8",
+    "title": "STAT 441: Lecture 8",
     "section": "Run Value by Fielding Position",
     "text": "Run Value by Fielding Position\n\nFor each at-bat \\(i\\) assign \\(w_{i,\\ell}\\delta_{i}^{(f)}\\) to player at position \\(\\ell\\)\nSums these values for each player-position to get \\(\\textrm{RAA}_{\\ell}^{(f)}\\)\n\nSome players play multiple positions in the field\n\n\\(\\textrm{RAA}_{\\ell}^{(f)}\\): run value created by playing position \\(\\ell\\)\n\\(\\textrm{RAA}^{(f)} = \\textrm{RAA}^{(f)}_{1} + \\cdots + \\textrm{RAA}^{(f)}_{9}\\)"
   },
   {
     "objectID": "slides/raw_slides/slides_08.html#recap",
     "href": "slides/raw_slides/slides_08.html#recap",
-    "title": "STAT 479: Lecture 8",
+    "title": "STAT 441: Lecture 8",
     "section": "Recap",
     "text": "Recap\n\n\\(\\textrm{RAA} = \\textrm{RAA}^{(b)} + \\textrm{RAA}^{(br)} + \\textrm{RAA}^{(f)} + \\textrm{RAA}^{(p)}\\)\nComprehensive measure of player performance in all parts of the game\nAbsolute \\(\\textrm{RAA}\\) are interesting…\n… but are much more useful when calibrated to some baseline"
   },
   {
     "objectID": "slides/raw_slides/slides_08.html#replacement-level-1",
     "href": "slides/raw_slides/slides_08.html#replacement-level-1",
-    "title": "STAT 479: Lecture 8",
+    "title": "STAT 441: Lecture 8",
     "section": "Replacement Level",
     "text": "Replacement Level\n\nQuoting from FanGraphs\n\n\nReplacement level is simply the level of production you could get from a player that would cost you nothing but the league minimum salary to acquire.\n\n\n\nDefinition is fairly arbitrary!\n\n\nwe believe that a team making the MLB minimum would win about 29.7% of its games in a give year, or roughly 47-48 per team"
   },
   {
     "objectID": "slides/raw_slides/slides_08.html#roster-based-definition",
     "href": "slides/raw_slides/slides_08.html#roster-based-definition",
-    "title": "STAT 479: Lecture 8",
+    "title": "STAT 441: Lecture 8",
     "section": "Roster-based Definition",
     "text": "Roster-based Definition\n\nMost MLB teams carry 12 pitchers & 13 position players\nOn any given day:\n\n\\(30 \\times 12 = 360\\) available pitchers\n\\(30 \\times 13 = 390\\) available position players\n\nSort position players by number of at-bats in which they batted\n\nTop 390: not-replacement\n\nSort pitchers by numbers of at-bats in which they pitched\n\nTop 360: not-replacement"
   },
   {
     "objectID": "slides/raw_slides/slides_08.html#replacement-level-per-at-bat-raa",
     "href": "slides/raw_slides/slides_08.html#replacement-level-per-at-bat-raa",
-    "title": "STAT 479: Lecture 8",
+    "title": "STAT 441: Lecture 8",
     "section": "Replacement-Level Per-At-Bat RAA",
     "text": "Replacement-Level Per-At-Bat RAA\n\nIf we replace Ohtani w/ a replacement-level player, what \\(\\textrm{RAA}\\) values would they achieve?\nIdea: multiply Ohtani’s number of at-bats by average per-at-bat \\(\\textrm{RAA}\\) of replacement-level players\nDivide total \\(\\textrm{RAA}\\) for all replacement-level players by total number of at-bats"
   },
   {
     "objectID": "slides/raw_slides/slides_08.html#looking-ahead",
     "href": "slides/raw_slides/slides_08.html#looking-ahead",
-    "title": "STAT 479: Lecture 8",
+    "title": "STAT 441: Lecture 8",
     "section": "Looking Ahead",
     "text": "Looking Ahead\n\nAdjusted Office Hours:\n\nToday: 4pm - 5:30pm in MH 5586\nWednesday: 4pm - 5pm in MH 5586 (not 3pm!)\n\nBefore Lecture 9: please read Chapters 7 & 8 of Beyond Multiple Linear Regression"
   },
@@ -502,6 +649,16 @@
     "title": "STAT 441 Lecture 2",
     "section": "Project Groups",
     "text": "Project Groups\n\nForm groups by Friday September 11\nUse Piazza to find group members"
+  },
+  {
+    "objectID": "slides/lecture10.html",
+    "href": "slides/lecture10.html",
+    "title": "Lecture 10: NFL WAR",
+    "section": "",
+    "text": "You can view the presentation in a full screen window here. Code for the lecture is available at this link",
+    "crumbs": [
+      "Lecture 10: NFL WAR"
+    ]
   },
   {
     "objectID": "slides/lecture08.html",
@@ -2224,6 +2381,16 @@
     ]
   },
   {
+    "objectID": "slides/lecture09.html",
+    "href": "slides/lecture09.html",
+    "title": "Lecture 9: Multilevel Models",
+    "section": "",
+    "text": "You can view the presentation in a full screen window here. Code for the lecture is available at this link",
+    "crumbs": [
+      "Lecture 9: Multilevel Models"
+    ]
+  },
+  {
     "objectID": "slides/raw_slides/slides_01.html#lectures-office-hours",
     "href": "slides/raw_slides/slides_01.html#lectures-office-hours",
     "title": "STAT 441 Lecture 1",
@@ -2754,5 +2921,103 @@
     "title": "STAT 441 Lecture 7",
     "section": "Looking Ahead",
     "text": "Looking Ahead\n\nDivided run value \\(\\delta_{i}\\) b/w batting & baserunning\nNext time: divide \\(-\\delta_{i}\\) b/w pitching & fielding"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_09.html#comparing-football-plays",
+    "href": "slides/raw_slides/slides_09.html#comparing-football-plays",
+    "title": "STAT 441 Lecture 9",
+    "section": "Comparing Football Plays",
+    "text": "Comparing Football Plays\n\nWhich of these two touchdown plays is more impressive?\n\n86-yard touchdown pass from Justin Herbert to Ladd McConckey (video link)\n64-yard touchdown pass from Cooper Rush to KaVontae Turpin (video link)\n\n\n\n\nPlays share many similarities but important differences\n\nContext: down & distance, time left, score\nTime of pass: number of pass rushers, pocket integrity\nReceiver’s actions after the catch\n\n\n\n\n\nToday: expected points facilitated nuanced comparison\nMultilevel models to determine which passers generate most EP per attempt"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_09.html#overivew",
+    "href": "slides/raw_slides/slides_09.html#overivew",
+    "title": "STAT 441 Lecture 9",
+    "section": "Overivew",
+    "text": "Overivew\n\nGoal: estimate avg. number of points eventually scored by teams from similar situation\nEPA: diff. in post- and pre-play EP\n\n\\(\\textrm{EPA} &gt; 0\\): successful for offense\n\\(\\textrm{EPA} &lt; 0\\): unsuccessful for offense\n\nnflfastR’s EP model to predict next scoring event in half\n\nTouchdown (7), field goal (3), safety (2)\nOpposing touchdown (-7), field goal (-3), and safety (-2)\nNo score (0)"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_09.html#expected-points-1",
+    "href": "slides/raw_slides/slides_09.html#expected-points-1",
+    "title": "STAT 441 Lecture 9",
+    "section": "Expected Points",
+    "text": "Expected Points\n\nVector of next score probabilities given play features \\(\\boldsymbol{\\mathbf{z}}\\): \\(\\boldsymbol{\\pi}(\\boldsymbol{\\mathbf{z}}) = (\\pi_{\\textrm{TD}}(\\boldsymbol{\\mathbf{z}}), \\ldots, \\pi_{\\textrm{oppFG}}(\\boldsymbol{\\mathbf{z}}))\\)\nEstimated w/ regression tree ensemble using XGBoost\n\n\n\n\nDefinition: Expected Points\n\n\nGiven a game state feature vector \\(\\boldsymbol{\\mathbf{z}}\\) and vector of drive outcome probabilities \\(\\boldsymbol{\\pi}(\\boldsymbol{\\mathbf{z}}),\\) the expected points \\(\\textrm{EP}(\\boldsymbol{\\mathbf{z}})\\) is \\[\n\\begin{align}\n\\textrm{EP}(\\boldsymbol{\\mathbf{z}}) &=  7\\times\\pi_{\\textrm{TD}}(\\boldsymbol{\\mathbf{z}}) +\n3\\times\\pi_{\\textrm{FG}}(\\boldsymbol{\\mathbf{z}}) +\n2\\times\\pi_{\\textrm{SAF}}(\\boldsymbol{\\mathbf{z}}) \\\\\n~&~~-2\\times\\pi_{\\textrm{oSAF}}(\\boldsymbol{\\mathbf{z}}) -\n3\\times\\pi_{\\textrm{oFG}}(\\boldsymbol{\\mathbf{z}})\n- 7\\times\\pi_{\\textrm{oTD}}(\\boldsymbol{\\mathbf{z}})\n\\end{align}\n\\]"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_09.html#league-average",
+    "href": "slides/raw_slides/slides_09.html#league-average",
+    "title": "STAT 441 Lecture 9",
+    "section": "League-Average",
+    "text": "League-Average\n\nEPA on a future pass if you don’t know anything else?\nIs the league average mean(pbp2024$epa) reasonable?"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_09.html#player-specific-model",
+    "href": "slides/raw_slides/slides_09.html#player-specific-model",
+    "title": "STAT 441 Lecture 9",
+    "section": "Player-Specific Model",
+    "text": "Player-Specific Model\n\nWould your prediction change if you knew passer identity?\n\nIf Patrick Mahomes was throwing the pass, expect higher EPA\nIf Daniel Jones was throwing the pass, expect lower EPA\n\n\n\n\n\\(I\\): number of unique passers in data set\n\\(Y_{ij}\\): EPA on pass \\(j\\) thrown by player \\(i\\)\n\\(\\alpha_{i}\\): avg. EPA/pass for player \\(i\\) (unknown)\nModel: \\(Y_{ij} = \\alpha_{i} + \\epsilon_{ij}\\)"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_09.html#estimating-alpha_i",
+    "href": "slides/raw_slides/slides_09.html#estimating-alpha_i",
+    "title": "STAT 441 Lecture 9",
+    "section": "Estimating \\(\\alpha_{i}\\)",
+    "text": "Estimating \\(\\alpha_{i}\\)\n\nIdea 1: group by passer_player_id & compute mean(epa) for each player\nEquivalent (and more extensible): fit a linear model w/ least squares\n\nRegress epa on categorical passer_player_id\nMust convert passer_player_id to a factor variable\nUseful to manually set reference player (e.g., Aaron Rodgers)\n\nEstimates \\(\\beta_{0} = \\alpha_{\\textrm{Rodgers}}\\) and \\(\\beta_{i} = \\alpha_{i} - \\alpha_{\\textrm{Rodgers}}\\)"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_09.html#partial-pooling",
+    "href": "slides/raw_slides/slides_09.html#partial-pooling",
+    "title": "STAT 441 Lecture 9",
+    "section": "Partial Pooling",
+    "text": "Partial Pooling\n\nIf \\(i\\) threw many passes, \\(\\hat{\\alpha}_{i}\\) accurately estimates latent ability \\(\\alpha_{i}\\)\n\nPrefer to use \\(\\hat{\\alpha}_{i}\\) over global mean \\(\\overline{y}\\)\n\nIf \\(i\\) threw very few passes, \\(\\hat{\\alpha}_{i}\\) can be very noisy\n\nGlobal mean \\(\\overline{y}\\) arguably better than \\(\\hat{\\alpha}_{i}\\)\n\nWhat about for players b/w extremes?\n\n\n\nIdea: \\(w_{i} \\times \\hat{\\alpha}_{i} + (1 - w_{i}) \\times \\overline{y}\\)\n\nIf \\(n_{i}\\) very large, \\(w_{i}\\) should be closer to 1\nIf \\(n_{i}\\) very small, \\(w_{i}\\) should be closer to 0\n\nProblem: how to specify weights in data-driven way?"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_09.html#model-specification",
+    "href": "slides/raw_slides/slides_09.html#model-specification",
+    "title": "STAT 441 Lecture 9",
+    "section": "Model Specification",
+    "text": "Model Specification\n\nLevel 1: observed EPA for player \\(i\\) normally distributed around \\(\\alpha_{i}\\)\nLevel 2: Latent player abilities \\(\\alpha_{i}\\)’s are themselves normally distributed around \\(\\mu\\) \\[\n\\begin{align}\n\\textrm{Level 1}&: &\\quad  Y_{ij} &= \\alpha_{i} + \\epsilon_{ij}; \\epsilon_{ij} \\sim N(0, \\sigma^{2}) \\quad \\textrm{for all}\\ j = 1, \\ldots, n_{i},\\ i = 1, \\ldots, I \\\\\n\\textrm{Level 2}&: &\\quad \\alpha_{i} &= \\alpha_{0} + u_{i}; u_{i} \\sim N(0, \\sigma^{2}_{\\alpha}) \\quad \\textrm{for all}\\ i = 1, \\ldots, I\n\\end{align}\n\\]\n\\(\\alpha_{0}\\): average per-pass EPA over super-population of passers\n\\(\\sigma\\) captures “within-player” variability in EPA pass-to-pass\n\\(\\sigma_{\\alpha}\\) captures “between-player” variability in per-pass EPA\n\n\n\nLevel 2 responses \\(\\alpha_{i}\\) are not observable\n“Borrowing strength”: predition for player \\(i'\\) informed by their data and everyone else’s data\n\nEstimate of \\(\\alpha_{i}\\) informed by \\(i\\)’s data **and \\(\\alpha_{0}\\)\nEstimates of \\(\\alpha_{i}\\) determine estimate of \\(\\alpha_{0}\\)"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_09.html#hierarchical-structure",
+    "href": "slides/raw_slides/slides_09.html#hierarchical-structure",
+    "title": "STAT 441 Lecture 9",
+    "section": "Hierarchical Structure",
+    "text": "Hierarchical Structure\n\nOften data exhibits hierarchical grouping structure\n\nPasses group by QB, players in teams etc.\n\nGrouping variable may be relevant to outcome & induces correlation\nOutcomes from same group may be tightly clustered around group average"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_09.html#fitting-multilevel-models",
+    "href": "slides/raw_slides/slides_09.html#fitting-multilevel-models",
+    "title": "STAT 441 Lecture 9",
+    "section": "Fitting Multilevel Models",
+    "text": "Fitting Multilevel Models\n\nThe (1 | passer_player_id) tells lmer() to include a random intercept for each passer\n\n\nlibrary(lme4)\nmultilevel_fit &lt;-\n  lmer(formula = epa ~ 1 + (1|passer_player_id), \n       data = pass2024)"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_09.html#extracting-estimates",
+    "href": "slides/raw_slides/slides_09.html#extracting-estimates",
+    "title": "STAT 441 Lecture 9",
+    "section": "Extracting Estimates",
+    "text": "Extracting Estimates\n\nUse ranef() to extract estimates \\(\\hat{u}_{i}\\)’s\nUse coef to get \\(\\hat{\\alpha}_{i} = \\hat{\\alpha}_{0} + \\hat{u}_{i}\\)\n\nOnly valid when there is one grouping variable\nW/ more grouping variables, random intercepts not identified\n\ncoef() and ranef() return lists w/ one element per grouping variable\n\nEach list element is a data table\n\n\n\ntmp &lt;- coef(multilevel_fit)"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_09.html#adjusting-for-additional-covariates",
+    "href": "slides/raw_slides/slides_09.html#adjusting-for-additional-covariates",
+    "title": "STAT 441 Lecture 9",
+    "section": "Adjusting For Additional Covariates",
+    "text": "Adjusting For Additional Covariates\n\nSimple model doesn’t account for formation, whether QB was hit while throwing, etc.\n\\(\\boldsymbol{\\mathbf{x}}\\) contains: air_yards, shotgun, qb_hit, pass_location, posteam_type\nEffects of these factors are constant (i.e., fixed) across all passers \\[\n\\begin{align}\n\\textrm{Level 1}&: &\\quad  Y_{ij} &= \\alpha_{i} + \\boldsymbol{\\mathbf{x}}_{ij}^{\\top}\\boldsymbol{\\beta} +  \\epsilon_{ij}; \\quad \\epsilon_{ij} \\sim N(0, \\sigma^{2}) \\\\\n\\textrm{Level 2}&: &\\quad \\alpha_{i} &= \\alpha_{0} + u_{i}; \\quad u_{i} \\sim N(0, \\sigma^{2}_{\\alpha})\n\\end{align}\n\\]"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_09.html#fitting-our-elaborate-model",
+    "href": "slides/raw_slides/slides_09.html#fitting-our-elaborate-model",
+    "title": "STAT 441 Lecture 9",
+    "section": "Fitting Our Elaborate Model",
+    "text": "Fitting Our Elaborate Model\n\nml_fit_full &lt;-\n  lme4::lmer(formula = epa ~ 1 + (1|passer_player_id) + \n               air_yards + posteam_type + shotgun +\n               no_huddle + qb_hit + pass_location, data = pass2024)"
+  },
+  {
+    "objectID": "slides/raw_slides/slides_09.html#looking-ahead",
+    "href": "slides/raw_slides/slides_09.html#looking-ahead",
+    "title": "STAT 441 Lecture 9",
+    "section": "Looking Ahead",
+    "text": "Looking Ahead\n\nEPA is based on starting & ending game state\n2 phases of passing play: ball in air + after the catch\nCurrently analysis implicitly credits QBs for both phases\nLecture 10: divide total EPA among relevant offensive players\nDevelop a version of WAR\n\nMultilevel model to estimate per-play contribution\nScale model estimates by opportunities to create replacement-level shadow"
   }
 ]

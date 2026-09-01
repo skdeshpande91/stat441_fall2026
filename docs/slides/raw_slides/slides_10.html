@@ -12,7 +12,7 @@
 <link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.9.38">
 
-  <title>STAT441 – STAT 441: Lecture 8</title>
+  <title>STAT441 – STAT 479 Lecture 10</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -132,332 +132,362 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">STAT 441: Lecture 8</h1>
-  <p class="subtitle">Defensive Credit &amp; WAR</p>
+  <h1 class="title">STAT 479 Lecture 10</h1>
+  <p class="subtitle">NFL WAR</p>
 
 <div class="quarto-title-authors">
 </div>
 
 </section>
-<section>
-<section id="recap-overview" class="title-slide slide level1 center">
-<h1>Recap &amp; Overview</h1>
-
-</section>
-<section id="offensive-credit-allocation" class="slide level2 smaller">
-<h2>Offensive Credit Allocation</h2>
+<section id="recap-epa-in-football" class="slide level2 smaller">
+<h2>Recap: EPA in Football</h2>
 <ul>
-<li>During at-bat <span class="math inline">\(i\)</span>, batting team generates <span class="math inline">\(\delta_{i}\)</span> run value</li>
-<li><a href="../../lectures/lecture07.html">Lecture 7</a>: divide <span class="math inline">\(\delta_{i}\)</span> b/w batter and baserunners</li>
-<li>Conservation of run value: if batting team gains <span class="math inline">\(\delta\)</span>, fielding team gains <span class="math inline">\(-\delta\)</span></li>
-<li>Today: divide <span class="math inline">\(-\delta_{i}\)</span> b/w pitcher and fielders</li>
-</ul>
-</section>
-<section id="two-possibilities" class="slide level2 smaller">
-<h2>Two Possibilities</h2>
+<li>86-yard touchdown by Ladd McConckey on a pass from Justin Herbert (<a href="https://www.youtube.com/watch?v=Hu9flYe2VrA">video link</a>)
 <ul>
-<li>Ball is not put in play during at-bat
+<li>Thrown on a 3rd and 26 from Chargers’ 14 yard line. EP = -1.54</li>
+<li>Chargers generated 7 - (-1.54) = 8.54 points of EP</li>
+</ul></li>
+<li>64-yard touch down by Kavontae Turpin on a pass from Cooper Rush (<a href="https://www.youtube.com/watch?v=U0Zp_is-X18">video link</a>)
 <ul>
-<li>At-bat ends w/ homerun, strikeout, walk</li>
-<li>Pitcher deserves all credit (or blame)</li>
+<li>Thrown on 3rd and 10 from Cowboys’ 36 yard line. EP = 0.77</li>
+<li>Cowboys generated 7 - 0.77 = 6.23 points of EP</li>
 </ul></li>
 </ul>
 <div class="fragment">
 <ul>
-<li>Ball is put in play (e.g., flyout, groundout, single, double, triple, etc.)
+<li>How should we divide credit between QB and receiver?</li>
+<li>What about running?</li>
+</ul>
+</div>
+</section>
+<section id="plan" class="slide level2 smaller">
+<h2>Plan</h2>
 <ul>
-<li><span class="math inline">\(\hat{p}\)</span>: probability of making an out (based on location)</li>
-<li>Give <span class="math inline">\(\delta^{(p)} = -\delta \times (1-\hat{p})\)</span> to the pitcher</li>
-<li>Divide <span class="math inline">\(\delta^{(f)} = -\delta \times \hat{p}\)</span> among other fielders</li>
+<li>Estimate EPA <strong>per-play</strong> for each passer, receiver, &amp; rusher</li>
+<li>Separately model three phases:
+<ul>
+<li>Passing I: EPA due to actions while ball is in the air</li>
+<li>Passing II: EPA due to yards after catch</li>
+<li>Rushing</li>
+</ul></li>
+<li>Multi-level modeling:
+<ul>
+<li>Random intercepts for passers, receivers, rushers</li>
+<li>Must adjust for important fixed effects</li>
+</ul></li>
+</ul>
+<div class="fragment">
+<ul>
+<li>W/ per-play EPA can compare actual production to replacement “shadow”</li>
+<li>These contrasts will lead to a version of WAR</li>
+</ul>
+</div>
+</section>
+<section>
+<section id="data-preparation" class="title-slide slide level1 center">
+<h1>Data Preparation</h1>
+
+</section>
+<section id="overview" class="slide level2 smaller">
+<h2>Overview</h2>
+<ul>
+<li>Focus on 2024-25 regular season</li>
+<li>Need roster data to define position-specific replacement level</li>
+</ul>
+</section>
+<section id="passing-data" class="slide level2 smaller">
+<h2>Passing Data</h2>
+<ul>
+<li>Extract all passing plays (<code>play_type == "pass"</code>)</li>
+<li>For each pass, record
+<ul>
+<li><code>posteam</code>, <code>defteam</code>, <code>posteamtype</code></li>
+<li><code>passer_player_id</code>, <code>receiver_player_id</code></li>
+<li><code>shotgun</code>, <code>no_huddle</code>, <code>qb_hit</code>, <code>pass_location</code></li>
+<li><code>air_yards</code>, <code>yards_after_catch</code>, <code>completed_pass</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="air-vs-yac-epa" class="slide level2 smaller">
+<h2>Air vs YAC EPA</h2>
+<ul>
+<li>Teams generate EPA on completed passes while
+<ul>
+<li>The ball is in the air</li>
+<li>On the ground, after the catch</li>
+</ul></li>
+<li><strong>nflfastR</strong> decomposes <code>epa</code> into <code>air_epa</code> and <code>yac_epa</code></li>
+<li>Completed passes: imagine pausing game as soon as catch completed
+<ul>
+<li>EP at the intermediate state used to compute <code>air_epa</code> and <code>yac_epa</code></li>
+</ul></li>
+<li>Sacks: no good definition for <code>air_epa</code> &amp; <code>yac_epa</code>
+<ul>
+<li>We will treat sacks as rushing plays</li>
+</ul></li>
+</ul>
+</section>
+<section id="rushing-data" class="slide level2 smaller">
+<h2>Rushing Data</h2>
+<ul>
+<li>Include columns for
+<ul>
+<li><code>passer_player_id</code> &amp; <code>rusher_player_id</code></li>
+<li><code>shotgun</code> &amp; <code>no_huddle</code></li>
+<li><code>run_location</code> &amp; <code>run_gap</code></li>
+</ul></li>
+<li>Must manually specify <code>rusher_player_id</code> on sacks</li>
+</ul>
+</section>
+<section id="run-context-i" class="slide level2 smaller">
+<h2>Run Context I</h2>
+<ul>
+<li><code>run_location</code> indicates direction</li>
+</ul>
+<div class="fragment">
+<ul>
+<li><code>run_gap</code>:
+<ul>
+<li><code>"guard"</code>: runs through B gap (b/w guard &amp; tackles)</li>
+<li><code>"tackle"</code>: run through C gap (outside tackle or b/w tackle &amp; end)</li>
+<li><code>"end"</code>: run through D gap (outside TE)</li>
+<li><code>NA</code>: run through A gap (b/w center &amp; guard)</li>
 </ul></li>
 </ul>
 </div>
 </section>
-<section id="transformed-coordinates" class="slide level2 smaller">
-<h2>Transformed Coordinates</h2>
+<section id="run-context-ii" class="slide level2 smaller">
+<h2>Run Context II</h2>
 <ul>
-<li>Transform: <code>x = 2.5 * (hc_x - 125.42)</code> &amp; <code>y = 2.5 * (198.27 - hc_y)</code></li>
-<li>Define new coordinate system where
-<ul>
-<li>Home plate at bottom of plot at <code>(0,0)</code></li>
-<li>Units are in feet</li>
-<li>First base on the right around <code>(90/sqrt(2), 90/sqrt(2))</code></li>
-</ul></li>
+<li>We will create a new variable <code>run_context</code></li>
+<li>Concatenate <code>run_location</code> &amp; <code>run_gap</code> when both not <code>NA</code></li>
+<li>For “A” gap runs, <code>run_context = "middle"</code></li>
+<li>For sacks &amp; fumbles, set <code>run_context = "other"</code></li>
+<li>Additionally add <code>posteam</code>: proxy for offensive linemen &amp; blockers</li>
 </ul>
 </section>
-<section id="more-data-preparation" class="slide level2">
-<h2>More Data Preparation</h2>
+<section id="team-strengths" class="slide level2 smaller">
+<h2>Team Strengths</h2>
 <ul>
-<li><code>def_atbat2024</code>: at-bat level data table containing
+<li>Important to account for teammates &amp; opponent quality (recall <a href="../../lectures/lecture04.html#sec-pm-issues">Lecture 4</a>)
 <ul>
-<li>Pitcher &amp; fielder identities</li>
-<li>Batted ball locations &amp; fielder position</li>
-<li>Ending values of <code>type</code> and <code>events</code>: i.e.&nbsp;<code>end_type</code> and <code>end_events</code>
-<ul>
-<li>Useful for determining at-bat level outcomes</li>
+<li>Don’t overly reward players on good teams</li>
+<li>Don’t overly penalize players on bad teams</li>
 </ul></li>
-<li>Narrative descriptions: <code>des</code></li>
-</ul></li>
-<li>See <a href="../../lectures/lecture08.html#sec-hit-location-data">lecture notes</a> for full code</li>
+<li>Measure passing &amp; rushing strength with mean EPA</li>
+<li>Add columns to <code>pass2024</code> and <code>rush2024</code></li>
 </ul>
 </section></section>
 <section>
-<section id="estimating-out-probabilities" class="title-slide slide level1 center">
-<h1>Estimating Out Probabilities</h1>
+<section id="modeling-passing-epa" class="title-slide slide level1 center">
+<h1>Modeling Passing EPA</h1>
 
 </section>
-<section id="generalized-additive-model" class="slide level2">
-<h2>Generalized Additive Model</h2>
+<section id="composite-outcomes" class="slide level2 smaller">
+<h2>Composite Outcomes</h2>
+<ul>
+<li><span class="math inline">\(\Delta\)</span>: observed EPA on a passing play</li>
+<li><span class="math inline">\(\delta_{\textrm{air}}\)</span> and <span class="math inline">\(\delta_{\textrm{yac}}\)</span>: <code>air_epa</code> and <code>yac_epa</code> given by <strong>nflfastR</strong></li>
+<li>Decompose <span class="math inline">\(\Delta = \Delta_{\textrm{air}} + \Delta_{\textrm{yac}}\)</span> where <span class="math display">\[
+\Delta_{\textrm{air}} =
+\begin{cases}
+\delta_{\textrm{air}} &amp; \textrm{if the pass is caught} \\
+\Delta &amp; \textrm{if the pass is incomplete,}
+\end{cases}
+\]</span> and <span class="math display">\[
+\Delta_{\textrm{yac}} =
+\begin{cases}
+\delta_{\textrm{yac}} &amp; \textrm{if the pass is caught} \\
+0 &amp; \textrm{if the pass is incomplete.}
+\end{cases}
+\]</span></li>
+</ul>
+</section>
+<section id="modeling-delta_textrmair" class="slide level2 smaller">
+<h2>Modeling <span class="math inline">\(\Delta_{\textrm{air}}\)</span></h2>
 <p><span class="math display">\[
-\log\left(\frac{\mathbb{P}(\textrm{out})}{1 - \mathbb{P}(\textrm{out})} \right) = s(x,y),
+\begin{align}
+\Delta_{i, \textrm{air}} &amp;= Q_{q[i]} + C_{c[i]} + D_{d[i]} + \boldsymbol{\mathbf{x}}_{i}^{\top}\boldsymbol{\beta} + \epsilon_{i}\\
+Q_{q} &amp;\sim N(\mu_{Q}, \sigma^{2}_{Q})\\
+C_{c} &amp;\sim N(\mu_{C}, \sigma^{2}_{C})\\
+D_{d} &amp;\sim N(\mu_{D}, \sigma^{2}_{D}).
+\end{align}
 \]</span></p>
 <ul>
-<li><span class="math inline">\(s(x,y)\)</span> is a <strong>smooth</strong> function in both <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>
+<li>Fixed effects include:
 <ul>
-<li>Technically: <span class="math inline">\(s(x,y) = \sum_{d=1}^{D}{\beta_{d}\phi_{d}(x,y)}\)</span></li>
-<li><span class="math inline">\(\phi_{1}, \ldots, \phi_{D}\)</span>: fixed set of <em>spline</em> functions</li>
-<li><span class="math inline">\(\phi_{d}\)</span> piecewise polynomial localized to small spatial region</li>
+<li><code>air_yards</code>, <code>shotgun</code>, <code>qb_hit</code>, <code>no_huddle</code></li>
+<li><code>postteam_type</code> (i.e.&nbsp;Home/Away), <code>pass_location</code></li>
+<li><code>receiver_position</code> &amp; <code>rush_strength</code></li>
 </ul></li>
-<li>Can be fit using the <strong>mgcv</strong> package</li>
+<li>Random intercepts for <strong>Q</strong>uarterback, re<strong>C</strong>eiver, and <strong>D</strong>efense</li>
 </ul>
 </section>
-<section id="defining-deltap-and-deltaf" class="slide level2">
-<h2>Defining <span class="math inline">\(\delta^{(p)}\)</span> and <span class="math inline">\(\delta^{(f)}\)</span></h2>
+<section id="model-interpretation" class="slide level2 smaller">
+<h2>Model Interpretation</h2>
 <ul>
-<li>Divide run value <span class="math inline">\(\delta\)</span> into
+<li><span class="math inline">\(Q_{q}\)</span> : Per-pass EP added through air by passer <span class="math inline">\(q\)</span> <em>after adjusting for fixed effects</em></li>
+<li><span class="math inline">\(C_{c}\)</span>: per-pass EP added when ball in air by receiver <span class="math inline">\(c\)</span> <em>after adjusting for fixed effects</em></li>
+<li><span class="math inline">\(D_{d}\)</span>: per-pass EP added by <em>offensive team</em> when ball in air while facing defense <span class="math inline">\(d\)</span>
 <ul>
-<li><span class="math inline">\(\delta^{(f)} = -1 \times \hat{p} \times \delta\)</span></li>
-<li><span class="math inline">\(\delta^{(p)} = -1 \times (1 - \hat{p}) \times \delta\)</span></li>
+<li>Negative <span class="math inline">\(D_{d}\)</span> are good for the defense!</li>
 </ul></li>
+<li>Model: <span class="math inline">\(Q_{q}, C_{c}\)</span> and <span class="math inline">\(D_{d}\)</span> noisy deviations from league-wide averages <span class="math inline">\(\mu_{Q}, \mu_{C},\)</span> and <span class="math inline">\(\mu_{D}.\)</span></li>
 </ul>
 <div class="fragment">
 <ul>
-<li><span class="math inline">\(\delta_{i}^{(p)} = -1 \times (1 - \hat{p}_{i}) \times \delta_{i}\)</span>
-<ul>
-<li>Run value created by pitcher in at-bat <span class="math inline">\(i\)</span></li>
-<li>Positive values indicate good performance</li>
-</ul></li>
-<li><span class="math inline">\(\textrm{RAA}^{(p)}\)</span>: sum <span class="math inline">\(\delta_{i}^{(p)}\)</span>’s across each pitchers at-bats</li>
+<li>Cannot estimate the individual <span class="math inline">\(Q_{q}\)</span>’s, <span class="math inline">\(C_{c}\)</span>’s, or <span class="math inline">\(D_{d}\)</span>’s</li>
+<li>Cannot estimate the global averages <span class="math inline">\(\mu_{Q}, \mu_{C},\)</span> or <span class="math inline">\(\mu_{D}\)</span></li>
+<li>These parameters are not <em>identifiable</em> with the data alone</li>
+<li>Luckily: we can estimate deviations (e.g., <span class="math inline">\(Q_{q} - \mu_{Q}\)</span>)</li>
 </ul>
 </div>
 </section>
-<section id="fielding-responsibility" class="slide level2 smaller">
-<h2>Fielding Responsibility</h2>
+<section id="individual-points-added-over-average" class="slide level2">
+<h2>Individual Points Added over Average</h2>
 <ul>
-<li>Say ball hit towards gap b/w 1st base and right field
-<ul>
-<li>Batting team creates large positive <span class="math inline">\(\delta\)</span></li>
-<li><span class="math inline">\(\hat{p} \approx 0\)</span></li>
-<li><span class="math inline">\(\delta^{(f)}\)</span> is large and negative</li>
-</ul></li>
-<li>How much blame should third baseman receive?</li>
+<li>For passer <span class="math inline">\(q\)</span>, let <span class="math inline">\(\textrm{IPA}^{(Q)}_{\textrm{air}, q} = Q_{q} - \mu_{Q}\)</span></li>
+<li>How much more EP does <span class="math inline">\(q\)</span> add per play than league-average</li>
+<li>Similarly <span class="math inline">\(\textrm{IPA}^{(C)}_{\textrm{air}, c}\)</span> and <span class="math inline">\(\textrm{IPA}^{(D)}_{\textrm{air}, d}.\)</span></li>
 </ul>
 </section>
-<section id="fielder-out-probabilities" class="slide level2">
-<h2>Fielder Out Probabilities</h2>
-<div class="panel-tabset">
-<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">1B Out Prob</a></li><li><a href="#tabset-1-2">3B Out Prob</a></li><li><a href="#tabset-1-3">RF Out Prob</a></li></ul>
-<div class="tab-content">
-<div id="tabset-1-1">
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-1b-pout" class="quarto-float quarto-figure quarto-figure-center" width="480">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-1b-pout-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="slides_08_files/figure-revealjs/fig-1b-pout-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: "><img data-src="slides_08_files/figure-revealjs/fig-1b-pout-1.png" id="fig-1b-pout" width="480"></a>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-1b-pout-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<div id="tabset-1-2">
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-3b-pout" class="quarto-float quarto-figure quarto-figure-center" width="480">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-3b-pout-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="slides_08_files/figure-revealjs/fig-3b-pout-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: "><img data-src="slides_08_files/figure-revealjs/fig-3b-pout-1.png" id="fig-3b-pout" width="480"></a>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-3b-pout-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<div id="tabset-1-3">
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><a href="slides_08_files/figure-revealjs/unnamed-chunk-1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="slides_08_files/figure-revealjs/unnamed-chunk-1-1.png" width="960"></a></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section id="position-weights" class="slide level2 smaller">
-<h2>Position Weights</h2>
+<section id="modeling-delta_textrmyac" class="slide level2">
+<h2>Modeling <span class="math inline">\(\Delta_{\textrm{yac}}\)</span></h2>
 <ul>
-<li>Idea: assign <span class="math inline">\(w_{\ell} \delta^{(f)}\)</span> to fielder at position <span class="math inline">\(\ell\)</span> <span class="math display">\[
-w_{\ell} = \frac{\hat{p}_{\ell}}{\hat{p}_{1} + \cdots + \hat{p}_{9}}
-\]</span></li>
-<li><span class="math inline">\(\hat{p}_{\ell}\)</span>: prob. that fielder position <span class="math inline">\(\ell\)</span> makes out based on location</li>
-<li>Can estimate <span class="math inline">\(\hat{p}_{\ell}\)</span> with fielder-specific GAMs
+<li>Fit a nearly-identical multilevel model using only <strong>completed passes</strong></li>
+</ul>
+<div class="fragment">
 <ul>
-<li>See <a href="../../lectures/lecture08.html#sec-fielding">lecture notes</a> for code</li>
-<li>Takes ~10-15 minutes to run</li>
-</ul></li>
-<li>Numerical stability: restrict to balls w/in 150ft of typical fielder location
+<li><strong>lmer</strong> threw warning about singularity
 <ul>
-<li>I.e., balls hit to deep left field likely irrelevant for first baseman model</li>
+<li>Estimated no passer-to-passer variation</li>
+<li>Intuition: once catch is made, passer doesn’t make a difference in terms of EPA.</li>
 </ul></li>
 </ul>
+</div>
+</section></section>
+<section>
+<section id="rushing-model" class="title-slide slide level1 center">
+<h1>Rushing Model</h1>
+
 </section>
-<section id="position-weights-examples" class="slide level2">
-<h2>Position Weights Examples</h2>
-<div class="panel-tabset">
-<ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">1B Weight</a></li><li><a href="#tabset-2-2">3B Weight</a></li><li><a href="#tabset-2-3">RF Weight</a></li></ul>
-<div class="tab-content">
-<div id="tabset-2-1">
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-1b-weight" class="quarto-float quarto-figure quarto-figure-center" width="480">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-1b-weight-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="slides_08_files/figure-revealjs/fig-1b-weight-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;3: "><img data-src="slides_08_files/figure-revealjs/fig-1b-weight-1.png" id="fig-1b-weight" width="480"></a>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-1b-weight-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<div id="tabset-2-2">
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-3b-weight" class="quarto-float quarto-figure quarto-figure-center" width="480">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-3b-weight-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="slides_08_files/figure-revealjs/fig-3b-weight-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;4: "><img data-src="slides_08_files/figure-revealjs/fig-3b-weight-1.png" id="fig-3b-weight" width="480"></a>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-3b-weight-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<div id="tabset-2-3">
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-rf-weight" class="quarto-float quarto-figure quarto-figure-center" width="480">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-rf-weight-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="slides_08_files/figure-revealjs/fig-rf-weight-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;5: "><img data-src="slides_08_files/figure-revealjs/fig-rf-weight-1.png" id="fig-rf-weight" width="480"></a>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-rf-weight-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section id="run-value-by-fielding-position" class="slide level2 smaller">
-<h2>Run Value by Fielding Position</h2>
+<section id="handling-qb-runs" class="slide level2 smaller">
+<h2>Handling QB Runs</h2>
 <ul>
-<li>For each at-bat <span class="math inline">\(i\)</span> assign <span class="math inline">\(w_{i,\ell}\delta_{i}^{(f)}\)</span> to player at position <span class="math inline">\(\ell\)</span></li>
-<li>Sums these values for each player-position to get <span class="math inline">\(\textrm{RAA}_{\ell}^{(f)}\)</span>
+<li>Play-by-play data doesn’t distinguish between
 <ul>
-<li>Some players play multiple positions in the field</li>
+<li>Designed QB runs</li>
+<li>Scrambles on broken plays</li>
 </ul></li>
-<li><span class="math inline">\(\textrm{RAA}_{\ell}^{(f)}\)</span>: run value created by playing position <span class="math inline">\(\ell\)</span></li>
-<li><span class="math inline">\(\textrm{RAA}^{(f)} = \textrm{RAA}^{(f)}_{1} + \cdots + \textrm{RAA}^{(f)}_{9}\)</span></li>
+<li>We will fit two separate models for EPA on rushing plays</li>
+</ul>
+</section>
+<section id="multilevel-models" class="slide level2 smaller">
+<h2>Multilevel Models</h2>
+<ul>
+<li>QB Run Model:
+<ul>
+<li>Fixed effects: <code>shotgun</code>, <code>no_huddle</code>, <code>posteam_type</code>, <code>pass_strength</code></li>
+<li>Random intercepts: <code>rusher_player_id</code> &amp; <code>defteam</code></li>
+</ul></li>
+<li>Non-QB Model
+<ul>
+<li>Fixed effects: same as QB-model + <code>rusher_position</code> &amp; <code>run_context</code></li>
+<li>Random intercepts: same as QB-model</li>
+</ul></li>
+<li>Use <code>ranef()</code> to extract <span class="math inline">\(\textrm{IPA}^{(R)}_{r}\)</span> for <strong>R</strong>unner <strong>r</strong></li>
 </ul>
 </section></section>
 <section>
-<section id="replacement-level" class="title-slide slide level1 center">
-<h1>Replacement Level</h1>
+<section id="creating-nfl-war" class="title-slide slide level1 center">
+<h1>Creating NFL WAR</h1>
 
 </section>
-<section id="recap" class="slide level2">
-<h2>Recap</h2>
+<section id="total-individual-points-added-above-average" class="slide level2 smaller">
+<h2>Total Individual Points Added Above Average</h2>
 <ul>
-<li><span class="math inline">\(\textrm{RAA} = \textrm{RAA}^{(b)} + \textrm{RAA}^{(br)} + \textrm{RAA}^{(f)} + \textrm{RAA}^{(p)}\)</span></li>
-<li>Comprehensive measure of player performance in all parts of the game</li>
-<li>Absolute <span class="math inline">\(\textrm{RAA}\)</span> are interesting…</li>
-<li>… but are much more useful when calibrated to some baseline</li>
+<li>For every offensive player, estimate how more EP they add <strong>per-play</strong> than league-average
+<ul>
+<li>Through the air (<span class="math inline">\(\textrm{IPA}^{(Q)}_{\textrm{air}, q}\)</span>, <span class="math inline">\(\textrm{IPA}^{(C)}_{\textrm{air}, c}\)</span>)</li>
+<li>After the catch (<span class="math inline">\(\textrm{IPA}^{(Q)}_{\textrm{yac}, q}\)</span>, <span class="math inline">\(\textrm{IPA}^{(C)}_{\textrm{yac}, c}\)</span>)</li>
+<li>Rushing (<span class="math inline">\(\textrm{IPA}^{(R)}_{r}\)</span>)</li>
+</ul></li>
+<li>Multiplying <span class="math inline">\(\textrm{IPA}\)</span> by number of attempts yields <span class="math inline">\(\textrm{IPAA}\)</span>: total points added above average</li>
 </ul>
 </section>
-<section id="replacement-level-1" class="slide level2">
+<section id="replacement-level" class="slide level2 smaller">
 <h2>Replacement Level</h2>
 <ul>
-<li>Quoting from <a href="https://library.fangraphs.com/misc/war/replacement-level/">FanGraphs</a></li>
+<li>Multilevel models involved global-averages <span class="math inline">\(\mu_{Q}, \mu_{C}, \mu_{R}\)</span>
+<ul>
+<li>Represent the average latent intercept across theoretical super-population</li>
+<li>Assumption: observed players are randomly sampled from this super-population</li>
+</ul></li>
+<li>Not strictly correct to say IPA measures contribution above “league-average”</li>
 </ul>
-<blockquote>
-<p>Replacement level is simply the level of production you could get from a player that would cost you nothing but the league minimum salary to acquire.</p>
-</blockquote>
 <div class="fragment">
 <ul>
-<li>Definition is fairly arbitrary!</li>
+<li>Will define roster-based thresholds for “replacement level”</li>
+<li>Construct a replacement-level “shadow”
+<ul>
+<li>Compute average <span class="math inline">\(\textrm{IPA}\)</span> for replacement-level players</li>
+<li>Shadow IPAA: multiply avg. replacement-level IPA by attempts</li>
+<li>Compare observed IPAA to shadow IPAA</li>
+</ul></li>
 </ul>
-<blockquote>
-<p>we believe that a team making the MLB minimum would win about 29.7% of its games in a give year, or roughly 47-48 per team</p>
-</blockquote>
 </div>
 </section>
-<section id="roster-based-definition" class="slide level2 smaller">
-<h2>Roster-based Definition</h2>
+<section id="defining-replacement-level" class="slide level2 smaller">
+<h2>Defining Replacement Level</h2>
 <ul>
-<li>Most MLB teams carry 12 pitchers &amp; 13 position players</li>
-<li>On any given day:
+<li><p>Most rosters: 3 running backs, 4 wide receivers, 2 tight ends</p></li>
+<li><p>Create separate thresholds for position &amp; type of play</p></li>
+<li><p>For passing plays:</p>
 <ul>
-<li><span class="math inline">\(30 \times 12 = 360\)</span> available pitchers</li>
-<li><span class="math inline">\(30 \times 13 = 390\)</span> available position players</li>
+<li>Top <span class="math inline">\(32 \times 4\)</span> WRs sorted by <code>n_rec</code></li>
+<li>Top <span class="math inline">\(32 \times 2\)</span> TEs sorted by <code>n_rec</code></li>
+<li>Top <span class="math inline">\(32 \times 3\)</span> RB</li>
 </ul></li>
-<li>Sort position players by number of at-bats in which they batted
+<li><p>For running plays</p>
 <ul>
-<li>Top 390: not-replacement</li>
-</ul></li>
-<li>Sort pitchers by numbers of at-bats in which they pitched
-<ul>
-<li>Top 360: not-replacement</li>
+<li>Top <span class="math inline">\(32 \times 3\)</span> RBs sorted by <code>n_runs</code></li>
+<li>Top <span class="math inline">\(32 \times 1\)</span> WR &amp; TEs sorted by <code>n_runs</code></li>
 </ul></li>
 </ul>
 </section>
-<section id="replacement-level-per-at-bat-raa" class="slide level2 smaller">
-<h2>Replacement-Level Per-At-Bat RAA</h2>
+<section id="replacement-level-qb" class="slide level2 smaller">
+<h2>Replacement-level QB</h2>
 <ul>
-<li>If we replace Ohtani w/ a replacement-level player, what <span class="math inline">\(\textrm{RAA}\)</span> values would they achieve?</li>
-<li>Idea: multiply Ohtani’s number of at-bats by average per-at-bat <span class="math inline">\(\textrm{RAA}\)</span> of replacement-level players</li>
-<li>Divide total <span class="math inline">\(\textrm{RAA}\)</span> for all replacement-level players by total number of at-bats</li>
+<li>Every offensive play runs through the QB</li>
+<li>Idea 1: designate one QB per team as non-replacement
+<ul>
+<li>E.g., QB w/ most rushing &amp; passing attempts</li>
+<li>Problem: assumes every NFL team has at least one non-replacement QB</li>
+</ul></li>
+<li>Idea 2: sort QBs by total number of passes &amp; rushes &amp; take top-32</li>
 </ul>
 </section>
-<section id="looking-ahead" class="slide level2 smaller">
-<h2>Looking Ahead</h2>
+<section id="converting-points-to-wins" class="slide level2 smaller">
+<h2>Converting Points to Wins</h2>
 <ul>
-<li>Adjusted Office Hours:
-<ul>
-<li>Today: 4pm - 5:30pm in MH 5586</li>
-<li>Wednesday: 4pm - 5pm in MH 5586 (not 3pm!)</li>
-</ul></li>
-<li>Before Lecture 9: please read Chapters <a href="https://bookdown.org/roback/bookdown-BeyondMLR/ch-corrdata.html">7</a> &amp; <a href="https://bookdown.org/roback/bookdown-BeyondMLR/ch-multilevelintro.html">8</a> of <a href="https://bookdown.org/roback/bookdown-BeyondMLR/"><em>Beyond Multiple Linear Regression</em></a></li>
+<li>IPAR are on point-differential scale</li>
+<li>Find <span class="math inline">\(\alpha\)</span> &amp; <span class="math inline">\(\beta\)</span> s.t. <span class="math inline">\(\textrm{Wins} \approx \alpha + \beta \times \textrm{PtsDiff}\)</span></li>
+<li>Then multiply IPAR values by <span class="math inline">\(\beta\)</span></li>
 </ul>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-wins-score-plot" class="quarto-float quarto-figure quarto-figure-center" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-wins-score-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="slides_10_files/figure-revealjs/fig-wins-score-plot-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Scoring differential is positively associated with wins"><img data-src="slides_10_files/figure-revealjs/fig-wins-score-plot-1.png" class="quarto-figure quarto-figure-center" width="576"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-wins-score-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Scoring differential is positively associated with wins
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 
 
 </section></section>

@@ -1,0 +1,309 @@
+---
+title: "STAT 479 Lecture 10"
+subtitle: "NFL WAR"
+format: revealjs
+execute:
+  cache: true
+---
+
+## Recap: EPA in Football{.smaller}
+
+- 86-yard touchdown by Ladd McConckey on a pass from Justin Herbert ([video link](https://www.youtube.com/watch?v=Hu9flYe2VrA))
+  - Thrown on a 3rd and 26 from Chargers' 14 yard line. EP = -1.54
+  - Chargers generated 7 - (-1.54) = 8.54 points of EP
+- 64-yard touch down by Kavontae Turpin on a pass from Cooper Rush ([video link](https://www.youtube.com/watch?v=U0Zp_is-X18))
+  - Thrown on 3rd and 10 from Cowboys' 36 yard line. EP = 0.77
+  - Cowboys generated 7 - 0.77 = 6.23 points of EP
+  
+. . .
+
+- How should we divide credit between QB and receiver?
+- What about running? 
+
+
+## Plan {.smaller}
+- Estimate EPA **per-play** for each passer, receiver, & rusher
+- Separately model three phases:
+  - Passing I: EPA due to actions while ball is in the air
+  - Passing II: EPA due to yards after catch
+  - Rushing
+- Multi-level modeling:
+  - Random intercepts for passers, receivers, rushers
+  - Must adjust for important fixed effects
+
+. . .
+
+- W/ per-play EPA can compare actual production to replacement "shadow"
+- These contrasts will lead to a version of WAR
+
+
+# Data Preparation
+
+## Overview{.smaller}
+- Focus on 2024-25 regular season
+- Need roster data to define position-specific replacement level
+
+
+## Passing Data{.smaller}
+- Extract all passing plays (`play_type == "pass"`)
+- For each pass, record
+  - `posteam`, `defteam`, `posteamtype`
+  - `passer_player_id`, `receiver_player_id`
+  - `shotgun`, `no_huddle`, `qb_hit`, `pass_location`
+  - `air_yards`, `yards_after_catch`, `completed_pass`
+
+## Air vs YAC EPA{.smaller}
+- Teams generate EPA on completed passes while
+  - The ball is in the air
+  - On the ground, after the catch
+- **nflfastR** decomposes `epa` into `air_epa` and `yac_epa`
+- Completed passes: imagine pausing game as soon as catch completed
+  - EP at the intermediate state used to compute `air_epa` and `yac_epa`
+- Sacks: no good definition for `air_epa` & `yac_epa`
+  - We will treat sacks as rushing plays
+
+## Rushing Data{.smaller}
+- Include columns for
+  - `passer_player_id` & `rusher_player_id`
+  - `shotgun` & `no_huddle`
+  - `run_location` & `run_gap`
+- Must manually specify `rusher_player_id` on sacks
+
+
+## Run Context I {.smaller}
+
+- `run_location` indicates direction
+
+. . . 
+
+- `run_gap`: 
+  - `"guard"`: runs through B gap (b/w guard & tackles)
+  - `"tackle"`: run through C gap (outside tackle or b/w tackle & end)
+  - `"end"`: run through D gap (outside TE)
+  - `NA`: run through A gap (b/w center & guard)
+  
+
+
+## Run Context II{.smaller}
+- We will create a new variable `run_context`
+- Concatenate `run_location` & `run_gap` when both not `NA`
+- For "A" gap runs, `run_context = "middle"`
+- For sacks & fumbles, set `run_context = "other"`
+- Additionally add `posteam`: proxy for offensive linemen & blockers
+
+
+
+## Team Strengths{.smaller}
+- Important to account for teammates & opponent quality (recall [Lecture 4](../../lectures/lecture04.qmd#sec-pm-issues))
+  - Don't overly reward players on good teams
+  - Don't overly penalize players on bad teams
+- Measure passing & rushing strength with mean EPA
+- Add columns to `pass2024` and `rush2024`
+
+
+# Modeling Passing EPA
+
+## Composite Outcomes{.smaller}
+- $\Delta$: observed EPA on a passing play 
+- $\delta_{\textrm{air}}$ and $\delta_{\textrm{yac}}$: `air_epa` and `yac_epa` given by **nflfastR**
+- Decompose $\Delta = \Delta_{\textrm{air}} + \Delta_{\textrm{yac}}$ where
+$$
+\Delta_{\textrm{air}} = 
+\begin{cases}
+\delta_{\textrm{air}} & \textrm{if the pass is caught} \\
+\Delta & \textrm{if the pass is incomplete,}
+\end{cases}
+$$
+and 
+$$
+\Delta_{\textrm{yac}} = 
+\begin{cases}
+\delta_{\textrm{yac}} & \textrm{if the pass is caught} \\
+0 & \textrm{if the pass is incomplete.}
+\end{cases}
+$$
+
+
+
+## Modeling $\Delta_{\textrm{air}}$ {.smaller}
+$$
+\begin{align}
+\Delta_{i, \textrm{air}} &= Q_{q[i]} + C_{c[i]} + D_{d[i]} + \boldsymbol{\mathbf{x}}_{i}^{\top}\boldsymbol{\beta} + \epsilon_{i}\\
+Q_{q} &\sim N(\mu_{Q}, \sigma^{2}_{Q})\\
+C_{c} &\sim N(\mu_{C}, \sigma^{2}_{C})\\
+D_{d} &\sim N(\mu_{D}, \sigma^{2}_{D}).
+\end{align}
+$$
+
+- Fixed effects include:
+  - `air_yards`, `shotgun`, `qb_hit`, `no_huddle`
+  - `postteam_type` (i.e. Home/Away), `pass_location`
+  - `receiver_position` & `rush_strength`
+- Random intercepts for **Q**uarterback, re**C**eiver, and **D**efense
+
+## Model Interpretation {.smaller}
+
+- $Q_{q}$ : Per-pass EP added through air by passer $q$ *after adjusting for fixed effects*
+- $C_{c}$: per-pass EP added when ball in air by receiver $c$ *after adjusting for fixed effects*
+- $D_{d}$: per-pass EP added by *offensive team* when ball in air while facing defense $d$
+  - Negative $D_{d}$ are good for the defense!
+- Model: $Q_{q}, C_{c}$ and $D_{d}$ noisy deviations from league-wide averages $\mu_{Q}, \mu_{C},$ and $\mu_{D}.$
+
+. . . 
+
+- Cannot estimate the individual $Q_{q}$'s, $C_{c}$'s, or $D_{d}$'s
+- Cannot estimate the global averages $\mu_{Q}, \mu_{C},$ or $\mu_{D}$
+- These parameters are not *identifiable* with the data alone
+- Luckily: we can estimate deviations (e.g., $Q_{q} - \mu_{Q}$)
+
+
+## Individual Points Added over Average 
+
+
+- For passer $q$, let $\textrm{IPA}^{(Q)}_{\textrm{air}, q} = Q_{q} - \mu_{Q}$
+- How much more EP does $q$ add per play than league-average
+- Similarly $\textrm{IPA}^{(C)}_{\textrm{air}, c}$ and $\textrm{IPA}^{(D)}_{\textrm{air}, d}.$
+
+
+## Modeling $\Delta_{\textrm{yac}}$ 
+
+- Fit a nearly-identical multilevel model using only **completed passes**
+
+. . .
+
+- **lmer** threw warning about singularity
+  - Estimated no passer-to-passer variation
+  - Intuition: once catch is made, passer doesn't make a difference in terms of EPA.
+
+
+# Rushing Model
+
+## Handling QB Runs{.smaller}
+
+- Play-by-play data doesn't distinguish between
+  - Designed QB runs
+  - Scrambles on broken plays
+- We will fit two separate models for EPA on rushing plays
+
+
+## Multilevel Models {.smaller}
+
+- QB Run Model:
+  - Fixed effects: `shotgun`, `no_huddle`, `posteam_type`, `pass_strength`
+  - Random intercepts: `rusher_player_id` & `defteam`
+- Non-QB Model
+  - Fixed effects: same as QB-model + `rusher_position` & `run_context`
+  - Random intercepts: same as QB-model
+
+- Use `ranef()` to extract $\textrm{IPA}^{(R)}_{r}$ for **R**unner **r**
+
+# Creating NFL WAR
+
+## Total Individual Points Added Above Average {.smaller}
+
+- For every offensive player, estimate how more EP they add **per-play** than league-average
+  - Through the air ($\textrm{IPA}^{(Q)}_{\textrm{air}, q}$, $\textrm{IPA}^{(C)}_{\textrm{air}, c}$)
+  - After the catch ($\textrm{IPA}^{(Q)}_{\textrm{yac}, q}$, $\textrm{IPA}^{(C)}_{\textrm{yac}, c}$)
+  - Rushing ($\textrm{IPA}^{(R)}_{r}$)
+
+- Multiplying $\textrm{IPA}$ by number of attempts yields $\textrm{IPAA}$: total points added above average 
+
+## Replacement Level{.smaller}
+
+- Multilevel models involved global-averages $\mu_{Q}, \mu_{C}, \mu_{R}$
+  - Represent the average latent intercept across theoretical super-population
+  - Assumption: observed players are randomly sampled from this super-population
+- Not strictly correct to say IPA measures contribution above "league-average"
+
+. . .
+
+- Will define roster-based thresholds for "replacement level"
+- Construct a replacement-level "shadow"
+  - Compute average $\textrm{IPA}$ for replacement-level players
+  - Shadow IPAA: multiply avg. replacement-level IPA by attempts
+  - Compare observed IPAA to shadow IPAA
+
+## Defining Replacement Level {.smaller}
+- Most rosters: 3 running backs, 4 wide receivers, 2 tight ends
+- Create separate thresholds for position & type of play
+- For passing plays:
+
+  * Top $32 \times 4$ WRs sorted by `n_rec`
+  * Top $32 \times 2$ TEs sorted by `n_rec`
+  * Top $32 \times 3$ RB
+
+- For running plays
+
+  * Top $32 \times 3$ RBs sorted by `n_runs`
+  * Top $32 \times 1$ WR & TEs sorted by `n_runs`
+
+
+## Replacement-level QB {.smaller}
+
+- Every offensive play runs through the QB
+- Idea 1: designate one QB per team as non-replacement
+  - E.g., QB w/ most rushing & passing attempts
+  - Problem: assumes every NFL team has at least one non-replacement QB
+- Idea 2: sort QBs by total number of passes & rushes & take top-32
+
+
+## Converting Points to Wins{.smaller}
+
+- IPAR are on point-differential scale
+- Find $\alpha$ & $\beta$ s.t. $\textrm{Wins} \approx \alpha + \beta \times \textrm{PtsDiff}$ 
+- Then multiply IPAR values by $\beta$ 
+
+```{r}
+#| label: fig-wins-score-plot
+#| eval: true
+#| echo: false
+#| fig-width: 6
+#| fig-asp: 0.5625
+#| fig-align: center
+#| fig-cap: Scoring differential is positively associated with wins
+
+schedules <-
+  nflreadr::load_schedules(seasons = 2015:2024) |> #<1>
+  dplyr::filter(game_type == "REG") |>
+  dplyr::select(season, away_team, home_team, home_score, away_score, result) |>
+  dplyr::mutate(winning_team = ifelse(result > 0, home_team, away_team),
+                losing_team = ifelse(result < 0, home_team, away_team),
+                winning_ptsdiff = ifelse(winning_team == home_team, result, -1*result),
+                losing_ptsdiff = ifelse(losing_team == home_team, result, -1*result))
+
+win_diff <-
+  schedules |>
+  dplyr::group_by(season, winning_team) |>
+  dplyr::summarise(wins = dplyr::n(), win_diff = sum(winning_ptsdiff), .groups = 'drop') |>
+  dplyr::rename(team = winning_team)
+
+loss_diff <-
+  schedules |>
+  dplyr::group_by(season, losing_team) |>
+  dplyr::summarise(loss = dplyr::n(), loss_diff = sum(losing_ptsdiff), .groups = 'drop') |>
+  dplyr::rename(team = losing_team)
+
+records <-
+  win_diff |>
+  dplyr::full_join(y = loss_diff, by = c("season", "team")) |>
+  dplyr::mutate(scoring_differential = win_diff + loss_diff)
+
+win_score_fit <-
+  lm(wins~scoring_differential, data = records)
+alpha <- coefficients(win_score_fit)[1]
+beta <- coefficients(win_score_fit)[2]
+
+oi_colors <- palette.colors(palette = "Okabe-Ito")
+
+par(mar = c(3,3,2,1), mgp = c(1.8, 0.5, 0))
+plot(records$scoring_differential,
+     records$wins,
+     xlab = "Total scoring margin",
+     ylab = "Wins",
+     main = "Wins vs Score Differential",
+     pch = 16, cex = 0.5)
+abline(a = alpha, b = beta, col = oi_colors[3])
+```
+
+
+

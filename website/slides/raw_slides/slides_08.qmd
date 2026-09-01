@@ -1,5 +1,5 @@
 ---
-title: "STAT 479: Lecture 8"
+title: "STAT 441: Lecture 8"
 subtitle: "Defensive Credit & WAR"
 format: revealjs
 execute: 

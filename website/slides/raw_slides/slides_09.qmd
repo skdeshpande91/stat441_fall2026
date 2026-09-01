@@ -1,0 +1,210 @@
+---
+title: "STAT 441 Lecture 9"
+subtitle: "Multilevel Models"
+format: revealjs
+execute:
+  cache: true
+---
+
+
+# Motivation
+
+## Comparing Football Plays{.smaller}
+
+- Which of these two touchdown plays is more impressive?
+  * 86-yard touchdown pass from Justin Herbert to Ladd McConckey ([video link](https://www.youtube.com/watch?v=Hu9flYe2VrA))
+  * 64-yard touchdown pass from Cooper Rush to KaVontae Turpin ([video link](https://www.youtube.com/watch?v=U0Zp_is-X18))
+
+. . . 
+
+- Plays share many similarities but important differences
+  - Context: down & distance, time left, score
+  - Time of pass: number of pass rushers, pocket integrity
+  - Receiver's actions after the catch
+  
+. . .
+
+- Today: expected points facilitated nuanced comparison
+- Multilevel models to determine which passers generate most EP per attempt
+
+
+# Expected Points
+
+## Overivew
+
+- Goal: estimate avg. number of points eventually scored by teams from similar situation
+
+- EPA: diff. in post- and pre-play EP
+  - $\textrm{EPA} > 0$: successful for offense
+  - $\textrm{EPA} < 0$: unsuccessful for offense
+
+- **nflfastR**'s EP model to predict next scoring event in half  
+  - Touchdown (7), field goal (3), safety (2)
+  - Opposing touchdown (-7), field goal (-3), and safety (-2)
+  - No score (0)
+
+## Expected Points
+
+- Vector of next score probabilities given play features $\boldsymbol{\mathbf{z}}$: $\boldsymbol{\pi}(\boldsymbol{\mathbf{z}}) = (\pi_{\textrm{TD}}(\boldsymbol{\mathbf{z}}), \ldots, \pi_{\textrm{oppFG}}(\boldsymbol{\mathbf{z}}))$
+
+- Estimated w/ regression tree ensemble using XGBoost
+
+:::{.callout-note icon=false}
+## Definition: Expected Points
+Given a game state feature vector $\boldsymbol{\mathbf{z}}$ and vector of drive outcome probabilities $\boldsymbol{\pi}(\boldsymbol{\mathbf{z}}),$ the *expected points* $\textrm{EP}(\boldsymbol{\mathbf{z}})$ is 
+$$
+\begin{align}
+\textrm{EP}(\boldsymbol{\mathbf{z}}) &=  7\times\pi_{\textrm{TD}}(\boldsymbol{\mathbf{z}}) + 
+3\times\pi_{\textrm{FG}}(\boldsymbol{\mathbf{z}}) + 
+2\times\pi_{\textrm{SAF}}(\boldsymbol{\mathbf{z}}) \\
+~&~~-2\times\pi_{\textrm{oSAF}}(\boldsymbol{\mathbf{z}}) - 
+3\times\pi_{\textrm{oFG}}(\boldsymbol{\mathbf{z}})
+- 7\times\pi_{\textrm{oTD}}(\boldsymbol{\mathbf{z}})
+\end{align}
+$$
+:::
+
+## League-Average 
+
+
+- EPA on a future pass if you don't know anything else?
+- Is the league average `mean(pbp2024$epa)` reasonable?
+
+
+## Player-Specific Model
+
+- Would your prediction change if you knew passer identity?
+  - If Patrick Mahomes was throwing the pass, expect higher EPA
+  - If Daniel Jones was throwing the pass, expect lower EPA
+
+. . .
+
+- $I$: number of unique passers in data set
+- $Y_{ij}$: EPA on pass $j$ thrown by player $i$
+- $\alpha_{i}$: avg. EPA/pass for player $i$ (unknown)
+- Model: $Y_{ij} = \alpha_{i} + \epsilon_{ij}$
+
+## Estimating $\alpha_{i}$ {.smaller}
+- Idea 1: group by `passer_player_id` & compute `mean(epa)` for each player
+- Equivalent (and more extensible): fit a linear model w/ least squares
+  - Regress `epa` on *categorical* `passer_player_id`
+  - Must convert `passer_player_id` to a `factor` variable
+  - Useful to manually set reference player (e.g., Aaron Rodgers)
+
+- Estimates $\beta_{0} = \alpha_{\textrm{Rodgers}}$ and $\beta_{i} = \alpha_{i} - \alpha_{\textrm{Rodgers}}$
+
+
+## Partial Pooling{.smaller}
+
+- If $i$ threw many passes, $\hat{\alpha}_{i}$ accurately estimates latent ability $\alpha_{i}$
+  - Prefer to use $\hat{\alpha}_{i}$ over global mean $\overline{y}$
+  
+- If $i$ threw very few passes, $\hat{\alpha}_{i}$ can be very noisy
+  - Global mean $\overline{y}$ arguably better than $\hat{\alpha}_{i}$
+  
+- What about for players b/w extremes?
+
+. . .
+
+- Idea: $w_{i} \times \hat{\alpha}_{i} + (1 - w_{i}) \times \overline{y}$
+  - If $n_{i}$ very large, $w_{i}$ should be closer to 1
+  - If $n_{i}$ very small, $w_{i}$ should be closer to 0
+- Problem: how to specify weights *in data-driven way*?
+
+# Multilevel Models
+
+## Model Specification{.smaller}
+- Level 1: observed EPA for player $i$ normally distributed around $\alpha_{i}$
+- Level 2: Latent player abilities $\alpha_{i}$'s are themselves normally distributed around $\mu$
+$$
+\begin{align}
+\textrm{Level 1}&: &\quad  Y_{ij} &= \alpha_{i} + \epsilon_{ij}; \epsilon_{ij} \sim N(0, \sigma^{2}) \quad \textrm{for all}\ j = 1, \ldots, n_{i},\ i = 1, \ldots, I \\
+\textrm{Level 2}&: &\quad \alpha_{i} &= \alpha_{0} + u_{i}; u_{i} \sim N(0, \sigma^{2}_{\alpha}) \quad \textrm{for all}\ i = 1, \ldots, I
+\end{align}
+$$
+
+- $\alpha_{0}$: average per-pass EPA over super-population of passers
+- $\sigma$ captures "within-player" variability in EPA pass-to-pass
+- $\sigma_{\alpha}$ captures "between-player" variability in per-pass EPA
+
+. . .
+
+- Level 2 responses $\alpha_{i}$ are **not observable**
+- "Borrowing strength": predition for player $i'$ informed by their data *and everyone else's data*
+  - Estimate of $\alpha_{i}$ informed by $i$'s data **and $\alpha_{0}$
+  - Estimates of $\alpha_{i}$ determine estimate of $\alpha_{0}$
+  
+## Hierarchical Structure
+
+- Often data exhibits hierarchical grouping structure
+  - Passes group by QB, players in teams etc.
+- Grouping variable may be relevant to outcome & induces correlation
+- Outcomes from same group may be tightly clustered around group average
+
+## Fitting Multilevel Models
+
+- The `(1 | passer_player_id)` tells `lmer()` to include a *random intercept* for each passer
+
+```{r}
+#| label: fit-random-intercept
+#| echo: true
+#| eval: false
+#| message: false
+library(lme4)
+multilevel_fit <-
+  lmer(formula = epa ~ 1 + (1|passer_player_id), 
+       data = pass2024)
+```
+
+## Extracting Estimates{.smaller}
+- Use `ranef()` to extract estimates $\hat{u}_{i}$'s
+- Use `coef` to get $\hat{\alpha}_{i} = \hat{\alpha}_{0} + \hat{u}_{i}$
+  - Only valid when there is one grouping variable
+  - W/ more grouping variables, random intercepts not identified
+- `coef()` and `ranef()` return lists w/ one element per grouping variable
+  - Each list element is a data table
+
+```{r}
+#| label: display-coef
+#| eval: false
+#| echo: true
+tmp <- coef(multilevel_fit)
+```
+
+
+## Adjusting For Additional Covariates
+
+- Simple model doesn't account for formation, whether QB was hit while throwing, etc.
+- $\boldsymbol{\mathbf{x}}$ contains: `air_yards`, `shotgun`, `qb_hit`, `pass_location`, `posteam_type`
+- Effects of these factors are constant (i.e., **fixed**) across all passers
+$$
+\begin{align}
+\textrm{Level 1}&: &\quad  Y_{ij} &= \alpha_{i} + \boldsymbol{\mathbf{x}}_{ij}^{\top}\boldsymbol{\beta} +  \epsilon_{ij}; \quad \epsilon_{ij} \sim N(0, \sigma^{2}) \\
+\textrm{Level 2}&: &\quad \alpha_{i} &= \alpha_{0} + u_{i}; \quad u_{i} \sim N(0, \sigma^{2}_{\alpha}) 
+\end{align}
+$$
+
+## Fitting Our Elaborate Model{.scrollable}
+
+```{r}
+#| label: multilevel-full
+#| eval: false
+#| echo: true
+ml_fit_full <-
+  lme4::lmer(formula = epa ~ 1 + (1|passer_player_id) + 
+               air_yards + posteam_type + shotgun +
+               no_huddle + qb_hit + pass_location, data = pass2024)
+```
+
+
+
+## Looking Ahead
+
+- EPA is based on starting & ending game state
+- 2 phases of passing play: ball in air + after the catch
+- Currently analysis implicitly credits QBs for both phases
+
+- [Lecture 10](../../lectures/lecture10.qmd): divide total EPA among relevant offensive players
+- Develop a version of WAR
+  - Multilevel model to estimate per-play contribution
+  - Scale model estimates by opportunities to create replacement-level shadow

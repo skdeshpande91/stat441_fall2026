@@ -6,13 +6,10 @@
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
-<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
-<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.9.38">
 
-  <title>STAT441 – STAT 441: Lecture 8</title>
+  <title>STAT441 – STAT 441 Lecture 9</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -33,6 +30,72 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-9453c600278fc315503a3acb2c81ba94.css">
   <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -132,331 +195,259 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">STAT 441: Lecture 8</h1>
-  <p class="subtitle">Defensive Credit &amp; WAR</p>
+  <h1 class="title">STAT 441 Lecture 9</h1>
+  <p class="subtitle">Multilevel Models</p>
 
 <div class="quarto-title-authors">
 </div>
 
 </section>
 <section>
-<section id="recap-overview" class="title-slide slide level1 center">
-<h1>Recap &amp; Overview</h1>
+<section id="motivation" class="title-slide slide level1 center">
+<h1>Motivation</h1>
 
 </section>
-<section id="offensive-credit-allocation" class="slide level2 smaller">
-<h2>Offensive Credit Allocation</h2>
+<section id="comparing-football-plays" class="slide level2 smaller">
+<h2>Comparing Football Plays</h2>
 <ul>
-<li>During at-bat <span class="math inline">\(i\)</span>, batting team generates <span class="math inline">\(\delta_{i}\)</span> run value</li>
-<li><a href="../../lectures/lecture07.html">Lecture 7</a>: divide <span class="math inline">\(\delta_{i}\)</span> b/w batter and baserunners</li>
-<li>Conservation of run value: if batting team gains <span class="math inline">\(\delta\)</span>, fielding team gains <span class="math inline">\(-\delta\)</span></li>
-<li>Today: divide <span class="math inline">\(-\delta_{i}\)</span> b/w pitcher and fielders</li>
-</ul>
-</section>
-<section id="two-possibilities" class="slide level2 smaller">
-<h2>Two Possibilities</h2>
+<li>Which of these two touchdown plays is more impressive?
 <ul>
-<li>Ball is not put in play during at-bat
-<ul>
-<li>At-bat ends w/ homerun, strikeout, walk</li>
-<li>Pitcher deserves all credit (or blame)</li>
+<li>86-yard touchdown pass from Justin Herbert to Ladd McConckey (<a href="https://www.youtube.com/watch?v=Hu9flYe2VrA">video link</a>)</li>
+<li>64-yard touchdown pass from Cooper Rush to KaVontae Turpin (<a href="https://www.youtube.com/watch?v=U0Zp_is-X18">video link</a>)</li>
 </ul></li>
 </ul>
 <div class="fragment">
 <ul>
-<li>Ball is put in play (e.g., flyout, groundout, single, double, triple, etc.)
+<li>Plays share many similarities but important differences
 <ul>
-<li><span class="math inline">\(\hat{p}\)</span>: probability of making an out (based on location)</li>
-<li>Give <span class="math inline">\(\delta^{(p)} = -\delta \times (1-\hat{p})\)</span> to the pitcher</li>
-<li>Divide <span class="math inline">\(\delta^{(f)} = -\delta \times \hat{p}\)</span> among other fielders</li>
+<li>Context: down &amp; distance, time left, score</li>
+<li>Time of pass: number of pass rushers, pocket integrity</li>
+<li>Receiver’s actions after the catch</li>
 </ul></li>
 </ul>
 </div>
-</section>
-<section id="transformed-coordinates" class="slide level2 smaller">
-<h2>Transformed Coordinates</h2>
+<div class="fragment">
 <ul>
-<li>Transform: <code>x = 2.5 * (hc_x - 125.42)</code> &amp; <code>y = 2.5 * (198.27 - hc_y)</code></li>
-<li>Define new coordinate system where
-<ul>
-<li>Home plate at bottom of plot at <code>(0,0)</code></li>
-<li>Units are in feet</li>
-<li>First base on the right around <code>(90/sqrt(2), 90/sqrt(2))</code></li>
-</ul></li>
+<li>Today: expected points facilitated nuanced comparison</li>
+<li>Multilevel models to determine which passers generate most EP per attempt</li>
 </ul>
-</section>
-<section id="more-data-preparation" class="slide level2">
-<h2>More Data Preparation</h2>
-<ul>
-<li><code>def_atbat2024</code>: at-bat level data table containing
-<ul>
-<li>Pitcher &amp; fielder identities</li>
-<li>Batted ball locations &amp; fielder position</li>
-<li>Ending values of <code>type</code> and <code>events</code>: i.e.&nbsp;<code>end_type</code> and <code>end_events</code>
-<ul>
-<li>Useful for determining at-bat level outcomes</li>
-</ul></li>
-<li>Narrative descriptions: <code>des</code></li>
-</ul></li>
-<li>See <a href="../../lectures/lecture08.html#sec-hit-location-data">lecture notes</a> for full code</li>
-</ul>
+</div>
 </section></section>
 <section>
-<section id="estimating-out-probabilities" class="title-slide slide level1 center">
-<h1>Estimating Out Probabilities</h1>
+<section id="expected-points" class="title-slide slide level1 center">
+<h1>Expected Points</h1>
 
 </section>
-<section id="generalized-additive-model" class="slide level2">
-<h2>Generalized Additive Model</h2>
-<p><span class="math display">\[
-\log\left(\frac{\mathbb{P}(\textrm{out})}{1 - \mathbb{P}(\textrm{out})} \right) = s(x,y),
+<section id="overivew" class="slide level2">
+<h2>Overivew</h2>
+<ul>
+<li><p>Goal: estimate avg. number of points eventually scored by teams from similar situation</p></li>
+<li><p>EPA: diff. in post- and pre-play EP</p>
+<ul>
+<li><span class="math inline">\(\textrm{EPA} &gt; 0\)</span>: successful for offense</li>
+<li><span class="math inline">\(\textrm{EPA} &lt; 0\)</span>: unsuccessful for offense</li>
+</ul></li>
+<li><p><strong>nflfastR</strong>’s EP model to predict next scoring event in half</p>
+<ul>
+<li>Touchdown (7), field goal (3), safety (2)</li>
+<li>Opposing touchdown (-7), field goal (-3), and safety (-2)</li>
+<li>No score (0)</li>
+</ul></li>
+</ul>
+</section>
+<section id="expected-points-1" class="slide level2">
+<h2>Expected Points</h2>
+<ul>
+<li><p>Vector of next score probabilities given play features <span class="math inline">\(\boldsymbol{\mathbf{z}}\)</span>: <span class="math inline">\(\boldsymbol{\pi}(\boldsymbol{\mathbf{z}}) = (\pi_{\textrm{TD}}(\boldsymbol{\mathbf{z}}), \ldots, \pi_{\textrm{oppFG}}(\boldsymbol{\mathbf{z}}))\)</span></p></li>
+<li><p>Estimated w/ regression tree ensemble using XGBoost</p></li>
+</ul>
+<div class="callout callout-note no-icon callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Definition: Expected Points</strong></p>
+</div>
+<div class="callout-content">
+<p>Given a game state feature vector <span class="math inline">\(\boldsymbol{\mathbf{z}}\)</span> and vector of drive outcome probabilities <span class="math inline">\(\boldsymbol{\pi}(\boldsymbol{\mathbf{z}}),\)</span> the <em>expected points</em> <span class="math inline">\(\textrm{EP}(\boldsymbol{\mathbf{z}})\)</span> is <span class="math display">\[
+\begin{align}
+\textrm{EP}(\boldsymbol{\mathbf{z}}) &amp;=  7\times\pi_{\textrm{TD}}(\boldsymbol{\mathbf{z}}) +
+3\times\pi_{\textrm{FG}}(\boldsymbol{\mathbf{z}}) +
+2\times\pi_{\textrm{SAF}}(\boldsymbol{\mathbf{z}}) \\
+~&amp;~~-2\times\pi_{\textrm{oSAF}}(\boldsymbol{\mathbf{z}}) -
+3\times\pi_{\textrm{oFG}}(\boldsymbol{\mathbf{z}})
+- 7\times\pi_{\textrm{oTD}}(\boldsymbol{\mathbf{z}})
+\end{align}
 \]</span></p>
+</div>
+</div>
+</div>
+</section>
+<section id="league-average" class="slide level2">
+<h2>League-Average</h2>
 <ul>
-<li><span class="math inline">\(s(x,y)\)</span> is a <strong>smooth</strong> function in both <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>
-<ul>
-<li>Technically: <span class="math inline">\(s(x,y) = \sum_{d=1}^{D}{\beta_{d}\phi_{d}(x,y)}\)</span></li>
-<li><span class="math inline">\(\phi_{1}, \ldots, \phi_{D}\)</span>: fixed set of <em>spline</em> functions</li>
-<li><span class="math inline">\(\phi_{d}\)</span> piecewise polynomial localized to small spatial region</li>
-</ul></li>
-<li>Can be fit using the <strong>mgcv</strong> package</li>
+<li>EPA on a future pass if you don’t know anything else?</li>
+<li>Is the league average <code>mean(pbp2024$epa)</code> reasonable?</li>
 </ul>
 </section>
-<section id="defining-deltap-and-deltaf" class="slide level2">
-<h2>Defining <span class="math inline">\(\delta^{(p)}\)</span> and <span class="math inline">\(\delta^{(f)}\)</span></h2>
+<section id="player-specific-model" class="slide level2">
+<h2>Player-Specific Model</h2>
 <ul>
-<li>Divide run value <span class="math inline">\(\delta\)</span> into
+<li>Would your prediction change if you knew passer identity?
 <ul>
-<li><span class="math inline">\(\delta^{(f)} = -1 \times \hat{p} \times \delta\)</span></li>
-<li><span class="math inline">\(\delta^{(p)} = -1 \times (1 - \hat{p}) \times \delta\)</span></li>
+<li>If Patrick Mahomes was throwing the pass, expect higher EPA</li>
+<li>If Daniel Jones was throwing the pass, expect lower EPA</li>
 </ul></li>
 </ul>
 <div class="fragment">
 <ul>
-<li><span class="math inline">\(\delta_{i}^{(p)} = -1 \times (1 - \hat{p}_{i}) \times \delta_{i}\)</span>
-<ul>
-<li>Run value created by pitcher in at-bat <span class="math inline">\(i\)</span></li>
-<li>Positive values indicate good performance</li>
-</ul></li>
-<li><span class="math inline">\(\textrm{RAA}^{(p)}\)</span>: sum <span class="math inline">\(\delta_{i}^{(p)}\)</span>’s across each pitchers at-bats</li>
+<li><span class="math inline">\(I\)</span>: number of unique passers in data set</li>
+<li><span class="math inline">\(Y_{ij}\)</span>: EPA on pass <span class="math inline">\(j\)</span> thrown by player <span class="math inline">\(i\)</span></li>
+<li><span class="math inline">\(\alpha_{i}\)</span>: avg. EPA/pass for player <span class="math inline">\(i\)</span> (unknown)</li>
+<li>Model: <span class="math inline">\(Y_{ij} = \alpha_{i} + \epsilon_{ij}\)</span></li>
 </ul>
 </div>
 </section>
-<section id="fielding-responsibility" class="slide level2 smaller">
-<h2>Fielding Responsibility</h2>
+<section id="estimating-alpha_i" class="slide level2 smaller">
+<h2>Estimating <span class="math inline">\(\alpha_{i}\)</span></h2>
 <ul>
-<li>Say ball hit towards gap b/w 1st base and right field
+<li>Idea 1: group by <code>passer_player_id</code> &amp; compute <code>mean(epa)</code> for each player</li>
+<li>Equivalent (and more extensible): fit a linear model w/ least squares
 <ul>
-<li>Batting team creates large positive <span class="math inline">\(\delta\)</span></li>
-<li><span class="math inline">\(\hat{p} \approx 0\)</span></li>
-<li><span class="math inline">\(\delta^{(f)}\)</span> is large and negative</li>
+<li>Regress <code>epa</code> on <em>categorical</em> <code>passer_player_id</code></li>
+<li>Must convert <code>passer_player_id</code> to a <code>factor</code> variable</li>
+<li>Useful to manually set reference player (e.g., Aaron Rodgers)</li>
 </ul></li>
-<li>How much blame should third baseman receive?</li>
+<li>Estimates <span class="math inline">\(\beta_{0} = \alpha_{\textrm{Rodgers}}\)</span> and <span class="math inline">\(\beta_{i} = \alpha_{i} - \alpha_{\textrm{Rodgers}}\)</span></li>
 </ul>
 </section>
-<section id="fielder-out-probabilities" class="slide level2">
-<h2>Fielder Out Probabilities</h2>
-<div class="panel-tabset">
-<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">1B Out Prob</a></li><li><a href="#tabset-1-2">3B Out Prob</a></li><li><a href="#tabset-1-3">RF Out Prob</a></li></ul>
-<div class="tab-content">
-<div id="tabset-1-1">
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-1b-pout" class="quarto-float quarto-figure quarto-figure-center" width="480">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-1b-pout-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="slides_08_files/figure-revealjs/fig-1b-pout-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: "><img data-src="slides_08_files/figure-revealjs/fig-1b-pout-1.png" id="fig-1b-pout" width="480"></a>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-1b-pout-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<div id="tabset-1-2">
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-3b-pout" class="quarto-float quarto-figure quarto-figure-center" width="480">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-3b-pout-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="slides_08_files/figure-revealjs/fig-3b-pout-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: "><img data-src="slides_08_files/figure-revealjs/fig-3b-pout-1.png" id="fig-3b-pout" width="480"></a>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-3b-pout-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<div id="tabset-1-3">
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><a href="slides_08_files/figure-revealjs/unnamed-chunk-1-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="slides_08_files/figure-revealjs/unnamed-chunk-1-1.png" width="960"></a></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section id="position-weights" class="slide level2 smaller">
-<h2>Position Weights</h2>
+<section id="partial-pooling" class="slide level2 smaller">
+<h2>Partial Pooling</h2>
 <ul>
-<li>Idea: assign <span class="math inline">\(w_{\ell} \delta^{(f)}\)</span> to fielder at position <span class="math inline">\(\ell\)</span> <span class="math display">\[
-w_{\ell} = \frac{\hat{p}_{\ell}}{\hat{p}_{1} + \cdots + \hat{p}_{9}}
-\]</span></li>
-<li><span class="math inline">\(\hat{p}_{\ell}\)</span>: prob. that fielder position <span class="math inline">\(\ell\)</span> makes out based on location</li>
-<li>Can estimate <span class="math inline">\(\hat{p}_{\ell}\)</span> with fielder-specific GAMs
+<li>If <span class="math inline">\(i\)</span> threw many passes, <span class="math inline">\(\hat{\alpha}_{i}\)</span> accurately estimates latent ability <span class="math inline">\(\alpha_{i}\)</span>
 <ul>
-<li>See <a href="../../lectures/lecture08.html#sec-fielding">lecture notes</a> for code</li>
-<li>Takes ~10-15 minutes to run</li>
+<li>Prefer to use <span class="math inline">\(\hat{\alpha}_{i}\)</span> over global mean <span class="math inline">\(\overline{y}\)</span></li>
 </ul></li>
-<li>Numerical stability: restrict to balls w/in 150ft of typical fielder location
+<li>If <span class="math inline">\(i\)</span> threw very few passes, <span class="math inline">\(\hat{\alpha}_{i}\)</span> can be very noisy
 <ul>
-<li>I.e., balls hit to deep left field likely irrelevant for first baseman model</li>
+<li>Global mean <span class="math inline">\(\overline{y}\)</span> arguably better than <span class="math inline">\(\hat{\alpha}_{i}\)</span></li>
 </ul></li>
+<li>What about for players b/w extremes?</li>
 </ul>
-</section>
-<section id="position-weights-examples" class="slide level2">
-<h2>Position Weights Examples</h2>
-<div class="panel-tabset">
-<ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">1B Weight</a></li><li><a href="#tabset-2-2">3B Weight</a></li><li><a href="#tabset-2-3">RF Weight</a></li></ul>
-<div class="tab-content">
-<div id="tabset-2-1">
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-1b-weight" class="quarto-float quarto-figure quarto-figure-center" width="480">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-1b-weight-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="slides_08_files/figure-revealjs/fig-1b-weight-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figure&nbsp;3: "><img data-src="slides_08_files/figure-revealjs/fig-1b-weight-1.png" id="fig-1b-weight" width="480"></a>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-1b-weight-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<div id="tabset-2-2">
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-3b-weight" class="quarto-float quarto-figure quarto-figure-center" width="480">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-3b-weight-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="slides_08_files/figure-revealjs/fig-3b-weight-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figure&nbsp;4: "><img data-src="slides_08_files/figure-revealjs/fig-3b-weight-1.png" id="fig-3b-weight" width="480"></a>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-3b-weight-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<div id="tabset-2-3">
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-rf-weight" class="quarto-float quarto-figure quarto-figure-center" width="480">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-rf-weight-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="slides_08_files/figure-revealjs/fig-rf-weight-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;5: "><img data-src="slides_08_files/figure-revealjs/fig-rf-weight-1.png" id="fig-rf-weight" width="480"></a>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-rf-weight-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section id="run-value-by-fielding-position" class="slide level2 smaller">
-<h2>Run Value by Fielding Position</h2>
+<div class="fragment">
 <ul>
-<li>For each at-bat <span class="math inline">\(i\)</span> assign <span class="math inline">\(w_{i,\ell}\delta_{i}^{(f)}\)</span> to player at position <span class="math inline">\(\ell\)</span></li>
-<li>Sums these values for each player-position to get <span class="math inline">\(\textrm{RAA}_{\ell}^{(f)}\)</span>
+<li>Idea: <span class="math inline">\(w_{i} \times \hat{\alpha}_{i} + (1 - w_{i}) \times \overline{y}\)</span>
 <ul>
-<li>Some players play multiple positions in the field</li>
+<li>If <span class="math inline">\(n_{i}\)</span> very large, <span class="math inline">\(w_{i}\)</span> should be closer to 1</li>
+<li>If <span class="math inline">\(n_{i}\)</span> very small, <span class="math inline">\(w_{i}\)</span> should be closer to 0</li>
 </ul></li>
-<li><span class="math inline">\(\textrm{RAA}_{\ell}^{(f)}\)</span>: run value created by playing position <span class="math inline">\(\ell\)</span></li>
-<li><span class="math inline">\(\textrm{RAA}^{(f)} = \textrm{RAA}^{(f)}_{1} + \cdots + \textrm{RAA}^{(f)}_{9}\)</span></li>
+<li>Problem: how to specify weights <em>in data-driven way</em>?</li>
 </ul>
+</div>
 </section></section>
 <section>
-<section id="replacement-level" class="title-slide slide level1 center">
-<h1>Replacement Level</h1>
+<section id="multilevel-models" class="title-slide slide level1 center">
+<h1>Multilevel Models</h1>
 
 </section>
-<section id="recap" class="slide level2">
-<h2>Recap</h2>
+<section id="model-specification" class="slide level2 smaller">
+<h2>Model Specification</h2>
 <ul>
-<li><span class="math inline">\(\textrm{RAA} = \textrm{RAA}^{(b)} + \textrm{RAA}^{(br)} + \textrm{RAA}^{(f)} + \textrm{RAA}^{(p)}\)</span></li>
-<li>Comprehensive measure of player performance in all parts of the game</li>
-<li>Absolute <span class="math inline">\(\textrm{RAA}\)</span> are interesting…</li>
-<li>… but are much more useful when calibrated to some baseline</li>
+<li><p>Level 1: observed EPA for player <span class="math inline">\(i\)</span> normally distributed around <span class="math inline">\(\alpha_{i}\)</span></p></li>
+<li><p>Level 2: Latent player abilities <span class="math inline">\(\alpha_{i}\)</span>’s are themselves normally distributed around <span class="math inline">\(\mu\)</span> <span class="math display">\[
+\begin{align}
+\textrm{Level 1}&amp;: &amp;\quad  Y_{ij} &amp;= \alpha_{i} + \epsilon_{ij}; \epsilon_{ij} \sim N(0, \sigma^{2}) \quad \textrm{for all}\ j = 1, \ldots, n_{i},\ i = 1, \ldots, I \\
+\textrm{Level 2}&amp;: &amp;\quad \alpha_{i} &amp;= \alpha_{0} + u_{i}; u_{i} \sim N(0, \sigma^{2}_{\alpha}) \quad \textrm{for all}\ i = 1, \ldots, I
+\end{align}
+\]</span></p></li>
+<li><p><span class="math inline">\(\alpha_{0}\)</span>: average per-pass EPA over super-population of passers</p></li>
+<li><p><span class="math inline">\(\sigma\)</span> captures “within-player” variability in EPA pass-to-pass</p></li>
+<li><p><span class="math inline">\(\sigma_{\alpha}\)</span> captures “between-player” variability in per-pass EPA</p></li>
 </ul>
-</section>
-<section id="replacement-level-1" class="slide level2">
-<h2>Replacement Level</h2>
-<ul>
-<li>Quoting from <a href="https://library.fangraphs.com/misc/war/replacement-level/">FanGraphs</a></li>
-</ul>
-<blockquote>
-<p>Replacement level is simply the level of production you could get from a player that would cost you nothing but the league minimum salary to acquire.</p>
-</blockquote>
 <div class="fragment">
 <ul>
-<li>Definition is fairly arbitrary!</li>
+<li>Level 2 responses <span class="math inline">\(\alpha_{i}\)</span> are <strong>not observable</strong></li>
+<li>“Borrowing strength”: predition for player <span class="math inline">\(i'\)</span> informed by their data <em>and everyone else’s data</em>
+<ul>
+<li>Estimate of <span class="math inline">\(\alpha_{i}\)</span> informed by <span class="math inline">\(i\)</span>’s data **and <span class="math inline">\(\alpha_{0}\)</span></li>
+<li>Estimates of <span class="math inline">\(\alpha_{i}\)</span> determine estimate of <span class="math inline">\(\alpha_{0}\)</span></li>
+</ul></li>
 </ul>
-<blockquote>
-<p>we believe that a team making the MLB minimum would win about 29.7% of its games in a give year, or roughly 47-48 per team</p>
-</blockquote>
 </div>
 </section>
-<section id="roster-based-definition" class="slide level2 smaller">
-<h2>Roster-based Definition</h2>
+<section id="hierarchical-structure" class="slide level2">
+<h2>Hierarchical Structure</h2>
 <ul>
-<li>Most MLB teams carry 12 pitchers &amp; 13 position players</li>
-<li>On any given day:
+<li>Often data exhibits hierarchical grouping structure
 <ul>
-<li><span class="math inline">\(30 \times 12 = 360\)</span> available pitchers</li>
-<li><span class="math inline">\(30 \times 13 = 390\)</span> available position players</li>
+<li>Passes group by QB, players in teams etc.</li>
 </ul></li>
-<li>Sort position players by number of at-bats in which they batted
-<ul>
-<li>Top 390: not-replacement</li>
-</ul></li>
-<li>Sort pitchers by numbers of at-bats in which they pitched
-<ul>
-<li>Top 360: not-replacement</li>
-</ul></li>
+<li>Grouping variable may be relevant to outcome &amp; induces correlation</li>
+<li>Outcomes from same group may be tightly clustered around group average</li>
 </ul>
 </section>
-<section id="replacement-level-per-at-bat-raa" class="slide level2 smaller">
-<h2>Replacement-Level Per-At-Bat RAA</h2>
+<section id="fitting-multilevel-models" class="slide level2">
+<h2>Fitting Multilevel Models</h2>
 <ul>
-<li>If we replace Ohtani w/ a replacement-level player, what <span class="math inline">\(\textrm{RAA}\)</span> values would they achieve?</li>
-<li>Idea: multiply Ohtani’s number of at-bats by average per-at-bat <span class="math inline">\(\textrm{RAA}\)</span> of replacement-level players</li>
-<li>Divide total <span class="math inline">\(\textrm{RAA}\)</span> for all replacement-level players by total number of at-bats</li>
+<li>The <code>(1 | passer_player_id)</code> tells <code>lmer()</code> to include a <em>random intercept</em> for each passer</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(lme4)</span>
+<span id="cb1-2"><a></a>multilevel_fit <span class="ot">&lt;-</span></span>
+<span id="cb1-3"><a></a>  <span class="fu">lmer</span>(<span class="at">formula =</span> epa <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>passer_player_id), </span>
+<span id="cb1-4"><a></a>       <span class="at">data =</span> pass2024)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="extracting-estimates" class="slide level2 smaller">
+<h2>Extracting Estimates</h2>
+<ul>
+<li>Use <code>ranef()</code> to extract estimates <span class="math inline">\(\hat{u}_{i}\)</span>’s</li>
+<li>Use <code>coef</code> to get <span class="math inline">\(\hat{\alpha}_{i} = \hat{\alpha}_{0} + \hat{u}_{i}\)</span>
+<ul>
+<li>Only valid when there is one grouping variable</li>
+<li>W/ more grouping variables, random intercepts not identified</li>
+</ul></li>
+<li><code>coef()</code> and <code>ranef()</code> return lists w/ one element per grouping variable
+<ul>
+<li>Each list element is a data table</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>tmp <span class="ot">&lt;-</span> <span class="fu">coef</span>(multilevel_fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="adjusting-for-additional-covariates" class="slide level2">
+<h2>Adjusting For Additional Covariates</h2>
+<ul>
+<li>Simple model doesn’t account for formation, whether QB was hit while throwing, etc.</li>
+<li><span class="math inline">\(\boldsymbol{\mathbf{x}}\)</span> contains: <code>air_yards</code>, <code>shotgun</code>, <code>qb_hit</code>, <code>pass_location</code>, <code>posteam_type</code></li>
+<li>Effects of these factors are constant (i.e., <strong>fixed</strong>) across all passers <span class="math display">\[
+\begin{align}
+\textrm{Level 1}&amp;: &amp;\quad  Y_{ij} &amp;= \alpha_{i} + \boldsymbol{\mathbf{x}}_{ij}^{\top}\boldsymbol{\beta} +  \epsilon_{ij}; \quad \epsilon_{ij} \sim N(0, \sigma^{2}) \\
+\textrm{Level 2}&amp;: &amp;\quad \alpha_{i} &amp;= \alpha_{0} + u_{i}; \quad u_{i} \sim N(0, \sigma^{2}_{\alpha})
+\end{align}
+\]</span></li>
 </ul>
 </section>
-<section id="looking-ahead" class="slide level2 smaller">
+<section id="fitting-our-elaborate-model" class="slide level2 scrollable">
+<h2>Fitting Our Elaborate Model</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>ml_fit_full <span class="ot">&lt;-</span></span>
+<span id="cb3-2"><a></a>  lme4<span class="sc">::</span><span class="fu">lmer</span>(<span class="at">formula =</span> epa <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>passer_player_id) <span class="sc">+</span> </span>
+<span id="cb3-3"><a></a>               air_yards <span class="sc">+</span> posteam_type <span class="sc">+</span> shotgun <span class="sc">+</span></span>
+<span id="cb3-4"><a></a>               no_huddle <span class="sc">+</span> qb_hit <span class="sc">+</span> pass_location, <span class="at">data =</span> pass2024)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="looking-ahead" class="slide level2">
 <h2>Looking Ahead</h2>
 <ul>
-<li>Adjusted Office Hours:
+<li><p>EPA is based on starting &amp; ending game state</p></li>
+<li><p>2 phases of passing play: ball in air + after the catch</p></li>
+<li><p>Currently analysis implicitly credits QBs for both phases</p></li>
+<li><p><a href="../../lectures/lecture10.html">Lecture 10</a>: divide total EPA among relevant offensive players</p></li>
+<li><p>Develop a version of WAR</p>
 <ul>
-<li>Today: 4pm - 5:30pm in MH 5586</li>
-<li>Wednesday: 4pm - 5pm in MH 5586 (not 3pm!)</li>
+<li>Multilevel model to estimate per-play contribution</li>
+<li>Scale model estimates by opportunities to create replacement-level shadow</li>
 </ul></li>
-<li>Before Lecture 9: please read Chapters <a href="https://bookdown.org/roback/bookdown-BeyondMLR/ch-corrdata.html">7</a> &amp; <a href="https://bookdown.org/roback/bookdown-BeyondMLR/ch-multilevelintro.html">8</a> of <a href="https://bookdown.org/roback/bookdown-BeyondMLR/"><em>Beyond Multiple Linear Regression</em></a></li>
 </ul>
 
 
@@ -1034,38 +1025,6 @@ Figure&nbsp;5
         }
       });
       </script>
-    <script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
-    (function() {
-      let previousOnload = window.onload;
-      window.onload = () => {
-        if (previousOnload) {
-          previousOnload();
-        }
-        lightboxQuarto.on('slide_before_load', (data) => {
-          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-          const href = trigger.getAttribute('href');
-          if (href !== null) {
-            const imgEl = window.document.querySelector(`a[href="${href}"] img`);
-            if (imgEl !== null) {
-              const srcAttr = imgEl.getAttribute("src");
-              if (srcAttr && srcAttr.startsWith("data:")) {
-                slideConfig.href = srcAttr;
-              }
-            }
-          } 
-        });
-      
-        lightboxQuarto.on('slide_after_load', (data) => {
-          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(slideNode);
-          }
-        });
-      
-      };
-      
-    })();
-              </script>
     
 
 </body></html>
