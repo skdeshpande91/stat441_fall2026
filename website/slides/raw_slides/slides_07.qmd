@@ -1,0 +1,190 @@
+---
+title: "STAT 441 Lecture 7"
+subtitle: "Offensive Credit Allocation"
+format: revealjs
+execute:
+  cache: true
+---
+
+# Overview
+
+## Recap{.smaller}
+
+- Expected runs: avg. runs scored in remainder of half-inning from game state
+  - Game state characterized by Outs & Baserunner configuration
+  - Baserunner strings: `"101"` means runner on 1st & 3rd, nobody on 2nd
+  - Estimated $\rho(\textrm{o}, \textrm{br})$ using all at-bats in 2024
+- During at-bat game state changes from $(\textrm{o}_{\text{start}}, \textrm{br}_{\text{start}})$ to $(\textrm{o}_{\text{end}}, \textrm{br}_{\text{end}})$
+
+. . .
+
+$$
+\textrm{RunValue} = \textrm{RunsScored} +\rho(\textrm{o}_{\text{end}}, \textrm{br}_{\text{end}}) - \rho(\textrm{o}_{\text{start}}, \textrm{br}_{\text{start}}) 
+$$
+
+- Several top batters created the most run value
+- Do batters deserve all the credit? How much credit to baserunners?
+
+## Road to WAR{.smaller}
+
+
+- Today: divide $\textrm{RunValue}$ b/w batter & baserunner
+
+- Conservation of runs: if batting team creates $\delta$ run value then fielding team creates $-\delta$
+
+. . .
+
+- Ultimately, we'll sum each player's across across each phase
+  - Offensive: Batting & Baserunning (today)
+  - Defensive: Pitching & Fielding ([Lecture 8](../../lectures/lecture08.qmd))
+
+- We'll then develop a version of *wins above replacement* (WAR)
+  - Introduce a roster-based definition of "replacement level"
+  - Estimate the performance of a replacement-level "shadow" for each player
+  - Convert runs to wins
+
+# Preliminary Computations
+
+## Adjusted Run Value
+
+- For at-bat starting in state $g$ and ending in $e$, how much run value should we expect batting team to create?
+  - Expect more run value w/ fewer outs
+  - At-bats ending w/ home runs have more run value than those ending w/ strike outs
+
+- How do players perform **over and above** expectations? 
+
+. . .
+
+- $\delta_{i} = \mathbb{E}[\delta \vert \textrm{g} = \textrm{g}_{i}, \textrm{e} = \textrm{e}_{i}] + \epsilon_{i}$
+
+- Let $\mu = \mathbb{E}[\delta \vert \textrm{g}, \textrm{e}]$: 
+
+
+## A Model for $\mu$
+
+- $\mathbb{E}[\delta \vert \textrm{g}, \textrm{e}] = \alpha_{\textrm{g}} + \alpha_{\textrm{e}}.$
+
+- Introduce 
+  - Game-state parameters: $\alpha_{0.000}, \ldots, \alpha_{2.111}$
+  - Event parameters: $\alpha_{\textrm{catcher\_interf}}, \ldots, \alpha_{\textrm{walk}}$
+
+- Avg. run value for hitting single w/ 2 outs and no runners on: $\alpha_{\textrm{2.000}} + \alpha_{\textrm{single}}$
+
+. . .
+
+- We must estimate $\alpha_{\textrm{g}}$'s and $\alpha_{\textrm{e}}$'s
+
+## Estimating $\alpha_{g}$ and $\alpha_{e}$
+
+$$
+\hat{\boldsymbol{\alpha}} = \textrm{argmin} \sum_{i = 1}^{n}{(\delta_{i} - \alpha_{g_{i}} - \alpha_{e_{i}})^2},
+$$
+
+- Linear regression *without an intercept*
+
+. . .
+
+- First step: data frame w/ $\delta, \textrm{g}$ and $\textrm{e}$
+- Must convert $\textrm{g}$ and $\textrm{e}$ to `factor` variables
+
+
+
+# Baserunning Credit
+
+## Decomposing $\delta$
+
+- Let $\hat{\mu}_{i} = \hat{\alpha}_{\textrm{g}_{i}} + \hat{\alpha}_{\textrm{e}_{i}}$
+  - Estimated exp. run value for at-bat $i$ based on starting state and ending event
+  
+- Let $\eta_{i} = \delta_{i} - \hat{\mu}_{i}$
+
+. . .
+
+- Following Baumer et al. (2015):
+  - Attribute $\hat{\mu}_{i}$ to batter 
+  - Divide $\eta_{i}$ b/w base runners
+
+## Baserunning Expectations
+
+- On a single, we would expect:
+  - Batter to reach 1st
+  - Other base runners to advance 1 base
+
+- March 20, 2024: Ohtani singled in `0.110` against Padres: 
+  - Ohtani reaches 1st, runner on 1st advances to 2nd
+  - Runner on 2nd scored
+
+- Instead of dividing $\eta_{i}$ equally, we should give more to runner originally on 2nd
+  
+
+
+## Weighted Allocation
+
+- Consider runner on base $j$ in at-bat $i$
+- $k_{ij}$: number of bases advanced by runner $j$ in at-bat $i$
+- $\textrm{e}_{i}$: ending event of at-bat $i$
+
+. . .
+
+- Let $\kappa_{ij} = \mathbb{P}(K < k_{ij} \vert \textrm{e}_{i})$
+- Assign $\eta_{i} \times \kappa_{ij}/\sum_{j'}{\kappa_{ij'}}$ to baserunner $j$
+
+- Why condition on ending event??
+
+## Computing $k_{ij}$ (Overview)
+
+- See [lecture notes](../../lectures/lecture07.qmd#sec-baserunner-advancement) for full code
+- Wrote functions to determine how many bases each runner (including batter) advanced
+- Compared starting and ending `on_1b`, `on_2b`, and `on_3b`
+- Also checked `des` to see if any player scored or was run out
+
+
+
+
+
+## Cumulative Baserunning Probabilities
+
+- We have $k_{ij}$ for all baserunners involved in at-bat $i$
+- Need to compute $\kappa_{ij} = \mathbb{P}(K < k_{ij} \vert \textrm{e}_{i})$
+
+
+
+## Example
+
+:::{.panel-tabset}
+
+
+
+### Single
+- After a single, runner on first advances 
+  - 0 bases w/ prob 2%; 1 base w/ prob 63% (0.647-0.0194)
+  - 2 bases w/ prob 31%; 3 bases w/ prob 4%
+
+### Strikeout
+- After a strikeout, runner on first advances
+  - 0 bases w/ prob 93%; 1 base w/ prob 6.4%
+  - 2 bases w/ prob 0.6%; 3 bases w/ prob 0%
+:::
+
+## Baserunning Run Value{.smaller}
+
+- Remember: assign $\eta_{i} \times \frac{\kappa_{ij}}{\sum_{j'}{\kappa_{ij'}}}$ to runner $j$ in at-bat $i$
+- Add columns for $\kappa$ to `baserunning`
+- $\eta_{i} \times \frac{\kappa_{ij}}{\sum_{j'}{\kappa_{ij'}}}$: run value created by baserunner $j$ in at-bat $i$
+- For each player and base, sum contributions
+- $\textrm{RAA}_{1b}$: run value created by baserunning from 1st base
+- Summing over the four baserunning positions gives us $\textrm{RAA}^{(\textrm{br})}$
+- Baumer et al. (2015): run value created above average through baserunning
+
+
+# Batting Run Value
+
+## $\textrm{RAA}^{(b)}$
+
+- Remember, we decomposed $\delta_{i} = \hat{\mu}_{i} + \eta_{i}$
+- Distributed $\eta_{i}$ among all base runners involve in at-bat $i$
+
+## Looking Ahead
+
+- Divided run value $\delta_{i}$ b/w batting & baserunning
+- Next time: divide $-\delta_{i}$ b/w pitching & fielding

@@ -1,0 +1,479 @@
+---
+title: "STAT 479: Lecture 8"
+subtitle: "Defensive Credit & WAR"
+format: revealjs
+execute: 
+  cache: true
+---
+
+
+# Recap & Overview
+
+## Offensive Credit Allocation{.smaller}
+- During at-bat $i$, batting team generates $\delta_{i}$ run value
+- [Lecture 7](../../lectures/lecture07.qmd): divide $\delta_{i}$ b/w batter and baserunners
+- Conservation of run value: if batting team gains $\delta$, fielding team gains $-\delta$
+- Today: divide $-\delta_{i}$ b/w pitcher and fielders
+
+## Two Possibilities{.smaller}
+
+- Ball is not put in play during at-bat
+  - At-bat ends w/ homerun, strikeout, walk
+  - Pitcher deserves all credit (or blame)
+
+. . .
+
+- Ball is put in play (e.g., flyout, groundout, single, double, triple, etc.)
+  - $\hat{p}$: probability of making an out (based on location)
+  - Give $\delta^{(p)} = -\delta \times (1-\hat{p})$ to the pitcher
+  - Divide $\delta^{(f)} = -\delta \times \hat{p}$ among other fielders
+
+
+
+
+## Transformed Coordinates{.smaller}
+
+
+- Transform: `x = 2.5 * (hc_x - 125.42)` & `y = 2.5 * (198.27 - hc_y)`
+- Define new coordinate system where
+  - Home plate at bottom of plot at `(0,0)`
+  - Units are in feet
+  - First base on the right around `(90/sqrt(2), 90/sqrt(2))`
+
+## More Data Preparation
+
+- `def_atbat2024`: at-bat level data table containing
+  - Pitcher & fielder identities
+  - Batted ball locations & fielder position
+  - Ending values of `type` and `events`: i.e. `end_type` and `end_events`
+    - Useful for determining at-bat level outcomes
+  - Narrative descriptions: `des`
+
+- See [lecture notes](../../lectures/lecture08.qmd#sec-hit-location-data) for full code
+
+
+# Estimating Out Probabilities
+
+
+
+
+
+## Generalized Additive Model
+$$
+\log\left(\frac{\mathbb{P}(\textrm{out})}{1 - \mathbb{P}(\textrm{out})} \right) = s(x,y),
+$$
+
+- $s(x,y)$ is a **smooth** function in both $x$ and $y$
+  - Technically: $s(x,y) = \sum_{d=1}^{D}{\beta_{d}\phi_{d}(x,y)}$ 
+  - $\phi_{1}, \ldots, \phi_{D}$: fixed set of *spline* functions
+  - $\phi_{d}$ piecewise polynomial localized to small spatial region
+- Can be fit using the **mgcv** package
+
+## Defining $\delta^{(p)}$ and $\delta^{(f)}$
+- Divide run value $\delta$ into
+  - $\delta^{(f)} = -1 \times \hat{p} \times \delta$
+  - $\delta^{(p)} = -1 \times (1 - \hat{p}) \times \delta$
+
+. . .
+
+- $\delta_{i}^{(p)} = -1 \times (1 - \hat{p}_{i}) \times \delta_{i}$
+  - Run value created by pitcher in at-bat $i$
+  - Positive values indicate good performance
+  
+- $\textrm{RAA}^{(p)}$: sum $\delta_{i}^{(p)}$'s across each pitchers at-bats
+
+
+
+
+
+## Fielding Responsibility{.smaller}
+- Say ball hit towards gap b/w 1st base and right field 
+  - Batting team creates large positive $\delta$
+  - $\hat{p} \approx 0$
+  - $\delta^{(f)}$ is large and negative
+  
+- How much blame should third baseman receive?
+
+
+## Fielder Out Probabilities
+
+```{r}
+#| label: fielder-out-probs 
+#| eval: true
+#| echo: false
+library(mgcv)
+load("../../lectures/position_gam_fits.RData")
+
+grid_sep <- 3 
+x_grid <- seq(from = -300, to = 300, by = grid_sep) 
+y_grid <- seq(from = -100, to = 500, by = grid_sep)
+raw_grid <- expand.grid(x = x_grid, y = y_grid)
+grid <-
+  raw_grid |>
+  dplyr::filter(y + x > -100 & y - x > -100 & sqrt(x^2 + y^2) < 580)
+
+# l = 5 (3rd basemen), l = 9 (RF), l = 3 (first basemen)
+
+grid_fielder_probs <- grid
+
+for(l in 1:9){
+  zero_index <- which( sqrt( (grid$x - mid_x[l])^2 + (grid$y - mid_y[l])^2) >= 150)
+  grid_fielder_probs[[paste0("prob", l)]] <-
+    predict(fit_list[[l]], newdata = grid, type = "response")
+  grid_fielder_probs[[paste0("prob",l)]][zero_index] <- 0
+}
+
+```
+
+:::{.panel-tabset}
+
+### 1B Out Prob
+
+```{r}
+#| label: fig-1b-pout
+#| eval: true
+#| echo: false
+#| fig-width: 5
+#| fig-height: 5
+
+col_list <- colorBlindness::Blue2DarkRed18Steps
+oi_colors <- palette.colors(palette = "Okabe-Ito")
+pout_1b_cols <-
+  rgb(colorRamp(col_list,bias=1)(grid_fielder_probs$prob3)/255) 
+
+par(mar = c(1,1,5,1), mgp = c(1.8, 0.5, 0))
+plot(1, type = "n", 
+     xlim = c(-300, 300), ylim = c(-100, 500), 
+     xaxt = "n", yaxt = "n", bty = "n", 
+     main = "1B Out Probabilities", xlab = "", ylab = "")
+
+for(i in 1:nrow(grid)){
+  rect(xleft = grid$x[i] - grid_sep/2, 
+       ybot = grid$y[i] - grid_sep/2,
+       xright = grid$x[i] + grid_sep/2,
+       ytop = grid$y[i] + grid_sep/2,
+       col = adjustcolor(pout_1b_cols[i], alpha.f = 0.5),
+       border = NA)
+}
+abline(a = 0, b = 1, col = oi_colors[5], lwd = 2) 
+abline(a = 0, b = -1, col = oi_colors[5], lwd = 2)
+
+lines(x = c(0,90/sqrt(2)), y = c(0, 90/sqrt(2)), col = "white", lwd = 3) 
+lines(x = c(0,-90/sqrt(2)), y = c(0, 90/sqrt(2)), col = "white", lwd = 3)
+lines(x = c(90/sqrt(2), 0), y = c(90/sqrt(2), 90*sqrt(2)), col = "white", lwd = 3)
+lines(x = c(-90/sqrt(2), 0), y = c(90/sqrt(2), 90*sqrt(2)), col = "white", lwd = 3)
+
+
+points(x = 0, y = 0, pch = 16, cex = 0.8, col = "white")
+points(x = 90/sqrt(2), y = 90/sqrt(2), pch = 16, cex = 0.8, col = "white")
+points(x = -90/sqrt(2), y = 90/sqrt(2), pch = 16,cex = 0.8, col = "white")
+points(x = 0, y = 90*sqrt(2), pch = 16, cex = 0.8, col = "white")
+```
+
+### 3B Out Prob
+```{r}
+#| label: fig-3b-pout
+#| eval: true
+#| echo: false
+#| fig-width: 5
+#| fig-height: 5
+
+pout_3b_cols <-
+  rgb(colorRamp(col_list,bias=1)(grid_fielder_probs$prob5)/255) 
+
+par(mar = c(1,1,5,1), mgp = c(1.8, 0.5, 0))
+plot(1, type = "n", 
+     xlim = c(-300, 300), ylim = c(-100, 500), 
+     xaxt = "n", yaxt = "n", bty = "n", 
+     main = "3B Out Probabilities", xlab = "", ylab = "")
+
+for(i in 1:nrow(grid)){
+  rect(xleft = grid$x[i] - grid_sep/2, 
+       ybot = grid$y[i] - grid_sep/2,
+       xright = grid$x[i] + grid_sep/2,
+       ytop = grid$y[i] + grid_sep/2,
+       col = adjustcolor(pout_3b_cols[i], alpha.f = 0.5),
+       border = NA)
+}
+abline(a = 0, b = 1, col = oi_colors[5], lwd = 2) 
+abline(a = 0, b = -1, col = oi_colors[5], lwd = 2)
+
+lines(x = c(0,90/sqrt(2)), y = c(0, 90/sqrt(2)), col = "white", lwd = 3) 
+lines(x = c(0,-90/sqrt(2)), y = c(0, 90/sqrt(2)), col = "white", lwd = 3)
+lines(x = c(90/sqrt(2), 0), y = c(90/sqrt(2), 90*sqrt(2)), col = "white", lwd = 3)
+lines(x = c(-90/sqrt(2), 0), y = c(90/sqrt(2), 90*sqrt(2)), col = "white", lwd = 3)
+
+
+points(x = 0, y = 0, pch = 16, cex = 0.8, col = "white")
+points(x = 90/sqrt(2), y = 90/sqrt(2), pch = 16, cex = 0.8, col = "white")
+points(x = -90/sqrt(2), y = 90/sqrt(2), pch = 16,cex = 0.8, col = "white")
+points(x = 0, y = 90*sqrt(2), pch = 16, cex = 0.8, col = "white")
+```
+
+### RF Out Prob
+```{r}
+
+#| label: fig-rf-pout
+#| eval: true
+#| echo: false
+#| fig-width: 5
+#| fig-height: 5
+
+pout_rf_cols <-
+  rgb(colorRamp(col_list,bias=1)(grid_fielder_probs$prob9)/255) 
+
+par(mar = c(1,1,5,1), mgp = c(1.8, 0.5, 0))
+plot(1, type = "n", 
+     xlim = c(-300, 300), ylim = c(-100, 500), 
+     xaxt = "n", yaxt = "n", bty = "n", 
+     main = "RF Out Probabilities", xlab = "", ylab = "")
+
+for(i in 1:nrow(grid)){
+  rect(xleft = grid$x[i] - grid_sep/2, 
+       ybot = grid$y[i] - grid_sep/2,
+       xright = grid$x[i] + grid_sep/2,
+       ytop = grid$y[i] + grid_sep/2,
+       col = adjustcolor(pout_rf_cols[i], alpha.f = 0.5),
+       border = NA)
+}
+abline(a = 0, b = 1, col = oi_colors[5], lwd = 2) 
+abline(a = 0, b = -1, col = oi_colors[5], lwd = 2)
+
+lines(x = c(0,90/sqrt(2)), y = c(0, 90/sqrt(2)), col = "white", lwd = 3) 
+lines(x = c(0,-90/sqrt(2)), y = c(0, 90/sqrt(2)), col = "white", lwd = 3)
+lines(x = c(90/sqrt(2), 0), y = c(90/sqrt(2), 90*sqrt(2)), col = "white", lwd = 3)
+lines(x = c(-90/sqrt(2), 0), y = c(90/sqrt(2), 90*sqrt(2)), col = "white", lwd = 3)
+
+
+points(x = 0, y = 0, pch = 16, cex = 0.8, col = "white")
+points(x = 90/sqrt(2), y = 90/sqrt(2), pch = 16, cex = 0.8, col = "white")
+points(x = -90/sqrt(2), y = 90/sqrt(2), pch = 16,cex = 0.8, col = "white")
+points(x = 0, y = 90*sqrt(2), pch = 16, cex = 0.8, col = "white")
+```
+
+:::
+
+
+
+
+## Position Weights{.smaller}
+- Idea: assign $w_{\ell} \delta^{(f)}$ to fielder at position $\ell$
+$$
+w_{\ell} = \frac{\hat{p}_{\ell}}{\hat{p}_{1} + \cdots + \hat{p}_{9}}
+$$
+- $\hat{p}_{\ell}$: prob. that fielder position $\ell$ makes out based on location
+- Can estimate $\hat{p}_{\ell}$ with fielder-specific GAMs
+  - See [lecture notes](../../lectures/lecture08.qmd#sec-fielding) for code
+  - Takes ~10-15 minutes to run
+- Numerical stability: restrict to balls w/in 150ft of typical fielder location
+  - I.e., balls hit to deep left field likely irrelevant for first baseman model
+
+
+## Position Weights Examples
+
+```{r}
+#| label: position-weights
+#| eval: true
+#| echo: false
+
+grid_fielder_probs <-
+  grid_fielder_probs |>
+  dplyr::mutate(total_prob = prob1 + prob2 + prob3 + prob4 + prob5 + prob6 + prob7 + prob8 + prob9,
+                w1 = ifelse(prob1 > 1e-16, prob1/total_prob, 0),
+                w2 = ifelse(prob2 > 1e-16, prob2/total_prob, 0),
+                w3 = ifelse(prob3 > 1e-16, prob3/total_prob, 0),
+                w4 = ifelse(prob4 > 1e-16, prob4/total_prob, 0),
+                w5 = ifelse(prob5 > 1e-16, prob5/total_prob, 0),
+                w6 = ifelse(prob6 > 1e-16, prob6/total_prob, 0),
+                w7 = ifelse(prob7 > 1e-16, prob7/total_prob, 0),
+                w8 = ifelse(prob8 > 1e-16, prob8/total_prob, 0),
+                w9 = ifelse(prob9 > 1e-16, prob9/total_prob, 0))
+```
+
+:::{.panel-tabset}
+
+### 1B Weight
+```{r}
+#| label: fig-1b-weight
+#| eval: true
+#| echo: false
+#| fig-width: 5
+#| fig-height: 5
+
+weight_1b_cols <-
+  rgb(colorRamp(col_list,bias=1)(grid_fielder_probs$w3)/255) 
+
+par(mar = c(1,1,5,1), mgp = c(1.8, 0.5, 0))
+plot(1, type = "n", 
+     xlim = c(-300, 300), ylim = c(-100, 500), 
+     xaxt = "n", yaxt = "n", bty = "n", 
+     main = "1B Weight", xlab = "", ylab = "")
+
+for(i in 1:nrow(grid)){
+  rect(xleft = grid$x[i] - grid_sep/2, 
+       ybot = grid$y[i] - grid_sep/2,
+       xright = grid$x[i] + grid_sep/2,
+       ytop = grid$y[i] + grid_sep/2,
+       col = adjustcolor(weight_1b_cols[i], alpha.f = 0.5),
+       border = NA)
+}
+abline(a = 0, b = 1, col = oi_colors[5], lwd = 2) 
+abline(a = 0, b = -1, col = oi_colors[5], lwd = 2)
+
+lines(x = c(0,90/sqrt(2)), y = c(0, 90/sqrt(2)), col = "white", lwd = 3) 
+lines(x = c(0,-90/sqrt(2)), y = c(0, 90/sqrt(2)), col = "white", lwd = 3)
+lines(x = c(90/sqrt(2), 0), y = c(90/sqrt(2), 90*sqrt(2)), col = "white", lwd = 3)
+lines(x = c(-90/sqrt(2), 0), y = c(90/sqrt(2), 90*sqrt(2)), col = "white", lwd = 3)
+
+
+points(x = 0, y = 0, pch = 16, cex = 0.8, col = "white")
+points(x = 90/sqrt(2), y = 90/sqrt(2), pch = 16, cex = 0.8, col = "white")
+points(x = -90/sqrt(2), y = 90/sqrt(2), pch = 16,cex = 0.8, col = "white")
+points(x = 0, y = 90*sqrt(2), pch = 16, cex = 0.8, col = "white")
+```
+
+### 3B Weight
+```{r}
+#| label: fig-3b-weight
+#| eval: true
+#| echo: false
+#| fig-width: 5
+#| fig-height: 5
+
+weight_3b_cols <-
+  rgb(colorRamp(col_list,bias=1)(grid_fielder_probs$w5)/255) 
+
+par(mar = c(1,1,5,1), mgp = c(1.8, 0.5, 0))
+plot(1, type = "n", 
+     xlim = c(-300, 300), ylim = c(-100, 500), 
+     xaxt = "n", yaxt = "n", bty = "n", 
+     main = "3B Weight", xlab = "", ylab = "")
+
+for(i in 1:nrow(grid)){
+  rect(xleft = grid$x[i] - grid_sep/2, 
+       ybot = grid$y[i] - grid_sep/2,
+       xright = grid$x[i] + grid_sep/2,
+       ytop = grid$y[i] + grid_sep/2,
+       col = adjustcolor(weight_3b_cols[i], alpha.f = 0.5),
+       border = NA)
+}
+abline(a = 0, b = 1, col = oi_colors[5], lwd = 2) 
+abline(a = 0, b = -1, col = oi_colors[5], lwd = 2)
+
+lines(x = c(0,90/sqrt(2)), y = c(0, 90/sqrt(2)), col = "white", lwd = 3) 
+lines(x = c(0,-90/sqrt(2)), y = c(0, 90/sqrt(2)), col = "white", lwd = 3)
+lines(x = c(90/sqrt(2), 0), y = c(90/sqrt(2), 90*sqrt(2)), col = "white", lwd = 3)
+lines(x = c(-90/sqrt(2), 0), y = c(90/sqrt(2), 90*sqrt(2)), col = "white", lwd = 3)
+
+
+points(x = 0, y = 0, pch = 16, cex = 0.8, col = "white")
+points(x = 90/sqrt(2), y = 90/sqrt(2), pch = 16, cex = 0.8, col = "white")
+points(x = -90/sqrt(2), y = 90/sqrt(2), pch = 16,cex = 0.8, col = "white")
+points(x = 0, y = 90*sqrt(2), pch = 16, cex = 0.8, col = "white")
+```
+
+
+### RF Weight
+```{r}
+#| label: fig-rf-weight
+#| eval: true
+#| echo: false
+#| fig-width: 5
+#| fig-height: 5
+
+weight_rf_cols <-
+  rgb(colorRamp(col_list,bias=1)(grid_fielder_probs$w9)/255) 
+
+par(mar = c(1,1,5,1), mgp = c(1.8, 0.5, 0))
+plot(1, type = "n", 
+     xlim = c(-300, 300), ylim = c(-100, 500), 
+     xaxt = "n", yaxt = "n", bty = "n", 
+     main = "RF Weight", xlab = "", ylab = "")
+
+for(i in 1:nrow(grid)){
+  rect(xleft = grid$x[i] - grid_sep/2, 
+       ybot = grid$y[i] - grid_sep/2,
+       xright = grid$x[i] + grid_sep/2,
+       ytop = grid$y[i] + grid_sep/2,
+       col = adjustcolor(weight_rf_cols[i], alpha.f = 0.5),
+       border = NA)
+}
+abline(a = 0, b = 1, col = oi_colors[5], lwd = 2) 
+abline(a = 0, b = -1, col = oi_colors[5], lwd = 2)
+
+lines(x = c(0,90/sqrt(2)), y = c(0, 90/sqrt(2)), col = "white", lwd = 3) 
+lines(x = c(0,-90/sqrt(2)), y = c(0, 90/sqrt(2)), col = "white", lwd = 3)
+lines(x = c(90/sqrt(2), 0), y = c(90/sqrt(2), 90*sqrt(2)), col = "white", lwd = 3)
+lines(x = c(-90/sqrt(2), 0), y = c(90/sqrt(2), 90*sqrt(2)), col = "white", lwd = 3)
+
+
+points(x = 0, y = 0, pch = 16, cex = 0.8, col = "white")
+points(x = 90/sqrt(2), y = 90/sqrt(2), pch = 16, cex = 0.8, col = "white")
+points(x = -90/sqrt(2), y = 90/sqrt(2), pch = 16,cex = 0.8, col = "white")
+points(x = 0, y = 90*sqrt(2), pch = 16, cex = 0.8, col = "white")
+```
+:::
+
+
+
+## Run Value by Fielding Position{.smaller}
+
+
+- For each at-bat $i$ assign $w_{i,\ell}\delta_{i}^{(f)}$ to player at position $\ell$
+- Sums these values for each player-position to get $\textrm{RAA}_{\ell}^{(f)}$
+  - Some players play multiple positions in the field
+- $\textrm{RAA}_{\ell}^{(f)}$: run value created by playing position $\ell$
+- $\textrm{RAA}^{(f)} = \textrm{RAA}^{(f)}_{1} + \cdots + \textrm{RAA}^{(f)}_{9}$
+
+
+
+
+
+# Replacement Level
+
+## Recap
+- $\textrm{RAA} = \textrm{RAA}^{(b)} + \textrm{RAA}^{(br)} + \textrm{RAA}^{(f)} + \textrm{RAA}^{(p)}$
+- Comprehensive measure of player performance in all parts of the game
+- Absolute $\textrm{RAA}$ are interesting...
+- ... but are much more useful when calibrated to some baseline
+
+## Replacement Level
+- Quoting from [FanGraphs](https://library.fangraphs.com/misc/war/replacement-level/)
+
+> Replacement level is simply the level of production you could get from a player that would cost you nothing but the league minimum salary to acquire. 
+
+. . . 
+
+- Definition is fairly arbitrary!
+
+> we believe that a team making the MLB minimum would win about 29.7% of its games in a give year, or roughly 47-48 per team
+
+## Roster-based Definition{.smaller}
+- Most MLB teams carry 12 pitchers & 13 position players
+- On any given day: 
+  - $30 \times 12 = 360$ available pitchers
+  - $30 \times 13 = 390$ available position players
+- Sort position players by number of at-bats in which they batted
+  - Top 390: not-replacement
+- Sort pitchers by numbers of at-bats in which they pitched
+  - Top 360: not-replacement
+
+
+## Replacement-Level Per-At-Bat RAA{.smaller}
+
+- If we replace Ohtani w/ a replacement-level player, what $\textrm{RAA}$ values would they achieve?
+- Idea: multiply Ohtani's number of at-bats by average per-at-bat $\textrm{RAA}$ of replacement-level players
+- Divide total $\textrm{RAA}$ for all replacement-level players by total number of at-bats
+
+
+
+
+## Looking Ahead{.smaller}
+
+- Adjusted Office Hours:
+  - Today: 4pm - 5:30pm in MH 5586
+  - Wednesday: 4pm - 5pm in MH 5586 (not 3pm!)
+  
+- Before Lecture 9: please read Chapters [7](https://bookdown.org/roback/bookdown-BeyondMLR/ch-corrdata.html) & [8](https://bookdown.org/roback/bookdown-BeyondMLR/ch-multilevelintro.html) of [*Beyond Multiple Linear Regression*](https://bookdown.org/roback/bookdown-BeyondMLR/)
+
+
