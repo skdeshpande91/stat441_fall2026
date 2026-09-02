@@ -22,23 +22,20 @@ execute:
 
 - **NOT** a statistical methods course w/ sports applications
 - Methods introduced *as needed* 
-  - But will not cover all technical details
+  - Will not cover all technical details
   - I'll point to relevant resources & classes where relevant
   - Main goal: answering substantive sports questions
 
 . . .
 
 - **NOT** a course on sports betting or fantasy sports
-  - Some material may be relevant ... 
-  - ... but we won't explicitly discuss these topics
-
-. . . 
-
 - **NOT** a way to discuss last night's game for credit
-  - This is a serious statistics & data science course
 
+. . .
+
+- This is a serious *applied* statistics & data science course
 - Goal: **practice** skills needed to work w/ sports data (e.g. for a team)
-  - Course design reflects input from leaders in the industry
+- Course design reflects input from leaders in the industry
 
 ## Course Learning Outcomes
 :::{.fragment}
@@ -52,7 +49,7 @@ execute:
 
 :::{.fragment}
 - Asking and answering **substantive** sports questions w/ data
-  - We'll go well beyond "who's the best at..."
+- We'll go well beyond "who's the best at..."
 
 :::
 
@@ -93,16 +90,17 @@ execute:
 
 - Kobe made 868 shots in 2003-04
 - SGA made 868 shots in 2025-26
-- Kobe took 300 more shots than SGA
 
 . . . 
 
+- Kobe took 300 more shots
 - Let's redefine "best" in terms of field goal percentage
 
 $\textrm{FGP} = \textrm{FGM}/\textrm{FGA}$
 
 
 ## Effective Field Goal Percentage{.smaller}
+
 - FGP is arguably a better measure of skill than FGM **but**
   - Extreme values for players w/ few attempts
   - Doesn't distinguish 2- and 3-point shots
@@ -146,6 +144,7 @@ $\textrm{FGP} = \textrm{FGM}/\textrm{FGA}$
   - Data manipulation with **dplyr** and other **tidyverse** packages.
   - Creating visualizations
 
+
 ## Course Website
 
 ![](figures/stat441_f26_website_qr.png){fig-align="center"}
@@ -175,7 +174,7 @@ Also [Piazza](https://piazza.com/class/mpx66b7xrng5pt/)
 
 ## Projects{.smaller}
 - Work in groups of up to 4
-  - Same groups for Projects 1 & 2; can change for Project 3
+  - Same groups for Projects 1--3.
   - Form groups by **Friday September 11**
   - Use Piazza to find teammates & sign up in spreadsheet 
 
@@ -207,9 +206,8 @@ I **highly** recommend using Quarto
 . . .
 
 - I'll select 5-6 groups to present in-class on the last day (12/8)
-  - Details to be announced
   - Presenting on the last day unrelated to course grades
-
+  - Selection based on peer feedback, my assessment, overall representation
 
 ## Project Peer Review
 
@@ -226,6 +224,7 @@ I **highly** recommend using Quarto
 - Rate every group member (including yourself)
 - Ratings and comments will be kept anonymous
 - Course staff may give warnings for low peer score
+- Due 1 week after projects: 10/16, 11/13, and 12/11
 
 
 # Topic List
@@ -335,9 +334,23 @@ I **highly** recommend using Quarto
 
 :::{.callout-important}
 # Peer Review
-Respect your classmates enough to review their projects yourself.
+**Respect** your classmates enough to review their projects yourself.
 Uploading someone else's project report or presentation to a generative AI tool (e.g., for creating summaries) is forbidden and **will result in a failing grade.** 
 :::
+
+## Office Hours
+
+
+- Tuesdays: 9:30am - 10:45am (5586 Morgridge Hall)
+- Thursdays: 4:00pm - 5:15pm (5586 Morgridge Hall)
+- Fridays: 3:00pm - 4:30pm (5631 Morgridge Hall)
+  - More collaborative setting
+  - You're welcome to work on projects, exercises, lecture analyses
+  - Bounce ideas off others (and me)
+
+- Happy to meet outside these hours (email me first)
+
+
 
 ## Looking Ahead
 

@@ -6,11 +6,11 @@
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.9.38">
+  <meta name="generator" content="quarto-1.7.32">
 
   <title>STAT441 – STAT 441 Lecture 1</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -19,9 +19,6 @@
   <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
   <style>
-    /* Default styles provided by pandoc.
-    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-    */
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -34,7 +31,7 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-9453c600278fc315503a3acb2c81ba94.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-9a1a2c3d5c7ea7f04258c8f180195b78.css">
   <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -163,30 +160,22 @@
 <li><strong>NOT</strong> a statistical methods course w/ sports applications</li>
 <li>Methods introduced <em>as needed</em>
 <ul>
-<li>But will not cover all technical details</li>
+<li>Will not cover all technical details</li>
 <li>I’ll point to relevant resources &amp; classes where relevant</li>
 <li>Main goal: answering substantive sports questions</li>
 </ul></li>
 </ul>
 <div class="fragment">
 <ul>
-<li><strong>NOT</strong> a course on sports betting or fantasy sports
-<ul>
-<li>Some material may be relevant …</li>
-<li>… but we won’t explicitly discuss these topics</li>
-</ul></li>
+<li><strong>NOT</strong> a course on sports betting or fantasy sports</li>
+<li><strong>NOT</strong> a way to discuss last night’s game for credit</li>
 </ul>
 </div>
 <div class="fragment">
 <ul>
-<li><strong>NOT</strong> a way to discuss last night’s game for credit
-<ul>
-<li>This is a serious statistics &amp; data science course</li>
-</ul></li>
-<li>Goal: <strong>practice</strong> skills needed to work w/ sports data (e.g.&nbsp;for a team)
-<ul>
+<li>This is a serious <em>applied</em> statistics &amp; data science course</li>
+<li>Goal: <strong>practice</strong> skills needed to work w/ sports data (e.g.&nbsp;for a team)</li>
 <li>Course design reflects input from leaders in the industry</li>
-</ul></li>
 </ul>
 </div>
 </section>
@@ -202,10 +191,8 @@
 </div>
 <div class="fragment">
 <ul>
-<li>Asking and answering <strong>substantive</strong> sports questions w/ data
-<ul>
+<li>Asking and answering <strong>substantive</strong> sports questions w/ data</li>
 <li>We’ll go well beyond “who’s the best at…”</li>
-</ul></li>
 </ul>
 </div>
 </section></section>
@@ -262,10 +249,10 @@
 <ul>
 <li>Kobe made 868 shots in 2003-04</li>
 <li>SGA made 868 shots in 2025-26</li>
-<li>Kobe took 300 more shots than SGA</li>
 </ul>
 <div class="fragment">
 <ul>
+<li>Kobe took 300 more shots</li>
 <li>Let’s redefine “best” in terms of field goal percentage</li>
 </ul>
 <p><span class="math inline">\(\textrm{FGP} = \textrm{FGM}/\textrm{FGA}\)</span></p>
@@ -379,7 +366,7 @@
 <ul>
 <li>Work in groups of up to 4
 <ul>
-<li>Same groups for Projects 1 &amp; 2; can change for Project 3</li>
+<li>Same groups for Projects 1–3.</li>
 <li>Form groups by <strong>Friday September 11</strong></li>
 <li>Use Piazza to find teammates &amp; sign up in spreadsheet</li>
 </ul></li>
@@ -421,8 +408,8 @@
 <ul>
 <li>I’ll select 5-6 groups to present in-class on the last day (12/8)
 <ul>
-<li>Details to be announced</li>
 <li>Presenting on the last day unrelated to course grades</li>
+<li>Selection based on peer feedback, my assessment, overall representation</li>
 </ul></li>
 </ul>
 </div>
@@ -448,6 +435,7 @@
 <li>Rate every group member (including yourself)</li>
 <li>Ratings and comments will be kept anonymous</li>
 <li>Course staff may give warnings for low peer score</li>
+<li>Due 1 week after projects: 10/16, 11/13, and 12/11</li>
 </ul>
 </section></section>
 <section>
@@ -604,10 +592,24 @@
 <p><strong>Peer Review</strong></p>
 </div>
 <div class="callout-content">
-<p>Respect your classmates enough to review their projects yourself. Uploading someone else’s project report or presentation to a generative AI tool (e.g., for creating summaries) is forbidden and <strong>will result in a failing grade.</strong></p>
+<p><strong>Respect</strong> your classmates enough to review their projects yourself. Uploading someone else’s project report or presentation to a generative AI tool (e.g., for creating summaries) is forbidden and <strong>will result in a failing grade.</strong></p>
 </div>
 </div>
 </div>
+</section>
+<section id="office-hours" class="slide level2">
+<h2>Office Hours</h2>
+<ul>
+<li>Tuesdays: 9:30am - 10:45am (5586 Morgridge Hall)</li>
+<li>Thursdays: 4:00pm - 5:15pm (5586 Morgridge Hall)</li>
+<li>Fridays: 3:00pm - 4:30pm (5631 Morgridge Hall)
+<ul>
+<li>More collaborative setting</li>
+<li>You’re welcome to work on projects, exercises, lecture analyses</li>
+<li>Bounce ideas off others (and me)</li>
+</ul></li>
+<li>Happy to meet outside these hours (email me first)</li>
+</ul>
 </section>
 <section id="looking-ahead" class="slide level2">
 <h2>Looking Ahead</h2>
@@ -808,7 +810,7 @@
         margin: 0.1,
 
         math: {
-          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
           config: 'TeX-AMS_HTML-full',
           tex2jax: {
             inlineMath: [['\\(','\\)']],
@@ -882,14 +884,13 @@
           e.clearSelection();
         }
         const getTextToCopy = function(trigger) {
-          const outerScaffold = trigger.parentElement.cloneNode(true);
-          const codeEl = outerScaffold.querySelector('code');
-          for (const childEl of codeEl.children) {
-            if (isCodeAnnotation(childEl)) {
-              childEl.remove();
+            const codeEl = trigger.previousElementSibling.cloneNode(true);
+            for (const childEl of codeEl.children) {
+              if (isCodeAnnotation(childEl)) {
+                childEl.remove();
+              }
             }
-          }
-          return codeEl.innerText;
+            return codeEl.innerText;
         }
         const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
           text: getTextToCopy
