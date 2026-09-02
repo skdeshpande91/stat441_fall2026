@@ -578,14 +578,14 @@
     "href": "slides/raw_slides/slides_01.html#lectures-office-hours",
     "title": "STAT 441 Lecture 1",
     "section": "Lectures & Office Hours",
-    "text": "Lectures & Office Hours\n\nLectures: Tuesdays & Thursday 8:00am-9:15pm (1524 Morgridge Hall)\nInstructor: Sameer Deshpande\n\nTuesdays: 9:30am - 10:45am (5586 Morgridge Hall)\nThursdays: 4:00pm - 5:15pm (5586 Morgridge Hall)\nFridays: 3:00pm - 4:30pm (5631 Morgridge Hall)\n\nTA: Zhexuan Liu"
+    "text": "Lectures & Office Hours\n\nLectures: Tuesday & Thursday 8:00am-9:15pm (1524 Morgridge Hall)\nInstructor: Sameer Deshpande\n\nTuesday: 9:30am - 10:45am (5586 Morgridge Hall)\nThursday: 4:00pm - 5:15pm (5586 Morgridge Hall)\nFriday: 3:00pm - 4:30pm (5631 Morgridge Hall)\n\nTA: Zhexuan Liu"
   },
   {
     "objectID": "slides/raw_slides/slides_01.html#what-this-course-is-not",
     "href": "slides/raw_slides/slides_01.html#what-this-course-is-not",
     "title": "STAT 441 Lecture 1",
     "section": "What This Course is NOT",
-    "text": "What This Course is NOT\n\nNOT a statistical methods course w/ sports applications\nMethods introduced as needed\n\nWill not cover all technical details\nI’ll point to relevant resources & classes where relevant\nMain goal: answering substantive sports questions\n\n\n\n\nNOT a course on sports betting or fantasy sports\nNOT a way to discuss last night’s game for credit\n\n\n\n\nThis is a serious applied statistics & data science course\nGoal: practice skills needed to work w/ sports data (e.g. for a team)\nCourse design reflects input from leaders in the industry"
+    "text": "What This Course is NOT\n\nThis is NOT\n\nA course on sports betting or fantasy sports\nA way to discuss last night’s game for credit\nA statistical metods course w/ sports applications\n\n\n\n\nThis is a serious applied statistics & data science course\nMethods introduced as needed\n\nWill not cover all technical details\nI’ll point to relevant resources & classes\nMain goal: answering substantive sports questions\n\nGoal: practice skills needed to work w/ sports data (e.g. for a team)\nCourse design reflects input from leaders in the industry"
   },
   {
     "objectID": "slides/raw_slides/slides_01.html#course-learning-outcomes",
@@ -599,7 +599,7 @@
     "href": "slides/raw_slides/slides_01.html#statistics-vs-analytics",
     "title": "STAT 441 Lecture 1",
     "section": "Statistics vs Analytics",
-    "text": "Statistics vs Analytics\n\nSports statistics refer to counts and rates that summarize performance:\n\nNumber of rebounds, wins, games played\nFree throw percentage, batting average\n\n\n\n\nAnalytics refers to the use of statistical modeling to help gain competitive advantage\nAnalytics makes use of basic statistics & creates new ones\nAnalytics uses data to answer substantive sports questions\nMany questions can framed in terms of prediction"
+    "text": "Statistics vs Analytics\n\nSports statistics refer to counts and rates that summarize performance:\n\nNumber of rebounds, wins, games played\nFree throw percentage, batting average\n\n\n\n\nAnalytics refers to the use of statistical modeling to help gain competitive advantage\n\nAnalytics makes use of basic statistics & creates new ones\nAnalytics uses data to answer substantive sports questions\nMany questions can framed in terms of prediction"
   },
   {
     "objectID": "slides/raw_slides/slides_01.html#best-nba-shooting-performances",
@@ -613,21 +613,21 @@
     "href": "slides/raw_slides/slides_01.html#accounting-for-efficiency",
     "title": "STAT 441 Lecture 1",
     "section": "Accounting for Efficiency",
-    "text": "Accounting for Efficiency\n\nKobe made 868 shots in 2003-04\nSGA made 868 shots in 2025-26\n\n\n\nKobe took 300 more shots\nLet’s redefine “best” in terms of field goal percentage\n\n\\(\\textrm{FGP} = \\textrm{FGM}/\\textrm{FGA}\\)"
+    "text": "Accounting for Efficiency\n\nKobe made 868 shots in 2003-04\nSGA made 868 shots in 2025-26\n\n\n\nKobe took 300 more shots\nLet’s redefine “best” in terms of field goal percentage\n\n\\[\\textrm{FGP} = \\textrm{FGM}/\\textrm{FGA}\\]"
   },
   {
     "objectID": "slides/raw_slides/slides_01.html#effective-field-goal-percentage",
     "href": "slides/raw_slides/slides_01.html#effective-field-goal-percentage",
     "title": "STAT 441 Lecture 1",
     "section": "Effective Field Goal Percentage",
-    "text": "Effective Field Goal Percentage\n\nFGP is arguably a better measure of skill than FGM but\n\nExtreme values for players w/ few attempts\nDoesn’t distinguish 2- and 3-point shots\n\n\n\n\n\\(\\textrm{eFGP} = (\\textrm{FGM} + 0.5 \\times \\textrm{TPM})/\\textrm{FGA}\\)"
+    "text": "Effective Field Goal Percentage\n\nFGP is arguably a better measure of skill than FGM but\n\nExtreme values for players w/ few attempts\nDoesn’t distinguish 2- and 3-point shots\n\n\n\n\\[\\textrm{eFGP} = (\\textrm{FGM} + 0.5 \\times \\textrm{TPM})/\\textrm{FGA}\\]"
   },
   {
     "objectID": "slides/raw_slides/slides_01.html#reflection",
     "href": "slides/raw_slides/slides_01.html#reflection",
     "title": "STAT 441 Lecture 1",
     "section": "Reflection",
-    "text": "Reflection\n\neFGP is arguably better than FGP and FGM\nBut it is still highly variable\n\n\n\nRefined question: instead of “who’s the best”, we can ask\n\n“what is the probability that a player makes a shot”\n\nLater: methods to estimate these probs. that\n\nAccount for contextual factors (e.g., shot location)\nProduce stable estimates even w/ small sample sizes\nAvoid imposing arbitrary cut-offs (e.g., \\(\\textrm{FGA} &gt; 400\\))\nCalibrate performance against transparent baselines (e.g., “above replacement”)\n\nAnalytics involves motivating and justifying choices"
+    "text": "Reflection\n\neFGP is arguably better than FGP and FGM\nBut it is still highly variable\n\n\n\nRefined question: instead of “who’s the best”, we can ask\n\n\\[\\textrm{\"what is the probability that a player makes a shot\"}\\]\n\nLater: methods to estimate these probs. that\n\nAccount for contextual factors (e.g., shot location)\nProduce stable estimates even w/ small sample sizes\nAvoid imposing arbitrary cut-offs (e.g., \\(\\textrm{FGA} &gt; 400\\))\nCalibrate performance against transparent baselines (e.g., “above replacement”)\n\nAnalytics involves motivating and justifying choices"
   },
   {
     "objectID": "slides/raw_slides/slides_01.html#requisites",
@@ -648,7 +648,7 @@
     "href": "slides/raw_slides/slides_01.html#assignments-grading",
     "title": "STAT 441 Lecture 1",
     "section": "Assignments & Grading",
-    "text": "Assignments & Grading\n\n3 Group Projects (3 x 300 pts): Due on 10/9, 11/6, and 12/4\n\nWritten Report (100 pts) & Presentation (100 pts)\nPeer Reviews (3 x 20 pts)\nTeam Accountability Survey (20 pts)\n\n\n\n\nExercises (2 x 50 pts):\n\nSubmit solutions to 2 homework exercises (due 1 week after lecture)\nLead & participate in discussion on Piazza\n\nParticipation (60 pts): Assessed holistically\n\nRegularly attend lectures & office hours\nContribute to Piazza discussions\n\n\n\n\n\nFinal grade based on how many of the 1000 points earned"
+    "text": "Assignments & Grading\n\n3 Group Projects (3 x 280 pts): Due on 10/9, 11/6, and 12/4\n\nWritten Report (100 pts) & Presentation (100 pts)\nPeer Reviews (3 x 20 pts)\nTeam Accountability Survey (20 pts)\n\n\n\n\nExercises (2 x 50 pts):\n\nSubmit solutions to 2 homework exercises (due 1 week after lecture)\nLead & participate in discussion on Piazza\n\nParticipation (60 pts): Assessed holistically\n\nRegularly attend lectures & office hours\nContribute to Piazza discussions\n\nFinal grade based on how many of the 1000 points earned"
   },
   {
     "objectID": "slides/raw_slides/slides_01.html#projects",
@@ -676,7 +676,7 @@
     "href": "slides/raw_slides/slides_01.html#project-peer-review",
     "title": "STAT 441 Lecture 1",
     "section": "Project Peer Review",
-    "text": "Project Peer Review\n\nProvide feedback on 3 presentations & reports\n\nRubrics will be available\nFill out rubric + leave constructive comments\n\nDue 1 weeks after projects: 10/16, 11/13, and 12/11"
+    "text": "Project Peer Review\n\nProvide feedback on 3 presentations & reports\nFill out rubric + leave constructive comments\nDue 1 weeks after projects: 10/16, 11/13, and 12/11"
   },
   {
     "objectID": "slides/raw_slides/slides_01.html#team-accountability-survey",
@@ -704,7 +704,7 @@
     "href": "slides/raw_slides/slides_01.html#unit-2-rankings-simulation",
     "title": "STAT 441 Lecture 1",
     "section": "Unit 2: Rankings & Simulation",
-    "text": "Unit 2: Rankings & Simulation\n\nUse models to simulate games, tournaments, drafts, etc.\nCase Studies:\n\nNCAA Volleyball & Hockey Tournaments (Lectures 12 & 13)\nMarkov chain simulations (Lecture 14)\nBuilding a consensus mock draft (Lecture 15)\nEstimating impact of a rule change (Lecture 16 & 7)"
+    "text": "Unit 2: Rankings & Simulation\n\nUse models to simulate games, tournaments, drafts, etc.\nCase Studies:\n\nNCAA Volleyball & Hockey Tournaments (Lectures 12 & 13)\nBuilding a consensus mock draft (Lecture 14)\nMarkov chain simulations (Lecture 15)\nEstimating impact of a rule change (Lecture 16 & 7)"
   },
   {
     "objectID": "slides/raw_slides/slides_01.html#project-2",

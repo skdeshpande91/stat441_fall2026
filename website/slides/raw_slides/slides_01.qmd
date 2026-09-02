@@ -8,34 +8,43 @@ execute:
 
 # Logistics
 
-## Lectures & Office Hours{.smaller}
+## Lectures & Office Hours
 
-- Lectures: Tuesdays & Thursday 8:00am-9:15pm (1524 Morgridge Hall)
+- Lectures: Tuesday & Thursday 8:00am-9:15pm (1524 Morgridge Hall)
 - Instructor: Sameer Deshpande
-  - Tuesdays: 9:30am - 10:45am (5586 Morgridge Hall)
-  - Thursdays: 4:00pm - 5:15pm (5586 Morgridge Hall)
-  - Fridays: 3:00pm - 4:30pm (5631 Morgridge Hall)
+  - Tuesday: 9:30am - 10:45am (5586 Morgridge Hall)
+  - Thursday: 4:00pm - 5:15pm (5586 Morgridge Hall)
+  - Friday: 3:00pm - 4:30pm (5631 Morgridge Hall)
 
 - TA: Zhexuan Liu 
 
 ## What This Course is NOT {.smaller}
 
-- **NOT** a statistical methods course w/ sports applications
-- Methods introduced *as needed* 
-  - Will not cover all technical details
-  - I'll point to relevant resources & classes where relevant
-  - Main goal: answering substantive sports questions
-
-. . .
-
-- **NOT** a course on sports betting or fantasy sports
-- **NOT** a way to discuss last night's game for credit
+- This is **NOT**
+  - A course on sports betting or fantasy sports
+  - A way to discuss last night's game for credit
+  - A statistical metods course w/ sports applications
 
 . . .
 
 - This is a serious *applied* statistics & data science course
+- Methods introduced *as needed* 
+  - Will not cover all technical details
+  - I'll point to relevant resources & classes 
+  - Main goal: answering substantive sports questions
+  
 - Goal: **practice** skills needed to work w/ sports data (e.g. for a team)
 - Course design reflects input from leaders in the industry
+
+
+
+
+
+
+
+. . .
+
+
 
 ## Course Learning Outcomes
 :::{.fragment}
@@ -64,9 +73,9 @@ execute:
 . . .
 
 - Analytics refers to the use of statistical *modeling* to help gain competitive advantage
-- Analytics makes use of basic statistics & creates new ones
-- Analytics uses data to answer **substantive sports questions**
-- Many questions can framed in terms of prediction
+  - Analytics makes use of basic statistics & creates new ones
+  - Analytics uses data to answer **substantive sports questions**
+  - Many questions can framed in terms of prediction
 
 
 ## "Best" NBA Shooting Performances{.smaller}
@@ -86,6 +95,7 @@ execute:
 - Data: box scores from each game since 2002-03
 - Available from the **hoopR** package
 
+
 ## Accounting for Efficiency
 
 - Kobe made 868 shots in 2003-04
@@ -96,7 +106,7 @@ execute:
 - Kobe took 300 more shots
 - Let's redefine "best" in terms of field goal percentage
 
-$\textrm{FGP} = \textrm{FGM}/\textrm{FGA}$
+$$\textrm{FGP} = \textrm{FGM}/\textrm{FGA}$$
 
 
 ## Effective Field Goal Percentage{.smaller}
@@ -107,7 +117,7 @@ $\textrm{FGP} = \textrm{FGM}/\textrm{FGA}$
  
 . . . 
 
-- $\textrm{eFGP} = (\textrm{FGM} + 0.5 \times \textrm{TPM})/\textrm{FGA}$
+$$\textrm{eFGP} = (\textrm{FGM} + 0.5 \times \textrm{TPM})/\textrm{FGA}$$
 
 ## Reflection{.smaller}
 
@@ -118,7 +128,7 @@ $\textrm{FGP} = \textrm{FGM}/\textrm{FGA}$
 
 - Refined question: instead of "who's the best", we can ask
 
-"what is the probability that a player makes a shot"
+$$\textrm{"what is the probability that a player makes a shot"}$$
 
 - Later: methods to estimate these probs. that
   - Account for contextual factors (e.g., shot location)
@@ -130,7 +140,7 @@ $\textrm{FGP} = \textrm{FGM}/\textrm{FGA}$
 
 # More Course Logistics
 
-## Requisites
+## Requisites{.smaller}
 
 - STAT 333 or 340
   - Random variables, expectations, probability
@@ -151,9 +161,9 @@ $\textrm{FGP} = \textrm{FGM}/\textrm{FGA}$
 
 Also [Piazza](https://piazza.com/class/mpx66b7xrng5pt/)
 
-## Assignments & Grading
+## Assignments & Grading{.smaller}
 
-- 3 Group Projects (3 x 300 pts): Due on 10/9, 11/6, and 12/4
+- 3 Group Projects (3 x 280 pts): Due on 10/9, 11/6, and 12/4
   - Written Report (100 pts) & Presentation (100 pts)
   - Peer Reviews (3 x 20 pts)
   - Team Accountability Survey (20 pts)
@@ -168,15 +178,13 @@ Also [Piazza](https://piazza.com/class/mpx66b7xrng5pt/)
   - Regularly attend lectures & office hours
   - Contribute to Piazza discussions
 
-. . .
-
 - Final grade based on how many of the 1000 points earned
 
 ## Projects{.smaller}
 - Work in groups of up to 4
   - Same groups for Projects 1--3.
   - Form groups by **Friday September 11**
-  - Use Piazza to find teammates & sign up in spreadsheet 
+  - Use Piazza to find teammates & sign up in [spreadsheet](https://docs.google.com/spreadsheets/d/1aGQ9m2OKLRnTq11pLawBTwF8oxFPIaRmYWvD_8kGhoo/edit?usp=sharing)
 
 - Course projects can
   - Modify or extend analysis from lecture (e.g., to new sport)
@@ -212,9 +220,7 @@ I **highly** recommend using Quarto
 ## Project Peer Review
 
 - Provide feedback on 3 presentations & reports
-  - Rubrics will be available
-  - Fill out rubric + leave *constructive* comments
-  
+- Fill out rubric + leave *constructive* comments
 - Due 1 weeks after projects: 10/16, 11/13, and 12/11
 
 ## Team Accountability Survey
@@ -263,8 +269,8 @@ I **highly** recommend using Quarto
 - Use models to *simulate* games, tournaments, drafts, etc.
 - Case Studies:
   - NCAA Volleyball & Hockey Tournaments (Lectures 12 & 13)
-  - Markov chain simulations (Lecture 14)
-  - Building a consensus mock draft (Lecture 15)
+  - Building a consensus mock draft (Lecture 14)
+  - Markov chain simulations (Lecture 15)
   - Estimating impact of a rule change (Lecture 16 & 7)
   
 ## Project 2{.smaller}
