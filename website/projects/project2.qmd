@@ -14,6 +14,11 @@ See @sec-models for an overview of the types of models that may be useful for th
 
 The project report and recorded presentation are due on **Friday November 6 at 12:00pm (noon)**. 
 
+
+
+
+
+
 ## Simulation Requirements
 
 Regardless of the sport you choose and the underlying probabilistic model, you need to run enough simulations to ensure that the estimates of the probabilities of interest are reliable.
@@ -115,3 +120,38 @@ Each presentation should include the following elements
   * Main results (2--3 slides): distill your results into a few key points. Use figures, tables, charts, and other statistical software output to support your findings.
   * Conclusion (1 slide): briefly summarize your analysis and findings and outline between 1 and 3 specific directions for future development, improvement or refinement.
 
+## Preparing Your Submissions
+
+::: {.callout-tip}
+## Quarto & Zoom
+I **highly** recommend using Quarto to prepare your written report and recording your presentation with Zoom.
+For your report, you can either render the document directly as a PDF. Or, you can first render it as an HTML file and save that as a PDF.
+For your presentation, please ensure that the speaker's face is visible along with the slide contents.
+:::
+
+
+Each team will submit a PDF document containing their written report; an .mp4 file of their presentation recording; and a compressed archive (i.e., a `.zip` or `.tar.gz` file) containing the reproducibility materials (i.e., the Quarto document used to produce the written report and any external data used).
+Note, if you downloaded data directly into your R session (e.g., by using functions or data provided by an existing package or by reading in publicly-hosted file), you do not need to include those data in your reproducibility materials.
+
+Each team will be assigned a two-digit team number (`teamID`) that should appear in the file name of all submitted files.
+Please name your report as `teamID_report.pdf`, your presentation as `teamID_presentation.mp4`, and your reproducibility material as `teamID_code.zip` or `teamID_code.tar.gz`.
+So, if your team number is `00`, you should save your report as `00_report.pdf`, your presentation as `00_presentation.mp4`, and your reproducibility archive as `00_code.zip` or `00_code.tar.gz`. 
+
+
+You will upload the files separately using the following links 
+
+  * [Submission link for written reports](https://uwmadison.app.box.com/f/3a013d58e13b450187be6acc7a463b0f)
+  * [Submission link for presentation recordings](https://uwmadison.app.box.com/f/2af6e3e0f1f7477b9084f099f69f3202)
+  * [Submission link for reproducibility materials](https://uwmadison.app.box.com/f/6d01473229244dbe88e8d82d545b8a95)
+
+:::{#callout-important}
+## NetID Credentials
+You must sign into Box using your Wisconsin NetID credentials before you can upload your submission
+:::
+
+## Peer Reviews
+
+You will be assigned three projects to review. Assignments will be announced at noon on the day the project is due.
+Your reviews are due 1 week after the project deadline (i.e., Friday November 13 at 12:00pm).
+For each assigned project, please complete the peer review survey at [this Qualtrics link](https://uwmadison.co1.qualtrics.com/jfe/form/SV_a5bD19OJVCvTDMO).
+You will need to fill out the survey three separate times, one for each project.

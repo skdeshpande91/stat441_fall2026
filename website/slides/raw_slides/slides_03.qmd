@@ -41,20 +41,37 @@ $$
 - $\hat{p}_{i}$: predicted $\textrm{XG}$ for shot $i$ from fitted model
 - How close is $\hat{p}_{i}$ to $y_{i}$?
 
-## Misclassification Rate (Definition) {.smaller}
+## Misclassification Rate (Definition)
 
 - $\hat{p}_{i} > 0.5:$ model predicts $y_{i} = 1$ more likely than $y_{i} = 0$
 - Ideal: $\hat{p}_{i} > 0.5$ when $y_{i} = 1$ and $\hat{p}_{i} < 0.5$ when $y_{i} = 0$
-- If too many $\hat{p}_{i}$'s on wrong-side of 50%, model is badly calibrated.
+- Too many $\hat{p}_{i}$'s on wrong-side of 50% indicates poor calibration.
 
-. . .
 
 $$
 \textrm{MISS} = n^{-1}\sum_{i = 1}^{n}{\mathbb{I}(y_{i} \neq \mathbb{I}(\hat{p}_{i} \geq 0.5))},
 $$
 
+. . .
+
+- MISS only cares whether $\hat{p}_{i}$ is on the wrong-side of 50%
+- $\hat{p} = 0.501$ and $\hat{p} = 0.999$ have same loss when $y = 0$
+
+## Other Losses
 
 
+- Brier Score & log-loss penalize distance b/w forecast $\hat{p}$ & $Y$
+$$
+\text{Brier} = n^{-1}\sum_{i = 1}^{n}{(y_{i} - \hat{p}_{i})^2}.
+$$
+
+$$
+\textrm{LogLoss} = -1 \times n^{-1}\sum_{i = 1}^{n}{\left[ y_{i} \times \log(\hat{p}_{i}) + (1 - y_{i})\times\log(1-\hat{p}_{i})\right]}.
+$$
+
+- In practice, truncate $\hat{p}$ to $[\epsilon,1-\epsilon]$ to avoid $\log(0)$
+
+<!--
 ## Brier Score (Definition) {.smaller}
 - MISS only cares whether $\hat{p}_{i}$ is on the wrong-side of 50%
   - Forecasting $\hat{p} = 0.501$ and $\hat{p} = 0.999$ have same loss when $y = 0$
@@ -68,9 +85,6 @@ $$
 $$
 - Just Mean Square Error applied to binary outcomes
 
-
-
-
 ## Log-Loss (Definition)
 - Like Brier but penalizes extreme mistakes more severely
 
@@ -83,9 +97,7 @@ $$
 - Theoretically, can be infinite (when $\hat{p} = 1-y$)
 - In practice, truncate $\hat{p}$ to $[\epsilon,1-\epsilon]$ to avoid $\log(0)$
 - Also known as cross-entropy loss in ML literature
-
-
-
+-->
 # Estimating Out-of-Sample Error
 
 ## In-sample Error
@@ -118,8 +130,6 @@ $$
 ## Cross-Validation
 
 - Problem: we don't have access to a second dataset
-
-. . .
 
 - Solution: create *random* training/testing split
   - Train on a random subset containing 75% of the data
@@ -316,5 +326,6 @@ shot_vars
 - Form projects groups by tomorrow
   - Email me if you're running into issues
   - Piazza can help find teammates
+  - Sign-up for teams [here](https://docs.google.com/spreadsheets/d/1aGQ9m2OKLRnTq11pLawBTwF8oxFPIaRmYWvD_8kGhoo/edit?gid=0#gid=0)
 - Project check-in by 9/25
 

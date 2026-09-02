@@ -6,11 +6,11 @@
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.7.32">
+  <meta name="generator" content="quarto-1.9.38">
 
   <title>STAT441 – STAT 441 Lecture 2</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -19,6 +19,9 @@
   <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
   <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -97,7 +100,7 @@
     code span.vs { color: #20794d; } /* VerbatimString */
     code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-9a1a2c3d5c7ea7f04258c8f180195b78.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-9453c600278fc315503a3acb2c81ba94.css">
   <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -246,11 +249,6 @@
 <ul>
 <li>This long-run frequency is Expected Goals (XG)</li>
 </ul>
-</section></section>
-<section>
-<section id="soccer-event-data" class="title-slide slide level1 center">
-<h1>Soccer Event Data</h1>
-
 </section>
 <section id="statsbomb-hudl" class="slide level2">
 <h2>StatsBomb &amp; Hudl</h2>
@@ -265,7 +263,7 @@
 <li><strong>StatsBombR</strong> package: available via GitHub</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"statsbomb/StatsBombR"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"statsbomb/StatsBombR"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="statsbomb-coordinates" class="slide level2">
@@ -280,11 +278,6 @@
 <figcaption>StatsBomb Coordinates</figcaption>
 </figure>
 </div>
-</section></section>
-<section>
-<section id="conditional-expectations" class="title-slide slide level1 center">
-<h1>Conditional Expectations</h1>
-
 </section>
 <section id="thought-experiment-repeating-shots" class="slide level2">
 <h2>Thought Experiment: Repeating Shots</h2>
@@ -304,7 +297,7 @@
 <li>Suppose our data set contains <span class="math inline">\(n\)</span> shots</li>
 <li>For shot <span class="math inline">\(i = 1, \ldots, n,\)</span> we observe
 <ul>
-<li><span class="math inline">\(Y_{i}\)</span>: indicator shot resutled in goal (<span class="math inline">\(Y = 1\)</span>) or not (<span class="math inline">\(Y = 0\)</span>)</li>
+<li><span class="math inline">\(Y_{i}\)</span>: indicator shot resulted in goal (<span class="math inline">\(Y = 1\)</span>) or not (<span class="math inline">\(Y = 0\)</span>)</li>
 <li><span class="math inline">\(\boldsymbol{\mathbf{X}}_{i}\)</span>: vector of <span class="math inline">\(p\)</span> features about the shot</li>
 </ul></li>
 <li>Features could include things like
@@ -351,13 +344,18 @@
 <h2>Practical Calculation</h2>
 <ul>
 <li>Since we cannot access infinite super-population, we must <strong>estimate</strong> XG from data</li>
-<li>We do so by mimicking idealized calculation
+<li>We can do so by mimicking idealized calculation
 <ol type="1">
 <li>Divide data into subgroups based on <code>shot.body_part.name</code></li>
 <li>Compute proportion of goals within subgroups</li>
 </ol></li>
 <li>Rely on <strong>dplyr</strong>’s <code>group_by()</code> functionality to do this</li>
 </ul>
+</section></section>
+<section>
+<section id="towards-more-sophisticated-xg-models" class="title-slide slide level1 center">
+<h1>Towards More Sophisticated XG Models</h1>
+
 </section>
 <section id="accounting-for-shot-technique" class="slide level2">
 <h2>Accounting For Shot Technique</h2>
@@ -365,9 +363,14 @@
 <li>Each goal was scored off a different type of shot</li>
 <li>What if we condition body part &amp; shot technique?</li>
 </ul>
+<div class="fragment">
+<ul>
+<li>Can similarly “bin and average” with a grouped summary</li>
+</ul>
+</div>
 </section>
-<section id="accounting-for-more-features" class="slide level2 smaller">
-<h2>Accounting for more features</h2>
+<section id="including-more-features" class="slide level2">
+<h2>Including More Features</h2>
 <ul>
 <li>Our 2-feature model is still too coarse
 <ul>
@@ -386,15 +389,11 @@
 <li>Slice population along <span class="math inline">\(\mathbf{\boldsymbol{x}}\)</span></li>
 <li>Compute proportion of goals among the slice with <span class="math inline">\(\mathbf{\boldsymbol{X}} = \mathbf{\boldsymbol{x}}\)</span></li>
 </ul></li>
-</ul>
-<div class="fragment">
-<ul>
 <li>Can we mimic this with our observed data?</li>
 </ul>
-</div>
 </section>
-<section id="model-based-xg" class="slide level2 smaller">
-<h2>Model-based XG</h2>
+<section id="modeling-xg" class="slide level2 smaller">
+<h2>Modeling XG</h2>
 <ul>
 <li>“Binning-and-averaging” not viable w/ many features due to small sample sizes</li>
 <li><em>Statistical models</em> overcome these challenges by “borrowing strength”</li>
@@ -429,7 +428,7 @@
 </ul></li>
 </ul>
 </section>
-<section id="looking-ahead" class="slide level2 smaller">
+<section id="looking-ahead" class="slide level2">
 <h2>Looking Ahead</h2>
 <ul>
 <li>I <strong>strongly</strong> recommend you work through code yourself
@@ -449,6 +448,7 @@
 <ul>
 <li>Form groups by <strong>Friday September 11</strong></li>
 <li>Use Piazza to find group members</li>
+<li>Signup for teams <a href="https://docs.google.com/spreadsheets/d/1aGQ9m2OKLRnTq11pLawBTwF8oxFPIaRmYWvD_8kGhoo/edit?gid=0#gid=0">here</a></li>
 </ul>
 
 
@@ -642,7 +642,7 @@
         margin: 0.1,
 
         math: {
-          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
           config: 'TeX-AMS_HTML-full',
           tex2jax: {
             inlineMath: [['\\(','\\)']],
@@ -754,13 +754,14 @@
           e.clearSelection();
         }
         const getTextToCopy = function(trigger) {
-            const codeEl = trigger.previousElementSibling.cloneNode(true);
-            for (const childEl of codeEl.children) {
-              if (isCodeAnnotation(childEl)) {
-                childEl.remove();
-              }
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
             }
-            return codeEl.innerText;
+          }
+          return codeEl.innerText;
         }
         const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
           text: getTextToCopy

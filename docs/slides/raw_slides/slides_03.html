@@ -6,11 +6,11 @@
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.7.32">
+  <meta name="generator" content="quarto-1.9.38">
 
   <title>STAT441 – STAT 479: Lecture 3</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -19,6 +19,9 @@
   <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
   <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -31,7 +34,7 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-9a1a2c3d5c7ea7f04258c8f180195b78.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-9453c600278fc315503a3acb2c81ba94.css">
   <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -186,52 +189,63 @@
 </ul>
 </div>
 </section>
-<section id="misclassification-rate-definition" class="slide level2 smaller">
+<section id="misclassification-rate-definition" class="slide level2">
 <h2>Misclassification Rate (Definition)</h2>
 <ul>
 <li><span class="math inline">\(\hat{p}_{i} &gt; 0.5:\)</span> model predicts <span class="math inline">\(y_{i} = 1\)</span> more likely than <span class="math inline">\(y_{i} = 0\)</span></li>
 <li>Ideal: <span class="math inline">\(\hat{p}_{i} &gt; 0.5\)</span> when <span class="math inline">\(y_{i} = 1\)</span> and <span class="math inline">\(\hat{p}_{i} &lt; 0.5\)</span> when <span class="math inline">\(y_{i} = 0\)</span></li>
-<li>If too many <span class="math inline">\(\hat{p}_{i}\)</span>’s on wrong-side of 50%, model is badly calibrated.</li>
+<li>Too many <span class="math inline">\(\hat{p}_{i}\)</span>’s on wrong-side of 50% indicates poor calibration.</li>
 </ul>
-<div class="fragment">
 <p><span class="math display">\[
 \textrm{MISS} = n^{-1}\sum_{i = 1}^{n}{\mathbb{I}(y_{i} \neq \mathbb{I}(\hat{p}_{i} \geq 0.5))},
 \]</span></p>
-</div>
-</section>
-<section id="brier-score-definition" class="slide level2 smaller">
-<h2>Brier Score (Definition)</h2>
-<ul>
-<li>MISS only cares whether <span class="math inline">\(\hat{p}_{i}\)</span> is on the wrong-side of 50%
-<ul>
-<li>Forecasting <span class="math inline">\(\hat{p} = 0.501\)</span> and <span class="math inline">\(\hat{p} = 0.999\)</span> have same loss when <span class="math inline">\(y = 0\)</span></li>
-<li>Doesn’t penalize how <strong>far</strong> <span class="math inline">\(\hat{p}\)</span> is from <span class="math inline">\(Y\)</span></li>
-</ul></li>
-</ul>
 <div class="fragment">
 <ul>
-<li>Brier Score penalizes distance b/w forecast <span class="math inline">\(\hat{p}\)</span> &amp; <span class="math inline">\(Y\)</span> <span class="math display">\[
+<li>MISS only cares whether <span class="math inline">\(\hat{p}_{i}\)</span> is on the wrong-side of 50%</li>
+<li><span class="math inline">\(\hat{p} = 0.501\)</span> and <span class="math inline">\(\hat{p} = 0.999\)</span> have same loss when <span class="math inline">\(y = 0\)</span></li>
+</ul>
+</div>
+</section>
+<section id="other-losses" class="slide level2">
+<h2>Other Losses</h2>
+<ul>
+<li>Brier Score &amp; log-loss penalize distance b/w forecast <span class="math inline">\(\hat{p}\)</span> &amp; <span class="math inline">\(Y\)</span> <span class="math display">\[
 \text{Brier} = n^{-1}\sum_{i = 1}^{n}{(y_{i} - \hat{p}_{i})^2}.
 \]</span></li>
-<li>Just Mean Square Error applied to binary outcomes</li>
-</ul>
-</div>
-</section>
-<section id="log-loss-definition" class="slide level2">
-<h2>Log-Loss (Definition)</h2>
-<ul>
-<li>Like Brier but penalizes extreme mistakes more severely</li>
 </ul>
 <p><span class="math display">\[
-\textrm{LogLoss} = -1 \times \sum_{i = 1}^{n}{\left[ y_{i} \times \log(\hat{p}_{i}) + (1 - y_{i})\times\log(1-\hat{p}_{i})\right]}.
+\textrm{LogLoss} = -1 \times n^{-1}\sum_{i = 1}^{n}{\left[ y_{i} \times \log(\hat{p}_{i}) + (1 - y_{i})\times\log(1-\hat{p}_{i})\right]}.
 \]</span></p>
-<div class="fragment">
 <ul>
-<li>Theoretically, can be infinite (when <span class="math inline">\(\hat{p} = 1-y\)</span>)</li>
 <li>In practice, truncate <span class="math inline">\(\hat{p}\)</span> to <span class="math inline">\([\epsilon,1-\epsilon]\)</span> to avoid <span class="math inline">\(\log(0)\)</span></li>
-<li>Also known as cross-entropy loss in ML literature</li>
 </ul>
-</div>
+<!--
+## Brier Score (Definition) {.smaller}
+- MISS only cares whether $\hat{p}_{i}$ is on the wrong-side of 50%
+  - Forecasting $\hat{p} = 0.501$ and $\hat{p} = 0.999$ have same loss when $y = 0$
+  - Doesn't penalize how **far** $\hat{p}$ is from $Y$
+
+. . .
+
+- Brier Score penalizes distance b/w forecast $\hat{p}$ & $Y$
+$$
+\text{Brier} = n^{-1}\sum_{i = 1}^{n}{(y_{i} - \hat{p}_{i})^2}.
+$$
+- Just Mean Square Error applied to binary outcomes
+
+## Log-Loss (Definition)
+- Like Brier but penalizes extreme mistakes more severely
+
+$$
+\textrm{LogLoss} = -1 \times \sum_{i = 1}^{n}{\left[ y_{i} \times \log(\hat{p}_{i}) + (1 - y_{i})\times\log(1-\hat{p}_{i})\right]}.
+$$
+
+. . .
+
+- Theoretically, can be infinite (when $\hat{p} = 1-y$)
+- In practice, truncate $\hat{p}$ to $[\epsilon,1-\epsilon]$ to avoid $\log(0)$
+- Also known as cross-entropy loss in ML literature
+-->
 </section>
 <section>
 <section id="estimating-out-of-sample-error" class="title-slide slide level1 center">
@@ -278,17 +292,13 @@
 <section id="cross-validation" class="slide level2">
 <h2>Cross-Validation</h2>
 <ul>
-<li>Problem: we don’t have access to a second dataset</li>
-</ul>
-<div class="fragment">
-<ul>
-<li>Solution: create <em>random</em> training/testing split
+<li><p>Problem: we don’t have access to a second dataset</p></li>
+<li><p>Solution: create <em>random</em> training/testing split</p>
 <ul>
 <li>Train on a random subset containing 75% of the data</li>
 <li>Evaluate using the remaining held-out portion</li>
 </ul></li>
 </ul>
-</div>
 </section>
 <section id="multiple-splits" class="slide level2 smaller">
 <h2>Multiple Splits</h2>
@@ -496,6 +506,7 @@ Figure&nbsp;1: Logistic and inverse logistic functions
 <ul>
 <li>Email me if you’re running into issues</li>
 <li>Piazza can help find teammates</li>
+<li>Sign-up for teams <a href="https://docs.google.com/spreadsheets/d/1aGQ9m2OKLRnTq11pLawBTwF8oxFPIaRmYWvD_8kGhoo/edit?gid=0#gid=0">here</a></li>
 </ul></li>
 <li>Project check-in by 9/25</li>
 </ul>
@@ -691,7 +702,7 @@ Figure&nbsp;1: Logistic and inverse logistic functions
         margin: 0.1,
 
         math: {
-          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
           config: 'TeX-AMS_HTML-full',
           tex2jax: {
             inlineMath: [['\\(','\\)']],
@@ -803,13 +814,14 @@ Figure&nbsp;1: Logistic and inverse logistic functions
           e.clearSelection();
         }
         const getTextToCopy = function(trigger) {
-            const codeEl = trigger.previousElementSibling.cloneNode(true);
-            for (const childEl of codeEl.children) {
-              if (isCodeAnnotation(childEl)) {
-                childEl.remove();
-              }
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
             }
-            return codeEl.innerText;
+          }
+          return codeEl.innerText;
         }
         const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
           text: getTextToCopy

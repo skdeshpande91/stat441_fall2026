@@ -80,7 +80,7 @@ While we can build such a table manually, e.g., by looking up each team on Wikip
 To motivate our approach, consider the following code block:
 
 ```{r}
-#| label: home-location-couns
+#| label: home-location-counts
 #| eval: true
 #| echo: true
 home_location_counts <-
@@ -625,11 +625,13 @@ By comparison, in the actual version of the tournament, our model estimated that
 table(alt_results$Champion)
 ```
 
+<!--
 ## Exercises
 
 1. Use the bootstrap to quantify the uncertainty in relative rankings of each team. To do this, you will need to re-sample individual games, re-compute the numbers of home & away team wins for every combination of teams and `neutral`, and fit a Bradley-Terry model. Report the number of bootstrap simulations in which Wisconsin was ranked 1st and also report a 95% bootstrap confidence interval for Wisconsin's overall rank.
 
 2. Build a simulation for the entire NCAA Tournament based on the estimating probabilities from our Bradley-Terry model that accounts for home advantage. In [this tournament](https://en.wikipedia.org/wiki/2026_NCAA_Division_I_women%27s_ice_hockey_tournament), the first round and quarterfinals were held on the campuses of the top-4 seeded teams (Ohio State, Wisconsin, Penn State, and Minnesota). Subsequent games were played at Penn's State's home arena. Your simulation should involve only the 11 teams who actually played in the tournament
+-->
 
 
 

@@ -11,7 +11,7 @@ To draw insights and gain competitive advantages from these data, teams and leag
 Teams are increasingly looking for analysts with the ability to ask **and** answer substantively interesting sports questions. 
 Identifying such analysts is complicated by at least two factors.
 First, most undergraduate and graduate data science programs do not specifically train students to work with the types of data emerging in sports.
-And second, most of the cutting-edge data is not publicly available, making it very difficult for aspiring analysts to demonstrat their ability to analyze that data.
+And second, most of the cutting-edge data is not publicly available, making it very difficult for aspiring analysts to demonstrate their ability to analyze that data.
 
 Public data competitions have become an increasingly popular means of identifying talent in sports analytics.
 Generally speaking, these competitions involve a team or league releasing a small amount of their data and inviting students and members of the public to answer substantively interesting questions using the data.
@@ -46,8 +46,9 @@ Details about both competitions and the relevant data is available below.
 For the third project, I would like you to work with data from the [2027 NFL Big Data Bowl](https://operations.nfl.com/gameday/analytics/big-data-bowl/).
 The project report and recorded presentation are due on **Friday December 4 at 12:00pm (noon)**.
 
+<!--
 ## Big Data Bowl
-
+-->
 
 ## Deliverables
 
@@ -80,3 +81,39 @@ Each presentation should include the following elements
   * Analysis overview (2--4 slides): present only the main steps of your analysis. Be sure to explain why each step was necessary and how these steps contribute to the overall solution. Focus more on the high-level ideas and motivation for each step rather than the specific implementation or software syntax
   * Main results (2--3 slides): distill your results into a few key points. Use figures, tables, charts, and other statistical software output to support your findings.
   * Conclusion (1 slide): briefly summarize your analysis and findings and outline between 1 and 3 specific directions for future development, improvement or refinement.
+  
+## Preparing Your Submissions
+
+::: {.callout-tip}
+## Quarto & Zoom
+I **highly** recommend using Quarto to prepare your written report and recording your presentation with Zoom.
+For your report, you can either render the document directly as a PDF. Or, you can first render it as an HTML file and save that as a PDF.
+For your presentation, please ensure that the speaker's face is visible along with the slide contents.
+:::
+
+
+Each team will submit a PDF document containing their written report; an .mp4 file of their presentation recording; and a compressed archive (i.e., a `.zip` or `.tar.gz` file) containing the reproducibility materials (i.e., the Quarto document used to produce the written report and any external data used).
+Note, if you downloaded data directly into your R session (e.g., by using functions or data provided by an existing package or by reading in publicly-hosted file), you do not need to include those data in your reproducibility materials.
+
+Each team will be assigned a two-digit team number (`teamID`) that should appear in the file name of all submitted files.
+Please name your report as `teamID_report.pdf`, your presentation as `teamID_presentation.mp4`, and your reproducibility material as `teamID_code.zip` or `teamID_code.tar.gz`.
+So, if your team number is `00`, you should save your report as `00_report.pdf`, your presentation as `00_presentation.mp4`, and your reproducibility archive as `00_code.zip` or `00_code.tar.gz`. 
+
+
+You will upload the files separately using the following links 
+
+  * [Submission link for written reports](https://uwmadison.app.box.com/f/872b5c92fc7e48b48c64f5b85d571a5b)
+  * [Submission link for presentation recordings](https://uwmadison.app.box.com/f/5d809766b5fa4cb3827dff75550c3e43)
+  * [Submission link for reproducibility materials](https://uwmadison.app.box.com/f/949e72da5a7643358225bd021a0637f1)
+
+:::{#callout-important}
+## NetID Credentials
+You must sign into Box using your Wisconsin NetID credentials before you can upload your submission
+:::
+
+## Peer Reviews
+
+You will be assigned three projects to review. Assignments will be announced at noon on the day the project is due.
+Your reviews are due 1 week after the project deadline (i.e., Friday December 11 at 12:00pm).
+For each assigned project, please complete the peer review survey at [this Qualtrics link](https://uwmadison.app.box.com/f/949e72da5a7643358225bd021a0637f1).
+You will need to fill out the survey three separate times, one for each project.  

@@ -2,13 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Project 3 Information – STAT441</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -36,10 +39,14 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-0a6b7249c26820e032cb0bd839ff02b1.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-da920e58b6ff959c98c9ccc31dcc4995.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-778237891967b0e2a235639bc74a01fe.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-778237891967b0e2a235639bc74a01fe.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-778237891967b0e2a235639bc74a01fe.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -220,6 +227,14 @@ ul.task-list li input[type="checkbox"] {
     <a class="dropdown-item" href="../slides/lecture11.html">
  <span class="dropdown-text">Lecture 11: Pitch Framing</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../slides/lecture12.html">
+ <span class="dropdown-text">Lecture 12: Bradley-Terry Models I</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../slides/lecture13.html">
+ <span class="dropdown-text">Lecture 13: Bradley-Terry Models II</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -297,12 +312,14 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
-  <li><a href="#big-data-bowl" id="toc-big-data-bowl" class="nav-link" data-scroll-target="#big-data-bowl">Big Data Bowl</a></li>
   <li><a href="#deliverables" id="toc-deliverables" class="nav-link" data-scroll-target="#deliverables">Deliverables</a>
   <ul class="collapse">
   <li><a href="#written-report" id="toc-written-report" class="nav-link" data-scroll-target="#written-report">Written Report</a></li>
   <li><a href="#presentation" id="toc-presentation" class="nav-link" data-scroll-target="#presentation">Presentation</a></li>
   </ul></li>
+  <li><a href="#preparing-your-submissions" id="toc-preparing-your-submissions" class="nav-link" data-scroll-target="#preparing-your-submissions">Preparing Your Submissions</a></li>
+  <li><a href="#netid-credentials" id="toc-netid-credentials" class="nav-link" data-scroll-target="#netid-credentials">NetID Credentials</a></li>
+  <li><a href="#peer-reviews" id="toc-peer-reviews" class="nav-link" data-scroll-target="#peer-reviews">Peer Reviews</a></li>
   </ul>
 </nav>
     </div>
@@ -330,7 +347,7 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>The amount, granularity, and quality of sports data has increased exponentially over the last two decades. To draw insights and gain competitive advantages from these data, teams and leagues have invested heavily in building analytics departments. Teams are increasingly looking for analysts with the ability to ask <strong>and</strong> answer substantively interesting sports questions. Identifying such analysts is complicated by at least two factors. First, most undergraduate and graduate data science programs do not specifically train students to work with the types of data emerging in sports. And second, most of the cutting-edge data is not publicly available, making it very difficult for aspiring analysts to demonstrat their ability to analyze that data.</p>
+<p>The amount, granularity, and quality of sports data has increased exponentially over the last two decades. To draw insights and gain competitive advantages from these data, teams and leagues have invested heavily in building analytics departments. Teams are increasingly looking for analysts with the ability to ask <strong>and</strong> answer substantively interesting sports questions. Identifying such analysts is complicated by at least two factors. First, most undergraduate and graduate data science programs do not specifically train students to work with the types of data emerging in sports. And second, most of the cutting-edge data is not publicly available, making it very difficult for aspiring analysts to demonstrate their ability to analyze that data.</p>
 <p>Public data competitions have become an increasingly popular means of identifying talent in sports analytics. Generally speaking, these competitions involve a team or league releasing a small amount of their data and inviting students and members of the public to answer substantively interesting questions using the data. The earliest competitions were hackathons organized by the NBA in the mid-2010’s<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. By far the most prominent competition these days is the <a href="https://operations.nfl.com/gameday/analytics/big-data-bowl/">NFL Big Data Bowl</a>, an annual competition in which the NFL releases a small amount of its <a href="https://nextgenstats.nfl.com">Next Gen Stats</a> and invites students and members of the public to use these data to draw new insight about the game. Past competitions have resulted in new ways to</p>
 <ul>
 <li>Predict where a running play will end based on initial player positions (<a href="https://www.kaggle.com/competitions/nfl-big-data-bowl-2020/writeups/the-zoo-1st-place-solution-the-zoo">link</a>)</li>
@@ -353,9 +370,9 @@ My hope is that you develop your course projects into contest submissions; the s
 Details about both competitions and the relevant data is available below.
 -->
 <p>For the third project, I would like you to work with data from the <a href="https://operations.nfl.com/gameday/analytics/big-data-bowl/">2027 NFL Big Data Bowl</a>. The project report and recorded presentation are due on <strong>Friday December 4 at 12:00pm (noon)</strong>.</p>
-</section>
-<section id="big-data-bowl" class="level2">
-<h2 class="anchored" data-anchor-id="big-data-bowl">Big Data Bowl</h2>
+<!--
+## Big Data Bowl
+-->
 </section>
 <section id="deliverables" class="level2">
 <h2 class="anchored" data-anchor-id="deliverables">Deliverables</h2>
@@ -380,9 +397,43 @@ Details about both competitions and the relevant data is available below.
 <li>Main results (2–3 slides): distill your results into a few key points. Use figures, tables, charts, and other statistical software output to support your findings.</li>
 <li>Conclusion (1 slide): briefly summarize your analysis and findings and outline between 1 and 3 specific directions for future development, improvement or refinement.</li>
 </ul>
-
-
 </section>
+</section>
+<section id="preparing-your-submissions" class="level2">
+<h2 class="anchored" data-anchor-id="preparing-your-submissions">Preparing Your Submissions</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Quarto &amp; Zoom
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>I <strong>highly</strong> recommend using Quarto to prepare your written report and recording your presentation with Zoom. For your report, you can either render the document directly as a PDF. Or, you can first render it as an HTML file and save that as a PDF. For your presentation, please ensure that the speaker’s face is visible along with the slide contents.</p>
+</div>
+</div>
+<p>Each team will submit a PDF document containing their written report; an .mp4 file of their presentation recording; and a compressed archive (i.e., a <code>.zip</code> or <code>.tar.gz</code> file) containing the reproducibility materials (i.e., the Quarto document used to produce the written report and any external data used). Note, if you downloaded data directly into your R session (e.g., by using functions or data provided by an existing package or by reading in publicly-hosted file), you do not need to include those data in your reproducibility materials.</p>
+<p>Each team will be assigned a two-digit team number (<code>teamID</code>) that should appear in the file name of all submitted files. Please name your report as <code>teamID_report.pdf</code>, your presentation as <code>teamID_presentation.mp4</code>, and your reproducibility material as <code>teamID_code.zip</code> or <code>teamID_code.tar.gz</code>. So, if your team number is <code>00</code>, you should save your report as <code>00_report.pdf</code>, your presentation as <code>00_presentation.mp4</code>, and your reproducibility archive as <code>00_code.zip</code> or <code>00_code.tar.gz</code>.</p>
+<p>You will upload the files separately using the following links</p>
+<ul>
+<li><a href="https://uwmadison.app.box.com/f/872b5c92fc7e48b48c64f5b85d571a5b">Submission link for written reports</a></li>
+<li><a href="https://uwmadison.app.box.com/f/5d809766b5fa4cb3827dff75550c3e43">Submission link for presentation recordings</a></li>
+<li><a href="https://uwmadison.app.box.com/f/949e72da5a7643358225bd021a0637f1">Submission link for reproducibility materials</a></li>
+</ul>
+</section>
+<div id="callout-important">
+<section id="netid-credentials" class="level2">
+<h2 class="anchored" data-anchor-id="netid-credentials">NetID Credentials</h2>
+<p>You must sign into Box using your Wisconsin NetID credentials before you can upload your submission</p>
+</section>
+</div>
+<section id="peer-reviews" class="level2">
+<h2 class="anchored" data-anchor-id="peer-reviews">Peer Reviews</h2>
+<p>You will be assigned three projects to review. Assignments will be announced at noon on the day the project is due. Your reviews are due 1 week after the project deadline (i.e., Friday December 11 at 12:00pm). For each assigned project, please complete the peer review survey at <a href="https://uwmadison.app.box.com/f/949e72da5a7643358225bd021a0637f1">this Qualtrics link</a>. You will need to fill out the survey three separate times, one for each project.</p>
+
+
 </section>
 
 
@@ -443,13 +494,14 @@ Details about both competitions and the relevant data is available below.
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

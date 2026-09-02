@@ -160,6 +160,16 @@ If you pursue this option, I highly recommend using the pre-scraped play-by-play
 The [**ncaahoopR**](https://github.com/lbenz730/ncaahoopR) package provides functions for scraping play-by-play data from college basketball.
 Using a workflow similar to the one presented in [Lecture 4](../lectures/lecture04.qmd), convert these data into stint-level data and develop a version of weighted and/or regularized adjusted plus/minus for college basketball.
 
+<!--
+### Multi-Season APM 
+
+In [Lecture 5](../lectures/lecture05.qmd), we estimated regularized APM using data from a single season.
+Many analysts prefer to use data from multiple seasons (with recent data weighted more heavily than past data) to estimate APM and regularized APM. 
+The function [`nba_possession_lineups`](https://hoopr.sportsdataverse.org/reference/nba_possession_lineups.html?q=stint#null) in the [**hoopR**](https://hoopr.sportsdataverse.org/index.html) package and the function [`wnba_possession_lineups`](https://wehoop.sportsdataverse.org/reference/wnba_possession_lineups.html?q=stint#null) can be used to scrape stint-level data from each game. 
+You could consider fitting multi-season APM models for the NBA or WNBA.
+It would be especially interesting to assess the overall predictive quality of (regularized) adjusted plus/minus models.
+-->
+
 ### Extending Ideas from Baseball to Cricket
 
 The package [**cricketdata**](https://pkg.robjhyndman.com/cricketdata/) provides functions for scraping match-level data from (ESPNCricinfo)[https://www.espncricinfo.com].

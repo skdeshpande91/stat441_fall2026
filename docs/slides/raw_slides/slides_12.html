@@ -6,13 +6,10 @@
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
-<link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
-<link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.9.38">
 
-  <title>STAT441 – STAT 441 Lecture 11</title>
+  <title>STAT441 – STAT 441 Lecture 12</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -198,269 +195,109 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">STAT 441 Lecture 11</h1>
-  <p class="subtitle">Pitch Framing</p>
+  <h1 class="title">STAT 441 Lecture 12</h1>
+  <p class="subtitle">Bradley-Terry Models I</p>
 
 <div class="quarto-title-authors">
 </div>
 
 </section>
-<section id="motivation" class="slide level2 smaller">
-<h2>Motivation</h2>
-<div id="fig-mccann-castro" class="quarto-layout-panel">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-mccann-castro-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-mccann-castro" style="flex-basis: 50.0%;justify-content: flex-start;">
-<div id="fig-mccann" class="quarto-float quarto-figure quarto-figure-center">
-<figure class="quarto-float quarto-subfloat-fig">
-<div aria-describedby="fig-mccann-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="figures/lecture11_mccann.png" class="lightbox" data-gallery="fig-mccann-castro" title="Figure&nbsp;1&nbsp;(a): Pitch called a ball"><img data-src="figures/lecture11_mccann.png" data-ref-parent="fig-mccann-castro"></a>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-mccann-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-(a) Pitch called a ball
-</figcaption>
-</figure>
-</div>
-</div>
-<div class="quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-mccann-castro" style="flex-basis: 50.0%;justify-content: flex-start;">
-<div id="fig-castro" class="quarto-float quarto-figure quarto-figure-center">
-<figure class="quarto-float quarto-subfloat-fig">
-<div aria-describedby="fig-castro-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="figures/lecture11_castro.png" class="lightbox" data-gallery="fig-mccann-castro" title="Figure&nbsp;1&nbsp;(b): Pitch called a strike"><img data-src="figures/lecture11_castro.png" data-ref-parent="fig-mccann-castro"></a>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-castro-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-(b) Pitch called a strike
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-mccann-castro-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1
-</figcaption>
-</figure>
-</div>
+<section>
+<section id="motivation" class="title-slide slide level1 center">
+<h1>Motivation</h1>
+
+</section>
+<section id="ncaa-d1-womens-hockey-2025-26" class="slide level2">
+<h2>NCAA D1 Women’s Hockey (2025-26)</h2>
 <ul>
-<li>Both pitches miss the strike zone and should, by rule, be called balls</li>
-<li>But pitch on the right was called a strike</li>
+<li>WIS went 35-4-2 &amp; won the National Championship</li>
+<li>OSU went 36-5-0 &amp; lost against WIS in the finals</li>
+<li>How much better was WIS than OSU?</li>
 </ul>
 <div class="fragment">
-<ul>
-<li>How much do catchers influence umpires’ calls?</li>
-</ul>
+<p><span class="math display">\[
+\mathbb{P}(\textrm{WIS beats OSU}) = \textrm{???}
+\]</span></p>
 </div>
+</section></section>
+<section>
+<section id="bradley-terry-models" class="title-slide slide level1 center">
+<h1>Bradley-Terry Models</h1>
+
 </section>
-<section id="framing" class="slide level2 smaller">
-<h2>Framing</h2>
+<section id="the-basic-model" class="slide level2">
+<h2>The Basic Model</h2>
 <ul>
-<li>Ability of catcher to receive pitch so as to increase <span class="math inline">\(\mathbb{P}(\textrm{called strike})\)</span></li>
-<li>Ability to “steal a strike” / “turn balls into strikes”</li>
-<li>Studied by the sabermetrics community since 2008</li>
-<li>Lots of popular press attention b/w 2014 &amp; 2016</li>
+<li><p>Suppose there are <span class="math inline">\(n\)</span> games played between <span class="math inline">\(p\)</span> teams</p></li>
+<li><p>For each team <span class="math inline">\(j\)</span>, there is a <strong>latent</strong> strength <span class="math inline">\(\lambda_{j}\)</span> <span class="math display">\[
+\mathbb{P}(\textrm{team i beats team j}) = \frac{e^{\lambda_{i}}}{e^{\lambda_{i}} + e^{\lambda_{j}}} = \frac{1}{1 + e^{-1 \times (\lambda_{i} - \lambda_{j})}}
+\]</span></p></li>
+<li><p>Log-odds of <span class="math inline">\(i\)</span> beating <span class="math inline">\(j\)</span>: <span class="math inline">\(\lambda_{i} - \lambda_{j}.\)</span></p></li>
 </ul>
 </section>
-<section id="jonathan-lucroy-needs-a-raise" class="slide level2 smaller">
-<h2>Jonathan Lucroy Needs a Raise</h2>
-<blockquote>
-<p>According to Baseball Prospectus, Lucroy produced 121 stolen strikes last season and in the past five seasons clocks in at more than 1,000, the most in MLB. And if you believe the metrics, these stolen strikes have been worth about 18 wins during his five-year career – just shy of what Giancarlo Stanton’s entire output has added up to during the same time. Still, Lucroy’s discreetly prodigious output has been underestimated. By fans. By the media. By his own team. And certainly by the game’s salary structure. Even in today’s post-Moneyball world, pitch framing is viewed through a skeptical lens; a value-added talent, sure, but one for which teams are reluctant to pay. While Stanton cashed in with a 13-year, $325 million contract this offseason and Mike Trout begins the first year of his $144.5 million deal, Lucroy was actually more valuable last year. For that he earned $2 million; this year, he’ll make $3 million.</p>
-</blockquote>
-<blockquote>
-<p>Put another way: The most impactful player in baseball today is the game’s 17th highest-paid catcher.</p>
-</blockquote>
+<section id="example-4-team-round-robin" class="slide level2">
+<h2>Example: 4 Team Round-Robin</h2>
+<ul>
+<li>Suppose <span class="math inline">\(\lambda_{1} = 1, \lambda_{2} = 0.5, \lambda_{3} = 0.3\)</span> and <span class="math inline">\(\lambda_{4} = 0.\)</span> <span class="math display">\[
+\mathbb{P}(\textrm{team 1 beats team 2}) = \frac{e^{1}}{e^{1} + e^{0.5}} \approx 62\%
+\]</span></li>
+</ul>
+</section>
+<section id="identifiability" class="slide level2">
+<h2>Identifiability</h2>
+<ul>
+<li>Basic BT model: <span class="math inline">\(\textrm{P}(i \textrm{ beats } j)\)</span> depends only on <strong>difference</strong> <span class="math inline">\(\lambda_{i} - \lambda_{j}\)</span></li>
+<li>Probabilities unchanged after constant shift. E.g.: <span class="math inline">\(\lambda_{j} \rightarrow \lambda_{j} + 5\)</span> for all <span class="math inline">\(j\)</span></li>
+<li>Practically: we can only estimate latent strengths <strong>up to an additive constant</strong></li>
+<li>Often we fix one <span class="math inline">\(\lambda_{j} = 0\)</span> (a “reference team”)</li>
+</ul>
+</section></section>
+<section>
+<section id="fitting-bt-models" class="title-slide slide level1 center">
+<h1>Fitting BT Models</h1>
+
 </section>
 <section id="overview" class="slide level2 smaller">
 <h2>Overview</h2>
 <ul>
-<li>Goal: estimate how many runs catcher saves his team</li>
-<li>Multilevel model to predict <span class="math inline">\(\mathbb{P}(\textrm{called strike})\)</span>
+<li>Goal: Estimate <span class="math inline">\(\lambda_{j}\)</span>’s for all D1 Women’s Hockey Teams</li>
+<li>Requirement: a data table (one row per match) recording
 <ul>
-<li>Random intercepts for batter, pitcher, catcher</li>
-<li>Fixed effect: baseline called strike prob. based on previous season</li>
+<li>Identities of the two teams</li>
+<li>Identity of the winner</li>
 </ul></li>
-<li>“Runs Saved Above Replacement”</li>
-</ul>
-</section>
-<section>
-<section id="value-of-a-called-strike" class="title-slide slide level1 center">
-<h1>Value of a Called Strike</h1>
-
-</section>
-<section id="elaborated-run-expectancy" class="slide level2 smaller">
-<h2>Elaborated Run Expectancy</h2>
+<li>Scrape from USCHO website
 <ul>
-<li>Lectures 6–8: run expectancy at the at-bat level</li>
-<li>Today: run expectancy at the <em>pitch</em> level</li>
-<li><span class="math inline">\(\rho(\textrm{o}, \textrm{counts})\)</span>:
-<ul>
-<li>Avg. runs scored following pitch in given count &amp; game state</li>
-<li>3 <strong>o</strong>uts <span class="math inline">\(\times\)</span> 12 counts</li>
-</ul></li>
-<li>Roadmap:
-<ul>
-<li>Compute how many runs scored after each pitch (<code>RunsRemaining</code>)</li>
-<li>Identify taken pitches using <code>description</code></li>
-<li>Average <code>RunsRemaining</code> w/in bins defined by call, outs, and counts</li>
+<li>Before 10/6: code on course website worked</li>
+<li>After 10/6: USCHO changed their backend (so scraping code won’t work…)</li>
 </ul></li>
 </ul>
 </section>
-<section id="high-level-model" class="slide level2 smaller">
-<h2>High-Level Model</h2>
+<section id="the-bradleyterry2-package" class="slide level2 smaller">
+<h2>The <strong>BradleyTerry2</strong> Package</h2>
 <ul>
-<li><p>Level 1: Fixed effects of location (<span class="math inline">\(x\)</span> and <span class="math inline">\(z\)</span>) may be non-linear <span class="math display">\[
-\log \left( \frac{\mathbb{P}(Y_{i} = 1)}{\mathbb{P}(Y_{i} = 0)} \right) = B_{b[i]} + C_{c[i]} + P_{p[i]} + f(x_{i}, z_{i})
-\]</span></p></li>
-<li><p>Level 2: Random intercepts for <strong>B</strong>atter, <strong>P</strong>ither, <strong>C</strong>atcher <span class="math display">\[
-\begin{align}
-B_{i} &amp;= \mu_{B} + u^{(B)}_{b[i]}; u^{(B)}_{b} \sim \mathcal{N}(0,\sigma^{2(B)}) \\
-C_{i} &amp;= \mu_{C} + u^{(C)}_{c[i]}; u^{(C)}_{c} \sim \mathcal{N}(0,\sigma^{2(C)}) \\
-P_{i} &amp;= \mu_{P} + u^{(P)}_{p[i]}; u^{(P)}_{p} \sim \mathcal{N}(0,\sigma^{2(P)})
-\end{align}
-\]</span></p></li>
-</ul>
-<div class="fragment">
-<ul>
-<li>Idea #1: Assume <span class="math inline">\(f(x,z) = \beta_{X}x + \beta_{Z}z\)</span>
-<ul>
-<li>Problem: <em>assumes</em> <span class="math inline">\(\mathbb{P}(\textrm{called strike})\)</span> is monotonic</li>
-</ul></li>
-</ul>
-</div>
-</section>
-<section id="adjusting-for-historical-tendencies" class="slide level2">
-<h2>Adjusting for Historical Tendencies</h2>
-<ul>
-<li><p>Instead of trying to pre-specify functional form of <span class="math inline">\(f(x,z)\)</span> <span class="math display">\[
-\log \left( \frac{\mathbb{P}(Y_{i} = 1)}{\mathbb{P}(Y_{i} = 0)} \right) = B_{b[i]} + C_{c[i]} + P_{p[i]} + \beta_{p} \log\left(\frac{\hat{p}(x_{i}, z_{i})}{1 - \hat{p}(x_{i}, z_{i})}\right)
-\]</span></p></li>
-<li><p><span class="math inline">\(\hat{p}(x,z)\)</span>: <strong>baseline</strong> called strike prob. estimated from 2024 season</p></li>
-</ul>
-</section>
-<section id="historical-gam" class="slide level2 smaller">
-<h2>Historical GAM</h2>
-<ul>
-<li>Filter out 2024 pitches too far away from strike zone
-<ul>
-<li><code>plate_x</code> outside [-1.5, 1.5]</li>
-<li><code>plate_z</code> outside [1,6]</li>
-</ul></li>
+<li>We will use the <a href="https://github.com/hturner/BradleyTerry2"><strong>BradleyTerry2</strong></a> package</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">library</span>(mgcv)</span>
-<span id="cb1-2"><a></a>hgam_fit <span class="ot">&lt;-</span> </span>
-<span id="cb1-3"><a></a>  <span class="fu">bam</span>(<span class="at">formula =</span> Y <span class="sc">~</span> stand <span class="sc">+</span> p_throws <span class="sc">+</span> <span class="fu">s</span>(plate_x, plate_z),  </span>
-<span id="cb1-4"><a></a>      <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link=</span><span class="st">"logit"</span>), </span>
-<span id="cb1-5"><a></a>      <span class="at">data =</span> taken2023)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"hturner/BradleyTerry2"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</section>
-<section id="fitting-a-multi-level-model" class="slide level2">
-<h2>Fitting a Multi-level Model</h2>
 <ul>
-<li>Fixed effects: baseline/historical log-odds of a called strike</li>
-<li>Random effects: catcher, batter, pitcher</li>
-<li>Binary response: must use <code>glmer</code> rather than <code>lmer</code></li>
-<li>Like regular logistic regression, must specify the <code>family</code> argument</li>
+<li>Package has rather specific syntax, so it’s important to read <a href="https://cran.r-project.org/web/packages/BradleyTerry2/vignettes/BradleyTerry.html">documentation</a></li>
 </ul>
 </section>
-<section id="extracting-uc_c" class="slide level2 smaller">
-<h2>Extracting <span class="math inline">\(u^{(C)}_{c}\)</span></h2>
+<section id="ncaa-d1-championship" class="slide level2">
+<h2>NCAA D1 Championship</h2>
 <ul>
-<li>Model: <span class="math inline">\(C_{c} = \mu_{C} + u^{(C)}_{c}\)</span> where <span class="math inline">\(u^{(C)}_{c} \sim \mathcal{N}(0,\sigma^{2}_{c})\)</span></li>
-<li>Reminder: cannot directly estimate catcher-specific intercepts <span class="math inline">\(C_{c}\)</span> or global average <span class="math inline">\(\mu_{C}\)</span></li>
-<li>We can extract deviations <span class="math inline">\(u^{(C)}_{c}\)</span> using <code>ranef()</code></li>
-</ul>
-</section></section>
-<section>
-<section id="runs-saved-above-replacement" class="title-slide slide level1 center">
-<h1>Runs Saved Above Replacement</h1>
-
-</section>
-<section id="defining-replacement-level" class="slide level2 smaller">
-<h2>Defining Replacement Level</h2>
-<ul>
-<li>Non-replacement: top <span class="math inline">\(30 \times 2\)</span> catchers sorted by number of pitches caught</li>
-<li><span class="math inline">\(\overline{u}^{(C)}_{R}\)</span>: average <span class="math inline">\(u^{(C)}_{c}\)</span> among all replacement-level catchers</li>
-<li>Counter-factual prediction: for every pitch, get model prediction for
-<ul>
-<li>Called strike prob. with original catcher</li>
-<li>Called strike prob. with replacement-level catcher</li>
-</ul></li>
+<li><p>Currently, championship decided w/ a single game</p></li>
+<li><p>According to our model, WIS would win 48% of the time</p></li>
+<li><p>What if NCAA moved to a best-of-5 series?</p></li>
 </ul>
 </section>
-<section id="counterfactual-predictions" class="slide level2 smaller">
-<h2>Counterfactual Predictions</h2>
+<section id="looking-ahead" class="slide level2">
+<h2>Looking Ahead</h2>
 <ul>
-<li>Original log-odds:</li>
-</ul>
-<p><span class="math display">\[
-\mu_{C} + u_{c[i]}^{(C)} + B_{b[i]} + P_{p[i]} + \hat{\beta}_{p} \times \log\left(\frac{\hat{p}(x_{i}, z_{i})}{1 - \hat{p}(x_{i}, z_{i})} \right)
-\]</span></p>
-<div class="fragment">
-<ul>
-<li>Counter-factual log-odds:</li>
-</ul>
-<p><span class="math display">\[
-\mu_{C} + \overline{u}_{R}^{(C)} + B_{b[i]} + P_{p[i]} + \hat{\beta}_{p} \times \log\left(\frac{\hat{p}(x_{i}, z_{i})}{1 - \hat{p}(x_{i}, z_{i})} \right)
-\]</span></p>
-</div>
-</section>
-<section id="computing-rsar" class="slide level2 smaller">
-<h2>Computing RSAR</h2>
-<ul>
-<li>Weight change in called strike prob. by value of called strike</li>
-<li>RSAR: Sum over all pitches received by catcher over the season</li>
-</ul>
-</section>
-<section id="uncertainty-quantification" class="slide level2">
-<h2>Uncertainty Quantification</h2>
-<ul>
-<li>Top framers appear to save nearly 30 runs over replacement</li>
-<li>Translates to about 3 wins</li>
-<li>Exercise: use the bootstrap to quantify uncertainty
-<ul>
-<li>Create several bootstrap re-samples of 2025 taken pitches</li>
-<li>Must re-fit the multilevel model and compute RSAR</li>
-<li>Use the original replacement-level</li>
-</ul></li>
-<li>Quantifying uncertainty: <strong>critical</strong> to determining monetary value of framing</li>
-</ul>
-</section>
-<section id="my-own-research" class="slide level2 smaller">
-<h2>My Own Research</h2>
-<ul>
-<li>I’ve studied framing since 2015
-<ul>
-<li>Initial paper: Bayesian models to “borrow strength” across umpires</li>
-<li>Conclusion: lots of uncertainty in framing effects</li>
-</ul></li>
-<li>More recently: use Bayesian Additive Regression Trees (BART) to model <span class="math inline">\(\mathbb{P}(\textrm{strike})\)</span>
-<ul>
-<li>Faster &amp; more flexible: (2 hours on a desktop vs 50 hours on a cluster)</li>
-<li>Better predictions: mis-classification of 7% vs 10%</li>
-<li>Similar conclusions: possibly large effect but lots of uncertainty</li>
-</ul></li>
-</ul>
-</section>
-<section id="framing-effectsin-2009" class="slide level2">
-<h2>Framing Effectsin 2009</h2>
-<p><a href="figures/rs_intervals_2009.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="figures/rs_intervals_2009.png" style="width:80.0%"></a></p>
-</section>
-<section id="framing-over-time" class="slide level2">
-<h2>Framing Over Time</h2>
-<p><a href="figures/rs_means.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img data-src="figures/rs_means.png" style="width:80.0%"></a></p>
-</section>
-<section id="announcements" class="slide level2 smaller">
-<h2>Announcements</h2>
-<ul>
-<li><p>Projects are due tomorrow at noon</p></li>
-<li><p>Next week: new unit on ranking &amp; simulation</p>
-<ul>
-<li>Lectures 12 &amp; 13: hockey power rankings &amp; the NCAA D1 National Championship</li>
-<li>Lecture 14: Markov chain simulations</li>
-<li>Lecture 16 &amp; 17: Mock drafts &amp; other simulations</li>
-</ul></li>
-<li><p>Project 2 Information will be posted by Sunday evening</p></li>
+<li>Basic BT model does not account for home-team advantage</li>
+<li><a href="../../lectures/lecture13.html">Lecture 13</a>: simulate entire Frozen 4</li>
 </ul>
 
 
@@ -1038,38 +875,6 @@ P_{i} &amp;= \mu_{P} + u^{(P)}_{p[i]}; u^{(P)}_{p} \sim \mathcal{N}(0,\sigma^{2(
         }
       });
       </script>
-    <script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
-    (function() {
-      let previousOnload = window.onload;
-      window.onload = () => {
-        if (previousOnload) {
-          previousOnload();
-        }
-        lightboxQuarto.on('slide_before_load', (data) => {
-          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-          const href = trigger.getAttribute('href');
-          if (href !== null) {
-            const imgEl = window.document.querySelector(`a[href="${href}"] img`);
-            if (imgEl !== null) {
-              const srcAttr = imgEl.getAttribute("src");
-              if (srcAttr && srcAttr.startsWith("data:")) {
-                slideConfig.href = srcAttr;
-              }
-            }
-          } 
-        });
-      
-        lightboxQuarto.on('slide_after_load', (data) => {
-          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
-          if (window.Quarto?.typesetMath) {
-            window.Quarto.typesetMath(slideNode);
-          }
-        });
-      
-      };
-      
-    })();
-              </script>
     
 
 </body></html>

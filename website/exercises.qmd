@@ -35,17 +35,17 @@ The NBA and WNBA have different All-Star dates and the WNBA dataset may have sli
 So, you will need to modify some parts of the code from [Lecture 1](lectures/lecture01.qmd) to run this analysis!
 :::
 
-### 01-2: Four Factors{#sec-ex-lec2-four-factors}
+### 01-2: Four Factors {#sec-ex-lec2-four-factors}
 
 [Dean Oliver](https://en.wikipedia.org/wiki/Dean_Oliver_(statistician)),  pioneer of basketball analytics, introduced [Four Factors](https://www.basketball-reference.com/about/factors.html) to describe how teams win. The Four Factors are computed from box score data *at the team level* and attempt to summarize a team's performance in terms of shooting, rebounding, turnovers, and free throws. Using data from either the NBA or WNBA, compute the four factors for each team in every season since 2002. Which teams' were the best in terms of each of these four factors?
 
-### 01-3: Offensive Efficiency{#sec-ex-lec1-offensive-efficiency}
+### 01-3: Offensive Efficiency {#sec-ex-lec1-offensive-efficiency}
 
 Dean Oliver introduced an offensive efficiency metrics that tracks how many points are produced by an individual player over the course of 100 possessions.
 While it's possible to compute offensive efficiency exactly using play-by-play or player-tracking data, these data were not always publicly available at the time that Oliver was writing.
 Oliver developed a formula for approximating offensive efficiency using only information contained in the box score; [the offensive rating page on Basketball Reference](https://www.basketball-reference.com/about/ratings.html) has the full derivation. 
 
-Using either NBA or WNBA, identify the player-seasons with the highest and lowest offensive ratings. 
+Using either NBA or WNBA data, identify the player-seasons with the highest and lowest offensive ratings. 
 
 :::{.callout-important}
 
@@ -56,7 +56,7 @@ Performing this analysis will require some clever grouping operations!
 
 :::
 
-## Lecture 2{#sec-ex-lec2}
+## Lecture 2 {#sec-ex-lec2}
 
 ### 02-1: Over- and Under-performing XG {#sec-ex-lec2-over-under-xg}
 
@@ -102,22 +102,9 @@ In [Lecture 4](lectures/lecture04.qmd#sec-apm-beta), we set a 250 minute thresho
 
 ### 04-2: Re-thinking Stint Weights {#sec-ex-lec4-weight}
 
-In [Lecture 4](lectures/lecture04.qmd#sec-wapm}, we weighted stints using only the lead at the start of the stint. 
+In [Lecture 4](lectures/lecture04.qmd#sec-wapm), we weighted stints using only the lead at the start of the stint. 
 One could reasonably argue that weights should also account for the time left in the game. 
 Propose your own weighting scheme and see how the player rankings change.
-
-<!--
-### 4.3: Multi-Season APM {#sec-ex-lec4-multiseason-apm}
-
-We estimated APM using data from a single season. 
-Many analysts prefer to use data from multiple season when fitting APM models. 
-Scrape data from the 2022-23 and 2023-24 regular seasons and fit APM models using (i) data from 2023-24 and 2024-25 and (iii) data from 2022-23, 2023-34, and 2024-25. 
-
-### 4.4: Multi-Season Weighted APM {#sec-ex-lec4-multiseason-wapm}
-One can credibly argue that data from seasons further in the past should be weighted less than data from more recent seasons. 
-Propose a weighting scheme that down-weights historical data and fit weighted versions of the models fit in @sec-ex-lec4-multiseason-apm. 
-How do the relative player rankings change based on different weighting schemes?
--->
 
 ### 04-3: Predictive Quality of APM Models {#sec-ex-lec4-apm-pred}
 
@@ -244,4 +231,4 @@ Build a simulation for the entire NCAA Tournament based on the estimating probab
 
 ### 13-3: Replicate Analysis for D1 Men's Hockey {#sec-ex-lec13-mens}
 
-Replicate the analyses from [Lecture 13](lectures/lecture13.qmd) for Division 1 Men's Hockey. You will need to use the data introduced in [Exercise 12.1](#sec-ex-lec12-mens)
+Replicate the analyses from [Lecture 13](lectures/lecture13.qmd) for Division 1 Men's Hockey. You will need to use the data introduced in [Exercise 12-1](#sec-ex-lec12-mens)

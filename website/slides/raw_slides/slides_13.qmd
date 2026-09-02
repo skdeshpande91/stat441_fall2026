@@ -1,0 +1,122 @@
+---
+title: "STAT 441 Lecture 13"
+subtitle: "Bradley-Terry Models II"
+format: revealjs
+execute:
+  cache: true
+---
+
+## Recap of Lecture 12
+
+- Bradley-Terry model: team $j$ has latent strength $\lambda_{j}$
+- $\textrm{Log-odds}(i \textrm{ beats } j) = \lambda_{i} - \lambda_{j}$
+$$
+\mathbb{P}(i \textrm{ beats } j ) = \frac{1}{1 + e^{-(\lambda_{i} - \lambda_{j})}} = \frac{e^{\lambda_{i}}}{e^{\lambda_{i}} + e^{\lambda_{j}}}.
+$$
+ 
+. . . 
+
+
+- 2025 NCAA D1 Women's Hockey results: $\hat{\lambda}_{\textrm{WIS}} \approx 4.48$ & $\hat{\lambda}_{\textrm{OSU}} \approx 4.56$
+```{r}
+#| label: wis-osu-simple
+#| echo: true
+#| eval: true
+1/(1 + exp(-1 * (4.48 - 4.56)))
+```
+
+
+## BT with Home Advantage I
+
+- Basic BT model: $\mathbb{P}(i \textrm{ beats } j)$ does not depend on location
+- Elaborated model: introduce a latent intercept $\lambda_{0}$ so that
+$$
+\begin{align*}
+\mathbb{P}(\textrm{team i beats team j at i's home}) &= \frac{e^{\lambda_{i} + \lambda_{0}}}{e^{\lambda_{i} + \lambda_{0}} + e^{\lambda_{j}}} \\
+& \\
+&= \frac{1}{1 + e^{-1 \times (\lambda_{i} + \lambda_{0} - \lambda_{j})}}
+\end{align*}
+$$
+
+## BT w/ Home Advantage II
+
+- Probability that $i$ beats $j$ now depends on location
+- At $i$'s home: $\frac{e^{\lambda_{0} + \lambda_{i}}}{e^{\lambda_{0} + \lambda_{i}} + e^{\lambda_{j}}}$
+
+. . .
+
+- At $j$'s home: $\frac{e^{\lambda_{i}}}{e^{\lambda_{i}} + e^{\lambda_{j} + \lambda_{0}}}$
+
+. . . 
+
+- At a neutral site: $\frac{e^{\lambda_{i}}}{e^{\lambda_{i}} + e^{\lambda_{j}}}$
+
+## Analytic Plan
+
+- Add a column recording whether game at neutral site
+- **BradleyTerry2** expects data in following format
+  - One row per combination of home team, away team, and location
+  - Columns counting  home team and away team wins
+- New columns `home.team` and `away.team`
+  - These variables are themselves data frames 
+  - Columns recording team identity & whether they are at home
+
+## Understanding the Fitted Model
+
+- Log-odds that WIS beats OSU:
+  - At WIS: $\hat{\lambda}_{\textrm{WIS}} + \hat{\lambda}_{0} - \hat{\lambda}_{\textrm{OSU}}.$
+  - At OSU: $\hat{\lambda}_{\textrm{WIS}} - (\hat{\lambda_{\textrm{OSU}}} + \hat{\lambda}_{0}).$
+  - Neutral site: $\hat{\lambda}_{\textrm{WIS}} - \hat{\lambda}_{\textrm{OSU}}.$
+
+
+# Frozen 4 Simulation
+
+## Background
+
+- Single-elimination tournament w/ last four teams
+- First semi-final (SF1): OSU vs NOE
+- Second semi-final (SF2): WIS vs PSU
+- Finals: winner SF1 vs winner SF2
+- All games played at Pegula Ice Arena (PSU's home ice)
+
+## Analytic Plan
+
+- For each potential matchup, pre-compute $\mathbb{P}(\textrm{higher seed beats lower seed})$
+- Simulate each semi-final game (`SF1_winner` and `SF2_winner`)
+- Simulate finals game b/w `SF1_winner` and `SF2_winner`
+- Keep track of seeds!
+
+
+
+
+## Repeated Simulations {.smaller}
+
+- Embed earlier code into large `for` loop 
+- In each iteration, we will save
+  - Semi-finals winners:`SF1_winner` and `SF2_winner`
+  - Teams in finals: `Finals_Hi` and `Finals_Lo`
+  - Eventual Champion `Champion`
+
+- Using simulations, we will estimate
+  - $\mathbb{P}(\textrm{WIS makes it to and wins the finals})$
+  - $\mathbb{P}(\textrm{WIS wins the finals} \vert \textrm{Wisconsin makes it to the finals}).$
+  
+
+
+## Alternative Rules
+
+- What if higher seed always gets to play at home?
+- Very similar code but uses different matchup probabilities
+
+
+## Introducing Covariates{.smaller}
+
+- What if we had team-level covariates?
+  - Offensive/defensive rating, record to date, other measures of strength
+
+- Possible to elaborate model: $\lambda_{j} = U_{j} + \boldsymbol{\mathbf{x}}_{j}^{\top}\beta$
+- Under elaborated model
+$$
+\log\left(\frac{\mathbb{P}(i \textrm{ beats } j)}{\mathbb{P}(j \textrm{ beats } i)}\right) = U_{i} - U_{j} + (\boldsymbol{\mathbf{x}}_{i} - \boldsymbol{\mathbf{x}}_{j})^{\top}\beta
+$$
+  - Depends on difference in observed covariates & latent team-specific random effect

@@ -33,8 +33,6 @@ execute:
 
 - This long-run frequency is Expected Goals (XG) 
 
-# Soccer Event Data
-
 ## StatsBomb & Hudl
 - Player location data for all events
   * Computer vision + input from 5 human annotators
@@ -57,9 +55,6 @@ devtools::install_github("statsbomb/StatsBombR")
 ![StatsBomb Coordinates](figures/statsbomb_coordinates.png){fig-asp=0.75, width="60%"}
 
 
-
-# Conditional Expectations
-
 ## Thought Experiment: Repeating Shots
 
 - What proportion of repetitions result in goals?
@@ -71,7 +66,7 @@ devtools::install_github("statsbomb/StatsBombR")
 ## Setup & Notation
 - Suppose our data set contains $n$ shots
 - For shot $i = 1, \ldots, n,$ we observe
-  - $Y_{i}$: indicator shot resutled in goal ($Y = 1$) or not ($Y = 0$)
+  - $Y_{i}$: indicator shot resulted in goal ($Y = 1$) or not ($Y = 0$)
   - $\boldsymbol{\mathbf{X}}_{i}$: vector of $p$ features about the shot
 - Features could include things like
   - Body part used & shot technique
@@ -103,22 +98,22 @@ $$
 
 ## Practical Calculation
 - Since we cannot access infinite super-population, we must **estimate** XG from data
-- We do so by mimicking idealized calculation
+- We can do so by mimicking idealized calculation
   1. Divide data into subgroups based on `shot.body_part.name`
   2. Compute proportion of goals within subgroups
 - Rely on **dplyr**'s `group_by()` functionality to do this
 
-
-
+# Towards More Sophisticated XG Models
 
 ## Accounting For Shot Technique
 - Each goal was scored off a different type of shot
 - What if we condition body part & shot technique?
 
+. . .
 
+- Can similarly "bin and average" with a grouped summary
 
-
-## Accounting for more features{.smaller}
+## Including More Features
 - Our 2-feature model is still too coarse
   - Doesn't account for distance of shot
   - Doesn't account for defenders and keeper
@@ -130,15 +125,12 @@ $$
 - If we could access super-population, easy to condition on more features
   - Slice population along $\mathbf{\boldsymbol{x}}$
   - Compute proportion of goals among the slice with $\mathbf{\boldsymbol{X}} = \mathbf{\boldsymbol{x}}$
-
-. . . 
-
 - Can we mimic this with our observed data?
 
 
 
 
-## Model-based XG{.smaller}
+## Modeling XG{.smaller}
 - "Binning-and-averaging" not viable w/ many features due to small sample sizes
 - *Statistical models* overcome these challenges by "borrowing strength"
 - $\textrm{XG}(\boldsymbol{\mathbf{x}})$ informed by shots with $\boldsymbol{\mathbf{X}} = \boldsymbol{\mathbf{x}}$ and $\boldsymbol{\mathbf{X}} \approx \boldsymbol{\mathbf{x}}$
@@ -163,7 +155,7 @@ $$
 
 
 
-## Looking Ahead{.smaller}
+## Looking Ahead
 - I **strongly** recommend you work through code yourself
   - Full code available [here](../../lectures/lecture02.qmd)
   - Try more binning-and-averaging XG estimates w/ other features
@@ -176,4 +168,5 @@ $$
 
 - Form groups by **Friday September 11** 
 - Use Piazza to find group members
+- Signup for teams [here](https://docs.google.com/spreadsheets/d/1aGQ9m2OKLRnTq11pLawBTwF8oxFPIaRmYWvD_8kGhoo/edit?gid=0#gid=0)
 

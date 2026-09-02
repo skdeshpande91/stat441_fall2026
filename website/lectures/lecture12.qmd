@@ -76,7 +76,7 @@ round(probs, digits = 3)
 [^manual]: That is, manually computing `1/(1 + exp(-1 * (lambda[i] - lambda[j])))` for every pair of `(i,j)`.
 
 Armed with the probabilities of each team beating every other team, we can start to compute the probabilities of more elaborate events.
-Assuming the match outcomes are independent, the probability that team 1 wins its matches against Teams 2 and 3 but loses to Team 4 is
+Assuming the match outcomes are independent, the probability that Team 1 wins its matches against Teams 2 and 3 but loses to Team 4 is
 $$
 0.622 \times 0.668 \times (1 - 0.731) \approx 11.1\%
 $$
@@ -319,6 +319,7 @@ raw_data <-
   dplyr::rename(
     HomeScore = `Home Score`,
     AwayScore = `Away Score`)
+
 ```
 
 Looking at the first ten rows of `raw_data`, we see that there are columns for the home and away teams and whether the game went to overtime (`OT`).
@@ -338,7 +339,7 @@ We use the `table` function to see all the different game types in our dataset.
 #| echo: true
 table(raw_data$Type, useNA = 'always')
 ```
-It turns out that most of these abbreviations correspond to different conferences
+It turns out that most of these abbreviations correspond to different conferences.
 <!-- to do conferences -->
 
 
@@ -410,7 +411,7 @@ hockey_results |>
 ### Consistently formatting team name
 
 Looking at these ten random rows, we see another issue: USCHO recorded teams' win-loss-tie records entering each game!
-For instance, looking at the seventh and eight rows of the table, the winners are
+For instance, look at the seventh and eight rows of the table
 ```{r}
 #| eval: true
 #| echo: false
@@ -567,7 +568,7 @@ f4_teams <- c("Ohio State", "Wisconsin", "Penn State", "Northeastern")
 lambda_hat[f4_teams,]
 ```
 For later visualizations, it will be helpful to use three-letter abbreviations for each team instead of printing their full names.
-There is a [table of team abbreviations]() on the course's GitHub repository.
+There is a [table of team abbreviations](https://raw.githubusercontent.com/skdeshpande91/stat441_fall2026/refs/heads/main/data/lecture12/wd1hockey_teams.csv) on the course's GitHub repository.
 We can load it directly into our R session as follows
 
 ```{r}

@@ -1,0 +1,91 @@
+---
+title: "STAT 441 Lecture 12"
+subtitle: "Bradley-Terry Models I"
+format: revealjs
+execute:
+  cache: true
+---
+
+
+# Motivation
+
+## NCAA D1 Women's Hockey (2025-26)
+- WIS went 35-4-2 & won the National Championship
+- OSU went 36-5-0 & lost against WIS in the finals
+- How much better was WIS than OSU?
+
+. . . 
+
+$$
+\mathbb{P}(\textrm{WIS beats OSU}) = \textrm{???}
+$$
+
+
+# Bradley-Terry Models
+
+## The Basic Model
+
+- Suppose there are $n$ games played between $p$ teams
+- For each team $j$, there is a **latent** strength $\lambda_{j}$
+$$
+\mathbb{P}(\textrm{team i beats team j}) = \frac{e^{\lambda_{i}}}{e^{\lambda_{i}} + e^{\lambda_{j}}} = \frac{1}{1 + e^{-1 \times (\lambda_{i} - \lambda_{j})}}
+$$
+
+- Log-odds of $i$ beating $j$: $\lambda_{i} - \lambda_{j}.$
+
+## Example: 4 Team Round-Robin
+
+- Suppose $\lambda_{1} = 1, \lambda_{2} = 0.5, \lambda_{3} = 0.3$ and $\lambda_{4} = 0.$
+$$
+\mathbb{P}(\textrm{team 1 beats team 2}) = \frac{e^{1}}{e^{1} + e^{0.5}} \approx 62\%
+$$
+
+## Identifiability
+
+- Basic BT model: $\textrm{P}(i \textrm{ beats } j)$ depends only on **difference** $\lambda_{i} - \lambda_{j}$
+- Probabilities unchanged after constant shift. E.g.: $\lambda_{j} \rightarrow \lambda_{j} + 5$ for all $j$
+- Practically: we can only estimate latent strengths **up to an additive constant**
+- Often we fix one $\lambda_{j} = 0$ (a "reference team")
+
+# Fitting BT Models
+
+
+## Overview{.smaller}
+
+- Goal: Estimate $\lambda_{j}$'s for all D1 Women's Hockey Teams
+- Requirement: a data table (one row per match) recording
+  - Identities of the two teams
+  - Identity of the winner
+- Scrape from USCHO website
+  - Before 10/6: code on course website worked
+  - After 10/6: USCHO changed their backend (so scraping code won't work...)
+
+
+## The **BradleyTerry2** Package {.smaller}
+
+- We will use the [**BradleyTerry2**](https://github.com/hturner/BradleyTerry2) package
+```{r}
+#| label: install-bt2
+#| eval: false
+#| echo: true
+devtools::install_github("hturner/BradleyTerry2")
+```
+
+- Package has rather specific syntax, so it's important to read [documentation](https://cran.r-project.org/web/packages/BradleyTerry2/vignettes/BradleyTerry.html)
+
+
+
+## NCAA D1 Championship
+
+- Currently, championship decided w/ a single game
+
+- According to our model, WIS would win 48% of the time
+
+- What if NCAA moved to a best-of-5 series?
+
+
+
+## Looking Ahead
+
+- Basic BT model does not account for home-team advantage
+- [Lecture 13](../../lectures/lecture13.qmd): simulate entire Frozen 4
