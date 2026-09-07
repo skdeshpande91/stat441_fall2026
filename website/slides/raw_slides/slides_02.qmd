@@ -35,8 +35,6 @@ execute:
 - We can argue endlessly about *qualitative* differences
   - One-on-one vs in-traffic; left or right foot; 
   - Type of shot; time; score; ...
-  
-. . .
 
 - Goal: **quantitative** comparison
 
@@ -46,7 +44,6 @@ execute:
 - How often would she score?
 
 ![](figures/mead_sweden.png){width="60%" fig-align="center"}
-
 - This long-run frequency is Expected Goals (XG) 
 
 ## StatsBomb & Hudl

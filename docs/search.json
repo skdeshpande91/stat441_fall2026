@@ -2654,14 +2654,14 @@
     "href": "slides/raw_slides/slides_02.html#motivation-beth-mead-in-euro-2022",
     "title": "STAT 441 Lecture 2",
     "section": "Motivation: Beth Mead in EURO 2022",
-    "text": "Motivation: Beth Mead in EURO 2022\n\nBeth Mead scored 6 goals in EURO 2022. Which was more impressive?\n\nGoal in 15th minute against Austria link\nGoal in 37th minute against Norway link\nGoal in 33rd minute against Sweden link\n\n\n\n\nWe can argue endlessly about qualitative differences\n\nOne-on-one vs in-traffic; left or right foot;\nType of shot; time; score; …\n\n\n\n\n\nGoal: quantitative comparison"
+    "text": "Motivation: Beth Mead in EURO 2022\n\nBeth Mead scored 6 goals in EURO 2022. Which was more impressive?\n\nGoal in 15th minute against Austria link\nGoal in 37th minute against Norway link\nGoal in 33rd minute against Sweden link\n\n\n\n\nWe can argue endlessly about qualitative differences\n\nOne-on-one vs in-traffic; left or right foot;\nType of shot; time; score; …\n\nGoal: quantitative comparison"
   },
   {
     "objectID": "slides/raw_slides/slides_02.html#a-thought-experiment",
     "href": "slides/raw_slides/slides_02.html#a-thought-experiment",
     "title": "STAT 441 Lecture 2",
     "section": "A Thought Experiment",
-    "text": "A Thought Experiment\n\nWhat if we could replay each shot over and over again?\nHow often would she score?\n\n\n\n\n\n\n\nThis long-run frequency is Expected Goals (XG)"
+    "text": "A Thought Experiment\n\nWhat if we could replay each shot over and over again?\nHow often would she score?\n\n - This long-run frequency is Expected Goals (XG)"
   },
   {
     "objectID": "slides/raw_slides/slides_02.html#statsbomb-hudl",
