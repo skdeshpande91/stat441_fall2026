@@ -1,5 +1,5 @@
 ---
-title: "STAT 479: Lecture 5"
+title: "STAT 441: Lecture 5"
 subtitle: Regularized Adjusted Plus/Minus
 format: revealjs
 execute:

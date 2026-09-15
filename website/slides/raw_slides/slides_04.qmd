@@ -1,5 +1,5 @@
 ---
-title: "STAT 479: Lecture 4"
+title: "STAT 441: Lecture 4"
 subtitle: Adjusted Plus/Minus
 format: revealjs
 execute:
@@ -274,7 +274,7 @@ $$
 - APM does not account for context
 - Can over-inflate garbage-time performance when outcome essentially determined
 
-> "can artificially can artificially inflate the importance of performance in low-leverage situations, when the outcome of the game is essentially decided, while simultaneously deflating the importance of high-leverage performance, when the final outcome is still in question. For instance, point diﬀerential-based metrics model the home team’s lead dropping from 5 points to 0 points in the last minute of the first half in exactly the same way that they model the home team’s lead dropping from 30 points to 25 points in the last minute of the second half". 
+> "can artificially inflate the importance of performance in low-leverage situations, when the outcome of the game is essentially decided, while simultaneously deflating the importance of high-leverage performance, when the final outcome is still in question. For instance, point diﬀerential-based metrics model the home team’s lead dropping from 5 points to 0 points in the last minute of the first half in exactly the same way that they model the home team’s lead dropping from 30 points to 25 points in the last minute of the second half". 
 
 ## A Weighted Version of APM
 - Introduce weight $w_{i}$ for stint $i$
@@ -308,7 +308,6 @@ $$
 
 - Thanks for sorting yourselves into groups!
   - If you still don't have a group, let me know!
-  - On Canvas, you need to be in a group under "Projects 1&2 Groups"
 - [Project information](../../projects/project1.qmd) posted:
   - Requirements for written report and presentation
   - Non-exhaustive list of project topics
