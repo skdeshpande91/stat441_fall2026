@@ -615,7 +615,22 @@ We will also fit two separate multilevel models of EPA on rushing plays, one for
 </dl>
 </div>
 </div>
-<p>In addition to the identity of the passer (<code>passer_player_id</code>) and intended receiver (<code>receiver_player_id</code>), the data table contains the following columns: * <code>posteam</code>: the identity of the team in possession of the ball * <code>defteam</code>: the identity of the team on defense * <code>air_yards</code>: the distance traveled by the pass through the air[^airyard] * <code>shotgun</code>: whether the pass was thrown out of the <a href="https://en.wikipedia.org/wiki/Shotgun_formation">shotgun formation</a> * <code>qb_hit</code>: whether the quarterback was hit while throwing * <code>no_huddle</code>: whether the play was run <a href="https://en.wikipedia.org/wiki/Hurry-up_offense">without a huddle</a> * <code>posteam_type</code>: whether the home team had possession (i.e., was on offense) * <code>pass_location</code>: whether the pass was thrown to the left, right, or center of the field * <code>yards_after_catch</code>: for completions, how many yards did the receiver gain after catching the pass * <code>epa</code>: the expected points added on the play * <code>air_epa</code> and <code>yac_epa</code>: the expected points added through the air and running after the catch (for completed passes) * <code>complete_pass</code>: whether the pass was completed * <code>receiver_position</code>: the position of the actual receiver on completed passes and the intended receiver on incomplete passes</p>
+<p>In addition to the identity of the passer (<code>passer_player_id</code>) and intended receiver (<code>receiver_player_id</code>), the data table contains the following columns:</p>
+<ul>
+<li><code>posteam</code>: the identity of the team in possession of the ball</li>
+<li><code>defteam</code>: the identity of the team on defense</li>
+<li><code>air_yards</code>: the distance traveled by the pass through the air[^airyard]</li>
+<li><code>shotgun</code>: whether the pass was thrown out of the <a href="https://en.wikipedia.org/wiki/Shotgun_formation">shotgun formation</a></li>
+<li><code>qb_hit</code>: whether the quarterback was hit while throwing</li>
+<li><code>no_huddle</code>: whether the play was run <a href="https://en.wikipedia.org/wiki/Hurry-up_offense">without a huddle</a></li>
+<li><code>posteam_type</code>: whether the home team had possession (i.e., was on offense)</li>
+<li><code>pass_location</code>: whether the pass was thrown to the left, right, or center of the field</li>
+<li><code>yards_after_catch</code>: for completions, how many yards did the receiver gain after catching the pass</li>
+<li><code>epa</code>: the expected points added on the play</li>
+<li><code>air_epa</code> and <code>yac_epa</code>: the expected points added through the air and running after the catch (for completed passes)</li>
+<li><code>complete_pass</code>: whether the pass was completed</li>
+<li><code>receiver_position</code>: the position of the actual receiver on completed passes and the intended receiver on incomplete passes</li>
+</ul>
 <p>For every passing play, <strong>nflfastR</strong> computes two different EPA values. The first, <code>air_epa</code> is the expected points added through the air and <code>yac_epa</code> is the expected points added after the catch. For completed passes, computing <code>air_epa</code> and <code>yac_epa</code> is relatively straightforward: as soon as the pass is caught, imagine stopping the play and computing the expected points based on the resulting game state. Then, the difference between this intermediate EP and the starting EP of the original play is <code>air_epa</code> and the difference between the final EP and this intermediate EP is <code>yac_epa</code>. Computing <code>air_epa</code> and <code>yac_epa</code> for incomplete passes is trickier and involves computing the difference in expected points between the final state, initial state, and an intermediate state that would result had the pass been caught.</p>
 </section>
 <section id="sec-rushing-data" class="level3">
@@ -829,7 +844,17 @@ run_gap  left middle right &lt;NA&gt;
 </section>
 <section id="sec-air-model" class="level3">
 <h3 class="anchored" data-anchor-id="sec-air-model">Modeling <span class="math inline">\(\Delta_{\textrm{air}}\)</span></h3>
-<p>Our first multilevel model, fitted to data from all passing plays, includes separate random intercepts for the passers, receivers, and defenses. It also accounts for the fixed effects of * <code>air_yards</code>: the distance traveled by the pass through the air * <code>shotgun</code>: whether the pass was thrown out of the <a href="https://en.wikipedia.org/wiki/Shotgun_formation">shotgun formation</a> * <code>qb_hit</code>: whether the quarterback was hit while throwing * <code>no_huddle</code>: whether the play was run <a href="https://en.wikipedia.org/wiki/Hurry-up_offense">without a huddle</a> * <code>posteam_type</code>: whether the home team had possession (i.e., was on offense) * <code>pass_location</code>: whether the pass was thrown to the left, right, or center of the field * <code>receiver_position</code>: the position of the intended receiver * <code>rush_strength</code>: the average EPA per rush attempt for the offense</p>
+<p>Our first multilevel model, fitted to data from all passing plays, includes separate random intercepts for the passers, receivers, and defenses. It also accounts for the fixed effects of</p>
+<ul>
+<li><code>air_yards</code>: the distance traveled by the pass through the air</li>
+<li><code>shotgun</code>: whether the pass was thrown out of the <a href="https://en.wikipedia.org/wiki/Shotgun_formation">shotgun formation</a></li>
+<li><code>qb_hit</code>: whether the quarterback was hit while throwing</li>
+<li><code>no_huddle</code>: whether the play was run <a href="https://en.wikipedia.org/wiki/Hurry-up_offense">without a huddle</a></li>
+<li><code>posteam_type</code>: whether the home team had possession (i.e., was on offense)</li>
+<li><code>pass_location</code>: whether the pass was thrown to the left, right, or center of the field</li>
+<li><code>receiver_position</code>: the position of the intended receiver</li>
+<li><code>rush_strength</code>: the average EPA per rush attempt for the offense</li>
+</ul>
 <p>Before writing down our model, we introduce some more notation. Formally, suppose that there are <span class="math inline">\(n_{q}\)</span> passers<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, <span class="math inline">\(n_{c}\)</span> receivers<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, and <span class="math inline">\(n_{D}\)</span> defenses. For passing play <span class="math inline">\(i,\)</span> let <span class="math inline">\(q[i], c[i],\)</span> and <span class="math inline">\(d[i]\)</span> denote the identity of the passer, receiver, and defense involved in the play and let <span class="math inline">\(\boldsymbol{\mathbf{x}}_{i}\)</span> be the vector of fixed effect covariates (i.e., the ones listed above).</p>
 <p>We model <span class="math display">\[
 \begin{align}

@@ -93,6 +93,7 @@ pass2024 <-
 7. Remove the temporary column holding the receiver ID
 
 In addition to the identity of the passer (`passer_player_id`) and intended receiver (`receiver_player_id`), the data table contains the following columns:
+
   * `posteam`: the identity of the team in possession of the ball
   * `defteam`: the identity of the team on defense
   * `air_yards`: the distance traveled by the pass through the air[^airyard]
@@ -327,6 +328,7 @@ pass2024 <-
 
 Our first multilevel model, fitted to data from all passing plays, includes separate random intercepts for the passers, receivers, and defenses.
 It also accounts for the fixed effects of 
+
   * `air_yards`: the distance traveled by the pass through the air
   * `shotgun`: whether the pass was thrown out of the [shotgun formation](https://en.wikipedia.org/wiki/Shotgun_formation)
   * `qb_hit`: whether the quarterback was hit while throwing

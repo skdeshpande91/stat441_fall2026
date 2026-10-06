@@ -152,13 +152,9 @@
 <li>Thrown on 3rd and 10 from Cowboys’ 36 yard line. EP = 0.77</li>
 <li>Cowboys generated 7 - 0.77 = 6.23 points of EP</li>
 </ul></li>
-</ul>
-<div class="fragment">
-<ul>
 <li>How should we divide credit between QB and receiver?</li>
 <li>What about running?</li>
 </ul>
-</div>
 </section>
 <section id="plan" class="slide level2 smaller">
 <h2>Plan</h2>
@@ -175,25 +171,14 @@
 <li>Random intercepts for passers, receivers, rushers</li>
 <li>Must adjust for important fixed effects</li>
 </ul></li>
-</ul>
-<div class="fragment">
-<ul>
 <li>W/ per-play EPA can compare actual production to replacement “shadow”</li>
 <li>These contrasts will lead to a version of WAR</li>
 </ul>
-</div>
 </section>
 <section>
 <section id="data-preparation" class="title-slide slide level1 center">
 <h1>Data Preparation</h1>
 
-</section>
-<section id="overview" class="slide level2 smaller">
-<h2>Overview</h2>
-<ul>
-<li>Focus on 2024-25 regular season</li>
-<li>Need roster data to define position-specific replacement level</li>
-</ul>
 </section>
 <section id="passing-data" class="slide level2 smaller">
 <h2>Passing Data</h2>
@@ -242,11 +227,8 @@
 <section id="run-context-i" class="slide level2 smaller">
 <h2>Run Context I</h2>
 <ul>
-<li><code>run_location</code> indicates direction</li>
-</ul>
-<div class="fragment">
-<ul>
-<li><code>run_gap</code>:
+<li><p><code>run_location</code> indicates direction</p></li>
+<li><p><code>run_gap</code>:</p>
 <ul>
 <li><code>"guard"</code>: runs through B gap (b/w guard &amp; tackles)</li>
 <li><code>"tackle"</code>: run through C gap (outside tackle or b/w tackle &amp; end)</li>
@@ -254,7 +236,6 @@
 <li><code>NA</code>: run through A gap (b/w center &amp; guard)</li>
 </ul></li>
 </ul>
-</div>
 </section>
 <section id="run-context-ii" class="slide level2 smaller">
 <h2>Run Context II</h2>
@@ -354,17 +335,13 @@ D_{d} &amp;\sim N(\mu_{D}, \sigma^{2}_{D}).
 <section id="modeling-delta_textrmyac" class="slide level2">
 <h2>Modeling <span class="math inline">\(\Delta_{\textrm{yac}}\)</span></h2>
 <ul>
-<li>Fit a nearly-identical multilevel model using only <strong>completed passes</strong></li>
-</ul>
-<div class="fragment">
-<ul>
-<li><strong>lmer</strong> threw warning about singularity
+<li><p>Fit a nearly-identical multilevel model using only <strong>completed passes</strong></p></li>
+<li><p><strong>lmer</strong> threw warning about singularity</p>
 <ul>
 <li>Estimated no passer-to-passer variation</li>
 <li>Intuition: once catch is made, passer doesn’t make a difference in terms of EPA.</li>
 </ul></li>
 </ul>
-</div>
 </section></section>
 <section>
 <section id="rushing-model" class="title-slide slide level1 center">
@@ -418,24 +395,20 @@ D_{d} &amp;\sim N(\mu_{D}, \sigma^{2}_{D}).
 <section id="replacement-level" class="slide level2 smaller">
 <h2>Replacement Level</h2>
 <ul>
-<li>Multilevel models involved global-averages <span class="math inline">\(\mu_{Q}, \mu_{C}, \mu_{R}\)</span>
+<li><p>Multilevel models involved global-averages <span class="math inline">\(\mu_{Q}, \mu_{C}, \mu_{R}\)</span></p>
 <ul>
 <li>Represent the average latent intercept across theoretical super-population</li>
 <li>Assumption: observed players are randomly sampled from this super-population</li>
 </ul></li>
-<li>Not strictly correct to say IPA measures contribution above “league-average”</li>
-</ul>
-<div class="fragment">
-<ul>
-<li>Will define roster-based thresholds for “replacement level”</li>
-<li>Construct a replacement-level “shadow”
+<li><p>Not strictly correct to say IPA measures contribution above “league-average”</p></li>
+<li><p>Will define roster-based thresholds for “replacement level”</p></li>
+<li><p>Construct a replacement-level “shadow”</p>
 <ul>
 <li>Compute average <span class="math inline">\(\textrm{IPA}\)</span> for replacement-level players</li>
 <li>Shadow IPAA: multiply avg. replacement-level IPA by attempts</li>
 <li>Compare observed IPAA to shadow IPAA</li>
 </ul></li>
 </ul>
-</div>
 </section>
 <section id="defining-replacement-level" class="slide level2 smaller">
 <h2>Defining Replacement Level</h2>
@@ -488,6 +461,20 @@ Figure&nbsp;1: Scoring differential is positively associated with wins
 </div>
 </div>
 </div>
+</section>
+<section id="project-reminders" class="slide level2">
+<h2>Project Reminders</h2>
+<ul>
+<li>Projects due at 12:00pm (<strong>noon</strong>) on Friday 9 October</li>
+<li>Submission links &amp; instructions on class website</li>
+<li>Executive summary &amp; technical report should be in same file</li>
+<li>Strongly recommend including running examples
+<ul>
+<li>Motivate study w/ example of certain plays or phenomena</li>
+<li>Explain model findings in the context of the examples</li>
+<li>Feel free to include links to video!</li>
+</ul></li>
+</ul>
 
 
 </section></section>

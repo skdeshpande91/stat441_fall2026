@@ -14,8 +14,7 @@ execute:
 - 64-yard touch down by Kavontae Turpin on a pass from Cooper Rush ([video link](https://www.youtube.com/watch?v=U0Zp_is-X18))
   - Thrown on 3rd and 10 from Cowboys' 36 yard line. EP = 0.77
   - Cowboys generated 7 - 0.77 = 6.23 points of EP
-  
-. . .
+
 
 - How should we divide credit between QB and receiver?
 - What about running? 
@@ -27,21 +26,16 @@ execute:
   - Passing I: EPA due to actions while ball is in the air
   - Passing II: EPA due to yards after catch
   - Rushing
+  
 - Multi-level modeling:
   - Random intercepts for passers, receivers, rushers
   - Must adjust for important fixed effects
-
-. . .
 
 - W/ per-play EPA can compare actual production to replacement "shadow"
 - These contrasts will lead to a version of WAR
 
 
 # Data Preparation
-
-## Overview{.smaller}
-- Focus on 2024-25 regular season
-- Need roster data to define position-specific replacement level
 
 
 ## Passing Data{.smaller}
@@ -53,6 +47,7 @@ execute:
   - `air_yards`, `yards_after_catch`, `completed_pass`
 
 ## Air vs YAC EPA{.smaller}
+
 - Teams generate EPA on completed passes while
   - The ball is in the air
   - On the ground, after the catch
@@ -74,15 +69,12 @@ execute:
 
 - `run_location` indicates direction
 
-. . . 
-
 - `run_gap`: 
   - `"guard"`: runs through B gap (b/w guard & tackles)
   - `"tackle"`: run through C gap (outside tackle or b/w tackle & end)
   - `"end"`: run through D gap (outside TE)
   - `NA`: run through A gap (b/w center & guard)
   
-
 
 ## Run Context II{.smaller}
 - We will create a new variable `run_context`
@@ -169,8 +161,6 @@ $$
 
 - Fit a nearly-identical multilevel model using only **completed passes**
 
-. . .
-
 - **lmer** threw warning about singularity
   - Estimated no passer-to-passer variation
   - Intuition: once catch is made, passer doesn't make a difference in terms of EPA.
@@ -214,8 +204,6 @@ $$
   - Represent the average latent intercept across theoretical super-population
   - Assumption: observed players are randomly sampled from this super-population
 - Not strictly correct to say IPA measures contribution above "league-average"
-
-. . .
 
 - Will define roster-based thresholds for "replacement level"
 - Construct a replacement-level "shadow"
@@ -305,5 +293,13 @@ plot(records$scoring_differential,
 abline(a = alpha, b = beta, col = oi_colors[3])
 ```
 
+## Project Reminders
 
+- Projects due at 12:00pm (**noon**) on Friday 9 October
+- Submission links & instructions on class website
+- Executive summary & technical report should be in same file
+- Strongly recommend including running examples
+  - Motivate study w/ example of certain plays or phenomena
+  - Explain model findings in the context of the examples
+  - Feel free to include links to video!
 
