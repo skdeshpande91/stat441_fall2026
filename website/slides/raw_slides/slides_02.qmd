@@ -44,6 +44,7 @@ execute:
 - How often would she score?
 
 ![](figures/mead_sweden.png){width="60%" fig-align="center"}
+
 - This long-run frequency is Expected Goals (XG) 
 
 ## StatsBomb & Hudl

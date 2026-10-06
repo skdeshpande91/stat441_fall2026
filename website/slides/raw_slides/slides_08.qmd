@@ -470,10 +470,7 @@ points(x = 0, y = 90*sqrt(2), pch = 16, cex = 0.8, col = "white")
 
 ## Looking Ahead{.smaller}
 
-- Adjusted Office Hours:
-  - Today: 4pm - 5:30pm in MH 5586
-  - Wednesday: 4pm - 5pm in MH 5586 (not 3pm!)
-  
+
 - Before Lecture 9: please read Chapters [7](https://bookdown.org/roback/bookdown-BeyondMLR/ch-corrdata.html) & [8](https://bookdown.org/roback/bookdown-BeyondMLR/ch-multilevelintro.html) of [*Beyond Multiple Linear Regression*](https://bookdown.org/roback/bookdown-BeyondMLR/)
 
 

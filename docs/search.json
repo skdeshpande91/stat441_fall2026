@@ -394,91 +394,91 @@
   {
     "objectID": "slides/raw_slides/slides_05.html#motivation",
     "href": "slides/raw_slides/slides_05.html#motivation",
-    "title": "STAT 479: Lecture 5",
+    "title": "STAT 441: Lecture 5",
     "section": "Motivation",
     "text": "Motivation\n\nHow do NBA players help their teams win?\nHow do we quantify contributions?\n\n\n\nPlus/Minus: Easy to compute\n\nHard to separate skill from opportunities\nDoesn’t adjust for teammate quality\n\n\n\n\n\nAdjusted Plus/Minus:\n\nRegress point differential per 100 possession on signed on-court indicators\nIntroduces fairly arbitrary baseline\nAssumes all baseline players have same underlying skill"
   },
   {
     "objectID": "slides/raw_slides/slides_05.html#the-original-model",
     "href": "slides/raw_slides/slides_05.html#the-original-model",
-    "title": "STAT 479: Lecture 5",
+    "title": "STAT 441: Lecture 5",
     "section": "The Original Model",
     "text": "The Original Model\n\n\\(n\\): total number of stints\n\\(p\\): total number of players\n\\(Y_{i}\\): point differential per 100 possessions in stint \\(i\\)\n\n\\[\n\\begin{align}\nY_{i} &= \\alpha_{0} + \\alpha_{h_{1}(i)} + \\alpha_{h_{2}(i)} + \\alpha_{h_{3}(i)} + \\alpha_{h_{4}(i)} + \\alpha_{h_{5}(i)} \\\\\n~&~~~~~~~~~~- \\alpha_{a_{1}(i)} - \\alpha_{a_{2}(i)} - \\alpha_{a_{3}(i)} - \\alpha_{a_{4}(i)} - \\alpha_{a_{5}(i)} + \\epsilon_{i},\n\\end{align}\n\\]"
   },
   {
     "objectID": "slides/raw_slides/slides_05.html#matrix-notation",
     "href": "slides/raw_slides/slides_05.html#matrix-notation",
-    "title": "STAT 479: Lecture 5",
+    "title": "STAT 441: Lecture 5",
     "section": "Matrix Notation",
     "text": "Matrix Notation\n\nFor each stint \\(i\\) and player \\(j\\), signed indicator \\(x_{ij}\\):\n\n\\(x_{ij} = 1\\) if player \\(j\\) on-court at home in stint \\(i\\)\n\\(x_{ij} = -1\\) if player \\(j\\) on-court and away in stint \\(i\\)\n\\(x_{ij} = 0\\) if player \\(j\\) off-court in stint \\(i\\)\n\n\n\n\n\\(\\boldsymbol{\\mathbf{X}}\\): \\(n \\times p\\) matrix of signed indicators\n\nRows correspond to stints:\nColumns correspond to players\n\n\\(\\boldsymbol{\\mathbf{Z}}\\): \\(n \\times (p+1)\\) matrix\n\nFirst column is all ones; remaining are \\(\\boldsymbol{\\mathbf{X}}\\)\n\\(i\\)-th row is \\(\\boldsymbol{\\mathbf{x}}_{i}\\)\n\n\\(Y_{i} = \\boldsymbol{\\mathbf{z}}_{i}^{\\top}\\boldsymbol{\\alpha} + \\epsilon_{i}\\)"
   },
   {
     "objectID": "slides/raw_slides/slides_05.html#problems-w-original-model",
     "href": "slides/raw_slides/slides_05.html#problems-w-original-model",
-    "title": "STAT 479: Lecture 5",
+    "title": "STAT 441: Lecture 5",
     "section": "Problems w/ Original Model",
     "text": "Problems w/ Original Model\n\nIndividual \\(\\alpha_{j}\\)’s are not statistically identifiable\n\nE.g. \\(\\alpha_{j} \\rightarrow \\alpha_{j}+5\\) yields same fit to data\n\n\\(\\boldsymbol{\\mathbf{Z}}\\) is not of full-rank\n\nCan’t invert \\(\\boldsymbol{\\mathbf{Z}}^{\\top}\\boldsymbol{\\mathbf{Z}}\\)\n\nCan’t estimate \\(\\boldsymbol{\\alpha}\\) with least squares!"
   },
   {
     "objectID": "slides/raw_slides/slides_05.html#a-re-parametrized-model",
     "href": "slides/raw_slides/slides_05.html#a-re-parametrized-model",
-    "title": "STAT 479: Lecture 5",
+    "title": "STAT 441: Lecture 5",
     "section": "A Re-parametrized Model",
     "text": "A Re-parametrized Model\n\nAssume \\(\\alpha_{j} = \\mu\\) for all baseline players \\(j\\)\nFor all non-baseline players, \\(\\beta_{j} = \\alpha_{j} - \\mu\\)\n\\(\\tilde{\\boldsymbol{\\mathbf{Z}}}\\): drop baseline columns from \\(\\boldsymbol{\\mathbf{Z}}\\)\n\\(Y_{i} = \\tilde{\\boldsymbol{\\mathbf{z}}}_{i}^{\\top}\\boldsymbol{\\beta} + \\epsilon_{i}\\)\nCan estimate \\(\\boldsymbol{\\beta}\\) with least squares"
   },
   {
     "objectID": "slides/raw_slides/slides_05.html#problems-w-re-parametrized-model",
     "href": "slides/raw_slides/slides_05.html#problems-w-re-parametrized-model",
-    "title": "STAT 479: Lecture 5",
+    "title": "STAT 441: Lecture 5",
     "section": "Problems w/ Re-Parametrized Model",
     "text": "Problems w/ Re-Parametrized Model\n\n250 minute cut-off for baseline is very arbitrary\nRestrictive to assume baseline players have same skill\n\n\n\nBaseline assumption needed to use least squares\n… but what if we don’t use least squares"
   },
   {
     "objectID": "slides/raw_slides/slides_05.html#ridge-regression",
     "href": "slides/raw_slides/slides_05.html#ridge-regression",
-    "title": "STAT 479: Lecture 5",
+    "title": "STAT 441: Lecture 5",
     "section": "Ridge Regression",
     "text": "Ridge Regression\n\nOriginal APM problem: minimize \\(\\sum_{i = 1}^{n}{\\left(Y_{i} - \\boldsymbol{\\mathbf{z}}_{i}^{\\top}\\boldsymbol{\\alpha}\\right)^{2}}\\)\n\n\n\nInstead for a fixed \\(\\lambda &gt; 0\\) let’s minimize \\(\\sum_{i = 1}^{n}{(Y_{i} - \\boldsymbol{\\mathbf{z}}_{i}^{\\top}\\boldsymbol{\\alpha})^{2}} + \\lambda \\times \\sum_{j = 0}^{p}{\\alpha_{j}^{2}},\\)\n\n\n\n\nFirst term: minimized when all \\(Y_{i} \\approx \\boldsymbol{\\mathbf{z}}_{i}^{\\top}\\boldsymbol{\\alpha}\\)\nSecond term: shrinkage penalty tries to keep all \\(\\alpha_{j}\\)’s near 0\n\\(\\lambda\\): trades-off these two terms"
   },
   {
     "objectID": "slides/raw_slides/slides_05.html#analytic-solution",
     "href": "slides/raw_slides/slides_05.html#analytic-solution",
-    "title": "STAT 479: Lecture 5",
+    "title": "STAT 441: Lecture 5",
     "section": "Analytic Solution",
     "text": "Analytic Solution\n\nFor all \\(\\lambda\\), minimizer is \\(\\hat{\\boldsymbol{\\alpha}}(\\lambda) = \\left(\\boldsymbol{\\mathbf{Z}}^{\\top}\\boldsymbol{\\mathbf{Z}} + \\lambda I \\right)^{-1}\\boldsymbol{\\mathbf{Z}}^{\\top}\\boldsymbol{\\mathbf{Y}}.\\)\nThis is almost the OLS solution\n\nSlightly perturb \\(\\boldsymbol{\\mathbf{Z}}^{\\top}\\boldsymbol{\\mathbf{Z}}\\) so it becomes invertible\nE.g., by adding \\(\\lambda\\) to its diagonal"
   },
   {
     "objectID": "slides/raw_slides/slides_05.html#cross-validation-for-lambda",
     "href": "slides/raw_slides/slides_05.html#cross-validation-for-lambda",
-    "title": "STAT 479: Lecture 5",
+    "title": "STAT 441: Lecture 5",
     "section": "Cross-Validation for \\(\\lambda\\)",
     "text": "Cross-Validation for \\(\\lambda\\)\n\nIdea: select \\(\\lambda\\) yielding smallest out-of-sample prediction error\nProblem: don’t have a separate validation dataset to compute out-of-sample error\n\n\n\nSolution: cross-validation to estimate out-of-sample error\n\nCreate a grid of \\(\\lambda\\) values & several train/test splits\n\nFor each \\(\\lambda\\) and train/test split:\n\nCompute \\(\\hat{\\boldsymbol{\\alpha}}(\\lambda)\\) w/ training data\nEvaluate prediction error using testing data\n\n\nFor each \\(\\lambda,\\) average testing prediction error across splits\nIdentify \\(\\hat{\\lambda}\\) w/ smallest average testing error\n\n\n\n\n\nCompute \\(\\hat{\\boldsymbol{\\alpha}}(\\hat{\\lambda})\\) w/ all data"
   },
   {
     "objectID": "slides/raw_slides/slides_05.html#other-penalties",
     "href": "slides/raw_slides/slides_05.html#other-penalties",
-    "title": "STAT 479: Lecture 5",
+    "title": "STAT 441: Lecture 5",
     "section": "Other Penalties",
     "text": "Other Penalties\n\nFor some \\(a \\in [0,1]\\) glmnet() and cv.glmnet() actually minimize \\[\n\\sum_{i = 1}^{n}{(Y_{i} - \\boldsymbol{\\mathbf{z}}_{i}^{\\top}\\boldsymbol{\\alpha})^{2}} + \\lambda \\times  \\sum_{j = 0}^{p}{\\left[a \\times \\lvert\\alpha_{j}\\rvert + (1-a) \\times \\alpha_{j}^{2}\\right]},\n\\]\nValue of \\(a\\) specified with alpha argument.\nalpha = 0: penalty is \\(\\sum_{j}{\\alpha_{j}^{2}}\\)\n\nPenalty encourage small (but non-zero) \\(\\alpha_{j}\\) values\nRidge regression; \\(\\ell_{2}\\) or Tikohonov regularization\n\nalpha = 1: penalty is \\(\\sum_{j}{\\lvert \\alpha_{j} \\rvert}\\)\n\nPenalty encourages sparsity (i.e., sets many \\(\\alpha_{j} = 0\\))\nLeast Absolute Shrinkage and Selection Operator (LASSO); \\(\\ell_{1}\\) regularization\n\n\\(0 &lt;\\)alpha\\(&lt;1\\): Elastic Net regression"
   },
   {
     "objectID": "slides/raw_slides/slides_05.html#the-bootstrap-high-level-idea",
     "href": "slides/raw_slides/slides_05.html#the-bootstrap-high-level-idea",
-    "title": "STAT 479: Lecture 5",
+    "title": "STAT 441: Lecture 5",
     "section": "The Bootstrap (High-Level Idea)",
     "text": "The Bootstrap (High-Level Idea)\n\nSay we compute some statistic \\(T(\\boldsymbol{y})\\) using observed data \\(\\boldsymbol{y}\\)\n\nE.g., RAPM estimate \\(\\hat{\\alpha}_{j}\\) for a single player \\(j\\)\nEstimated difference \\(\\hat{\\alpha}_{j} - \\hat{\\alpha}_{j'}\\) b/w players \\(j\\) and \\(j'\\)\nSomething more exotic: e.g. \\(\\max_{j}\\hat{\\alpha}_{j} - \\min_{j}\\hat{\\alpha_{j}}\\)\n\nThese are estimates and there is always estimation uncertainty\n\n\n\nRepeatedly re-sample data and re-compute statistic\n\nRe-sampled datasets: \\(\\boldsymbol{y}^{(1)}, \\ldots, \\boldsymbol{y}^{(B)}\\)\nCorresponding statistics: \\(T(\\boldsymbol{y}^{(1)}), \\ldots, T(\\boldsymbol{y}^{(B)})\\)\n\nBoostrapped statistics gives a sense of estimate’s variability"
   },
   {
     "objectID": "slides/raw_slides/slides_05.html#bootstrapping-rapm-plan",
     "href": "slides/raw_slides/slides_05.html#bootstrapping-rapm-plan",
-    "title": "STAT 479: Lecture 5",
+    "title": "STAT 441: Lecture 5",
     "section": "Bootstrapping RAPM (plan)",
     "text": "Bootstrapping RAPM (plan)\n\nCompute \\(\\hat{\\boldsymbol{\\alpha}}(\\hat{\\lambda})\\) using original dataset\nDraw \\(B\\) re-samples of size \\(n\\)\n\nSample observed stints with replacement\n\nFor each re-sampled dataset, compute \\(\\hat{\\boldsymbol{\\alpha}}(\\hat{\\lambda})\\)\n\nNo need to re-run cross-validation to compute optimal \\(\\lambda\\)\nUse the optimal \\(\\lambda\\) from original dataset\n\nSave the \\(B\\) bootstrap estimates of \\(\\boldsymbol{\\alpha}\\) in an array"
   },
   {
     "objectID": "slides/raw_slides/slides_05.html#looking-ahead",
     "href": "slides/raw_slides/slides_05.html#looking-ahead",
-    "title": "STAT 479: Lecture 5",
+    "title": "STAT 441: Lecture 5",
     "section": "Looking Ahead",
     "text": "Looking Ahead\n\nLectures 6–8: Building up to wins above replacement in baseball\nProject Check-in: by Friday 25 September email me a short overview of your project\n\nPrecise problem statement & overview of data and analysis plan\nHappy to help brainstorm & narrow down analysis in Office Hours (or by appt.)\nInspiration: exercises in lecture notes & project information page"
   },
@@ -2661,7 +2661,7 @@
     "href": "slides/raw_slides/slides_02.html#a-thought-experiment",
     "title": "STAT 441 Lecture 2",
     "section": "A Thought Experiment",
-    "text": "A Thought Experiment\n\nWhat if we could replay each shot over and over again?\nHow often would she score?\n\n - This long-run frequency is Expected Goals (XG)"
+    "text": "A Thought Experiment\n\nWhat if we could replay each shot over and over again?\nHow often would she score?\n\n\n\n\n\n\n\nThis long-run frequency is Expected Goals (XG)"
   },
   {
     "objectID": "slides/raw_slides/slides_02.html#statsbomb-hudl",
@@ -2764,170 +2764,170 @@
   {
     "objectID": "slides/raw_slides/slides_04.html#motivation",
     "href": "slides/raw_slides/slides_04.html#motivation",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "Motivation",
     "text": "Motivation\n\nHow do NBA players help their teams win?\nHow do we quantify contributions?\n\n\n\nIdea: good players do things that show up in the box score\n\nPoints, rebounds, assists, steals, blocks, turnovers\nEasy to collect, sort, explain\n\n\n\n\n\nFails to account for roles\n\n10 assists for a guard vs 10 rebounds by a center\n\nProblem: should some stats weigh more heavily than others?\n\n\n\n\nBigger problem: Not everything appears in the box score\n\nSetting screens, rotating on defense, communicating\nGood shot selection, diving for loose balls\nThe “little things”"
   },
   {
     "objectID": "slides/raw_slides/slides_04.html#plusminus",
     "href": "slides/raw_slides/slides_04.html#plusminus",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "Plus/Minus",
     "text": "Plus/Minus\n\n\n\nDefinition: Plus/Minus\n\n\nA player’s plus/minus is the point differential that a player’s team accrues while they are on the court.\n\n\n\n\nIntuition: if your team outscores opponent while you’re on the court, you must be doing something right\nTo compute, must know who is on the court at all times"
   },
   {
     "objectID": "slides/raw_slides/slides_04.html#play-by-play-nba-data",
     "href": "slides/raw_slides/slides_04.html#play-by-play-nba-data",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "Play-by-Play NBA Data",
     "text": "Play-by-Play NBA Data\n\n\n\n\n\n\nEntry created when player does something tracked by scorekeeper\nCan use the hoopR package to scrape play-by-play data into R"
   },
   {
     "objectID": "slides/raw_slides/slides_04.html#stint-level-data",
     "href": "slides/raw_slides/slides_04.html#stint-level-data",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "Stint-Level Data",
     "text": "Stint-Level Data\n\nStint: period of play b/w substitutions where the same 10 players remain on the court.\nCan form a data table from play-by-play log where\n\nRows correspond to stints\nColumns for game context: start & end scores, length in minutes, etc.\nColumn for every player’s signed on-court indicator\n\nSigned on-court indicators:\n\n+1 if on-court and playing at home\n-1 if on-court and playing on the road\n0 if not on court"
   },
   {
     "objectID": "slides/raw_slides/slides_04.html#computing-individual---concept",
     "href": "slides/raw_slides/slides_04.html#computing-individual---concept",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "Computing Individual +/- (Concept)",
     "text": "Computing Individual +/- (Concept)\n\nConsider Shai Gilgeous-Alexander (2024-25 MVP)\nTo compute SGA’s +/-:\n\nSum the home team point differentials for all stints where SGA was on the court and playing at home.\nSum the negative of the home team point differentials for all shifts where SGA was on the court and playing on the road.\nAdd the two totals from Steps 1 and 2."
   },
   {
     "objectID": "slides/raw_slides/slides_04.html#computing-individual---formula",
     "href": "slides/raw_slides/slides_04.html#computing-individual---formula",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "Computing Individual +/- (Formula)",
     "text": "Computing Individual +/- (Formula)\n\n\\(\\Delta_{i}\\): home team point differential in shift \\(i\\)\n\\(x_{i, \\textrm{SGA}}\\): SGA’s signed on-court indicator:\n\n\\(x_{i, \\textrm{SGA}} = 0\\) if SGA off-court in stint \\(i\\)\n\\(x_{i, \\textrm{SGA}} = 1(-1)\\) if SGA on-court at home (away) in stint \\(i\\)\n\nSGA’s +/- is just \\[\n\\sum_{i = 1}^{n}{x_{i,\\textrm{SGA}} \\times \\Delta_{i}}.\n\\]"
   },
   {
     "objectID": "slides/raw_slides/slides_04.html#notation",
     "href": "slides/raw_slides/slides_04.html#notation",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "Notation",
     "text": "Notation\n\n\\(n\\): total number of stints in the season\n\\(p\\): total number of players\nFor each stint \\(i = 1, \\ldots, n\\) and player \\(j = 1, \\ldots, p\\):\n\n\\(x_{ij} = 1\\) if player \\(j\\) on-court at home in stint \\(i\\)\n\\(x_{ij} = -1\\) if player \\(j\\) on-court on road in stint \\(i\\)\n\\(x_{ij} = 0\\)\n\n\\(\\Delta_{i}\\): home-team differential in stint \\(i\\) . . .\nPlayer \\(j\\)’s +/-: \\(\\sum_{i}{x_{ij}\\Delta_{i}}\\)"
   },
   {
     "objectID": "slides/raw_slides/slides_04.html#stint-design-matrix",
     "href": "slides/raw_slides/slides_04.html#stint-design-matrix",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "Stint Design Matrix",
     "text": "Stint Design Matrix\n\nArrange \\(x_{ij}\\)’s into an \\(n \\times p\\) matrix\n\n\\[\n\\boldsymbol{\\mathbf{X}} =\n\\begin{pmatrix}\nx_{1,1} & \\cdots & x_{1,p} \\\\\n\\vdots & & \\vdots \\\\\nx_{n,1} & \\cdots & x_{n,p}\n\\end{pmatrix}\n\\]\n\n\nCollect all \\(n\\) \\(\\Delta_{i}\\)’s into a vector of length \\(n\\) \\[\n\\boldsymbol{\\Delta} = \\begin{pmatrix} \\Delta_{1} \\\\ \\vdots \\\\ \\Delta_{n} \\end{pmatrix}\n\\]"
   },
   {
     "objectID": "slides/raw_slides/slides_04.html#computing-all--s",
     "href": "slides/raw_slides/slides_04.html#computing-all--s",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "Computing all +/-’s",
     "text": "Computing all +/-’s\n\nCan compute all player’s w/ matrix-vector multiplication \\(\\boldsymbol{\\mathbf{X}}^{\\top}\\boldsymbol{\\Delta}\\) \\[\n\\begin{pmatrix}\nx_{1,1} & \\cdots & x_{n,1} \\\\\n\\vdots & & \\vdots \\\\\nx_{1,p} & \\cdots & x_{n,p}\n\\end{pmatrix}\n\\begin{pmatrix} \\Delta_{1} \\\\ \\vdots \\\\ \\Delta_{n} \\end{pmatrix}\n=\n\\begin{pmatrix}\nx_{1,1}\\Delta_{1} + x_{2,1}\\Delta_{2} + \\cdots + x_{n,1}\\Delta_{n}\\\\\n\\vdots \\\\\nx_{1,p}\\Delta_{1} + x_{2,p}\\Delta_{2} + \\cdots + x_{n,p}\\Delta_{n}\n\\end{pmatrix}\n\\]"
   },
   {
     "objectID": "slides/raw_slides/slides_04.html#issues-with-plusminus",
     "href": "slides/raw_slides/slides_04.html#issues-with-plusminus",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "Issues with Plus/Minus",
     "text": "Issues with Plus/Minus\n\nIs Lou Dort really better than Jayson Tatum???\nDifferences in +/- could be a result of\n\nDifferences in skill\nDifferences in playing time\nDifferences in teammate & opponent quality"
   },
   {
     "objectID": "slides/raw_slides/slides_04.html#from-totals-to-rates",
     "href": "slides/raw_slides/slides_04.html#from-totals-to-rates",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "From Totals to Rates",
     "text": "From Totals to Rates\n\nComparing totals favors players with more playing time\nAPM works with rates: point differential per 100 possessions"
   },
   {
     "objectID": "slides/raw_slides/slides_04.html#an-initial-apm-model",
     "href": "slides/raw_slides/slides_04.html#an-initial-apm-model",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "An Initial APM Model",
     "text": "An Initial APM Model\n\nAssociate each player \\(j\\) with a latent strength \\(\\alpha_{j}\\)\n\\(\\alpha_{j}\\)’s are unknown: they must be estimated from data\n\\(Y_{i}\\): point differential per 100 possessions in stint \\(i\\)\n\\(h_{1}(i), \\ldots, h_{5}(i)\\) & \\(a_{1}(i), \\ldots, a_{5}(i)\\): identities of players on court in stint \\(i\\)\n\n\\[\n\\begin{align}\nY_{i} &= \\alpha_{0} + \\alpha_{h_{1}(i)} + \\alpha_{h_{2}(i)} + \\alpha_{h_{3}(i)} + \\alpha_{h_{4}(i)} + \\alpha_{h_{5}(i)} \\\\\n~&~~~~~~~~~~- \\alpha_{a_{1}(i)} - \\alpha_{a_{2}(i)} - \\alpha_{a_{3}(i)} - \\alpha_{a_{4}(i)} - \\alpha_{a_{5}(i)} + \\epsilon_{i},\n\\end{align}\n\\]"
   },
   {
     "objectID": "slides/raw_slides/slides_04.html#example",
     "href": "slides/raw_slides/slides_04.html#example",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "Example",
     "text": "Example\n\nDec 23, 2024 game Dallas Mavericks (away) at Golden State Warriors (home):\n\nDAL: Luka Doncic, Dereck Lively II, Kyrie Irving, P.J. Washington, and Klay Thompson\nGSW: Stephen Curry, Buddy Hield, Andrew Wiggins, Jonathan Kuminga, and Kevon Looney.\n\nPer 100 possessions, with these lineups DAL expects to outscore GSW by \\[\n-1 \\times (\\alpha_{0} + \\alpha_{SC} + \\alpha_{BH} + \\alpha_{AW} + \\alpha_{JK} + \\alpha_{KL}) +(\\alpha_{LD} + \\alpha_{KI} + \\alpha_{DL} + \\alpha_{PW} + \\alpha_{KT}).\n\\]\n\n\n\nNow imagine that you replaced Doncic w/ Anthony Davis.\nPer 100 possessions, DAL expects to outscore GSW by \\[\n-1 \\times (\\alpha_{0} + \\alpha_{SC} + \\alpha_{BH} + \\alpha_{AW} + \\alpha_{JK} + \\alpha_{KL}) +(\\alpha_{AD} + \\alpha_{KI} + \\alpha_{DL} + \\alpha_{PW} + \\alpha_{KT}).\n\\]\n\n\n\n\nDAL expects to score \\(\\alpha_{\\textrm{AD}} - \\alpha_{\\textrm{LD}}\\) more points per 100 possessions with Davis than Doncic, all else being equal"
   },
   {
     "objectID": "slides/raw_slides/slides_04.html#potential-issue-interpretation",
     "href": "slides/raw_slides/slides_04.html#potential-issue-interpretation",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "Potential Issue: Interpretation",
     "text": "Potential Issue: Interpretation\n\nIndividual \\(\\alpha_{j}\\)’s are meaningless!\n\\(\\alpha_{j}\\): change in point differential per 100 possessions b/w\n\nPlaying 5-on-5 w/ player \\(j\\) on the court\nPlaying 5-on-4 w/ player \\(j\\) off the court\n\nLuckily, we can interpret differences (or contrasts) like \\(\\alpha_{j}-\\alpha_{j'}\\)"
   },
   {
     "objectID": "slides/raw_slides/slides_04.html#apm-as-a-linear-model",
     "href": "slides/raw_slides/slides_04.html#apm-as-a-linear-model",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "APM As A Linear Model",
     "text": "APM As A Linear Model\n\nAppend a column of 1’s to \\(\\boldsymbol{\\mathbf{X}}\\) to form \\(n \\times (p+1)\\) matrix \\(\\boldsymbol{\\mathbf{Z}}\\)\nLet \\(\\boldsymbol{\\mathbf{z}}_{i}\\) be the \\(i\\)-th row of \\(\\boldsymbol{\\mathbf{Z}}\\)\nAPM asserts: \\(Y_{i} = \\boldsymbol{\\mathbf{z}}_{i}^{\\top}\\boldsymbol{\\alpha} + \\epsilon_{i}.\\)\n\n\n\nTempting to estimate \\(\\boldsymbol{\\alpha}\\) with least squares \\[\n\\textrm{argmin} \\sum_{i = 1}^{n}{\\left( Y_{i} - \\boldsymbol{\\mathbf{z}}_{i}^{\\top}\\boldsymbol{\\alpha} \\right)^{2}} .\n\\]"
   },
   {
     "objectID": "slides/raw_slides/slides_04.html#non-identifiability",
     "href": "slides/raw_slides/slides_04.html#non-identifiability",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "Non-identifiability",
     "text": "Non-identifiability\n\nRecall that the model asserts \\[\n\\begin{align}\nY_{i} &= \\alpha_{0} + \\alpha_{h_{1}(i)} + \\alpha_{h_{2}(i)} + \\alpha_{h_{3}(i)} + \\alpha_{h_{4}(i)} + \\alpha_{h_{5}(i)} \\\\\n~&~~~~~~~~~~- \\alpha_{a_{1}(i)} - \\alpha_{a_{2}(i)} - \\alpha_{a_{3}(i)} - \\alpha_{a_{4}(i)} - \\alpha_{a_{5}(i)} + \\epsilon_{i},\n\\end{align}\n\\]\nImagine we add 5 to every \\(\\alpha_{j}\\): right-hand side remains unchanged\nWhile we can’t hope to learn \\(\\alpha_{j}\\)’s exactly, can still interpret constrasts \\(\\alpha_{j} - \\alpha_{j'}\\)"
   },
   {
     "objectID": "slides/raw_slides/slides_04.html#singularity",
     "href": "slides/raw_slides/slides_04.html#singularity",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "Singularity",
     "text": "Singularity\n\nLeast squares problem does not have a unique solution!\nColumns of \\(\\boldsymbol{\\mathbf{Z}}\\) are linearly dependent\n\nThe first element in each row is equal to 1 (for intercept)\n5 entries equal to 1 (for home players)\n5 entries equal to -1 (for away players)\n\nIf you know all but one column, you can perfectly determine that column\n\\(\\boldsymbol{\\mathbf{Z}}^{\\top}\\boldsymbol{\\mathbf{Z}}\\) not invertible"
   },
   {
     "objectID": "slides/raw_slides/slides_04.html#baseline-contrasts",
     "href": "slides/raw_slides/slides_04.html#baseline-contrasts",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "Baseline Contrasts",
     "text": "Baseline Contrasts\n\nClassify certain players as “baseline”-level (e.g., \\(&lt; 250\\) minutes)\nRe-number players so first \\(p'\\) are non-baseline\nAssumption: \\(\\alpha_{j} = \\mu\\) for all baseline players \\(j &gt; p'\\)\n\nAll baseline players assumed to have the same underlying skill\n\n\n\n\nFor non-baseline \\(j = 1, \\ldots, p,\\) let \\(\\beta_{j} = \\alpha_{j} - \\mu\\)\n\\(\\beta_{j}\\): effect of replacing player \\(j\\) with a baseline player"
   },
   {
     "objectID": "slides/raw_slides/slides_04.html#a-re-parametrized-model",
     "href": "slides/raw_slides/slides_04.html#a-re-parametrized-model",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "A Re-parametrized Model",
     "text": "A Re-parametrized Model\n\n\\(\\tilde{\\boldsymbol{\\mathbf{Z}}}\\) be the \\(n \\times (p'+1)\\) submatrix of \\(\\boldsymbol{\\mathbf{Z}}\\) s.t.\n\nFirst column is all 1’s\nRemaining columns: signed on-court indicators for non-baseline players\n\nTurns out:\n\n\\(\\tilde{\\boldsymbol{\\mathbf{Z}}}\\boldsymbol{\\beta} = \\boldsymbol{\\mathbf{Z}}\\boldsymbol{\\alpha}\\)\nThere quantity \\(\\sum_{i = 1}^{n}{\\left(Y_{i} - \\tilde{\\boldsymbol{\\mathbf{z}}}_{i}^{\\top}\\boldsymbol{\\beta}\\right)^{2}}\\) has a unique minimizer\n\n\n\\[\n\\hat{\\boldsymbol{\\beta}} = \\left( \\tilde{\\boldsymbol{\\mathbf{Z}}}^{\\top}\\tilde{\\boldsymbol{\\mathbf{Z}}}\\right)^{-1}\\tilde{\\boldsymbol{\\mathbf{Z}}}^{\\top}\\boldsymbol{\\mathbf{Y}}.\n\\]"
   },
   {
     "objectID": "slides/raw_slides/slides_04.html#missing-context",
     "href": "slides/raw_slides/slides_04.html#missing-context",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "Missing Context",
-    "text": "Missing Context\n\nAPM does not account for context\nCan over-inflate garbage-time performance when outcome essentially determined\n\n\n“can artificially can artificially inflate the importance of performance in low-leverage situations, when the outcome of the game is essentially decided, while simultaneously deflating the importance of high-leverage performance, when the final outcome is still in question. For instance, point diﬀerential-based metrics model the home team’s lead dropping from 5 points to 0 points in the last minute of the first half in exactly the same way that they model the home team’s lead dropping from 30 points to 25 points in the last minute of the second half”."
+    "text": "Missing Context\n\nAPM does not account for context\nCan over-inflate garbage-time performance when outcome essentially determined\n\n\n“can artificially inflate the importance of performance in low-leverage situations, when the outcome of the game is essentially decided, while simultaneously deflating the importance of high-leverage performance, when the final outcome is still in question. For instance, point diﬀerential-based metrics model the home team’s lead dropping from 5 points to 0 points in the last minute of the first half in exactly the same way that they model the home team’s lead dropping from 30 points to 25 points in the last minute of the second half”."
   },
   {
     "objectID": "slides/raw_slides/slides_04.html#a-weighted-version-of-apm",
     "href": "slides/raw_slides/slides_04.html#a-weighted-version-of-apm",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "A Weighted Version of APM",
     "text": "A Weighted Version of APM\n\nIntroduce weight \\(w_{i}\\) for stint \\(i\\)\nFind \\(\\tilde{\\boldsymbol{\\beta}}\\) minimizing \\(\\sum{w_{i}\\left(Y_{i} - \\tilde{\\boldsymbol{\\mathbf{z}}}_{i}^{\\top}\\boldsymbol{\\beta}\\right)^{2}}\\)\nSolution: letting \\(\\boldsymbol{\\mathbf{W}}\\) denote diagonal matrix w/ entries \\(w_{i}\\) \\[\n\\hat{\\boldsymbol{\\beta}}_{w} = \\left( \\tilde{\\boldsymbol{\\mathbf{Z}}}^{\\top}\\tilde{\\boldsymbol{\\mathbf{Z}}}\\right)^{-1}\\tilde{\\boldsymbol{\\mathbf{Z}}}^{\\top}\\boldsymbol{\\mathbf{W}}\\boldsymbol{\\mathbf{Y}}\n\\]"
   },
   {
     "objectID": "slides/raw_slides/slides_04.html#estimating-wapm",
     "href": "slides/raw_slides/slides_04.html#estimating-wapm",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "Estimating wAPM",
     "text": "Estimating wAPM\n\nExample weights:\n\n\\(w_{i} = 1\\) if lead \\(&lt; 10\\)\n\\(w_{i} = 0\\) if one team leads by \\(&gt; 30\\) at start of \\(i\\)\n\\(w_{i} = 1 - (\\textrm{StartDiff} - 10)/20\\): if \\(10 \\leq \\textrm{lead} \\leq 30\\)"
   },
   {
     "objectID": "slides/raw_slides/slides_04.html#looking-ahead",
     "href": "slides/raw_slides/slides_04.html#looking-ahead",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "Looking Ahead",
     "text": "Looking Ahead\n\n(w)APM is quite sensitive to certain choices:\n\nDefinition of baseline players\nChoice of weights\n\nConstant baseline skill assumption is highly unsatisfactory\nIssues due to inability to use least squares\nNext time: alternative estimation strategy\n\nAvoids having to specify baseline players\nEstimates a latent strength for all players"
   },
   {
     "objectID": "slides/raw_slides/slides_04.html#project-1",
     "href": "slides/raw_slides/slides_04.html#project-1",
-    "title": "STAT 479: Lecture 4",
+    "title": "STAT 441: Lecture 4",
     "section": "Project 1",
-    "text": "Project 1\n\nThanks for sorting yourselves into groups!\n\nIf you still don’t have a group, let me know!\nOn Canvas, you need to be in a group under “Projects 1&2 Groups”\n\nProject information posted:\n\nRequirements for written report and presentation\nNon-exhaustive list of project topics\nMain requirement: must use play-by-play or event-level data\nI.e., use data more granular than game- or season-level totals\n\nProject Check-in: by Friday 25 September email me a short overview of your project\n\nPrecise problem statement & overview of data and analysis plan\nHappy to help brainstorm & narrow down analysis in Office Hours (or by appt.)"
+    "text": "Project 1\n\nThanks for sorting yourselves into groups!\n\nIf you still don’t have a group, let me know!\n\nProject information posted:\n\nRequirements for written report and presentation\nNon-exhaustive list of project topics\nMain requirement: must use play-by-play or event-level data\nI.e., use data more granular than game- or season-level totals\n\nProject Check-in: by Friday 25 September email me a short overview of your project\n\nPrecise problem statement & overview of data and analysis plan\nHappy to help brainstorm & narrow down analysis in Office Hours (or by appt.)"
   },
   {
     "objectID": "slides/raw_slides/slides_06.html#motivation",
@@ -3151,152 +3151,152 @@
     "href": "slides/raw_slides/slides_08.html#looking-ahead",
     "title": "STAT 441: Lecture 8",
     "section": "Looking Ahead",
-    "text": "Looking Ahead\n\nAdjusted Office Hours:\n\nToday: 4pm - 5:30pm in MH 5586\nWednesday: 4pm - 5pm in MH 5586 (not 3pm!)\n\nBefore Lecture 9: please read Chapters 7 & 8 of Beyond Multiple Linear Regression"
+    "text": "Looking Ahead\n\nBefore Lecture 9: please read Chapters 7 & 8 of Beyond Multiple Linear Regression"
   },
   {
     "objectID": "slides/raw_slides/slides_10.html#recap-epa-in-football",
     "href": "slides/raw_slides/slides_10.html#recap-epa-in-football",
-    "title": "STAT 479 Lecture 10",
+    "title": "STAT 441 Lecture 10",
     "section": "Recap: EPA in Football",
     "text": "Recap: EPA in Football\n\n86-yard touchdown by Ladd McConckey on a pass from Justin Herbert (video link)\n\nThrown on a 3rd and 26 from Chargers’ 14 yard line. EP = -1.54\nChargers generated 7 - (-1.54) = 8.54 points of EP\n\n64-yard touch down by Kavontae Turpin on a pass from Cooper Rush (video link)\n\nThrown on 3rd and 10 from Cowboys’ 36 yard line. EP = 0.77\nCowboys generated 7 - 0.77 = 6.23 points of EP\n\nHow should we divide credit between QB and receiver?\nWhat about running?"
   },
   {
     "objectID": "slides/raw_slides/slides_10.html#plan",
     "href": "slides/raw_slides/slides_10.html#plan",
-    "title": "STAT 479 Lecture 10",
+    "title": "STAT 441 Lecture 10",
     "section": "Plan",
     "text": "Plan\n\nEstimate EPA per-play for each passer, receiver, & rusher\nSeparately model three phases:\n\nPassing I: EPA due to actions while ball is in the air\nPassing II: EPA due to yards after catch\nRushing\n\nMulti-level modeling:\n\nRandom intercepts for passers, receivers, rushers\nMust adjust for important fixed effects\n\nW/ per-play EPA can compare actual production to replacement “shadow”\nThese contrasts will lead to a version of WAR"
   },
   {
     "objectID": "slides/raw_slides/slides_10.html#passing-data",
     "href": "slides/raw_slides/slides_10.html#passing-data",
-    "title": "STAT 479 Lecture 10",
+    "title": "STAT 441 Lecture 10",
     "section": "Passing Data",
     "text": "Passing Data\n\nExtract all passing plays (play_type == \"pass\")\nFor each pass, record\n\nposteam, defteam, posteamtype\npasser_player_id, receiver_player_id\nshotgun, no_huddle, qb_hit, pass_location\nair_yards, yards_after_catch, completed_pass"
   },
   {
     "objectID": "slides/raw_slides/slides_10.html#air-vs-yac-epa",
     "href": "slides/raw_slides/slides_10.html#air-vs-yac-epa",
-    "title": "STAT 479 Lecture 10",
+    "title": "STAT 441 Lecture 10",
     "section": "Air vs YAC EPA",
     "text": "Air vs YAC EPA\n\nTeams generate EPA on completed passes while\n\nThe ball is in the air\nOn the ground, after the catch\n\nnflfastR decomposes epa into air_epa and yac_epa\nCompleted passes: imagine pausing game as soon as catch completed\n\nEP at the intermediate state used to compute air_epa and yac_epa\n\nSacks: no good definition for air_epa & yac_epa\n\nWe will treat sacks as rushing plays"
   },
   {
     "objectID": "slides/raw_slides/slides_10.html#rushing-data",
     "href": "slides/raw_slides/slides_10.html#rushing-data",
-    "title": "STAT 479 Lecture 10",
+    "title": "STAT 441 Lecture 10",
     "section": "Rushing Data",
     "text": "Rushing Data\n\nInclude columns for\n\npasser_player_id & rusher_player_id\nshotgun & no_huddle\nrun_location & run_gap\n\nMust manually specify rusher_player_id on sacks"
   },
   {
     "objectID": "slides/raw_slides/slides_10.html#run-context-i",
     "href": "slides/raw_slides/slides_10.html#run-context-i",
-    "title": "STAT 479 Lecture 10",
+    "title": "STAT 441 Lecture 10",
     "section": "Run Context I",
     "text": "Run Context I\n\nrun_location indicates direction\nrun_gap:\n\n\"guard\": runs through B gap (b/w guard & tackles)\n\"tackle\": run through C gap (outside tackle or b/w tackle & end)\n\"end\": run through D gap (outside TE)\nNA: run through A gap (b/w center & guard)"
   },
   {
     "objectID": "slides/raw_slides/slides_10.html#run-context-ii",
     "href": "slides/raw_slides/slides_10.html#run-context-ii",
-    "title": "STAT 479 Lecture 10",
+    "title": "STAT 441 Lecture 10",
     "section": "Run Context II",
     "text": "Run Context II\n\nWe will create a new variable run_context\nConcatenate run_location & run_gap when both not NA\nFor “A” gap runs, run_context = \"middle\"\nFor sacks & fumbles, set run_context = \"other\"\nAdditionally add posteam: proxy for offensive linemen & blockers"
   },
   {
     "objectID": "slides/raw_slides/slides_10.html#team-strengths",
     "href": "slides/raw_slides/slides_10.html#team-strengths",
-    "title": "STAT 479 Lecture 10",
+    "title": "STAT 441 Lecture 10",
     "section": "Team Strengths",
     "text": "Team Strengths\n\nImportant to account for teammates & opponent quality (recall Lecture 4)\n\nDon’t overly reward players on good teams\nDon’t overly penalize players on bad teams\n\nMeasure passing & rushing strength with mean EPA\nAdd columns to pass2024 and rush2024"
   },
   {
     "objectID": "slides/raw_slides/slides_10.html#composite-outcomes",
     "href": "slides/raw_slides/slides_10.html#composite-outcomes",
-    "title": "STAT 479 Lecture 10",
+    "title": "STAT 441 Lecture 10",
     "section": "Composite Outcomes",
     "text": "Composite Outcomes\n\n\\(\\Delta\\): observed EPA on a passing play\n\\(\\delta_{\\textrm{air}}\\) and \\(\\delta_{\\textrm{yac}}\\): air_epa and yac_epa given by nflfastR\nDecompose \\(\\Delta = \\Delta_{\\textrm{air}} + \\Delta_{\\textrm{yac}}\\) where \\[\n\\Delta_{\\textrm{air}} =\n\\begin{cases}\n\\delta_{\\textrm{air}} & \\textrm{if the pass is caught} \\\\\n\\Delta & \\textrm{if the pass is incomplete,}\n\\end{cases}\n\\] and \\[\n\\Delta_{\\textrm{yac}} =\n\\begin{cases}\n\\delta_{\\textrm{yac}} & \\textrm{if the pass is caught} \\\\\n0 & \\textrm{if the pass is incomplete.}\n\\end{cases}\n\\]"
   },
   {
     "objectID": "slides/raw_slides/slides_10.html#modeling-delta_textrmair",
     "href": "slides/raw_slides/slides_10.html#modeling-delta_textrmair",
-    "title": "STAT 479 Lecture 10",
+    "title": "STAT 441 Lecture 10",
     "section": "Modeling \\(\\Delta_{\\textrm{air}}\\)",
     "text": "Modeling \\(\\Delta_{\\textrm{air}}\\)\n\\[\n\\begin{align}\n\\Delta_{i, \\textrm{air}} &= Q_{q[i]} + C_{c[i]} + D_{d[i]} + \\boldsymbol{\\mathbf{x}}_{i}^{\\top}\\boldsymbol{\\beta} + \\epsilon_{i}\\\\\nQ_{q} &\\sim N(\\mu_{Q}, \\sigma^{2}_{Q})\\\\\nC_{c} &\\sim N(\\mu_{C}, \\sigma^{2}_{C})\\\\\nD_{d} &\\sim N(\\mu_{D}, \\sigma^{2}_{D}).\n\\end{align}\n\\]\n\nFixed effects include:\n\nair_yards, shotgun, qb_hit, no_huddle\npostteam_type (i.e. Home/Away), pass_location\nreceiver_position & rush_strength\n\nRandom intercepts for Quarterback, reCeiver, and Defense"
   },
   {
     "objectID": "slides/raw_slides/slides_10.html#model-interpretation",
     "href": "slides/raw_slides/slides_10.html#model-interpretation",
-    "title": "STAT 479 Lecture 10",
+    "title": "STAT 441 Lecture 10",
     "section": "Model Interpretation",
     "text": "Model Interpretation\n\n\\(Q_{q}\\) : Per-pass EP added through air by passer \\(q\\) after adjusting for fixed effects\n\\(C_{c}\\): per-pass EP added when ball in air by receiver \\(c\\) after adjusting for fixed effects\n\\(D_{d}\\): per-pass EP added by offensive team when ball in air while facing defense \\(d\\)\n\nNegative \\(D_{d}\\) are good for the defense!\n\nModel: \\(Q_{q}, C_{c}\\) and \\(D_{d}\\) noisy deviations from league-wide averages \\(\\mu_{Q}, \\mu_{C},\\) and \\(\\mu_{D}.\\)\n\n\n\nCannot estimate the individual \\(Q_{q}\\)’s, \\(C_{c}\\)’s, or \\(D_{d}\\)’s\nCannot estimate the global averages \\(\\mu_{Q}, \\mu_{C},\\) or \\(\\mu_{D}\\)\nThese parameters are not identifiable with the data alone\nLuckily: we can estimate deviations (e.g., \\(Q_{q} - \\mu_{Q}\\))"
   },
   {
     "objectID": "slides/raw_slides/slides_10.html#individual-points-added-over-average",
     "href": "slides/raw_slides/slides_10.html#individual-points-added-over-average",
-    "title": "STAT 479 Lecture 10",
+    "title": "STAT 441 Lecture 10",
     "section": "Individual Points Added over Average",
     "text": "Individual Points Added over Average\n\nFor passer \\(q\\), let \\(\\textrm{IPA}^{(Q)}_{\\textrm{air}, q} = Q_{q} - \\mu_{Q}\\)\nHow much more EP does \\(q\\) add per play than league-average\nSimilarly \\(\\textrm{IPA}^{(C)}_{\\textrm{air}, c}\\) and \\(\\textrm{IPA}^{(D)}_{\\textrm{air}, d}.\\)"
   },
   {
     "objectID": "slides/raw_slides/slides_10.html#modeling-delta_textrmyac",
     "href": "slides/raw_slides/slides_10.html#modeling-delta_textrmyac",
-    "title": "STAT 479 Lecture 10",
+    "title": "STAT 441 Lecture 10",
     "section": "Modeling \\(\\Delta_{\\textrm{yac}}\\)",
     "text": "Modeling \\(\\Delta_{\\textrm{yac}}\\)\n\nFit a nearly-identical multilevel model using only completed passes\nlmer threw warning about singularity\n\nEstimated no passer-to-passer variation\nIntuition: once catch is made, passer doesn’t make a difference in terms of EPA."
   },
   {
     "objectID": "slides/raw_slides/slides_10.html#handling-qb-runs",
     "href": "slides/raw_slides/slides_10.html#handling-qb-runs",
-    "title": "STAT 479 Lecture 10",
+    "title": "STAT 441 Lecture 10",
     "section": "Handling QB Runs",
     "text": "Handling QB Runs\n\nPlay-by-play data doesn’t distinguish between\n\nDesigned QB runs\nScrambles on broken plays\n\nWe will fit two separate models for EPA on rushing plays"
   },
   {
     "objectID": "slides/raw_slides/slides_10.html#multilevel-models",
     "href": "slides/raw_slides/slides_10.html#multilevel-models",
-    "title": "STAT 479 Lecture 10",
+    "title": "STAT 441 Lecture 10",
     "section": "Multilevel Models",
     "text": "Multilevel Models\n\nQB Run Model:\n\nFixed effects: shotgun, no_huddle, posteam_type, pass_strength\nRandom intercepts: rusher_player_id & defteam\n\nNon-QB Model\n\nFixed effects: same as QB-model + rusher_position & run_context\nRandom intercepts: same as QB-model\n\nUse ranef() to extract \\(\\textrm{IPA}^{(R)}_{r}\\) for Runner r"
   },
   {
     "objectID": "slides/raw_slides/slides_10.html#total-individual-points-added-above-average",
     "href": "slides/raw_slides/slides_10.html#total-individual-points-added-above-average",
-    "title": "STAT 479 Lecture 10",
+    "title": "STAT 441 Lecture 10",
     "section": "Total Individual Points Added Above Average",
     "text": "Total Individual Points Added Above Average\n\nFor every offensive player, estimate how more EP they add per-play than league-average\n\nThrough the air (\\(\\textrm{IPA}^{(Q)}_{\\textrm{air}, q}\\), \\(\\textrm{IPA}^{(C)}_{\\textrm{air}, c}\\))\nAfter the catch (\\(\\textrm{IPA}^{(Q)}_{\\textrm{yac}, q}\\), \\(\\textrm{IPA}^{(C)}_{\\textrm{yac}, c}\\))\nRushing (\\(\\textrm{IPA}^{(R)}_{r}\\))\n\nMultiplying \\(\\textrm{IPA}\\) by number of attempts yields \\(\\textrm{IPAA}\\): total points added above average"
   },
   {
     "objectID": "slides/raw_slides/slides_10.html#replacement-level",
     "href": "slides/raw_slides/slides_10.html#replacement-level",
-    "title": "STAT 479 Lecture 10",
+    "title": "STAT 441 Lecture 10",
     "section": "Replacement Level",
     "text": "Replacement Level\n\nMultilevel models involved global-averages \\(\\mu_{Q}, \\mu_{C}, \\mu_{R}\\)\n\nRepresent the average latent intercept across theoretical super-population\nAssumption: observed players are randomly sampled from this super-population\n\nNot strictly correct to say IPA measures contribution above “league-average”\nWill define roster-based thresholds for “replacement level”\nConstruct a replacement-level “shadow”\n\nCompute average \\(\\textrm{IPA}\\) for replacement-level players\nShadow IPAA: multiply avg. replacement-level IPA by attempts\nCompare observed IPAA to shadow IPAA"
   },
   {
     "objectID": "slides/raw_slides/slides_10.html#defining-replacement-level",
     "href": "slides/raw_slides/slides_10.html#defining-replacement-level",
-    "title": "STAT 479 Lecture 10",
+    "title": "STAT 441 Lecture 10",
     "section": "Defining Replacement Level",
     "text": "Defining Replacement Level\n\nMost rosters: 3 running backs, 4 wide receivers, 2 tight ends\nCreate separate thresholds for position & type of play\nFor passing plays:\n\nTop \\(32 \\times 4\\) WRs sorted by n_rec\nTop \\(32 \\times 2\\) TEs sorted by n_rec\nTop \\(32 \\times 3\\) RB\n\nFor running plays\n\nTop \\(32 \\times 3\\) RBs sorted by n_runs\nTop \\(32 \\times 1\\) WR & TEs sorted by n_runs"
   },
   {
     "objectID": "slides/raw_slides/slides_10.html#replacement-level-qb",
     "href": "slides/raw_slides/slides_10.html#replacement-level-qb",
-    "title": "STAT 479 Lecture 10",
+    "title": "STAT 441 Lecture 10",
     "section": "Replacement-level QB",
     "text": "Replacement-level QB\n\nEvery offensive play runs through the QB\nIdea 1: designate one QB per team as non-replacement\n\nE.g., QB w/ most rushing & passing attempts\nProblem: assumes every NFL team has at least one non-replacement QB\n\nIdea 2: sort QBs by total number of passes & rushes & take top-32"
   },
   {
     "objectID": "slides/raw_slides/slides_10.html#converting-points-to-wins",
     "href": "slides/raw_slides/slides_10.html#converting-points-to-wins",
-    "title": "STAT 479 Lecture 10",
+    "title": "STAT 441 Lecture 10",
     "section": "Converting Points to Wins",
     "text": "Converting Points to Wins\n\nIPAR are on point-differential scale\nFind \\(\\alpha\\) & \\(\\beta\\) s.t. \\(\\textrm{Wins} \\approx \\alpha + \\beta \\times \\textrm{PtsDiff}\\)\nThen multiply IPAR values by \\(\\beta\\)\n\n\n\n\n\n\n\n\n\nFigure 1: Scoring differential is positively associated with wins"
   },
   {
     "objectID": "slides/raw_slides/slides_10.html#project-reminders",
     "href": "slides/raw_slides/slides_10.html#project-reminders",
-    "title": "STAT 479 Lecture 10",
+    "title": "STAT 441 Lecture 10",
     "section": "Project Reminders",
     "text": "Project Reminders\n\nProjects due at 12:00pm (noon) on Friday 9 October\nSubmission links & instructions on class website\nExecutive summary & technical report should be in same file\nStrongly recommend including running examples\n\nMotivate study w/ example of certain plays or phenomena\nExplain model findings in the context of the examples\nFeel free to include links to video!"
   },
