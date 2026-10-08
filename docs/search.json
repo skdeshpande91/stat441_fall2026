@@ -74,7 +74,7 @@
     "href": "slides/raw_slides/slides_11.html#motivation",
     "title": "STAT 441 Lecture 11",
     "section": "Motivation",
-    "text": "Motivation\n\n\n\n\n\n\n\n\n\n\n\n(a) Pitch called a ball\n\n\n\n\n\n\n\n\n\n\n\n(b) Pitch called a strike\n\n\n\n\n\n\n\nFigure 1\n\n\n\n\nBoth pitches miss the strike zone and should, by rule, be called balls\nBut pitch on the right was called a strike\n\n\n\nHow much do catchers influence umpires’ calls?"
+    "text": "Motivation\n\n\n\n\n\n\n\n\n\n\n\n(a) Pitch called a ball\n\n\n\n\n\n\n\n\n\n\n\n(b) Pitch called a strike\n\n\n\n\n\n\n\nFigure 1\n\n\n\n\nBoth pitches miss the strike zone and should, by rule, be called balls\nBut pitch on the right was called a strike\nHow much do catchers influence umpires’ calls?"
   },
   {
     "objectID": "slides/raw_slides/slides_11.html#framing",
@@ -193,7 +193,7 @@
     "href": "slides/raw_slides/slides_11.html#announcements",
     "title": "STAT 441 Lecture 11",
     "section": "Announcements",
-    "text": "Announcements\n\nProjects are due tomorrow at noon\nNext week: new unit on ranking & simulation\n\nLectures 12 & 13: hockey power rankings & the NCAA D1 National Championship\nLecture 14: Markov chain simulations\nLecture 16 & 17: Mock drafts & other simulations\n\nProject 2 Information will be posted by Sunday evening"
+    "text": "Announcements\n\nProjects are due tomorrow at noon\nNext week: new unit on ranking & simulation\n\nLectures 12 & 13: hockey power rankings & the NCAA D1 National Championship\nLecture 14: Mock drafts & Plackett-Luce models\nLecture 15: Markov chains\nLectures 16 & 17: Simulating NFL drives"
   },
   {
     "objectID": "slides/raw_slides/slides_09.html#comparing-football-plays",

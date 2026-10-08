@@ -19,9 +19,6 @@ execute:
 
 * Both pitches miss the strike zone and should, by rule, be called balls
 * But pitch on the right was called a strike
-
-. . . 
-
 * How much do catchers influence umpires' calls?
 
 ## Framing{.smaller}
@@ -187,11 +184,11 @@ $$
 
 ## Announcements{.smaller}
 
-- Projects are due tomorrow at noon
+- Projects are due tomorrow at **noon**
 
 - Next week: new unit on ranking & simulation
   - Lectures 12 & 13: hockey power rankings & the NCAA D1 National Championship
-  - Lecture 14: Markov chain simulations
-  - Lecture 16 & 17: Mock drafts & other simulations
+  - Lecture 14: Mock drafts & Plackett-Luce models
+  - Lecture 15: Markov chains
+  - Lectures 16 & 17: Simulating NFL drives
   
-- Project 2 Information will be posted by Sunday evening
