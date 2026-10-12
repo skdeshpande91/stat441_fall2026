@@ -89,3 +89,9 @@ devtools::install_github("hturner/BradleyTerry2")
 
 - Basic BT model does not account for home-team advantage
 - [Lecture 13](../../lectures/lecture13.qmd): simulate entire Frozen 4
+
+## Guest Speaker Tonight
+
+- Speaker: Jack Weyer (Milwaukee Bucks)
+- Where: Morgridge Hall 2532
+- When: 6:00pm tonight (10/13)
