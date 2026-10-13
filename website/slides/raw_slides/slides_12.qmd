@@ -56,14 +56,8 @@ $$
 - Requirement: a data table (one row per match) recording
   - Identities of the two teams
   - Identity of the winner
-- Scrape from USCHO website
-  - Before 10/6: code on course website worked
-  - After 10/6: USCHO changed their backend (so scraping code won't work...)
 
-
-## The **BradleyTerry2** Package {.smaller}
-
-- We will use the [**BradleyTerry2**](https://github.com/hturner/BradleyTerry2) package
+- [**BradleyTerry2**](https://github.com/hturner/BradleyTerry2) package
 ```{r}
 #| label: install-bt2
 #| eval: false

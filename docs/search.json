@@ -3333,14 +3333,7 @@
     "href": "slides/raw_slides/slides_12.html#overview",
     "title": "STAT 441 Lecture 12",
     "section": "Overview",
-    "text": "Overview\n\nGoal: Estimate \\(\\lambda_{j}\\)’s for all D1 Women’s Hockey Teams\nRequirement: a data table (one row per match) recording\n\nIdentities of the two teams\nIdentity of the winner\n\nScrape from USCHO website\n\nBefore 10/6: code on course website worked\nAfter 10/6: USCHO changed their backend (so scraping code won’t work…)"
-  },
-  {
-    "objectID": "slides/raw_slides/slides_12.html#the-bradleyterry2-package",
-    "href": "slides/raw_slides/slides_12.html#the-bradleyterry2-package",
-    "title": "STAT 441 Lecture 12",
-    "section": "The BradleyTerry2 Package",
-    "text": "The BradleyTerry2 Package\n\nWe will use the BradleyTerry2 package\n\n\ndevtools::install_github(\"hturner/BradleyTerry2\")\n\n\nPackage has rather specific syntax, so it’s important to read documentation"
+    "text": "Overview\n\nGoal: Estimate \\(\\lambda_{j}\\)’s for all D1 Women’s Hockey Teams\nRequirement: a data table (one row per match) recording\n\nIdentities of the two teams\nIdentity of the winner\n\nBradleyTerry2 package\n\n\ndevtools::install_github(\"hturner/BradleyTerry2\")\n\n\nPackage has rather specific syntax, so it’s important to read documentation"
   },
   {
     "objectID": "slides/raw_slides/slides_12.html#ncaa-d1-championship",
