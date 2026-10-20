@@ -130,7 +130,6 @@ On that view, you are encouraged to do as many as you can over the course of the
 
 However, for the purposes of assessment, you are required to submit written solutions (with all code necessary to reproduce the results included) to **two** exercises based on different sports.
 You must also post an overview of your solution to Piazza, respond to feedback from your peers about your analysis, and provide feedback to your peers' solutions to other exercises.
-Your solution to exercises from a given lecture will be due **one** weeks after the schedule lecture.
 Exercise solutions will be graded essentially on completion: so long as you submit a reproducible analysis, you will earn full marks for that part.
 Similarly, so long as you participate constructively on Piazza, you will earn full marks for that part.
 
