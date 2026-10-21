@@ -232,3 +232,23 @@ Build a simulation for the entire NCAA Tournament based on the estimating probab
 ### 13-3: Replicate Analysis for D1 Men's Hockey {#sec-ex-lec13-mens}
 
 Replicate the analyses from [Lecture 13](lectures/lecture13.qmd) for Division 1 Men's Hockey. You will need to use the data introduced in [Exercise 12-1](#sec-ex-lec12-mens)
+
+## Lecture 15 {#sec-ex-lec15}
+
+#### 15-1: Run Expectancy via Markov Chains
+When simulating the number of runs scored in the half-inning, we initialized our Markov chains from `0.000`, which is the state at the start of every half-inning. By initializing at some other state --- say `1.000` --- we can study the distribution of runs scored **after** an at-bat beginning in that state. Use a Markov chain simulation to estimate the run expectancy for every state and compare it to the matrix we estimated in [Lecture 6](lecture06.qmd).
+
+#### 15-2: Whole-game Simulation
+
+It is straightforward to use the Markov chain simulator for half-innings developed in [Lecture 15](lectures/lecture15.qmd) to simulate an entire game's worth of at-bats. Specifically, a single iteration of the whole game simulator multiple *sequential* runs of the half-inning simulator. Using this simulator, you can compute many things, including the scores of each team and many box score statistics (e.g., single, double, RBIs), which can be computed directly from the game state transitions. Build a whole-game simulator and look at the distribution of some box score statistics. You could also 
+
+## Lectures 16-17
+
+#### 16-1: Starting Contexts
+The drive simulator in we built in [Lecture 17](lectures/lecture17.qmd) repeatedly identifies the down, distance, and absolute position on the field (i.e., the *starting context*) for a given play and then samples the play results from the pool of plays with *similar* starting contexts. As noted in lecture, the contexts are not equally represented in the data. Identify the most and least common starting contexts. Does that match your intuition?
+
+#### 16-2: Regulation Drive Simulator
+In lecture, we built a simulator for drives under new potential overtime rules. Modify the underlying logic to build a realistic simulation of drives in regulation, when teams have the option to not "go for it" on 4th down. You will specifically need to adjust the logic employed on 4th down and you will need to re-define the pool of potential plays from which to sample.
+
+
+

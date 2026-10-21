@@ -1176,16 +1176,6 @@
     ]
   },
   {
-    "objectID": "lectures/lecture15.html#exercises",
-    "href": "lectures/lecture15.html#exercises",
-    "title": "Lecture 15: Markov Chains",
-    "section": "Exercises",
-    "text": "Exercises\n\nWhen simulating the number of runs scored in the half-inning, we initialized our Markov chains from 0.000, which is the state at the start of every half-inning. By initializing at some other state — say 1.000 — we can study the distribution of runs scored after an at-bat beginning in that state. Use a Markov chain simulation to estimate the run expectancy for every state and compare it to the matrix we estimated in Lecture 6.",
-    "crumbs": [
-      "Lecture 15: Markov Chains"
-    ]
-  },
-  {
     "objectID": "lectures/lecture15.html#footnotes",
     "href": "lectures/lecture15.html#footnotes",
     "title": "Lecture 15: Markov Chains",
@@ -2464,6 +2454,20 @@
     "title": "Exercises",
     "section": "Lecture 13",
     "text": "Lecture 13\n\n13-1: Uncertainty about Team Rankings\nUse the bootstrap to quantify the uncertainty in relative rankings of each team. To do this, you will need to re-sample individual games, re-compute the numbers of home & away team wins for every combination of teams and neutral, and fit a Bradley-Terry model. Report the number of bootstrap simulations in which Wisconsin was ranked 1st and also report a 95% bootstrap confidence interval for Wisconsin’s overall rank.\n\n\n13-2: Full Tournament Simulation\nBuild a simulation for the entire NCAA Tournament based on the estimating probabilities from our Bradley-Terry model that accounts for home advantage. In this tournament, the first round and quarterfinals were held on the campuses of the top-4 seeded teams (Ohio State, Wisconsin, Penn State, and Minnesota). Subsequent games were played at Penn’s State’s home arena. Your simulation should involve only the 11 teams who actually played in the tournament\n\n\n13-3: Replicate Analysis for D1 Men’s Hockey\nReplicate the analyses from Lecture 13 for Division 1 Men’s Hockey. You will need to use the data introduced in Exercise 12-1"
+  },
+  {
+    "objectID": "exercises.html#sec-ex-lec15",
+    "href": "exercises.html#sec-ex-lec15",
+    "title": "Exercises",
+    "section": "Lecture 15",
+    "text": "Lecture 15\n\n15-1: Run Expectancy via Markov Chains\nWhen simulating the number of runs scored in the half-inning, we initialized our Markov chains from 0.000, which is the state at the start of every half-inning. By initializing at some other state — say 1.000 — we can study the distribution of runs scored after an at-bat beginning in that state. Use a Markov chain simulation to estimate the run expectancy for every state and compare it to the matrix we estimated in Lecture 6.\n\n\n15-2: Whole-game Simulation\nIt is straightforward to use the Markov chain simulator for half-innings developed in Lecture 15 to simulate an entire game’s worth of at-bats. Specifically, a single iteration of the whole game simulator multiple sequential runs of the half-inning simulator. Using this simulator, you can compute many things, including the scores of each team and many box score statistics (e.g., single, double, RBIs), which can be computed directly from the game state transitions. Build a whole-game simulator and look at the distribution of some box score statistics. You could also"
+  },
+  {
+    "objectID": "exercises.html#lectures-16-17",
+    "href": "exercises.html#lectures-16-17",
+    "title": "Exercises",
+    "section": "Lectures 16-17",
+    "text": "Lectures 16-17\n\n16-1: Starting Contexts\nThe drive simulator in we built in Lecture 17 repeatedly identifies the down, distance, and absolute position on the field (i.e., the starting context) for a given play and then samples the play results from the pool of plays with similar starting contexts. As noted in lecture, the contexts are not equally represented in the data. Identify the most and least common starting contexts. Does that match your intuition?\n\n\n16-2: Regulation Drive Simulator\nIn lecture, we built a simulator for drives under new potential overtime rules. Modify the underlying logic to build a realistic simulation of drives in regulation, when teams have the option to not “go for it” on 4th down. You will specifically need to adjust the logic employed on 4th down and you will need to re-define the pool of potential plays from which to sample."
   },
   {
     "objectID": "projects/project2.html",

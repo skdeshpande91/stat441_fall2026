@@ -940,7 +940,4 @@ save(transition_matrix, unik_states, file = "atbat2024_markov_chain.RData")
 -->
 
 
-## Exercises
-
-1. When simulating the number of runs scored in the half-inning, we initialized our Markov chains from `0.000`, which is the state at the start of every half-inning. By initializing at some other state --- say `1.000` --- we can study the distribution of runs scored **after** an at-bat beginning in that state. Use a Markov chain simulation to estimate the run expectancy for every state and compare it to the matrix we estimated in [Lecture 6](lecture06.qmd).
 

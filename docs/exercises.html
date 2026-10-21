@@ -371,6 +371,8 @@ window.Quarto = {
   <li><a href="#sec-ex-lec13-tournament" id="toc-sec-ex-lec13-tournament" class="nav-link" data-scroll-target="#sec-ex-lec13-tournament">13-2: Full Tournament Simulation</a></li>
   <li><a href="#sec-ex-lec13-mens" id="toc-sec-ex-lec13-mens" class="nav-link" data-scroll-target="#sec-ex-lec13-mens">13-3: Replicate Analysis for D1 Men’s Hockey</a></li>
   </ul></li>
+  <li><a href="#sec-ex-lec15" id="toc-sec-ex-lec15" class="nav-link" data-scroll-target="#sec-ex-lec15">Lecture 15</a></li>
+  <li><a href="#lectures-16-17" id="toc-lectures-16-17" class="nav-link" data-scroll-target="#lectures-16-17">Lectures 16-17</a></li>
   </ul>
 </nav>
     </div>
@@ -604,6 +606,28 @@ Just like `lm`, the functions `cv.glmnet()` and `glmnet()` accept a `weights` ar
 <section id="sec-ex-lec13-mens" class="level3">
 <h3 class="anchored" data-anchor-id="sec-ex-lec13-mens">13-3: Replicate Analysis for D1 Men’s Hockey</h3>
 <p>Replicate the analyses from <a href="./lectures/lecture13.html">Lecture 13</a> for Division 1 Men’s Hockey. You will need to use the data introduced in <a href="#sec-ex-lec12-mens">Exercise 12-1</a></p>
+</section>
+</section>
+<section id="sec-ex-lec15" class="level2">
+<h2 class="anchored" data-anchor-id="sec-ex-lec15">Lecture 15</h2>
+<section id="run-expectancy-via-markov-chains" class="level4">
+<h4 class="anchored" data-anchor-id="run-expectancy-via-markov-chains">15-1: Run Expectancy via Markov Chains</h4>
+<p>When simulating the number of runs scored in the half-inning, we initialized our Markov chains from <code>0.000</code>, which is the state at the start of every half-inning. By initializing at some other state — say <code>1.000</code> — we can study the distribution of runs scored <strong>after</strong> an at-bat beginning in that state. Use a Markov chain simulation to estimate the run expectancy for every state and compare it to the matrix we estimated in <a href="lecture06.qmd">Lecture 6</a>.</p>
+</section>
+<section id="whole-game-simulation" class="level4">
+<h4 class="anchored" data-anchor-id="whole-game-simulation">15-2: Whole-game Simulation</h4>
+<p>It is straightforward to use the Markov chain simulator for half-innings developed in <a href="./lectures/lecture15.html">Lecture 15</a> to simulate an entire game’s worth of at-bats. Specifically, a single iteration of the whole game simulator multiple <em>sequential</em> runs of the half-inning simulator. Using this simulator, you can compute many things, including the scores of each team and many box score statistics (e.g., single, double, RBIs), which can be computed directly from the game state transitions. Build a whole-game simulator and look at the distribution of some box score statistics. You could also</p>
+</section>
+</section>
+<section id="lectures-16-17" class="level2">
+<h2 class="anchored" data-anchor-id="lectures-16-17">Lectures 16-17</h2>
+<section id="starting-contexts" class="level4">
+<h4 class="anchored" data-anchor-id="starting-contexts">16-1: Starting Contexts</h4>
+<p>The drive simulator in we built in <a href="./lectures/lecture17.html">Lecture 17</a> repeatedly identifies the down, distance, and absolute position on the field (i.e., the <em>starting context</em>) for a given play and then samples the play results from the pool of plays with <em>similar</em> starting contexts. As noted in lecture, the contexts are not equally represented in the data. Identify the most and least common starting contexts. Does that match your intuition?</p>
+</section>
+<section id="regulation-drive-simulator" class="level4">
+<h4 class="anchored" data-anchor-id="regulation-drive-simulator">16-2: Regulation Drive Simulator</h4>
+<p>In lecture, we built a simulator for drives under new potential overtime rules. Modify the underlying logic to build a realistic simulation of drives in regulation, when teams have the option to not “go for it” on 4th down. You will specifically need to adjust the logic employed on 4th down and you will need to re-define the pool of potential plays from which to sample.</p>
 
 
 </section>
