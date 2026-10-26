@@ -56,7 +56,7 @@ tmp_pool <-
 table(tmp_pool$yards)
 ```
 In total, there are `{r} nrow(tmp_pool)` 1st and 10 from the 30 yard line plays in our dataset.
-Out of those, `{r} sum(tmp_pool$yards == 0)` netted zero yards and about `{r} paste0(round(100 * mean( tmp_pool$yards > 0 & tmp_pool$yards <= 5), digits = 1), "%")` netted between 1 and 5 yards (inclusive).
+Out of those, `{r} sum(tmp_pool$yards == 0, na.rm = TRUE)` netted zero yards and about `{r} paste0(round(100 * mean( tmp_pool$yards > 0 & tmp_pool$yards <= 5, na.rm = TRUE), digits = 1), "%")` netted between 1 and 5 yards (inclusive).
 
 We can sample a single play and look up how many yards were gained and how much time the play took.
 ```{r}
@@ -110,7 +110,7 @@ sampled_play |> dplyr::select(yards, time_elapsed, desc)
 
 We could continue iterating the above steps until the drive finishes.
 Before doing so, notice that the numbers of plays in the temporary pool `tmp_pool` differed based on the starting contexts.
-While some starting contexts are very well represented in `plays`, others are much more rare[^exercise]
+While some starting contexts are very well represented in `plays`, others are much more rare[^exercise].
 When running our simulation, we need to be careful when simulating a play with a rare starting context.
 Specifically, rather than sampling the outcome from plays with *exactly* the same starting context as our simulated play, we will instead sample the outcome from a pool of plays with *similar* starting contexts.
 

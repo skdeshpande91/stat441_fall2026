@@ -1,0 +1,160 @@
+---
+title: "STAT 441 Lecture 16"
+subtitle: "New NFL Overtime Rules"
+format: revealjs
+execute:
+  cache: true
+---
+
+## NFL Overtime
+
+- NFL games consist of four 15-minute quarters
+- What happens when the score is tied at the end of Q4?
+  - Pre-1974: game declared a tie
+  - 1974-2010: "sudden death" overtime
+  - 2010-2022: modified sudden death
+  - 2022-present: both teams get possession
+
+## Problems w/ Earlier Formats
+
+- Sudden death: first team to score wins
+  - One team can take possession, kick a FG, and win
+  - Opposing team never possesses ball
+  - Huge advantage to team w/ first possession
+  
+. . . 
+
+- Modified Sudden Death: can't win with first-possession FG
+  - If first team scores TD, game ends
+  - If first team kicks FG or doesn't score: second team gets possession
+  - Team w/ first possession still has advantage
+
+
+## Proposed Solution
+
+- Give both teams a chance to possess the ball
+- If first team scores a TD, second team has chance to tie/win
+
+- $\mathbb{P}(\textrm{second team scores TD} \vert \textrm{first team scores TD})$???
+  - If prob. very low, is it reasonable to change the rule?
+  - If prob. very high, can change team decision making
+
+## Plan
+
+- Using play-by-play data, quantify
+
+1. Benefit of first possession under sudden death rules
+2. Benefit of first possession under modified sudden death
+3. Distribution of second team's outcomes after giving up TD under new rules
+
+
+## Benefit of First Possession (Sudden Death)
+
+1. Identify all games (pre-2010) that went to OT
+2. Identify winners of those games
+3. Identify team with first OT possession
+
+## 
+
+
+## Estimating the Probability
+
+- Idea: use empirical estimate
+  - Find all drives following opening-drive TDs in OT
+  - Compute proportion ending in TD
+- Problem: prior to 2022, there were **no** such drives!
+
+## Model-based Simulation{.smaller}
+
+- Starting context: down, distance, yardline, time, etc.
+- Theoretically feasible to model play components:
+  - Play type (run vs pass) given starting context
+  - Yards gained & time elapsed given starting context & play type
+
+. . . 
+
+- What about penalties???
+  - Pre-snap penalty given starting context
+  - Play type given starting context & no pre-snap penalty
+  - Penalty during play given starting context & no pre-snap penalty
+  - Yards gained & time elapsed given starting context, no penalties
+  - Post-play penalty given all else...
+
+## Re-sampling Based Simulation
+
+- Imagine simulating drive one play at a time
+- Given starting context:
+  - Find pool of *similar* existing plays
+  - Randomly sample play from that pool
+- Repeat until simulated drive ends
+
+## Challenges
+
+- Unique decision-making environment
+- In OT, trailing by $<= 8$ points, second team
+  - Will **never** punt or kick of a field goal nor attempt a fake
+  - Must score a TD to extend the game
+  - Is relatively unconcerned about time
+- How to define "similar"??
+
+## Plan
+
+1. Build a pool of plays from which to sample
+2. Determine dist. of starting positions for second OT drive
+3. Write function to sample similar play
+4. Simulate & visualize drives
+
+## Building Pool of Plays
+
+- Team is trailing but by $\leq 8$ points
+- Exclude plays in final two-minutes
+- Only include running & passing plays
+- Must exclude fake punts & FGs
+- Exclude plays from drives spanning multiple quarters
+
+## Starting & Ending Context
+
+- Context variables: `down` and 
+  - `yardline_100`: how far to *opponent's* endzone
+  - `ydstogo`: how far to 1st down marker
+  
+- **nflfastR** includes unique drive identifier `fixed_drive`
+  - Numbered consecutively (from 1) in each game
+
+- Plan: group by `game_id` and `fixed_drive`
+  - Use `dplyr::lead()` to get *next* value of context variables
+  - For end-of-drive plays, need to set `next_*`to `NA`
+  
+## Where Does 2nd Drive Start? {.smaller}
+
+- After giving up a touchdown, where does second team begin next drive?
+  1. Find all regular season games with opening drive TD
+  2. Look up starting field position for second drive in those games
+  
+
+
+## Defining Similar Plays {.smaller}
+
+- Idea 1: Sample a play matching **exact** `down`, `ydstogo`, and `yardline_100`
+
+. . . 
+
+- Idea 2: Exactly match `ydstogo` but allow some "wiggle room" for `yardline_100` & `down`
+- When `down %in% c(1,2,3)`: exactly match `down`
+- Second team in new OT will **never** punt or kick FG
+  - Use 3rd and 4th down plays to simulate outcomes when `down == 4`
+
+## Adjusting `yardline_100`
+- Similar outcomes on 1st and 10 from your 47 and from your 49
+- Heuristic: sample plays starting from
+  - `yardline_100` $\pm 3$: when `yardline_100` b/w 90 & 60
+  - `yardline_100` $\pm 2$: when `yardline_100` b/w 60 & 40
+  - `yardline_100` $\pm 1$: when `yardline_100` b/w 40 & 10
+  - `yardline_100`: when `yardline_100` b/w 10 & 1
+  - `[90,99]`: when `yardline_100` b/w 90 & 99
+  
+
+
+
+
+

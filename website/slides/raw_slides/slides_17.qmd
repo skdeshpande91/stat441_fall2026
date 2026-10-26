@@ -1,0 +1,59 @@
+---
+title: "STAT 441 Lecture 17"
+subtitle: "New NFL Overtime Rules II"
+format: revealjs
+execute:
+  cache: true
+---
+
+## Re-sampling Based Simulation
+
+- Imagine simulating drive one play at a time
+- Given starting context:
+  - Find pool of *similar* existing plays
+  - Randomly sample play from that pool
+- Repeat until simulated drive ends
+
+## Challenges
+
+- Unique decision-making environment
+- In OT, trailing by $<= 8$ points, second team
+  - Will **never** punt or kick of a field goal nor attempt a fake
+  - Must score a TD to extend the game
+  - Is relatively unconcerned about time
+- How to define "similar"??
+
+## Plan
+
+1. Build a pool of plays from which to sample
+2. Determine dist. of starting positions for second OT drive
+3. Write function to sample similar play
+4. Simulate & visualize drives
+
+
+
+## Defining Similar Plays {.smaller}
+
+- Idea 1: Sample a play matching **exact** `down`, `ydstogo`, and `yardline_100`
+
+## Adjusting `yardline_100`
+
+- Idea 2: Exactly match `ydstogo` but allow some "wiggle room" for `yardline_100` & `down`
+- When `down %in% c(1,2,3)`: exactly match `down`
+- Second team in new OT will **never** punt or kick FG
+  - Use 3rd and 4th down plays to simulate outcomes when `down == 4`
+
+## Adjusting `yardline_100`
+- Similar outcomes on 1st and 10 from your 47 and from your 49
+- Heuristic: sample plays starting from
+  - `yardline_100` $\pm 3$: when `yardline_100` b/w 90 & 60
+  - `yardline_100` $\pm 2$: when `yardline_100` b/w 60 & 40
+  - `yardline_100` $\pm 1$: when `yardline_100` b/w 40 & 10
+  - `yardline_100`: when `yardline_100` b/w 10 & 1
+  - `[90,99]`: when `yardline_100` b/w 90 & 99
+  
+
+
+
+
+
